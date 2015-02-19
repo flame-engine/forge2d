@@ -1,0 +1,171 @@
+/*******************************************************************************
+ * Copyright (c) 2015, Daniel Murphy, Google
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ ******************************************************************************/
+
+part of box2d;
+
+/**
+ * A transform contains translation and rotation. It is used to represent the position and
+ * orientation of rigid frames.
+ */
+class Transform {
+  /** The translation caused by the transform */
+  final Vec2 p;
+
+  /** A matrix representing a rotation */
+  final Rot q;
+
+
+  /** The default constructor. */
+  Transform.zero()
+      : p = new Vec2.zero(),
+        q = new Rot();
+
+  /** Initialize as a copy of another transform. */
+  Transform.clone(final Transform xf)
+      : p = xf.p.clone(),
+        q = xf.q.clone();
+
+  /** Initialize using a position vector and a rotation matrix. */
+  Transform.from(final Vec2 _position, final Rot _R)
+      : p = _position.clone(),
+        q = _R.clone();
+
+  /** Set this to equal another transform. */
+  Transform set(final Transform xf) {
+    p.set(xf.p);
+    q.set(xf.q);
+    return this;
+  }
+
+  /**
+   * Set this based on the position and angle.
+   * 
+   * @param p
+   * @param angle
+   */
+  void setVec2Angle(Vec2 p, double angle) {
+    p.set(p);
+    q.setAngle(angle);
+  }
+
+  /** Set this to the identity transform. */
+  void setIdentity() {
+    p.setZero();
+    q.setIdentity();
+  }
+
+  static Vec2 mulVec2(final Transform T, final Vec2 v) {
+    return new Vec2((T.q.c * v.x - T.q.s * v.y) + T.p.x, (T.q.s * v.x + T.q.c * v.y) + T.p.y);
+  }
+
+  static void mulToOutVec2(final Transform T, final Vec2 v, final Vec2 out) {
+    final double tempy = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
+    out.x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
+    out.y = tempy;
+  }
+
+  static void mulToOutUnsafeVec2(final Transform T, final Vec2 v, final Vec2 out) {
+    assert(v != out);
+    out.x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
+    out.y = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
+  }
+
+  static Vec2 mulTransVec2(final Transform T, final Vec2 v) {
+    final double px = v.x - T.p.x;
+    final double py = v.y - T.p.y;
+    return new Vec2((T.q.c * px + T.q.s * py), (-T.q.s * px + T.q.c * py));
+  }
+
+
+  static void mulTransToOutVec2(final Transform T, final Vec2 v, final Vec2 out) {
+    final double px = v.x - T.p.x;
+    final double py = v.y - T.p.y;
+    final double tempy = (-T.q.s * px + T.q.c * py);
+    out.x = (T.q.c * px + T.q.s * py);
+    out.y = tempy;
+  }
+
+  static void mulTransToOutUnsafeVec2(final Transform T, final Vec2 v, final Vec2 out) {
+    assert(v != out);
+    final double px = v.x - T.p.x;
+    final double py = v.y - T.p.y;
+    out.x = (T.q.c * px + T.q.s * py);
+    out.y = (-T.q.s * px + T.q.c * py);
+  }
+
+  static Transform mul(final Transform A, final Transform B) {
+    Transform C = new Transform.zero();
+    Rot.mulUnsafe(A.q, B.q, C.q);
+    Rot.mulToOutUnsafe(A.q, B.p, C.p);
+    C.p.addLocal(A.p);
+    return C;
+  }
+
+  static void mulToOut(final Transform A, final Transform B, final Transform out) {
+    assert(out != A);
+    Rot.mul(A.q, B.q, out.q);
+    Rot.mulToOut(A.q, B.p, out.p);
+    out.p.addLocal(A.p);
+  }
+
+  static void mulToOutUnsafe(final Transform A, final Transform B, final Transform out) {
+    assert(out != B);
+    assert(out != A);
+    Rot.mulUnsafe(A.q, B.q, out.q);
+    Rot.mulToOutUnsafe(A.q, B.p, out.p);
+    out.p.addLocal(A.p);
+  }
+
+  static Vec2 _pool = new Vec2.zero();
+
+  static Transform mulTrans(final Transform A, final Transform B) {
+    Transform C = new Transform.zero();
+    Rot.mulTransUnsafe(A.q, B.q, C.q);
+    _pool.set(B.p).subLocal(A.p);
+    Rot.mulTransUnsafeVec2(A.q, _pool, C.p);
+    return C;
+  }
+
+  void mulTransToOut(final Transform A, final Transform B, final Transform out) {
+    assert(out != A);
+    Rot.mulTrans(A.q, B.q, out.q);
+    _pool.set(B.p).subLocal(A.p);
+    Rot.mulTransVec2(A.q, _pool, out.p);
+  }
+
+  static void mulTransToOutUnsafe(final Transform A, final Transform B, final Transform out) {
+    assert(out != A);
+    assert(out != B);
+    Rot.mulTransUnsafe(A.q, B.q, out.q);
+    _pool.set(B.p).subLocal(A.p);
+    Rot.mulTransUnsafeVec2(A.q, _pool, out.p);
+  }
+
+  String toString() {
+    String s = "XForm:\n";
+    s += "Position: $p\n";
+    s += "R: \t$q\n";
+    return s;
+  }
+}
