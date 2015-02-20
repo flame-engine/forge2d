@@ -22,7 +22,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-import '../lib/box2d/box2d.dart';
+import 'package:box2d/box2d.dart';
 
 main() {
   Bench2D bench = new Bench2D();
