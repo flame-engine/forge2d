@@ -81,7 +81,7 @@ abstract class DebugDraw {
    * @param vertexCount
    * @param color
    */
-  void drawPolygon(List<Vec2> vertices, int vertexCount, Color3f color) {
+  void drawPolygon(List<Vec2> vertices, int vertexCount, Color3i color) {
     if (vertexCount == 1) {
       drawSegment(vertices[0], vertices[0], color);
       return;
@@ -96,7 +96,7 @@ abstract class DebugDraw {
     }
   }
 
-  void drawPoint(Vec2 argPoint, double argRadiusOnScreen, Color3f argColor);
+  void drawPoint(Vec2 argPoint, double argRadiusOnScreen, Color3i argColor);
 
   /**
    * Draw a solid closed polygon provided in CCW order.
@@ -105,7 +105,7 @@ abstract class DebugDraw {
    * @param vertexCount
    * @param color
    */
-  void drawSolidPolygon(List<Vec2> vertices, int vertexCount, Color3f color);
+  void drawSolidPolygon(List<Vec2> vertices, int vertexCount, Color3i color);
 
   /**
    * Draw a circle.
@@ -114,10 +114,10 @@ abstract class DebugDraw {
    * @param radius
    * @param color
    */
-  void drawCircle(Vec2 center, double radius, Color3f color);
+  void drawCircle(Vec2 center, double radius, Color3i color);
 
   /** Draws a circle with an axis */
-  void drawCircleAxis(Vec2 center, double radius, Vec2 axis, Color3f color) {
+  void drawCircleAxis(Vec2 center, double radius, Vec2 axis, Color3i color) {
     drawCircle(center, radius, color);
   }
 
@@ -129,7 +129,7 @@ abstract class DebugDraw {
    * @param axis
    * @param color
    */
-  void drawSolidCircle(Vec2 center, double radius, Vec2 axis, Color3f color);
+  void drawSolidCircle(Vec2 center, double radius, Vec2 axis, Color3i color);
 
   /**
    * Draw a line segment.
@@ -138,7 +138,7 @@ abstract class DebugDraw {
    * @param p2
    * @param color
    */
-  void drawSegment(Vec2 p1, Vec2 p2, Color3f color);
+  void drawSegment(Vec2 p1, Vec2 p2, Color3i color);
 
   /**
    * Draw a transform. Choose your own length scale
@@ -155,7 +155,7 @@ abstract class DebugDraw {
    * @param s
    * @param color
    */
-  void drawStringXY(double x, double y, String s, Color3f color);
+  void drawStringXY(double x, double y, String s, Color3i color);
 
   /**
    * Draw a particle array
@@ -176,7 +176,7 @@ abstract class DebugDraw {
   /** Called at the end of drawing a world */
   void flush() {}
 
-  void drawString(Vec2 pos, String s, Color3f color) {
+  void drawString(Vec2 pos, String s, Color3i color) {
     drawStringXY(pos.x, pos.y, s, color);
   }
 

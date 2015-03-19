@@ -24,28 +24,39 @@
 
 part of box2d.common;
 
-class Color3f {
-  static final Color3f WHITE = new Color3f(1.0, 1.0, 1.0);
-  static final Color3f BLACK = new Color3f(0.0, 0.0, 0.0);
-  static final Color3f BLUE = new Color3f(0.0, 0.0, 1.0);
-  static final Color3f GREEN = new Color3f(0.0, 1.0, 0.0);
-  static final Color3f RED = new Color3f(1.0, 0.0, 0.0);
+class Color3i {
+  static final Color3i WHITE = new Color3i(255, 255, 255);
+  static final Color3i BLACK = new Color3i(0, 0, 0);
+  static final Color3i BLUE = new Color3i(0, 0, 255);
+  static final Color3i GREEN = new Color3i(0, 255, 0);
+  static final Color3i RED = new Color3i(255, 0, 0);
 
-  double x = 0.0;
-  double y = 0.0;
-  double z = 0.0;
+  int x = 0;
+  int y = 0;
+  int z = 0;
 
-  Color3f.zero();
+  Color3i.zero();
 
-  Color3f(this.x, this.y, this.z);
+  Color3i(this.x, this.y, this.z);
 
-  void setRGB(double r, double g, double b) {
+  Color3i.fromRGBd(double r, double g, double b)
+      : x = (r * 255).floor().toInt(),
+        y = (g * 255).floor().toInt(),
+        z = (b * 255).floor().toInt();
+
+  void setRGB(int r, int g, int b) {
     x = r;
     y = g;
     z = b;
   }
+  
+  void setFromRGBd(double r, double g, double b) {
+    x = (r * 255).floor().toInt();
+    y = (g * 255).floor().toInt();
+    z = (b * 255).floor().toInt();   
+  }
 
-  void setColor3f(Color3f argColor) {
+  void setColor3i(Color3i argColor) {
     x = argColor.x;
     y = argColor.y;
     z = argColor.z;

@@ -637,7 +637,7 @@ class World {
     }
   }
 
-  final Color3f color = new Color3f.zero();
+  final Color3i color = new Color3i.zero();
   final Transform xf = new Transform.zero();
   final Vec2 cA = new Vec2.zero();
   final Vec2 cB = new Vec2.zero();
@@ -659,19 +659,19 @@ class World {
         xf.set(b.getTransform());
         for (Fixture f = b.getFixtureList(); f != null; f = f.getNext()) {
           if (b.isActive() == false) {
-            color.setRGB(0.5, 0.5, 0.3);
+            color.setFromRGBd(0.5, 0.5, 0.3);
             drawShape(f, xf, color, wireframe);
           } else if (b.getType() == BodyType.STATIC) {
-            color.setRGB(0.5, 0.9, 0.3);
+            color.setFromRGBd(0.5, 0.9, 0.3);
             drawShape(f, xf, color, wireframe);
           } else if (b.getType() == BodyType.KINEMATIC) {
-            color.setRGB(0.5, 0.5, 0.9);
+            color.setFromRGBd(0.5, 0.5, 0.9);
             drawShape(f, xf, color, wireframe);
           } else if (b.isAwake() == false) {
-            color.setRGB(0.5, 0.5, 0.5);
+            color.setFromRGBd(0.5, 0.5, 0.5);
             drawShape(f, xf, color, wireframe);
           } else {
-            color.setRGB(0.9, 0.7, 0.7);
+            color.setFromRGBd(0.9, 0.7, 0.7);
             drawShape(f, xf, color, wireframe);
           }
         }
@@ -686,7 +686,7 @@ class World {
     }
 
     if ((flags & DebugDraw.e_pairBit) != 0) {
-      color.setRGB(0.3, 0.9, 0.9);
+      color.setFromRGBd(0.3, 0.9, 0.9);
       for (Contact c = m_contactManager.m_contactList;
           c != null;
           c = c.getNext()) {
@@ -699,7 +699,7 @@ class World {
     }
 
     if ((flags & DebugDraw.e_aabbBit) != 0) {
-      color.setRGB(0.9, 0.3, 0.9);
+      color.setFromRGBd(0.9, 0.3, 0.9);
 
       for (Body b = m_bodyList; b != null; b = b.getNext()) {
         if (b.isActive() == false) {
@@ -1496,7 +1496,7 @@ class World {
     joint.getAnchorA(p1);
     joint.getAnchorB(p2);
 
-    color.setRGB(0.5, 0.8, 0.8);
+    color.setFromRGBd(0.5, 0.8, 0.8);
 
     switch (joint.getType()) {
       // TODO djm write after writing joints
@@ -1533,7 +1533,7 @@ class World {
   double averageLinearVel = -1.0;
   final Vec2 liquidOffset = new Vec2.zero();
   final Vec2 circCenterMoved = new Vec2.zero();
-  final Color3f liquidColor = new Color3f(.4, .4, 1.0);
+  final Color3i liquidColor = new Color3i.fromRGBd(.4, .4, 1.0);
 
   final Vec2 center = new Vec2.zero();
   final Vec2 axis = new Vec2.zero();
@@ -1541,7 +1541,7 @@ class World {
   final Vec2 v2 = new Vec2.zero();
   final Vec2Array tlvertices = new Vec2Array();
 
-  void drawShape(Fixture fixture, Transform xf, Color3f color, bool wireframe) {
+  void drawShape(Fixture fixture, Transform xf, Color3i color, bool wireframe) {
     switch (fixture.getType()) {
       case ShapeType.CIRCLE:
         {

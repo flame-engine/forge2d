@@ -32,16 +32,16 @@ part of box2d;
 class ParticleColor {
   Int8List _data = new Int8List(4);
 
-  void set r(v) {
+  void set r(int v) {
     _data[0] = v;
   }
-  void set g(v) {
+  void set g(int v) {
     _data[1] = v;
   }
-  void set b(v) {
+  void set b(int v) {
     _data[2] = v;
   }
-  void set a(v) {
+  void set a(int v) {
     _data[3] = v;
   }
 
@@ -61,14 +61,14 @@ class ParticleColor {
     setRGBA(r, g, b, a);
   }
 
-  ParticleColor.color3f(Color3f color) {
+  ParticleColor.color3f(Color3i color) {
     setColor3f(color);
   }
 
-  void setColor3f(Color3f color) {
-    r = (255 * color.x);
-    g = (255 * color.y);
-    b = (255 * color.z);
+  void setColor3f(Color3i color) {
+    r = (255 * color.x).floor().toInt();
+    g = (255 * color.y).floor().toInt();
+    b = (255 * color.z).floor().toInt();
     a = 255;
   }
 

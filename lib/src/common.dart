@@ -3,7 +3,7 @@ library box2d.common;
 import 'math_utils.dart' as MathUtils;
 import 'vec2.dart';
 
-part 'common/color3f.dart';
+part 'common/color3i.dart';
 part 'common/iviewporttransform.dart';
 part 'common/mat22.dart';
 part 'common/mat33.dart';
