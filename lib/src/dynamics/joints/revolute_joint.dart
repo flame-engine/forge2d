@@ -489,7 +489,7 @@ class RevoluteJoint extends Joint {
   double getJointSpeed() {
     final Body b1 = m_bodyA;
     final Body b2 = m_bodyB;
-    return b2.m_angularVelocity - b1.m_angularVelocity;
+    return b2._angularVelocity - b1._angularVelocity;
   }
 
   bool isMotorEnabled() {

@@ -29,16 +29,16 @@ class ChainAndPolygonContact extends Contact {
 
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
     super.init(fA, indexA, fB, indexB);
-    assert(m_fixtureA.getType() == ShapeType.CHAIN);
-    assert(m_fixtureB.getType() == ShapeType.POLYGON);
+    assert(_fixtureA.getType() == ShapeType.CHAIN);
+    assert(_fixtureB.getType() == ShapeType.POLYGON);
   }
 
   final EdgeShape _edge = new EdgeShape();
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    ChainShape chain = m_fixtureA.getShape();
+    ChainShape chain = _fixtureA.getShape();
     chain.getChildEdge(_edge, m_indexA);
     pool.getCollision().collideEdgeAndPolygon(
-        manifold, _edge, xfA, m_fixtureB.getShape(), xfB);
+        manifold, _edge, xfA, _fixtureB.getShape(), xfB);
   }
 }

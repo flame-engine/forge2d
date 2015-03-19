@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -90,7 +90,7 @@ class World {
 
   /**
    * Construct a world object.
-   * 
+   *
    * @param gravity the world gravity vector.
    */
   factory World.withGravity(Vec2 gravity) {
@@ -101,7 +101,7 @@ class World {
 
   /**
    * Construct a world object.
-   * 
+   *
    * @param gravity the world gravity vector.
    */
   factory World.withPool(Vec2 gravity, IWorldPool pool) {
@@ -233,8 +233,8 @@ class World {
   }
 
   void pushContact(Contact contact) {
-    Fixture fixtureA = contact.getFixtureA();
-    Fixture fixtureB = contact.getFixtureB();
+    Fixture fixtureA = contact.fixtureA;
+    Fixture fixtureB = contact.fixtureB;
 
     if (contact.m_manifold.pointCount > 0 &&
         !fixtureA.isSensor() &&
@@ -257,7 +257,7 @@ class World {
 
   /**
    * Register a destruction listener. The listener is owned by you and must remain in scope.
-   * 
+   *
    * @param listener
    */
   void setDestructionListener(DestructionListener listener) {
@@ -267,7 +267,7 @@ class World {
   /**
    * Register a contact filter to provide specific control over collision. Otherwise the default
    * filter is used (_defaultFilter). The listener is owned by you and must remain in scope.
-   * 
+   *
    * @param filter
    */
   void setContactFilter(ContactFilter filter) {
@@ -276,7 +276,7 @@ class World {
 
   /**
    * Register a contact event listener. The listener is owned by you and must remain in scope.
-   * 
+   *
    * @param listener
    */
   void setContactListener(ContactListener listener) {
@@ -286,7 +286,7 @@ class World {
   /**
    * Register a routine for debug drawing. The debug draw functions are called inside with
    * World.DrawDebugData method. The debug draw object is owned by you and must remain in scope.
-   * 
+   *
    * @param debugDraw
    */
   void setDebugDraw(DebugDraw debugDraw) {
@@ -295,7 +295,7 @@ class World {
 
   /**
    * create a rigid body given a definition. No reference to the definition is retained.
-   * 
+   *
    * @warning This function is locked during callbacks.
    * @param def
    * @return
@@ -323,7 +323,7 @@ class World {
   /**
    * destroy a rigid body given a definition. No reference to the definition is retained. This
    * function is locked during callbacks.
-   * 
+   *
    * @warning This automatically deletes all associated shapes and joints.
    * @warning This function is locked during callbacks.
    * @param body
@@ -397,7 +397,7 @@ class World {
   /**
    * create a joint to constrain bodies together. No reference to the definition is retained. This
    * may cause the connected bodies to cease colliding.
-   * 
+   *
    * @warning This function is locked during callbacks.
    * @param def
    * @return
@@ -462,7 +462,7 @@ class World {
 
   /**
    * destroy a joint. This may cause the connected bodies to begin colliding.
-   * 
+   *
    * @warning This function is locked during callbacks.
    * @param joint
    */
@@ -555,7 +555,7 @@ class World {
 
   /**
    * Take a time step. This performs collision detection, integration, and constraint solution.
-   * 
+   *
    * @param timeStep the amount of time to simulate, this should not vary.
    * @param velocityIterations for the velocity constraint solver.
    * @param positionIterations for the position constraint solver.
@@ -627,7 +627,7 @@ class World {
    * Call this after you are done with time steps to clear the forces. You normally call this after
    * each call to Step, unless you are performing sub-steps. By default, forces will be
    * automatically cleared, so you don't need to call this function.
-   * 
+   *
    * @see setAutoClearForces
    */
   void clearForces() {
@@ -690,8 +690,8 @@ class World {
       for (Contact c = m_contactManager.m_contactList;
           c != null;
           c = c.getNext()) {
-        Fixture fixtureA = c.getFixtureA();
-        Fixture fixtureB = c.getFixtureB();
+        Fixture fixtureA = c.fixtureA;
+        Fixture fixtureB = c.fixtureB;
         fixtureA.getAABB(c.getChildIndexA()).getCenterToOut(cA);
         fixtureB.getAABB(c.getChildIndexB()).getCenterToOut(cB);
         m_debugDraw.drawSegment(cA, cB, color);
@@ -726,7 +726,7 @@ class World {
     if ((flags & DebugDraw.e_centerOfMassBit) != 0) {
       for (Body b = m_bodyList; b != null; b = b.getNext()) {
         xf.set(b.getTransform());
-        xf.p.set(b.getWorldCenter());
+        xf.p.set(b.worldCenter);
         m_debugDraw.drawTransform(xf);
       }
     }
@@ -742,7 +742,7 @@ class World {
 
   /**
    * Query the world for all fixtures that potentially overlap the provided AABB.
-   * 
+   *
    * @param callback a user implemented callback class.
    * @param aabb the query box.
    */
@@ -754,7 +754,7 @@ class World {
 
   /**
    * Query the world for all fixtures and particles that potentially overlap the provided AABB.
-   * 
+   *
    * @param callback a user implemented callback class.
    * @param particleCallback callback for particles.
    * @param aabb the query box.
@@ -769,7 +769,7 @@ class World {
 
   /**
    * Query the world for all particles that potentially overlap the provided AABB.
-   * 
+   *
    * @param particleCallback callback for particles.
    * @param aabb the query box.
    */
@@ -784,7 +784,7 @@ class World {
    * Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
    * get the closest point, any point, or n-points. The ray-cast ignores shapes that contain the
    * starting point.
-   * 
+   *
    * @param callback a user implemented callback class.
    * @param point1 the ray starting point
    * @param point2 the ray ending point
@@ -802,7 +802,7 @@ class World {
    * Ray-cast the world for all fixtures and particles in the path of the ray. Your callback
    * controls whether you get the closest point, any point, or n-points. The ray-cast ignores shapes
    * that contain the starting point.
-   * 
+   *
    * @param callback a user implemented callback class.
    * @param particleCallback the particle callback class.
    * @param point1 the ray starting point
@@ -822,7 +822,7 @@ class World {
   /**
    * Ray-cast the world for all particles in the path of the ray. Your callback controls whether you
    * get the closest point, any point, or n-points.
-   * 
+   *
    * @param particleCallback the particle callback class.
    * @param point1 the ray starting point
    * @param point2 the ray ending point
@@ -835,7 +835,7 @@ class World {
   /**
    * Get the world body list. With the returned body, use Body.getNext to get the next body in the
    * world list. A null body indicates the end of the list.
-   * 
+   *
    * @return the head of the world body list.
    */
   Body getBodyList() {
@@ -845,7 +845,7 @@ class World {
   /**
    * Get the world joint list. With the returned joint, use Joint.getNext to get the next joint in
    * the world list. A null joint indicates the end of the list.
-   * 
+   *
    * @return the head of the world joint list.
    */
   Joint getJointList() {
@@ -855,7 +855,7 @@ class World {
   /**
    * Get the world contact list. With the returned contact, use Contact.getNext to get the next
    * contact in the world list. A null contact indicates the end of the list.
-   * 
+   *
    * @return the head of the world contact list.
    * @warning contacts are created and destroyed in the middle of a time step. Use ContactListener
    *          to avoid missing contacts.
@@ -874,7 +874,7 @@ class World {
 
   /**
    * Enable/disable warm starting. For testing.
-   * 
+   *
    * @param flag
    */
   void setWarmStarting(bool flag) {
@@ -887,7 +887,7 @@ class World {
 
   /**
    * Enable/disable continuous physics. For testing.
-   * 
+   *
    * @param flag
    */
   void setContinuousPhysics(bool flag) {
@@ -900,7 +900,7 @@ class World {
 
   /**
    * Get the number of broad-phase proxies.
-   * 
+   *
    * @return
    */
   int getProxyCount() {
@@ -909,7 +909,7 @@ class World {
 
   /**
    * Get the number of bodies.
-   * 
+   *
    * @return
    */
   int getBodyCount() {
@@ -918,7 +918,7 @@ class World {
 
   /**
    * Get the number of joints.
-   * 
+   *
    * @return
    */
   int getJointCount() {
@@ -927,7 +927,7 @@ class World {
 
   /**
    * Get the number of contacts (each may have 0 or more contact points).
-   * 
+   *
    * @return
    */
   int getContactCount() {
@@ -936,7 +936,7 @@ class World {
 
   /**
    * Gets the height of the dynamic tree
-   * 
+   *
    * @return
    */
   int getTreeHeight() {
@@ -945,7 +945,7 @@ class World {
 
   /**
    * Gets the balance of the dynamic tree
-   * 
+   *
    * @return
    */
   int getTreeBalance() {
@@ -954,7 +954,7 @@ class World {
 
   /**
    * Gets the quality of the dynamic tree
-   * 
+   *
    * @return
    */
   double getTreeQuality() {
@@ -963,7 +963,7 @@ class World {
 
   /**
    * Change the global gravity vector.
-   * 
+   *
    * @param gravity
    */
   void setGravity(Vec2 gravity) {
@@ -972,7 +972,7 @@ class World {
 
   /**
    * Get the global gravity vector.
-   * 
+   *
    * @return
    */
   Vec2 getGravity() {
@@ -981,7 +981,7 @@ class World {
 
   /**
    * Is the world locked (in the middle of a time step).
-   * 
+   *
    * @return
    */
   bool isLocked() {
@@ -990,7 +990,7 @@ class World {
 
   /**
    * Set flag to control automatic clearing of forces after each time step.
-   * 
+   *
    * @param flag
    */
   void setAutoClearForces(bool flag) {
@@ -1003,7 +1003,7 @@ class World {
 
   /**
    * Get the flag that controls automatic clearing of forces after each time step.
-   * 
+   *
    * @return
    */
   bool getAutoClearForces() {
@@ -1012,7 +1012,7 @@ class World {
 
   /**
    * Get the contact manager for testing purposes
-   * 
+   *
    * @return
    */
   ContactManager getContactManager() {
@@ -1109,8 +1109,8 @@ class World {
           }
 
           // Skip sensors.
-          bool sensorA = contact.m_fixtureA.m_isSensor;
-          bool sensorB = contact.m_fixtureB.m_isSensor;
+          bool sensorA = contact._fixtureA.m_isSensor;
+          bool sensorB = contact._fixtureB.m_isSensor;
           if (sensorA || sensorB) {
             continue;
           }
@@ -1243,8 +1243,8 @@ class World {
           // This contact has a valid cached TOI.
           alpha = c.m_toi;
         } else {
-          Fixture fA = c.getFixtureA();
-          Fixture fB = c.getFixtureB();
+          Fixture fA = c.fixtureA;
+          Fixture fB = c.fixtureB;
 
           // Is there a sensor?
           if (fA.isSensor() || fB.isSensor()) {
@@ -1327,8 +1327,8 @@ class World {
       }
 
       // Advance the bodies to the TOI.
-      Fixture fA = minContact.getFixtureA();
-      Fixture fB = minContact.getFixtureB();
+      Fixture fA = minContact.fixtureA;
+      Fixture fB = minContact.fixtureB;
       Body bA = fA.getBody();
       Body bB = fB.getBody();
 
@@ -1398,8 +1398,8 @@ class World {
             }
 
             // Skip sensors.
-            bool sensorA = contact.m_fixtureA.m_isSensor;
-            bool sensorB = contact.m_fixtureB.m_isSensor;
+            bool sensorA = contact._fixtureA.m_isSensor;
+            bool sensorB = contact._fixtureB.m_isSensor;
             if (sensorA || sensorB) {
               continue;
             }
@@ -1549,14 +1549,14 @@ class World {
 
           // Vec2 center = Mul(xf, circle.m_p);
           Transform.mulToOutUnsafeVec2(xf, circle.m_p, center);
-          double radius = circle.m_radius;
+          double radius = circle.radius;
           xf.q.getXAxis(axis);
 
-          if (fixture.getUserData() != null &&
-              fixture.getUserData() == LIQUID_INT) {
+          if (fixture.userData != null &&
+              fixture.userData == LIQUID_INT) {
             Body b = fixture.getBody();
-            liquidOffset.set(b.m_linearVelocity);
-            double linVelLength = b.m_linearVelocity.length();
+            liquidOffset.set(b._linearVelocity);
+            double linVelLength = b._linearVelocity.length();
             if (averageLinearVel == -1) {
               averageLinearVel = linVelLength;
             } else {
@@ -1648,7 +1648,7 @@ class World {
    * retained. A simulation step must occur before it's possible to interact with a newly created
    * particle. For example, DestroyParticleInShape() will not destroy a particle until Step() has
    * been called.
-   * 
+   *
    * @warning This function is locked during callbacks.
    * @return the index of the particle.
    */
@@ -1663,7 +1663,7 @@ class World {
 
   /**
    * Destroy a particle. The particle is removed after the next step.
-   * 
+   *
    * @param index
    */
   void destroyParticle(int index) {
@@ -1672,7 +1672,7 @@ class World {
 
   /**
    * Destroy a particle. The particle is removed after the next step.
-   * 
+   *
    * @param Index of the particle to destroy.
    * @param Whether to call the destruction listener just before the particle is destroyed.
    */
@@ -1684,7 +1684,7 @@ class World {
    * Destroy particles inside a shape without enabling the destruction callback for destroyed
    * particles. This function is locked during callbacks. For more information see
    * DestroyParticleInShape(Shape&, Transform&,bool).
-   * 
+   *
    * @param Shape which encloses particles that should be destroyed.
    * @param Transform applied to the shape.
    * @warning This function is locked during callbacks.
@@ -1698,7 +1698,7 @@ class World {
    * Destroy particles inside a shape. This function is locked during callbacks. In addition, this
    * function immediately destroys particles in the shape in contrast to DestroyParticle() which
    * defers the destruction until the next simulation step.
-   * 
+   *
    * @param Shape which encloses particles that should be destroyed.
    * @param Transform applied to the shape.
    * @param Whether to call the world b2DestructionListener for each particle destroyed.
@@ -1718,7 +1718,7 @@ class World {
   /**
    * Create a particle group whose properties have been defined. No reference to the definition is
    * retained.
-   * 
+   *
    * @warning This function is locked during callbacks.
    */
   ParticleGroup createParticleGroup(ParticleGroupDef def) {
@@ -1732,7 +1732,7 @@ class World {
 
   /**
    * Join two particle groups.
-   * 
+   *
    * @param the first group. Expands to encompass the second group.
    * @param the second group. It is destroyed.
    * @warning This function is locked during callbacks.
@@ -1747,7 +1747,7 @@ class World {
 
   /**
    * Destroy particles in a group. This function is locked during callbacks.
-   * 
+   *
    * @param The particle group to destroy.
    * @param Whether to call the world b2DestructionListener for each particle is destroyed.
    * @warning This function is locked during callbacks.
@@ -1764,7 +1764,7 @@ class World {
   /**
    * Destroy particles in a group without enabling the destruction callback for destroyed particles.
    * This function is locked during callbacks.
-   * 
+   *
    * @param The particle group to destroy.
    * @warning This function is locked during callbacks.
    */
@@ -1775,7 +1775,7 @@ class World {
   /**
    * Get the world particle group list. With the returned group, use ParticleGroup::GetNext to get
    * the next group in the world list. A NULL group indicates the end of the list.
-   * 
+   *
    * @return the head of the world particle group list.
    */
   List<ParticleGroup> getParticleGroupList() {
@@ -1784,7 +1784,7 @@ class World {
 
   /**
    * Get the number of particle groups.
-   * 
+   *
    * @return
    */
   int getParticleGroupCount() {
@@ -1793,7 +1793,7 @@ class World {
 
   /**
    * Get the number of particles.
-   * 
+   *
    * @return
    */
   int getParticleCount() {
@@ -1802,7 +1802,7 @@ class World {
 
   /**
    * Get the maximum number of particles.
-   * 
+   *
    * @return
    */
   int getParticleMaxCount() {
@@ -1811,7 +1811,7 @@ class World {
 
   /**
    * Set the maximum number of particles.
-   * 
+   *
    * @param count
    */
   void setParticleMaxCount(int count) {
@@ -1820,7 +1820,7 @@ class World {
 
   /**
    * Change the particle density.
-   * 
+   *
    * @param density
    */
   void setParticleDensity(double density) {
@@ -1829,7 +1829,7 @@ class World {
 
   /**
    * Get the particle density.
-   * 
+   *
    * @return
    */
   double getParticleDensity() {
@@ -1839,7 +1839,7 @@ class World {
   /**
    * Change the particle gravity scale. Adjusts the effect of the global gravity vector on
    * particles. Default value is 1.0.
-   * 
+   *
    * @param gravityScale
    */
   void setParticleGravityScale(double gravityScale) {
@@ -1848,7 +1848,7 @@ class World {
 
   /**
    * Get the particle gravity scale.
-   * 
+   *
    * @return
    */
   double getParticleGravityScale() {
@@ -1859,7 +1859,7 @@ class World {
    * Damping is used to reduce the velocity of particles. The damping parameter can be larger than
    * 1.0 but the damping effect becomes sensitive to the time step when the damping parameter is
    * large.
-   * 
+   *
    * @param damping
    */
   void setParticleDamping(double damping) {
@@ -1868,7 +1868,7 @@ class World {
 
   /**
    * Get damping for particles
-   * 
+   *
    * @return
    */
   double getParticleDamping() {
@@ -1878,7 +1878,7 @@ class World {
   /**
    * Change the particle radius. You should set this only once, on world start. If you change the
    * radius during execution, existing particles may explode, shrink, or behave unexpectedly.
-   * 
+   *
    * @param radius
    */
   void setParticleRadius(double radius) {
@@ -1887,7 +1887,7 @@ class World {
 
   /**
    * Get the particle radius.
-   * 
+   *
    * @return
    */
   double getParticleRadius() {
@@ -1896,7 +1896,7 @@ class World {
 
   /**
    * Get the particle data. @return the pointer to the head of the particle data.
-   * 
+   *
    * @return
    */
   List<int> getParticleFlagsBuffer() {
@@ -1925,7 +1925,7 @@ class World {
 
   /**
    * Set a buffer for particle data.
-   * 
+   *
    * @param buffer is a pointer to a block of memory.
    * @param size is the number of values in the block.
    */
@@ -1951,7 +1951,7 @@ class World {
 
   /**
    * Get contacts between particles
-   * 
+   *
    * @return
    */
   List<ParticleContact> getParticleContacts() {
@@ -1964,7 +1964,7 @@ class World {
 
   /**
    * Get contacts between particles and bodies
-   * 
+   *
    * @return
    */
   List<ParticleBodyContact> getParticleBodyContacts() {
@@ -1977,7 +1977,7 @@ class World {
 
   /**
    * Compute the kinetic energy that can be lost by damping force
-   * 
+   *
    * @return
    */
   double computeParticleCollisionEnergy() {

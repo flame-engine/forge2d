@@ -230,8 +230,8 @@ class Island {
       final Sweep bm_sweep = b.m_sweep;
       final Vec2 c = bm_sweep.c;
       double a = bm_sweep.a;
-      final Vec2 v = b.m_linearVelocity;
-      double w = b.m_angularVelocity;
+      final Vec2 v = b._linearVelocity;
+      double w = b._angularVelocity;
 
       // Store positions for continuous collision.
       bm_sweep.c0.set(bm_sweep.c);
@@ -254,7 +254,7 @@ class Island {
         // v2 = v1 * 1 / (1 + c * dt)
         v.x *= 1.0 / (1.0 + h * b.m_linearDamping);
         v.y *= 1.0 / (1.0 + h * b.m_linearDamping);
-        w *= 1.0 / (1.0 + h * b.m_angularDamping);
+        w *= 1.0 / (1.0 + h * b.angularDamping);
       }
 
       m_positions[i].c.x = c.x;
@@ -369,9 +369,9 @@ class Island {
       body.m_sweep.c.x = m_positions[i].c.x;
       body.m_sweep.c.y = m_positions[i].c.y;
       body.m_sweep.a = m_positions[i].a;
-      body.m_linearVelocity.x = m_velocities[i].v.x;
-      body.m_linearVelocity.y = m_velocities[i].v.y;
-      body.m_angularVelocity = m_velocities[i].w;
+      body._linearVelocity.x = m_velocities[i].v.x;
+      body._linearVelocity.y = m_velocities[i].v.y;
+      body._angularVelocity = m_velocities[i].w;
       body.synchronizeTransform();
     }
 
@@ -394,8 +394,8 @@ class Island {
         }
 
         if ((b.m_flags & Body.e_autoSleepFlag) == 0 ||
-            b.m_angularVelocity * b.m_angularVelocity > angTolSqr ||
-            Vec2.dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr) {
+            b._angularVelocity * b._angularVelocity > angTolSqr ||
+            Vec2.dot(b._linearVelocity, b._linearVelocity) > linTolSqr) {
           b.m_sleepTime = 0.0;
           minSleepTime = 0.0;
         } else {
@@ -425,9 +425,9 @@ class Island {
       m_positions[i].c.x = m_bodies[i].m_sweep.c.x;
       m_positions[i].c.y = m_bodies[i].m_sweep.c.y;
       m_positions[i].a = m_bodies[i].m_sweep.a;
-      m_velocities[i].v.x = m_bodies[i].m_linearVelocity.x;
-      m_velocities[i].v.y = m_bodies[i].m_linearVelocity.y;
-      m_velocities[i].w = m_bodies[i].m_angularVelocity;
+      m_velocities[i].v.x = m_bodies[i]._linearVelocity.x;
+      m_velocities[i].v.y = m_bodies[i]._linearVelocity.y;
+      m_velocities[i].w = m_bodies[i]._angularVelocity;
     }
 
     _toiSolverDef.contacts = m_contacts;
@@ -450,8 +450,8 @@ class Island {
     // for (int i = 0; i < m_contactCount; ++i)
     // {
     // Contact* c = m_contacts[i];
-    // Fixture* fA = c.GetFixtureA();
-    // Fixture* fB = c.GetFixtureB();
+    // Fixture* fA = c.fixtureA;
+    // Fixture* fB = c.fixtureB;
     //
     // Body bA = fA.GetBody();
     // Body bB = fB.GetBody();
@@ -540,9 +540,9 @@ class Island {
       body.m_sweep.c.x = c.x;
       body.m_sweep.c.y = c.y;
       body.m_sweep.a = a;
-      body.m_linearVelocity.x = v.x;
-      body.m_linearVelocity.y = v.y;
-      body.m_angularVelocity = w;
+      body._linearVelocity.x = v.x;
+      body._linearVelocity.y = v.y;
+      body._angularVelocity = w;
       body.synchronizeTransform();
     }
 

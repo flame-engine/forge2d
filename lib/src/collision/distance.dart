@@ -469,13 +469,13 @@ class DistanceProxy {
         final CircleShape circle = shape;
         m_vertices[0].set(circle.m_p);
         m_count = 1;
-        m_radius = circle.m_radius;
+        m_radius = circle.radius;
 
         break;
       case ShapeType.POLYGON:
         final PolygonShape poly = shape;
         m_count = poly.m_count;
-        m_radius = poly.m_radius;
+        m_radius = poly.radius;
         for (int i = 0; i < m_count; i++) {
           m_vertices[i].set(poly.m_vertices[i]);
         }
@@ -494,14 +494,14 @@ class DistanceProxy {
         m_vertices[0].set(m_buffer[0]);
         m_vertices[1].set(m_buffer[1]);
         m_count = 2;
-        m_radius = chain.m_radius;
+        m_radius = chain.radius;
         break;
       case ShapeType.EDGE:
         EdgeShape edge = shape;
         m_vertices[0].set(edge.m_vertex1);
         m_vertices[1].set(edge.m_vertex2);
         m_count = 2;
-        m_radius = edge.m_radius;
+        m_radius = edge.radius;
         break;
       default:
         assert(false);

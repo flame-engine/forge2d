@@ -210,10 +210,10 @@ class PrismaticJoint extends Joint {
     d.set(p2).subLocal(p1);
     Rot.mulToOutUnsafe(bA.m_xf.q, m_localXAxisA, axis);
 
-    Vec2 vA = bA.m_linearVelocity;
-    Vec2 vB = bB.m_linearVelocity;
-    double wA = bA.m_angularVelocity;
-    double wB = bB.m_angularVelocity;
+    Vec2 vA = bA._linearVelocity;
+    Vec2 vB = bB._linearVelocity;
+    double wA = bA._angularVelocity;
+    double wB = bB._angularVelocity;
 
     Vec2.crossToOutUnsafeDblVec2(wA, axis, temp);
     Vec2.crossToOutUnsafeDblVec2(wB, rB, temp2);

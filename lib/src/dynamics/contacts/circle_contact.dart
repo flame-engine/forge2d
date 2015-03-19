@@ -29,12 +29,12 @@ class CircleContact extends Contact {
 
   void init0(Fixture fixtureA, Fixture fixtureB) {
     init(fixtureA, 0, fixtureB, 0);
-    assert(m_fixtureA.getType() == ShapeType.CIRCLE);
-    assert(m_fixtureB.getType() == ShapeType.CIRCLE);
+    assert(_fixtureA.getType() == ShapeType.CIRCLE);
+    assert(_fixtureB.getType() == ShapeType.CIRCLE);
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     pool.getCollision().collideCircles(
-        manifold, m_fixtureA.getShape(), xfA, m_fixtureB.getShape(), xfB);
+        manifold, _fixtureA.getShape(), xfA, _fixtureB.getShape(), xfB);
   }
 }

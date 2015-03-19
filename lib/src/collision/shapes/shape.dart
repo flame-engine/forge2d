@@ -31,7 +31,7 @@ part of box2d;
  */
 abstract class Shape {
   final ShapeType m_type;
-  double m_radius = 0.0;
+  double radius = 0.0;
 
   Shape(this.m_type);
 
@@ -48,7 +48,7 @@ abstract class Shape {
    * 
    * @return
    */
-  double getRadius() => m_radius;
+  double getRadius() => radius;
 
   /**
    * Sets the radius of the underlying shape. This can refer to different things depending on the
@@ -57,7 +57,7 @@ abstract class Shape {
    * @param radius
    */
   void setRadius(double radius) {
-    this.m_radius = radius;
+    this.radius = radius;
   }
 
   /**

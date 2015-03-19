@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -27,7 +27,7 @@ part of box2d;
  * The class manages contact between two shapes. A contact exists for each overlapping AABB in the
  * broad-phase (except if filtered). Therefore a contact object may exist that has no contact
  * points.
- * 
+ *
  */
 abstract class Contact {
 
@@ -55,8 +55,8 @@ abstract class Contact {
   ContactEdge m_nodeA = new ContactEdge();
   ContactEdge m_nodeB = new ContactEdge();
 
-  Fixture m_fixtureA;
-  Fixture m_fixtureB;
+  Fixture _fixtureA;
+  Fixture _fixtureB;
 
   int m_indexA = 0;
   int m_indexB = 0;
@@ -79,8 +79,8 @@ abstract class Contact {
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
     m_flags = ENABLED_FLAG;
 
-    m_fixtureA = fA;
-    m_fixtureB = fB;
+    _fixtureA = fA;
+    _fixtureB = fB;
 
     m_indexA = indexA;
     m_indexB = indexB;
@@ -118,18 +118,18 @@ abstract class Contact {
    * Get the world manifold.
    */
   void getWorldManifold(WorldManifold worldManifold) {
-    final Body bodyA = m_fixtureA.getBody();
-    final Body bodyB = m_fixtureB.getBody();
-    final Shape shapeA = m_fixtureA.getShape();
-    final Shape shapeB = m_fixtureB.getShape();
+    final Body bodyA = _fixtureA.getBody();
+    final Body bodyB = _fixtureB.getBody();
+    final Shape shapeA = _fixtureA.getShape();
+    final Shape shapeB = _fixtureB.getShape();
 
-    worldManifold.initialize(m_manifold, bodyA.getTransform(), shapeA.m_radius,
-        bodyB.getTransform(), shapeB.m_radius);
+    worldManifold.initialize(m_manifold, bodyA.getTransform(), shapeA.radius,
+        bodyB.getTransform(), shapeB.radius);
   }
 
   /**
    * Is this contact touching
-   * 
+   *
    * @return
    */
   bool isTouching() {
@@ -139,7 +139,7 @@ abstract class Contact {
   /**
    * Enable/disable this contact. This can be used inside the pre-solve contact listener. The
    * contact is only disabled for the current time step (or sub-step in continuous collisions).
-   * 
+   *
    * @param flag
    */
   void setEnabled(bool flag) {
@@ -152,7 +152,7 @@ abstract class Contact {
 
   /**
    * Has this contact been disabled?
-   * 
+   *
    * @return
    */
   bool isEnabled() {
@@ -161,7 +161,7 @@ abstract class Contact {
 
   /**
    * Get the next contact in the world's contact list.
-   * 
+   *
    * @return
    */
   Contact getNext() {
@@ -170,12 +170,10 @@ abstract class Contact {
 
   /**
    * Get the first fixture in this contact.
-   * 
+   *
    * @return
    */
-  Fixture getFixtureA() {
-    return m_fixtureA;
-  }
+  Fixture get fixtureA => _fixtureA;
 
   int getChildIndexA() {
     return m_indexA;
@@ -183,12 +181,10 @@ abstract class Contact {
 
   /**
    * Get the second fixture in this contact.
-   * 
+   *
    * @return
    */
-  Fixture getFixtureB() {
-    return m_fixtureB;
-  }
+  Fixture get fixtureB => _fixtureB;
 
   int getChildIndexB() {
     return m_indexB;
@@ -204,7 +200,7 @@ abstract class Contact {
 
   void resetFriction() {
     m_friction =
-        Contact.mixFriction(m_fixtureA.m_friction, m_fixtureB.m_friction);
+        Contact.mixFriction(_fixtureA.m_friction, _fixtureB.m_friction);
   }
 
   void setRestitution(double restitution) {
@@ -217,7 +213,7 @@ abstract class Contact {
 
   void resetRestitution() {
     m_restitution = Contact.mixRestitution(
-        m_fixtureA.m_restitution, m_fixtureB.m_restitution);
+        _fixtureA.m_restitution, _fixtureB.m_restitution);
   }
 
   void setTangentSpeed(double speed) {
@@ -249,20 +245,20 @@ abstract class Contact {
     bool touching = false;
     bool wasTouching = (m_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
-    bool sensorA = m_fixtureA.isSensor();
-    bool sensorB = m_fixtureB.isSensor();
+    bool sensorA = _fixtureA.isSensor();
+    bool sensorB = _fixtureB.isSensor();
     bool sensor = sensorA || sensorB;
 
-    Body bodyA = m_fixtureA.getBody();
-    Body bodyB = m_fixtureB.getBody();
+    Body bodyA = _fixtureA.getBody();
+    Body bodyB = _fixtureB.getBody();
     Transform xfA = bodyA.getTransform();
     Transform xfB = bodyB.getTransform();
     // log.debug("TransformA: "+xfA);
     // log.debug("TransformB: "+xfB);
 
     if (sensor) {
-      Shape shapeA = m_fixtureA.getShape();
-      Shape shapeB = m_fixtureB.getShape();
+      Shape shapeA = _fixtureA.getShape();
+      Shape shapeB = _fixtureB.getShape();
       touching = pool
           .getCollision()
           .testOverlap(shapeA, m_indexA, shapeB, m_indexB, xfA, xfB);
@@ -324,7 +320,7 @@ abstract class Contact {
   /**
    * Friction mixing law. The idea is to allow either fixture to drive the restitution to zero. For
    * example, anything slides on ice.
-   * 
+   *
    * @param friction1
    * @param friction2
    * @return
@@ -336,7 +332,7 @@ abstract class Contact {
   /**
    * Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface. For
    * example, a superball bounces on anything.
-   * 
+   *
    * @param restitution1
    * @param restitution2
    * @return

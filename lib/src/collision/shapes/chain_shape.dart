@@ -42,7 +42,7 @@ class ChainShape extends Shape {
   final EdgeShape _pool0 = new EdgeShape();
 
   ChainShape() : super(ShapeType.CHAIN) {
-    m_radius = Settings.polygonRadius;
+    radius = Settings.polygonRadius;
   }
 
   void clear() {
@@ -59,7 +59,7 @@ class ChainShape extends Shape {
    */
   void getChildEdge(EdgeShape edge, int index) {
     assert(0 <= index && index < m_count - 1);
-    edge.m_radius = m_radius;
+    edge.radius = radius;
 
     final Vec2 v0 = m_vertices[index + 0];
     final Vec2 v1 = m_vertices[index + 1];

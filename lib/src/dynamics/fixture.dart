@@ -51,7 +51,10 @@ class Fixture {
 
   bool m_isSensor = false;
 
-  Object m_userData;
+  /**
+   * Use this to store your application specific data.
+   */
+  Object userData;
 
   /**
    * Get the type of the child shape. You can use this to down cast to the concrete shape.
@@ -129,8 +132,8 @@ class Fixture {
     ContactEdge edge = m_body.getContactList();
     while (edge != null) {
       Contact contact = edge.contact;
-      Fixture fixtureA = contact.getFixtureA();
-      Fixture fixtureB = contact.getFixtureB();
+      Fixture fixtureA = contact.fixtureA;
+      Fixture fixtureB = contact.fixtureB;
       if (fixtureA == this || fixtureB == this) {
         contact.flagForFiltering();
       }
@@ -177,25 +180,6 @@ class Fixture {
 
   double getDensity() {
     return m_density;
-  }
-
-  /**
-   * Get the user data that was assigned in the fixture definition. Use this to store your
-   * application specific data.
-   *
-   * @return
-   */
-  Object getUserData() {
-    return m_userData;
-  }
-
-  /**
-   * Set the user data. Use this to store your application specific data.
-   *
-   * @param data
-   */
-  void setUserData(Object data) {
-    m_userData = data;
   }
 
   /**
@@ -293,7 +277,7 @@ class Fixture {
   // the destructor cannot access the allocator (no destructor arguments allowed by C++).
 
   void create(Body body, FixtureDef def) {
-    m_userData = def.userData;
+    userData = def.userData;
     m_friction = def.friction;
     m_restitution = def.restitution;
 
@@ -302,7 +286,7 @@ class Fixture {
 
     m_filter.set(def.filter);
 
-    m_isSensor = def._isSensor;
+    m_isSensor = def.isSensor;
 
     m_shape = def.shape.clone();
 

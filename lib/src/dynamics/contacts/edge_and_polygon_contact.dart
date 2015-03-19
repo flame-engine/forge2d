@@ -29,12 +29,12 @@ class EdgeAndPolygonContact extends Contact {
 
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
     super.init(fA, indexA, fB, indexB);
-    assert(m_fixtureA.getType() == ShapeType.EDGE);
-    assert(m_fixtureB.getType() == ShapeType.POLYGON);
+    assert(_fixtureA.getType() == ShapeType.EDGE);
+    assert(_fixtureB.getType() == ShapeType.POLYGON);
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     pool.getCollision().collideEdgeAndPolygon(
-        manifold, m_fixtureA.getShape(), xfA, m_fixtureB.getShape(), xfB);
+        manifold, _fixtureA.getShape(), xfA, _fixtureB.getShape(), xfB);
   }
 }

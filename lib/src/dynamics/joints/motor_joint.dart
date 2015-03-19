@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -39,7 +39,7 @@ part of box2d;
 /**
  * A motor joint is used to control the relative motion between two bodies. A typical usage is to
  * control the movement of a dynamic body with respect to the ground.
- * 
+ *
  * @author dmurph
  */
 class MotorJoint extends Joint {
@@ -81,11 +81,11 @@ class MotorJoint extends Joint {
   }
 
   void getAnchorA(Vec2 out) {
-    out.set(m_bodyA.getPosition());
+    out.set(m_bodyA.position);
   }
 
   void getAnchorB(Vec2 out) {
-    out.set(m_bodyB.getPosition());
+    out.set(m_bodyB.position);
   }
 
   void getReactionForce(double inv_dt, Vec2 out) {
@@ -132,7 +132,7 @@ class MotorJoint extends Joint {
 
   /**
    * Set the target angular offset, in radians.
-   * 
+   *
    * @param angularOffset
    */
   void setAngularOffset(double angularOffset) {
@@ -149,7 +149,7 @@ class MotorJoint extends Joint {
 
   /**
    * Set the maximum friction force in N.
-   * 
+   *
    * @param force
    */
   void setMaxForce(double force) {

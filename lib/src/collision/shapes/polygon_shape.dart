@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -87,7 +87,7 @@ class PolygonShape extends Shape {
   /**
    * Create a convex hull from the given array of points. The count must be in the range [3,
    * Settings.maxPolygonVertices].
-   * 
+   *
    * @warning the points may be re-ordered, even if they form a convex polygon.
    * @warning collinear points are removed.
    */
@@ -98,7 +98,7 @@ class PolygonShape extends Shape {
   /**
    * Create a convex hull from the given array of points. The count must be in the range [3,
    * Settings.maxPolygonVertices]. This method takes an arraypool for pooling.
-   * 
+   *
    * @warning the points may be re-ordered, even if they form a convex polygon.
    * @warning collinear points are removed.
    */
@@ -220,7 +220,7 @@ class PolygonShape extends Shape {
 
   /**
    * Build vertices to represent an axis-aligned box.
-   * 
+   *
    * @param hx the half-width.
    * @param hy the half-height.
    */
@@ -239,7 +239,7 @@ class PolygonShape extends Shape {
 
   /**
    * Build vertices to represent an oriented box.
-   * 
+   *
    * @param hx the half-width.
    * @param hy the half-height.
    * @param center the center of the box in local coordinates.
@@ -329,15 +329,15 @@ class PolygonShape extends Shape {
       upper.y = upper.y > vy ? upper.y : vy;
     }
 
-    lower.x -= m_radius;
-    lower.y -= m_radius;
-    upper.x += m_radius;
-    upper.y += m_radius;
+    lower.x -= radius;
+    lower.y -= radius;
+    upper.x += radius;
+    upper.y += radius;
   }
 
   /**
    * Get the vertex count.
-   * 
+   *
    * @return
    */
   int getVertexCount() {
@@ -346,7 +346,7 @@ class PolygonShape extends Shape {
 
   /**
    * Get a vertex by index.
-   * 
+   *
    * @param index
    * @return
    */
@@ -622,7 +622,7 @@ class PolygonShape extends Shape {
 
   /**
    * Validate convexity. This is a very time consuming operation.
-   * 
+   *
    * @return
    */
   bool validate() {

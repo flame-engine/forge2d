@@ -142,8 +142,8 @@ class UpdateBodyContactsCallback implements QueryCallback {
     }
     final Shape shape = fixture.getShape();
     Body b = fixture.getBody();
-    Vec2 bp = b.getWorldCenter();
-    double bm = b.getMass();
+    Vec2 bp = b.worldCenter;
+    double bm = b.mass;
     double bI = b.getInertia() - bm * b.getLocalCenter().lengthSquared();
     double invBm = bm > 0 ? 1 / bm : 0;
     double invBI = bI > 0 ? 1 / bI : 0;
@@ -1291,8 +1291,8 @@ class ParticleSystem {
       final double tempY = p.y - b.m_sweep.c.y;
       final Vec2 velA = m_velocityBuffer.data[a];
       // getLinearVelocityFromWorldPointToOut, with -= velA
-      double vx = -b.m_angularVelocity * tempY + b.m_linearVelocity.x - velA.x;
-      double vy = b.m_angularVelocity * tempX + b.m_linearVelocity.y - velA.y;
+      double vx = -b._angularVelocity * tempY + b._linearVelocity.x - velA.x;
+      double vy = b._angularVelocity * tempX + b._linearVelocity.y - velA.y;
       // done
       double vn = vx * n.x + vy * n.y;
       if (vn < 0) {
@@ -1513,9 +1513,9 @@ class ParticleSystem {
         final double tempX = p.x - b.m_sweep.c.x;
         final double tempY = p.y - b.m_sweep.c.y;
         final double vx =
-            -b.m_angularVelocity * tempY + b.m_linearVelocity.x - va.x;
+            -b._angularVelocity * tempY + b._linearVelocity.x - va.x;
         final double vy =
-            b.m_angularVelocity * tempX + b.m_linearVelocity.y - va.y;
+            b._angularVelocity * tempX + b._linearVelocity.y - va.y;
         final Vec2 f = _tempVec;
         final double pInvMass = getParticleInvMass();
         f.x = viscousStrength * m * w * vx;

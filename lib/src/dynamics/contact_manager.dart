@@ -76,8 +76,8 @@ class ContactManager implements PairCallback {
     ContactEdge edge = bodyB.getContactList();
     while (edge != null) {
       if (edge.other == bodyA) {
-        Fixture fA = edge.contact.getFixtureA();
-        Fixture fB = edge.contact.getFixtureB();
+        Fixture fA = edge.contact.fixtureA;
+        Fixture fB = edge.contact.fixtureB;
         int iA = edge.contact.getChildIndexA();
         int iB = edge.contact.getChildIndexB();
 
@@ -113,8 +113,8 @@ class ContactManager implements PairCallback {
     }
 
     // Contact creation may swap fixtures.
-    fixtureA = c.getFixtureA();
-    fixtureB = c.getFixtureB();
+    fixtureA = c.fixtureA;
+    fixtureB = c.fixtureB;
     indexA = c.getChildIndexA();
     indexB = c.getChildIndexB();
     bodyA = fixtureA.getBody();
@@ -166,8 +166,8 @@ class ContactManager implements PairCallback {
   }
 
   void destroy(Contact c) {
-    Fixture fixtureA = c.getFixtureA();
-    Fixture fixtureB = c.getFixtureB();
+    Fixture fixtureA = c.fixtureA;
+    Fixture fixtureB = c.fixtureB;
     Body bodyA = fixtureA.getBody();
     Body bodyB = fixtureB.getBody();
 
@@ -227,8 +227,8 @@ class ContactManager implements PairCallback {
     // Update awake contacts.
     Contact c = m_contactList;
     while (c != null) {
-      Fixture fixtureA = c.getFixtureA();
-      Fixture fixtureB = c.getFixtureB();
+      Fixture fixtureA = c.fixtureA;
+      Fixture fixtureB = c.fixtureB;
       int indexA = c.getChildIndexA();
       int indexB = c.getChildIndexB();
       Body bodyA = fixtureA.getBody();

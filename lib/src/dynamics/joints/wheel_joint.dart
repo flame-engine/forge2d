@@ -158,7 +158,7 @@ class WheelJoint extends Joint {
   }
 
   double getJointSpeed() {
-    return m_bodyA.m_angularVelocity - m_bodyB.m_angularVelocity;
+    return m_bodyA._angularVelocity - m_bodyB._angularVelocity;
   }
 
   bool isMotorEnabled() {

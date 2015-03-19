@@ -60,8 +60,8 @@ class ConstantVolumeJoint extends Joint {
     for (int i = 0; i < _targetLengths.length; ++i) {
       final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
       double dist = _bodies[i]
-          .getWorldCenter()
-          .sub(_bodies[next].getWorldCenter())
+          .worldCenter
+          .sub(_bodies[next].worldCenter)
           .length();
       _targetLengths[i] = dist;
     }
@@ -78,8 +78,8 @@ class ConstantVolumeJoint extends Joint {
         djd.frequencyHz = def.frequencyHz; // 20.0;
         djd.dampingRatio = def.dampingRatio; // 50.0;
         djd.collideConnected = def.collideConnected;
-        djd.initialize(_bodies[i], _bodies[next], _bodies[i].getWorldCenter(),
-            _bodies[next].getWorldCenter());
+        djd.initialize(_bodies[i], _bodies[next], _bodies[i].worldCenter,
+            _bodies[next].worldCenter);
         _distanceJoints[i] = _world.createJoint(djd);
       }
     } else {
@@ -102,8 +102,8 @@ class ConstantVolumeJoint extends Joint {
     double area = 0.0;
     for (int i = 0; i < _bodies.length; ++i) {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      area += _bodies[i].getWorldCenter().x * _bodies[next].getWorldCenter().y -
-          _bodies[next].getWorldCenter().x * _bodies[i].getWorldCenter().y;
+      area += _bodies[i].worldCenter.x * _bodies[next].worldCenter.y -
+          _bodies[next].worldCenter.x * _bodies[i].worldCenter.y;
     }
     area *= .5;
     return area;
@@ -216,7 +216,7 @@ class ConstantVolumeJoint extends Joint {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
       d[i].set(positions[_bodies[next].m_islandIndex].c);
       d[i].subLocal(positions[_bodies[prev].m_islandIndex].c);
-      dotMassSum += (d[i].lengthSquared()) / _bodies[i].getMass();
+      dotMassSum += (d[i].lengthSquared()) / _bodies[i].mass;
       crossMassSum += Vec2.cross(velocities[_bodies[i].m_islandIndex].v, d[i]);
     }
     double lambda = -2.0 * crossMassSum / dotMassSum;

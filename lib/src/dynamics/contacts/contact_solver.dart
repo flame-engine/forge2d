@@ -98,12 +98,12 @@ class ContactSolver {
       // System.out.println("contacts: " + m_count);
       final Contact contact = m_contacts[i];
 
-      final Fixture fixtureA = contact.m_fixtureA;
-      final Fixture fixtureB = contact.m_fixtureB;
+      final Fixture fixtureA = contact._fixtureA;
+      final Fixture fixtureB = contact._fixtureB;
       final Shape shapeA = fixtureA.getShape();
       final Shape shapeB = fixtureB.getShape();
-      final double radiusA = shapeA.m_radius;
-      final double radiusB = shapeB.m_radius;
+      final double radiusA = shapeA.radius;
+      final double radiusB = shapeB.radius;
       final Body bodyA = fixtureA.getBody();
       final Body bodyB = fixtureB.getBody();
       final Manifold manifold = contact.getManifold();
