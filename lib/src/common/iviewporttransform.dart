@@ -22,7 +22,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-part of box2d;
+part of box2d.common;
 
 /**
  * This is the viewport transform used from drawing. Use yFlip if you are drawing from the top-left

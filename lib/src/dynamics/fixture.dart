@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -28,9 +28,9 @@ part of box2d;
  * A fixture is used to attach a shape to a body for collision detection. A fixture inherits its
  * transform from its parent. Fixtures hold additional non-geometric data such as friction,
  * collision filters, etc. Fixtures are created via Body::CreateFixture.
- * 
+ *
  * @warning you cannot reuse fixtures.
- * 
+ *
  * @author daniel
  */
 class Fixture {
@@ -55,7 +55,7 @@ class Fixture {
 
   /**
    * Get the type of the child shape. You can use this to down cast to the concrete shape.
-   * 
+   *
    * @return the shape type.
    */
   ShapeType getType() {
@@ -65,7 +65,7 @@ class Fixture {
   /**
    * Get the child shape. You can modify the child shape, however you should not change the number
    * of vertices because this will crash some collision caching mechanisms.
-   * 
+   *
    * @return
    */
   Shape getShape() {
@@ -74,7 +74,7 @@ class Fixture {
 
   /**
    * Is this fixture a sensor (non-solid)?
-   * 
+   *
    * @return the true if the shape is a sensor.
    * @return
    */
@@ -84,7 +84,7 @@ class Fixture {
 
   /**
    * Set if this fixture is a sensor.
-   * 
+   *
    * @param sensor
    */
   void setSensor(bool sensor) {
@@ -98,7 +98,7 @@ class Fixture {
    * Set the contact filtering data. This is an expensive operation and should not be called
    * frequently. This will not update contacts until the next time step when either parent body is
    * awake. This automatically calls refilter.
-   * 
+   *
    * @param filter
    */
   void setFilterData(final Filter filter) {
@@ -109,7 +109,7 @@ class Fixture {
 
   /**
    * Get the contact filtering data.
-   * 
+   *
    * @return
    */
   Filter getFilterData() {
@@ -152,7 +152,7 @@ class Fixture {
 
   /**
    * Get the parent body of this fixture. This is NULL if the fixture is not attached.
-   * 
+   *
    * @return the parent body.
    * @return
    */
@@ -162,7 +162,7 @@ class Fixture {
 
   /**
    * Get the next fixture in the parent body's fixture list.
-   * 
+   *
    * @return the next shape.
    * @return
    */
@@ -182,7 +182,7 @@ class Fixture {
   /**
    * Get the user data that was assigned in the fixture definition. Use this to store your
    * application specific data.
-   * 
+   *
    * @return
    */
   Object getUserData() {
@@ -191,7 +191,7 @@ class Fixture {
 
   /**
    * Set the user data. Use this to store your application specific data.
-   * 
+   *
    * @param data
    */
   void setUserData(Object data) {
@@ -200,7 +200,7 @@ class Fixture {
 
   /**
    * Test a point for containment in this fixture. This only works for convex shapes.
-   * 
+   *
    * @param p a point in world coordinates.
    * @return
    */
@@ -210,7 +210,7 @@ class Fixture {
 
   /**
    * Cast a ray against this shape.
-   * 
+   *
    * @param output the ray-cast results.
    * @param input the ray-cast input parameters.
    * @param output
@@ -223,7 +223,7 @@ class Fixture {
   /**
    * Get the mass data for this fixture. The mass data is based on the density and the shape. The
    * rotational inertia is about the shape's origin.
-   * 
+   *
    * @return
    */
   void getMassData(MassData massData) {
@@ -232,7 +232,7 @@ class Fixture {
 
   /**
    * Get the coefficient of friction.
-   * 
+   *
    * @return
    */
   double getFriction() {
@@ -241,7 +241,7 @@ class Fixture {
 
   /**
    * Set the coefficient of friction. This will _not_ change the friction of existing contacts.
-   * 
+   *
    * @param friction
    */
   void setFriction(double friction) {
@@ -250,7 +250,7 @@ class Fixture {
 
   /**
    * Get the coefficient of restitution.
-   * 
+   *
    * @return
    */
   double getRestitution() {
@@ -260,7 +260,7 @@ class Fixture {
   /**
    * Set the coefficient of restitution. This will _not_ change the restitution of existing
    * contacts.
-   * 
+   *
    * @param restitution
    */
   void setRestitution(double restitution) {
@@ -270,7 +270,7 @@ class Fixture {
   /**
    * Get the fixture's AABB. This AABB may be enlarge and/or stale. If you need a more accurate
    * AABB, compute it using the shape and the body transform.
-   * 
+   *
    * @return
    */
   AABB getAABB(int childIndex) {
@@ -280,7 +280,7 @@ class Fixture {
 
   /**
    * Compute the distance from this fixture.
-   * 
+   *
    * @param p a point in world coordinates.
    * @return distance
    */
@@ -321,7 +321,7 @@ class Fixture {
       List<FixtureProxy> old = m_proxies;
       int newLen = Math.max(old.length * 2, childCount);
       m_proxies = new List<FixtureProxy>(newLen);
-      Settings.arraycopy(old, 0, m_proxies, 0, old.length);
+      BufferUtils.arraycopy(old, 0, m_proxies, 0, old.length);
       for (int i = 0; i < newLen; i++) {
         if (i >= old.length) {
           m_proxies[i] = new FixtureProxy();
@@ -366,7 +366,7 @@ class Fixture {
 
   /**
    * Internal method
-   * 
+   *
    * @param broadPhase
    */
   void destroyProxies(BroadPhase broadPhase) {
@@ -386,7 +386,7 @@ class Fixture {
 
   /**
    * Internal method
-   * 
+   *
    * @param broadPhase
    * @param xf1
    * @param xf2

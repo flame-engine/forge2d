@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -49,8 +49,8 @@ class ConstantVolumeJoint extends Joint {
   }
 
   ConstantVolumeJoint(World argWorld, ConstantVolumeJointDef def)
-      : super(argWorld.getPool(), def),
-        _bodies = def.bodies.toList(growable: false) {
+      : _bodies = def.bodies.toList(growable: false),
+        super(argWorld.getPool(), def) {
     _world = argWorld;
     if (def.bodies.length <= 2) {
       throw "You cannot create a constant volume joint with less than three _bodies.";

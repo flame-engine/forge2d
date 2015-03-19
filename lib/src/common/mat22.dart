@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -22,7 +22,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-part of box2d;
+part of box2d.common;
 
 /**
  * A 2-by-2 matrix. Stored in column-major order.
@@ -48,7 +48,7 @@ class Mat22 {
 
   /**
    * Create a matrix with given vectors as columns.
-   * 
+   *
    * @param c1 Column 1 of matrix
    * @param c2 Column 2 of matrix
    */
@@ -58,7 +58,7 @@ class Mat22 {
 
   /**
    * Create a matrix from four doubles.
-   * 
+   *
    * @param exx
    * @param col2x
    * @param exy
@@ -71,7 +71,7 @@ class Mat22 {
 
   /**
    * Set as a copy of another matrix.
-   * 
+   *
    * @param m Matrix to copy
    */
   Mat22 setMat22(final Mat22 m) {
@@ -100,7 +100,7 @@ class Mat22 {
 
   /**
    * Set as a matrix representing a rotation.
-   * 
+   *
    * @param angle Rotation (in radians) that matrix represents.
    */
   void setAngle(final double angle) {
@@ -134,7 +134,7 @@ class Mat22 {
 
   /**
    * Extract the angle from this matrix (assumed to be a rotation matrix).
-   * 
+   *
    * @return
    */
   double getAngle() {
@@ -143,7 +143,7 @@ class Mat22 {
 
   /**
    * Set by column vectors.
-   * 
+   *
    * @param c1 Column 1
    * @param c2 Column 2
    */
@@ -204,7 +204,7 @@ class Mat22 {
 
   /**
    * Return the matrix composed of the absolute values of all elements. djm: fixed double allocation
-   * 
+   *
    * @return Absolute value matrix
    */
   Mat22 abs() {
@@ -219,7 +219,7 @@ class Mat22 {
 
   /**
    * Return the matrix composed of the absolute values of all elements.
-   * 
+   *
    * @return Absolute value matrix
    */
   static Mat22 abs_(final Mat22 R) {
@@ -236,7 +236,7 @@ class Mat22 {
 
   /**
    * Multiply a vector by this matrix.
-   * 
+   *
    * @param v Vector to multiply by matrix.
    * @return Resulting vector
    */
@@ -258,7 +258,7 @@ class Mat22 {
 
   /**
    * Multiply another matrix by this one (this one on left). djm optimized
-   * 
+   *
    * @param R
    * @return
    */
@@ -303,7 +303,7 @@ class Mat22 {
   /**
    * Multiply another matrix by the transpose of this one (transpose of this one on left). djm:
    * optimized
-   * 
+   *
    * @param B
    * @return
    */
@@ -354,7 +354,7 @@ class Mat22 {
 
   /**
    * Multiply a vector by the transpose of this matrix.
-   * 
+   *
    * @param v
    * @return
    */
@@ -375,7 +375,7 @@ class Mat22 {
 
   /**
    * Add this matrix to B, return the result.
-   * 
+   *
    * @param B
    * @return
    */
@@ -391,7 +391,7 @@ class Mat22 {
 
   /**
    * Add B to this matrix locally.
-   * 
+   *
    * @param B
    * @return
    */
@@ -407,7 +407,7 @@ class Mat22 {
 
   /**
    * Solve A * x = b where A = this matrix.
-   * 
+   *
    * @return The vector x that solves the above equation.
    */
   Vec2 solve(final Vec2 b) {

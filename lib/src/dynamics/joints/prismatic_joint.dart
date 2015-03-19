@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -94,7 +94,7 @@ part of box2d;
  * A prismatic joint. This joint provides one degree of freedom: translation along an axis fixed in
  * bodyA. Relative rotation is prevented. You can use a joint limit to restrict the range of motion
  * and a joint motor to drive the motion or to model joint friction.
- * 
+ *
  * @author Daniel
  */
 class PrismaticJoint extends Joint {
@@ -137,11 +137,11 @@ class PrismaticJoint extends Joint {
       0.0; // effective mass for motor/limit translational constraint.
 
   PrismaticJoint(IWorldPool argWorld, PrismaticJointDef def)
-      : super(argWorld, def),
-        m_localAnchorA = new Vec2.copy(def.localAnchorA),
+      : m_localAnchorA = new Vec2.copy(def.localAnchorA),
         m_localAnchorB = new Vec2.copy(def.localAnchorB),
         m_localXAxisA = new Vec2.copy(def.localAxisA)..normalize(),
-        m_localYAxisA = new Vec2.zero() {
+        m_localYAxisA = new Vec2.zero(),
+        super(argWorld, def) {
     Vec2.crossToOutUnsafeDblVec2(1.0, m_localXAxisA, m_localYAxisA);
     m_referenceAngle = def.referenceAngle;
 
@@ -242,7 +242,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Is the joint limit enabled?
-   * 
+   *
    * @return
    */
   bool isLimitEnabled() {
@@ -251,7 +251,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Enable/disable the joint limit.
-   * 
+   *
    * @param flag
    */
   void enableLimit(bool flag) {
@@ -265,7 +265,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Get the lower joint limit, usually in meters.
-   * 
+   *
    * @return
    */
   double getLowerLimit() {
@@ -274,7 +274,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Get the upper joint limit, usually in meters.
-   * 
+   *
    * @return
    */
   double getUpperLimit() {
@@ -283,7 +283,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Set the joint limits, usually in meters.
-   * 
+   *
    * @param lower
    * @param upper
    */
@@ -300,7 +300,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Is the joint motor enabled?
-   * 
+   *
    * @return
    */
   bool isMotorEnabled() {
@@ -309,7 +309,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Enable/disable the joint motor.
-   * 
+   *
    * @param flag
    */
   void enableMotor(bool flag) {
@@ -320,7 +320,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Set the motor speed, usually in meters per second.
-   * 
+   *
    * @param speed
    */
   void setMotorSpeed(double speed) {
@@ -331,7 +331,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Get the motor speed, usually in meters per second.
-   * 
+   *
    * @return
    */
   double getMotorSpeed() {
@@ -340,7 +340,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Set the maximum motor force, usually in N.
-   * 
+   *
    * @param force
    */
   void setMaxMotorForce(double force) {
@@ -351,7 +351,7 @@ class PrismaticJoint extends Joint {
 
   /**
    * Get the current motor force, usually in N.
-   * 
+   *
    * @param inv_dt
    * @return
    */

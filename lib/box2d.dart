@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -27,6 +27,15 @@ library box2d;
 import 'dart:collection';
 import 'dart:math' as Math;
 import 'dart:typed_data';
+
+import 'src/buffer_utils.dart' as BufferUtils;
+import 'src/common.dart';
+import 'src/math_utils.dart' as MathUtils;
+import 'src/settings.dart' as Settings;
+import 'src/vec2.dart';
+
+export 'src/common.dart';
+export 'src/vec2.dart';
 
 part 'src/callbacks/contact_filter.dart';
 part 'src/callbacks/contact_impulse.dart';
@@ -70,22 +79,6 @@ part 'src/collision/shapes/mass_data.dart';
 part 'src/collision/shapes/polygon_shape.dart';
 part 'src/collision/shapes/shape.dart';
 part 'src/collision/shapes/shape_type.dart';
-
-part 'src/common/buffer_utils.dart';
-part 'src/common/color3f.dart';
-part 'src/common/iviewporttransform.dart';
-part 'src/common/mat22.dart';
-part 'src/common/mat33.dart';
-part 'src/common/math_utils.dart';
-part 'src/common/obbviewporttransform.dart';
-part 'src/common/raycast_result.dart';
-part 'src/common/rot.dart';
-part 'src/common/settings.dart';
-part 'src/common/sweep.dart';
-part 'src/common/timer.dart';
-part 'src/common/transform.dart';
-part 'src/common/vec2.dart';
-part 'src/common/vec3.dart';
 
 part 'src/dynamics/body.dart';
 part 'src/dynamics/body_def.dart';

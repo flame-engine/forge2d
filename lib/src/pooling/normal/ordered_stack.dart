@@ -51,7 +51,7 @@ abstract class OrderedStack<E> {
     assert(_index + argNum <
         _size); // "End of stack reached, there is probably a leak somewhere";
     assert(argNum <= _container.length); // "Container array is too small";
-    Settings.arraycopy(_pool, _index, _container, 0, argNum);
+    BufferUtils.arraycopy(_pool, _index, _container, 0, argNum);
     _index += argNum;
     return _container;
   }

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -74,7 +74,7 @@ class ContactSolver {
       List<ContactPositionConstraint> old = m_positionConstraints;
       m_positionConstraints = new List<ContactPositionConstraint>(
           Math.max(old.length * 2, m_count));
-      Settings.arraycopy(old, 0, m_positionConstraints, 0, old.length);
+      BufferUtils.arraycopy(old, 0, m_positionConstraints, 0, old.length);
       for (int i = old.length; i < m_positionConstraints.length; i++) {
         m_positionConstraints[i] = new ContactPositionConstraint();
       }
@@ -84,7 +84,7 @@ class ContactSolver {
       List<ContactVelocityConstraint> old = m_velocityConstraints;
       m_velocityConstraints = new List<ContactVelocityConstraint>(
           Math.max(old.length * 2, m_count));
-      Settings.arraycopy(old, 0, m_velocityConstraints, 0, old.length);
+      BufferUtils.arraycopy(old, 0, m_velocityConstraints, 0, old.length);
       for (int i = old.length; i < m_velocityConstraints.length; i++) {
         m_velocityConstraints[i] = new ContactVelocityConstraint();
       }
@@ -530,7 +530,7 @@ class ContactSolver {
 
             /*
              * vA -= invMassA * (P1 + P2); wA -= invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
-             * 
+             *
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
@@ -555,9 +555,9 @@ class ContactSolver {
             /*
              * #if B2_DEBUG_SOLVER == 1 // Postconditions dv1 = vB + Cross(wB, cp1.rB) - vA -
              * Cross(wA, cp1.rA); dv2 = vB + Cross(wB, cp2.rB) - vA - Cross(wA, cp2.rA);
-             * 
+             *
              * // Compute normal velocity vn1 = Dot(dv1, normal); vn2 = Dot(dv2, normal);
-             * 
+             *
              * assert(Abs(vn1 - cp1.velocityBias) < k_errorTol); assert(Abs(vn2 - cp2.velocityBias)
              * < k_errorTol); #endif
              */
@@ -608,7 +608,7 @@ class ContactSolver {
             /*
              * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
              * invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
-             * 
+             *
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
@@ -633,9 +633,9 @@ class ContactSolver {
             /*
              * #if B2_DEBUG_SOLVER == 1 // Postconditions dv1 = vB + Cross(wB, cp1.rB) - vA -
              * Cross(wA, cp1.rA);
-             * 
+             *
              * // Compute normal velocity vn1 = Dot(dv1, normal);
-             * 
+             *
              * assert(Abs(vn1 - cp1.velocityBias) < k_errorTol); #endif
              */
             if (DEBUG_SOLVER) {
@@ -672,7 +672,7 @@ class ContactSolver {
             /*
              * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
              * invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
-             * 
+             *
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
@@ -702,9 +702,9 @@ class ContactSolver {
             /*
              * #if B2_DEBUG_SOLVER == 1 // Postconditions dv2 = vB + Cross(wB, cp2.rB) - vA -
              * Cross(wA, cp2.rA);
-             * 
+             *
              * // Compute normal velocity vn2 = Dot(dv2, normal);
-             * 
+             *
              * assert(Abs(vn2 - cp2.velocityBias) < k_errorTol); #endif
              */
             if (DEBUG_SOLVER) {
@@ -740,7 +740,7 @@ class ContactSolver {
             /*
              * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
              * invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
-             * 
+             *
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
@@ -797,39 +797,39 @@ class ContactSolver {
   /*
    * #if 0 // Sequential solver. bool ContactSolver::SolvePositionConstraints(double baumgarte) {
    * double minSeparation = 0.0;
-   * 
+   *
    * for (int i = 0; i < m_constraintCount; ++i) { ContactConstraint* c = m_constraints + i; Body*
    * bodyA = c.bodyA; Body* bodyB = c.bodyB; double invMassA = bodyA.m_mass * bodyA.m_invMass; double
    * invIA = bodyA.m_mass * bodyA.m_invI; double invMassB = bodyB.m_mass * bodyB.m_invMass; double
    * invIB = bodyB.m_mass * bodyB.m_invI;
-   * 
+   *
    * Vec2 normal = c.normal;
-   * 
+   *
    * // Solve normal constraints for (int j = 0; j < c.pointCount; ++j) { ContactConstraintPoint*
    * ccp = c.points + j;
-   * 
+   *
    * Vec2 r1 = Mul(bodyA.GetXForm().R, ccp.localAnchorA - bodyA.GetLocalCenter()); Vec2 r2 =
    * Mul(bodyB.GetXForm().R, ccp.localAnchorB - bodyB.GetLocalCenter());
-   * 
+   *
    * Vec2 p1 = bodyA.m_sweep.c + r1; Vec2 p2 = bodyB.m_sweep.c + r2; Vec2 dp = p2 - p1;
-   * 
+   *
    * // Approximate the current separation. double separation = Dot(dp, normal) + ccp.separation;
-   * 
+   *
    * // Track max constraint error. minSeparation = Min(minSeparation, separation);
-   * 
+   *
    * // Prevent large corrections and allow slop. double C = Clamp(baumgarte * (separation +
    * _linearSlop), -_maxLinearCorrection, 0.0);
-   * 
+   *
    * // Compute normal impulse double impulse = -ccp.equalizedMass * C;
-   * 
+   *
    * Vec2 P = impulse * normal;
-   * 
+   *
    * bodyA.m_sweep.c -= invMassA * P; bodyA.m_sweep.a -= invIA * Cross(r1, P);
    * bodyA.SynchronizeTransform();
-   * 
+   *
    * bodyB.m_sweep.c += invMassB * P; bodyB.m_sweep.a += invIB * Cross(r2, P);
    * bodyB.SynchronizeTransform(); } }
-   * 
+   *
    * // We can't expect minSpeparation >= -_linearSlop because we don't // push the separation above
    * -_linearSlop. return minSeparation >= -1.5f * _linearSlop; }
    */

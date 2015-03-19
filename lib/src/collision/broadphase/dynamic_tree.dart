@@ -161,7 +161,7 @@ class DynamicTree implements BroadPhaseStrategy {
           if (nodeStack.length - nodeStackIndex - 2 <= 0) {
             List<DynamicTreeNode> newBuffer =
                 new List<DynamicTreeNode>(nodeStack.length * 2);
-            Settings.arraycopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
+            BufferUtils.arraycopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
             nodeStack = newBuffer;
           }
           nodeStack[nodeStackIndex++] = node.child1;
@@ -281,7 +281,7 @@ class DynamicTree implements BroadPhaseStrategy {
         if (nodeStack.length - nodeStackIndex - 2 <= 0) {
           List<DynamicTreeNode> newBuffer =
               new List<DynamicTreeNode>(nodeStack.length * 2);
-          Settings.arraycopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
+          BufferUtils.arraycopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
           nodeStack = newBuffer;
         }
         nodeStack[nodeStackIndex++] = node.child1;
@@ -451,7 +451,7 @@ class DynamicTree implements BroadPhaseStrategy {
       List<DynamicTreeNode> old = _m_nodes;
       _m_nodeCapacity *= 2;
       _m_nodes = new List<DynamicTreeNode>(_m_nodeCapacity);
-      Settings.arraycopy(old, 0, _m_nodes, 0, old.length);
+      BufferUtils.arraycopy(old, 0, _m_nodes, 0, old.length);
 
       // Build a linked list for the free list.
       for (int i = _m_nodeCapacity - 1; i >= _m_nodeCount; i--) {

@@ -33,7 +33,7 @@ main() {
 class Bench2D {
   static const bool DEBUG = false;
   static const bool CHECKSUM = false;
-  
+
   static const int FRAMES = 256;
   static const int PYRAMID_SIZE = 40;
 
@@ -69,7 +69,8 @@ class Bench2D {
     double mean = meanF(times);
     double fifth = percentile(times, 5.0);
     double ninetyFifth = percentile(times, 95.0);
-    print("Benchmark complete.\nms/frame: $mean 5th %ile: ${percentile(times, 5.0)} 95th %ile: ${percentile(times, 95.0)}");
+    print(
+        "Benchmark complete.\nms/frame: $mean 5th %ile: ${percentile(times, 5.0)} 95th %ile: ${percentile(times, 95.0)}");
     if (CHECKSUM) {
       checksum(world);
     }
@@ -145,7 +146,8 @@ class Bench2D {
     Body firstBody = world.m_bodyList;
     print(firstBody);
     world.forEachBody(checksum);
-    print("pos: $positionSum linVel $linearVelocitySum angVel $angularVelocitySum");
+    print(
+        "pos: $positionSum linVel $linearVelocitySum angVel $angularVelocitySum");
   }
 
   void log(String msg) {
@@ -154,4 +156,3 @@ class Bench2D {
     }
   }
 }
-

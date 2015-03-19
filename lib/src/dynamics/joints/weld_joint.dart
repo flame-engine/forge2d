@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,7 +41,7 @@ part of box2d;
 /**
  * A weld joint essentially glues two bodies together. A weld joint may distort somewhat because the
  * island constraint solver is approximate.
- * 
+ *
  * @author Daniel Murphy
  */
 class WeldJoint extends Joint {
@@ -71,10 +71,10 @@ class WeldJoint extends Joint {
   final Mat33 m_mass = new Mat33.zero();
 
   WeldJoint(IWorldPool argWorld, WeldJointDef def)
-      : super(argWorld, def),
-        m_localAnchorA = new Vec2.copy(def.localAnchorA),
+      : m_localAnchorA = new Vec2.copy(def.localAnchorA),
         m_localAnchorB = new Vec2.copy(def.localAnchorB),
-        m_impulse = new Vec3.zero() {
+        m_impulse = new Vec3.zero(),
+        super(argWorld, def) {
     m_referenceAngle = def.referenceAngle;
     m_frequencyHz = def.frequencyHz;
     m_dampingRatio = def.dampingRatio;

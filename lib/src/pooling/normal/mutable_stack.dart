@@ -40,7 +40,7 @@ abstract class MutableStack<E> implements IDynamicStack<E> {
   void extendStack(int argSize) {
     List<E> newStack = newArray(argSize);
     if (_stack != null) {
-      Settings.arraycopy(_stack, 0, newStack, 0, _size);
+      BufferUtils.arraycopy(_stack, 0, newStack, 0, _size);
     }
     for (int i = 0; i < newStack.length; i++) {
       newStack[i] = newInstance();

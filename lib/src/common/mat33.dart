@@ -22,7 +22,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-part of box2d;
+part of box2d.common;
 
 /**
  * A 3-by-3 matrix. Stored in column-major order.

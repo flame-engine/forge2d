@@ -137,7 +137,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     _m_moveCount = 0;
 
     // Sort the pair buffer to expose duplicates.
-    Settings.sort(_m_pairBuffer, 0, _m_pairCount);
+    BufferUtils.sort(_m_pairBuffer, 0, _m_pairCount);
 
     // Send the pairs back to the client.
     int i = 0;
@@ -187,7 +187,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
       List<int> old = _m_moveBuffer;
       _m_moveCapacity *= 2;
       _m_moveBuffer = new List<int>(_m_moveCapacity);
-      Settings.arraycopy(old, 0, _m_moveBuffer, 0, old.length);
+      BufferUtils.arraycopy(old, 0, _m_moveBuffer, 0, old.length);
     }
 
     _m_moveBuffer[_m_moveCount] = proxyId;
@@ -216,7 +216,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
       List<Pair> oldBuffer = _m_pairBuffer;
       _m_pairCapacity *= 2;
       _m_pairBuffer = new List<Pair>(_m_pairCapacity);
-      Settings.arraycopy(oldBuffer, 0, _m_pairBuffer, 0, oldBuffer.length);
+      BufferUtils.arraycopy(oldBuffer, 0, _m_pairBuffer, 0, oldBuffer.length);
       for (int i = oldBuffer.length; i < _m_pairCapacity; i++) {
         _m_pairBuffer[i] = new Pair();
       }

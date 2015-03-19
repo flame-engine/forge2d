@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -22,20 +22,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-part of box2d;
+library box2d.vec2;
+
+import 'dart:math' as Math;
+import 'dart:typed_data';
+
+import 'math_utils.dart' as MathUtils;
+import 'settings.dart' as Settings;
 
 class Vec2 {
   final Float64List _d = new Float64List(2);
 
-  set x(v) {
+  void set x(double v) {
     _d[0] = v;
   }
-  set y(v) {
+  void set y(double v) {
     _d[1] = v;
   }
 
-  get x => _d[0];
-  get y => _d[1];
+  double get x => _d[0];
+  double get y => _d[1];
 
   Vec2(double x, double y) {
     _d[0] = x;
@@ -50,7 +56,7 @@ class Vec2 {
   }
 
   /** Zero out this vector. */
-  setZero() {
+  void setZero() {
     x = 0.0;
     y = 0.0;
   }
