@@ -30,7 +30,7 @@ class RaycastResult {
 
   RaycastResult set(RaycastResult argOther) {
     lambda = argOther.lambda;
-    normal.set(argOther.normal);
+    normal.setFrom(argOther.normal);
     return this;
   }
 }

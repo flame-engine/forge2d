@@ -338,34 +338,34 @@ class SeparationFunction {
        * m_proxyB.GetVertex(cache.indexB[0]); Vec2 pointA = Mul(transformA, localPointA); Vec2
        * pointB = Mul(transformB, localPointB); m_axis = pointB - pointA; m_axis.Normalize();
        */
-      _localPointA.set(m_proxyA.getVertex(cache.indexA[0]));
-      _localPointB.set(m_proxyB.getVertex(cache.indexB[0]));
+      _localPointA.setFrom(m_proxyA.getVertex(cache.indexA[0]));
+      _localPointB.setFrom(m_proxyB.getVertex(cache.indexB[0]));
       Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
       Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
-      m_axis.set(_pointB).sub(_pointA);
+      m_axis.setFrom(_pointB).sub(_pointA);
       double s = m_axis.normalizeLength();
       return s;
     } else if (cache.indexA[0] == cache.indexA[1]) {
       // Two points on B and one on A.
       m_type = SeparationFunctionType.FACE_B;
 
-      _localPointB1.set(m_proxyB.getVertex(cache.indexB[0]));
-      _localPointB2.set(m_proxyB.getVertex(cache.indexB[1]));
+      _localPointB1.setFrom(m_proxyB.getVertex(cache.indexB[0]));
+      _localPointB2.setFrom(m_proxyB.getVertex(cache.indexB[1]));
 
-      _temp.set(_localPointB2).sub(_localPointB1);
+      _temp.setFrom(_localPointB2).sub(_localPointB1);
       Vector2.crossToOutUnsafeVec2Dbl(_temp, 1.0, m_axis);
       m_axis.normalize();
 
       Rot.mulToOutUnsafe(_xfb.q, m_axis, _normal);
 
-      m_localPoint.set(_localPointB1).add(_localPointB2).mul(.5);
+      m_localPoint.setFrom(_localPointB1).add(_localPointB2).scale(.5);
       Transform.mulToOutUnsafeVec2(_xfb, m_localPoint, _pointB);
 
-      _localPointA.set(proxyA.getVertex(cache.indexA[0]));
+      _localPointA.setFrom(proxyA.getVertex(cache.indexA[0]));
       Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
 
-      _temp.set(_pointA).sub(_pointB);
-      double s = Vector2.dot(_temp, _normal);
+      _temp.setFrom(_pointA).sub(_pointB);
+      double s = _temp.dot(_normal);
       if (s < 0.0) {
         m_axis.negate();
         s = -s;
@@ -375,23 +375,23 @@ class SeparationFunction {
       // Two points on A and one or two points on B.
       m_type = SeparationFunctionType.FACE_A;
 
-      _localPointA1.set(m_proxyA.getVertex(cache.indexA[0]));
-      _localPointA2.set(m_proxyA.getVertex(cache.indexA[1]));
+      _localPointA1.setFrom(m_proxyA.getVertex(cache.indexA[0]));
+      _localPointA2.setFrom(m_proxyA.getVertex(cache.indexA[1]));
 
-      _temp.set(_localPointA2).sub(_localPointA1);
+      _temp.setFrom(_localPointA2).sub(_localPointA1);
       Vector2.crossToOutUnsafeVec2Dbl(_temp, 1.0, m_axis);
       m_axis.normalize();
 
       Rot.mulToOutUnsafe(_xfa.q, m_axis, _normal);
 
-      m_localPoint.set(_localPointA1).add(_localPointA2).mul(.5);
+      m_localPoint.setFrom(_localPointA1).add(_localPointA2).scale(.5);
       Transform.mulToOutUnsafeVec2(_xfa, m_localPoint, _pointA);
 
-      _localPointB.set(m_proxyB.getVertex(cache.indexB[0]));
+      _localPointB.setFrom(m_proxyB.getVertex(cache.indexB[0]));
       Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
 
-      _temp.set(_pointB).sub(_pointA);
-      double s = Vector2.dot(_temp, _normal);
+      _temp.setFrom(_pointB).sub(_pointA);
+      double s = _temp.dot(_normal);
       if (s < 0.0) {
         m_axis.negate();
         s = -s;
@@ -417,13 +417,13 @@ class SeparationFunction {
         indexes[0] = m_proxyA.getSupport(_axisA);
         indexes[1] = m_proxyB.getSupport(_axisB);
 
-        _localPointA.set(m_proxyA.getVertex(indexes[0]));
-        _localPointB.set(m_proxyB.getVertex(indexes[1]));
+        _localPointA.setFrom(m_proxyA.getVertex(indexes[0]));
+        _localPointB.setFrom(m_proxyB.getVertex(indexes[1]));
 
         Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
         Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
 
-        double separation = Vector2.dot(_pointB.sub(_pointA), m_axis);
+        double separation = _pointB.sub(_pointA).dot(m_axis);
         return separation;
 
       case SeparationFunctionType.FACE_A:
@@ -436,10 +436,10 @@ class SeparationFunction {
         indexes[0] = -1;
         indexes[1] = m_proxyB.getSupport(_axisB);
 
-        _localPointB.set(m_proxyB.getVertex(indexes[1]));
+        _localPointB.setFrom(m_proxyB.getVertex(indexes[1]));
         Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
 
-        double separation = Vector2.dot(_pointB.sub(_pointA), _normal);
+        double separation = _pointB.sub(_pointA).dot(_normal);
         return separation;
 
       case SeparationFunctionType.FACE_B:
@@ -452,10 +452,10 @@ class SeparationFunction {
         indexes[1] = -1;
         indexes[0] = m_proxyA.getSupport(_axisA);
 
-        _localPointA.set(m_proxyA.getVertex(indexes[0]));
+        _localPointA.setFrom(m_proxyA.getVertex(indexes[0]));
         Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
 
-        double separation = Vector2.dot(_pointA.sub(_pointB), _normal);
+        double separation = _pointA.sub(_pointB).dot(_normal);
         return separation;
 
       default:
@@ -476,13 +476,13 @@ class SeparationFunction {
         Rot.mulTransUnsafeVec2(_xfb.q, m_axis.negate(), _axisB);
         m_axis.negate();
 
-        _localPointA.set(m_proxyA.getVertex(indexA));
-        _localPointB.set(m_proxyB.getVertex(indexB));
+        _localPointA.setFrom(m_proxyA.getVertex(indexA));
+        _localPointB.setFrom(m_proxyB.getVertex(indexB));
 
         Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
         Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
 
-        double separation = Vector2.dot(_pointB.sub(_pointA), m_axis);
+        double separation = _pointB.sub(_pointA).dot(m_axis);
         return separation;
 
       case SeparationFunctionType.FACE_A:
@@ -492,9 +492,9 @@ class SeparationFunction {
         Rot.mulTransUnsafeVec2(_xfb.q, _normal.negate(), _axisB);
         _normal.negate();
 
-        _localPointB.set(m_proxyB.getVertex(indexB));
+        _localPointB.setFrom(m_proxyB.getVertex(indexB));
         Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
-        double separation = Vector2.dot(_pointB.sub(_pointA), _normal);
+        double separation = _pointB.sub(_pointA).dot(_normal);
         return separation;
 
       case SeparationFunctionType.FACE_B:
@@ -504,10 +504,10 @@ class SeparationFunction {
         Rot.mulTransUnsafeVec2(_xfa.q, _normal.negate(), _axisA);
         _normal.negate();
 
-        _localPointA.set(m_proxyA.getVertex(indexA));
+        _localPointA.setFrom(m_proxyA.getVertex(indexA));
         Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
 
-        double separation = Vector2.dot(_pointA.sub(_pointB), _normal);
+        double separation = _pointA.sub(_pointB).dot(_normal);
         return separation;
 
       default:

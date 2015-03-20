@@ -144,7 +144,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
     Body b = fixture.getBody();
     Vector2 bp = b.worldCenter;
     double bm = b.mass;
-    double bI = b.getInertia() - bm * b.getLocalCenter().lengthSquared();
+    double bI = b.getInertia() - bm * b.getLocalCenter().length2;
     double invBm = bm > 0 ? 1 / bm : 0;
     double invBI = bI > 0 ? 1 / bI : 0;
     int childCount = shape.getChildCount();
@@ -258,7 +258,7 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
       triad.ka = -(dcax * dabx + dcay * daby);
       triad.kb = -(dabx * dbcx + daby * dbcy);
       triad.kc = -(dbcx * dcax + dbcy * dcay);
-      triad.s = Vector2.cross(pa, pb) + Vector2.cross(pb, pc) + Vector2.cross(pc, pa);
+      triad.s = pa.cross(pb) + pb.cross(pc) + pc.cross(pa);
       system.m_triadCount++;
     }
   }
@@ -320,8 +320,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
           triad.ka = -(dcax * dabx + dcay * daby);
           triad.kb = -(dabx * dbcx + daby * dbcy);
           triad.kc = -(dbcx * dcax + dbcy * dcay);
-          triad.s =
-              Vector2.cross(pa, pb) + Vector2.cross(pb, pc) + Vector2.cross(pc, pa);
+          triad.s = pa.cross(pb) + pb.cross(pc) + pc.cross(pa);
           system.m_triadCount++;
         }
       }
@@ -593,9 +592,9 @@ class ParticleSystem {
     }
     int index = m_count++;
     m_flagsBuffer.data[index] = def.flags;
-    m_positionBuffer.data[index].set(def.position);
+    m_positionBuffer.data[index].setFrom(def.position);
 //    assertNotSamePosition();
-    m_velocityBuffer.data[index].set(def.velocity);
+    m_velocityBuffer.data[index].setFrom(def.velocity);
     m_groupBuffer[index] = null;
     if (m_depthBuffer != null) {
       m_depthBuffer[index] = 0.0;
@@ -1356,11 +1355,11 @@ class ParticleSystem {
         rotation.setAngle(step.dt * group.m_angularVelocity);
         Rot.mulToOutUnsafe(rotation, group.m_center, cross);
         temp
-            .set(group.m_linearVelocity)
-            .mul(step.dt)
+            .setFrom(group.m_linearVelocity)
+            .scale(step.dt)
             .add(group.m_center)
             .sub(cross);
-        _tempXf.p.set(temp);
+        _tempXf.p.setFrom(temp);
         _tempXf.q.set(rotation);
         Transform.mulToOut(_tempXf, group.m_transform, group.m_transform);
         final Transform velocityTransform = _tempXf2;
@@ -1393,8 +1392,8 @@ class ParticleSystem {
         final double px = 1.0 / 3 * (pa.x + pb.x + pc.x);
         final double py = 1.0 / 3 * (pa.y + pb.y + pc.y);
         double rs =
-            Vector2.cross(oa, pa) + Vector2.cross(ob, pb) + Vector2.cross(oc, pc);
-        double rc = Vector2.dot(oa, pa) + Vector2.dot(ob, pb) + Vector2.dot(oc, pc);
+            oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
+        double rc = oa.dot(pa) + ob.dot(pb) + oc.dot(pc);
         double r2 = rs * rs + rc * rc;
         double invR = r2 == 0 ? double.MAX_FINITE : Math.sqrt(1.0 / r2);
         rs *= invR;
@@ -1668,8 +1667,8 @@ class ParticleSystem {
         newIndices[i] = newCount;
         if (i != newCount) {
           m_flagsBuffer.data[newCount] = m_flagsBuffer.data[i];
-          m_positionBuffer.data[newCount].set(m_positionBuffer.data[i]);
-          m_velocityBuffer.data[newCount].set(m_velocityBuffer.data[i]);
+          m_positionBuffer.data[newCount].setFrom(m_positionBuffer.data[i]);
+          m_velocityBuffer.data[newCount].setFrom(m_velocityBuffer.data[i]);
           m_groupBuffer[newCount] = m_groupBuffer[i];
           if (m_depthBuffer != null) {
             m_depthBuffer[newCount] = m_depthBuffer[i];

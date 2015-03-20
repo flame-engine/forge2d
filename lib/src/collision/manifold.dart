@@ -104,8 +104,8 @@ class Manifold {
     }
 
     type = cp.type;
-    localNormal.set(cp.localNormal);
-    localPoint.set(cp.localPoint);
+    localNormal.setFrom(cp.localNormal);
+    localPoint.setFrom(cp.localPoint);
     pointCount = cp.pointCount;
   }
 }

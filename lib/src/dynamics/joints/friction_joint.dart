@@ -76,7 +76,7 @@ class FrictionJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.set(m_linearImpulse).mul(inv_dt);
+    argOut.setFrom(m_linearImpulse).scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -108,8 +108,8 @@ class FrictionJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     m_indexA = m_bodyA.m_islandIndex;
     m_indexB = m_bodyB.m_islandIndex;
-    m_localCenterA.set(m_bodyA.m_sweep.localCenter);
-    m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
+    m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     m_invMassA = m_bodyA.m_invMass;
     m_invMassB = m_bodyB.m_invMass;
     m_invIA = m_bodyA.m_invI;
@@ -132,9 +132,9 @@ class FrictionJoint extends Joint {
 
     // Compute the effective mass matrix.
     Rot.mulToOutUnsafe(
-        qA, temp.set(m_localAnchorA).sub(m_localCenterA), m_rA);
+        qA, temp.setFrom(m_localAnchorA).sub(m_localCenterA), m_rA);
     Rot.mulToOutUnsafe(
-        qB, temp.set(m_localAnchorB).sub(m_localCenterB), m_rB);
+        qB, temp.setFrom(m_localAnchorB).sub(m_localCenterB), m_rB);
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -165,19 +165,19 @@ class FrictionJoint extends Joint {
 
     if (data.step.warmStarting) {
       // Scale impulses to support a variable time step.
-      m_linearImpulse.mul(data.step.dtRatio);
+      m_linearImpulse.scale(data.step.dtRatio);
       m_angularImpulse *= data.step.dtRatio;
 
       final Vector2 P = pool.popVec2();
-      P.set(m_linearImpulse);
+      P.setFrom(m_linearImpulse);
 
-      temp.set(P).mul(mA);
+      temp.setFrom(P).scale(mA);
       vA.sub(temp);
-      wA -= iA * (Vector2.cross(m_rA, P) + m_angularImpulse);
+      wA -= iA * (m_rA.cross(P) + m_angularImpulse);
 
-      temp.set(P).mul(mB);
+      temp.setFrom(P).scale(mB);
       vB.add(temp);
-      wB += iB * (Vector2.cross(m_rB, P) + m_angularImpulse);
+      wB += iB * (m_rB.cross(P) + m_angularImpulse);
 
       pool.pushVec2(1);
     } else {
@@ -239,25 +239,25 @@ class FrictionJoint extends Joint {
       impulse.negate();
 
       final Vector2 oldImpulse = pool.popVec2();
-      oldImpulse.set(m_linearImpulse);
+      oldImpulse.setFrom(m_linearImpulse);
       m_linearImpulse.add(impulse);
 
       double maxImpulse = h * m_maxForce;
 
-      if (m_linearImpulse.lengthSquared() > maxImpulse * maxImpulse) {
+      if (m_linearImpulse.length2 > maxImpulse * maxImpulse) {
         m_linearImpulse.normalize();
-        m_linearImpulse.mul(maxImpulse);
+        m_linearImpulse.scale(maxImpulse);
       }
 
-      impulse.set(m_linearImpulse).sub(oldImpulse);
+      impulse.setFrom(m_linearImpulse).sub(oldImpulse);
 
-      temp.set(impulse).mul(mA);
+      temp.setFrom(impulse).scale(mA);
       vA.sub(temp);
-      wA -= iA * Vector2.cross(m_rA, impulse);
+      wA -= iA * m_rA.cross(impulse);
 
-      temp.set(impulse).mul(mB);
+      temp.setFrom(impulse).scale(mB);
       vB.add(temp);
-      wB += iB * Vector2.cross(m_rB, impulse);
+      wB += iB * m_rB.cross(impulse);
     }
 
 //    data.velocities[m_indexA].v.set(vA);

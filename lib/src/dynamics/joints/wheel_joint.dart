@@ -92,9 +92,9 @@ class WheelJoint extends Joint {
   double m_gamma = 0.0;
 
   WheelJoint(IWorldPool argPool, WheelJointDef def) : super(argPool, def) {
-    m_localAnchorA.set(def.localAnchorA);
-    m_localAnchorB.set(def.localAnchorB);
-    m_localXAxisA.set(def.localAxisA);
+    m_localAnchorA.setFrom(def.localAnchorA);
+    m_localAnchorB.setFrom(def.localAnchorB);
+    m_localXAxisA.setFrom(def.localAxisA);
     Vector2.crossToOutUnsafeDblVec2(1.0, m_localXAxisA, m_localYAxisA);
 
     m_motorMass = 0.0;
@@ -126,8 +126,8 @@ class WheelJoint extends Joint {
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
     final Vector2 temp = pool.popVec2();
-    temp.set(m_ay).mul(m_impulse);
-    argOut.set(m_ax).mul(m_springImpulse).add(temp).mul(inv_dt);
+    temp.setFrom(m_ay).scale(m_impulse);
+    argOut.setFrom(m_ax).scale(m_springImpulse).add(temp).scale(inv_dt);
     pool.pushVec2(1);
   }
 
@@ -147,7 +147,7 @@ class WheelJoint extends Joint {
     p2.sub(p1);
     b1.getWorldVectorToOut(m_localXAxisA, axis);
 
-    double translation = Vector2.dot(p2, axis);
+    double translation = p2.dot(axis);
     pool.pushVec2(3);
     return translation;
   }
@@ -220,8 +220,8 @@ class WheelJoint extends Joint {
   void initVelocityConstraints(SolverData data) {
     m_indexA = m_bodyA.m_islandIndex;
     m_indexB = m_bodyB.m_islandIndex;
-    m_localCenterA.set(m_bodyA.m_sweep.localCenter);
-    m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
+    m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     m_invMassA = m_bodyA.m_invMass;
     m_invMassB = m_bodyB.m_invMass;
     m_invIA = m_bodyA.m_invI;
@@ -251,16 +251,16 @@ class WheelJoint extends Joint {
 
     // Compute the effective masses.
     Rot.mulToOutUnsafe(
-        qA, temp.set(m_localAnchorA).sub(m_localCenterA), rA);
+        qA, temp.setFrom(m_localAnchorA).sub(m_localCenterA), rA);
     Rot.mulToOutUnsafe(
-        qB, temp.set(m_localAnchorB).sub(m_localCenterB), rB);
-    d.set(cB).add(rB).sub(cA).sub(rA);
+        qB, temp.setFrom(m_localAnchorB).sub(m_localCenterB), rB);
+    d.setFrom(cB).add(rB).sub(cA).sub(rA);
 
     // Point to line constraint
     {
       Rot.mulToOut(qA, m_localYAxisA, m_ay);
-      m_sAy = Vector2.cross(temp.set(d).add(rA), m_ay);
-      m_sBy = Vector2.cross(rB, m_ay);
+      m_sAy = temp.setFrom(d).add(rA).cross(m_ay);
+      m_sBy = rB.cross(m_ay);
 
       m_mass = mA + mB + iA * m_sAy * m_sAy + iB * m_sBy * m_sBy;
 
@@ -275,15 +275,15 @@ class WheelJoint extends Joint {
     m_gamma = 0.0;
     if (m_frequencyHz > 0.0) {
       Rot.mulToOut(qA, m_localXAxisA, m_ax);
-      m_sAx = Vector2.cross(temp.set(d).add(rA), m_ax);
-      m_sBx = Vector2.cross(rB, m_ax);
+      m_sAx = temp.setFrom(d).add(rA).cross(m_ax);
+      m_sBx = rB.cross(m_ax);
 
       double invMass = mA + mB + iA * m_sAx * m_sAx + iB * m_sBx * m_sBx;
 
       if (invMass > 0.0) {
         m_springMass = 1.0 / invMass;
 
-        double C = Vector2.dot(d, m_ax);
+        double C = d.dot(m_ax);
 
         // Frequency
         double omega = 2.0 * Math.PI * m_frequencyHz;
@@ -374,7 +374,7 @@ class WheelJoint extends Joint {
     // Solve spring constraint
     {
       double Cdot =
-          Vector2.dot(m_ax, temp.set(vB).sub(vA)) + m_sBx * wB - m_sAx * wA;
+          m_ax.dot(temp.setFrom(vB).sub(vA)) + m_sBx * wB - m_sAx * wA;
       double impulse =
           -m_springMass * (Cdot + m_bias + m_gamma * m_springImpulse);
       m_springImpulse += impulse;
@@ -411,7 +411,7 @@ class WheelJoint extends Joint {
     // Solve point to line constraint
     {
       double Cdot =
-          Vector2.dot(m_ay, temp.set(vB).sub(vA)) + m_sBy * wB - m_sAy * wA;
+          m_ay.dot(temp.setFrom(vB).sub(vA)) + m_sBy * wB - m_sAy * wA;
       double impulse = -m_mass * Cdot;
       m_impulse += impulse;
 
@@ -449,17 +449,17 @@ class WheelJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOut(qA, temp.set(m_localAnchorA).sub(m_localCenterA), rA);
-    Rot.mulToOut(qB, temp.set(m_localAnchorB).sub(m_localCenterB), rB);
-    d.set(cB).sub(cA).add(rB).sub(rA);
+    Rot.mulToOut(qA, temp.setFrom(m_localAnchorA).sub(m_localCenterA), rA);
+    Rot.mulToOut(qB, temp.setFrom(m_localAnchorB).sub(m_localCenterB), rB);
+    d.setFrom(cB).sub(cA).add(rB).sub(rA);
 
     Vector2 ay = pool.popVec2();
     Rot.mulToOut(qA, m_localYAxisA, ay);
 
-    double sAy = Vector2.cross(temp.set(d).add(rA), ay);
-    double sBy = Vector2.cross(rB, ay);
+    double sAy = temp.setFrom(d).add(rA).cross(ay);
+    double sBy = rB.cross(ay);
 
-    double C = Vector2.dot(d, ay);
+    double C = d.dot(ay);
 
     double k = m_invMassA +
         m_invMassB +

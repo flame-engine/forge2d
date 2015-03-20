@@ -92,7 +92,7 @@ class AABB {
   Vector2 getCenter() {
     final Vector2 center = new Vector2.copy(lowerBound);
     center.add(upperBound);
-    center.mul(.5);
+    center.scale(.5);
     return center;
   }
 
@@ -109,7 +109,7 @@ class AABB {
   Vector2 getExtents() {
     final Vector2 center = new Vector2.copy(upperBound);
     center.sub(lowerBound);
-    center.mul(.5);
+    center.scale(.5);
     return center;
   }
 
@@ -119,11 +119,11 @@ class AABB {
   }
 
   void getVertices(List<Vector2> argRay) {
-    argRay[0].set(lowerBound);
-    argRay[1].set(lowerBound);
+    argRay[0].setFrom(lowerBound);
+    argRay[1].setFrom(lowerBound);
     argRay[1].x += upperBound.x - lowerBound.x;
-    argRay[2].set(upperBound);
-    argRay[3].set(upperBound);
+    argRay[2].setFrom(upperBound);
+    argRay[3].setFrom(upperBound);
     argRay[3].x -= upperBound.x - lowerBound.x;
   }
 
@@ -219,9 +219,9 @@ class AABB {
     final Vector2 absD = argPool.popVec2();
     final Vector2 normal = argPool.popVec2();
 
-    p.set(input.p1);
-    d.set(input.p2).sub(input.p1);
-    Vector2.absToOut(d, absD);
+    p.setFrom(input.p1);
+    d.setFrom(input.p2).sub(input.p1);
+    absD.setFrom(d).absolute();
 
     // x then y
     if (absD.x < Settings.EPSILON) {

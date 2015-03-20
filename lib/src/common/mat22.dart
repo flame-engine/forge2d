@@ -213,8 +213,8 @@ class Mat22 {
 
   /* djm: added */
   void absLocal() {
-    ex.absLocal();
-    ey.absLocal();
+    ex.absolute();
+    ey.absolute();
   }
 
   /**
@@ -315,11 +315,11 @@ class Mat22 {
      */
     final Mat22 C = new Mat22.zero();
 
-    C.ex.x = Vector2.dot(this.ex, B.ex);
-    C.ex.y = Vector2.dot(this.ey, B.ex);
+    C.ex.x = this.ex.dot(B.ex);
+    C.ex.y = this.ey.dot(B.ex);
 
-    C.ey.x = Vector2.dot(this.ex, B.ey);
-    C.ey.y = Vector2.dot(this.ey, B.ey);
+    C.ey.x = this.ex.dot(B.ey);
+    C.ey.y = this.ey.dot(B.ey);
     return C;
   }
 

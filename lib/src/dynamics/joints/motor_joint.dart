@@ -70,7 +70,7 @@ class MotorJoint extends Joint {
   double _m_angularMass = 0.0;
 
   MotorJoint(IWorldPool pool, MotorJointDef def) : super(pool, def) {
-    _m_linearOffset.set(def.linearOffset);
+    _m_linearOffset.setFrom(def.linearOffset);
     _m_angularOffset = def.angularOffset;
 
     _m_angularImpulse = 0.0;
@@ -81,15 +81,15 @@ class MotorJoint extends Joint {
   }
 
   void getAnchorA(Vector2 out) {
-    out.set(m_bodyA.position);
+    out.setFrom(m_bodyA.position);
   }
 
   void getAnchorB(Vector2 out) {
-    out.set(m_bodyB.position);
+    out.setFrom(m_bodyB.position);
   }
 
   void getReactionForce(double inv_dt, Vector2 out) {
-    out.set(_m_linearImpulse).mul(inv_dt);
+    out.setFrom(_m_linearImpulse).scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -112,7 +112,7 @@ class MotorJoint extends Joint {
         linearOffset.y != _m_linearOffset.y) {
       m_bodyA.setAwake(true);
       m_bodyB.setAwake(true);
-      _m_linearOffset.set(linearOffset);
+      _m_linearOffset.setFrom(linearOffset);
     }
   }
 
@@ -120,7 +120,7 @@ class MotorJoint extends Joint {
    * Get the target linear offset, in frame A, in meters.
    */
   void getLinearOffsetOut(Vector2 out) {
-    out.set(_m_linearOffset);
+    out.setFrom(_m_linearOffset);
   }
 
   /**
@@ -182,8 +182,8 @@ class MotorJoint extends Joint {
   void initVelocityConstraints(SolverData data) {
     _m_indexA = m_bodyA.m_islandIndex;
     _m_indexB = m_bodyB.m_islandIndex;
-    _m_localCenterA.set(m_bodyA.m_sweep.localCenter);
-    _m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    _m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
+    _m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     _m_invMassA = m_bodyA.m_invMass;
     _m_invMassB = m_bodyB.m_invMass;
     _m_invIA = m_bodyA.m_invI;
@@ -326,14 +326,14 @@ class MotorJoint extends Joint {
       Mat22.mulToOutUnsafeVec2_(_m_linearMass, Cdot, impulse);
       impulse.negate();
       final Vector2 oldImpulse = pool.popVec2();
-      oldImpulse.set(_m_linearImpulse);
+      oldImpulse.setFrom(_m_linearImpulse);
       _m_linearImpulse.add(impulse);
 
       double maxImpulse = h * _m_maxForce;
 
-      if (_m_linearImpulse.lengthSquared() > maxImpulse * maxImpulse) {
+      if (_m_linearImpulse.length2 > maxImpulse * maxImpulse) {
         _m_linearImpulse.normalize();
-        _m_linearImpulse.mul(maxImpulse);
+        _m_linearImpulse.scale(maxImpulse);
       }
 
       impulse.x = _m_linearImpulse.x - oldImpulse.x;

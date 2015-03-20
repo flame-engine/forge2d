@@ -235,8 +235,8 @@ class Collision {
     final Vector2 vIn1v = vIn1.v;
 
     // Calculate the distance of end points to the line
-    double distance0 = Vector2.dot(normal, vIn0v) - offset;
-    double distance1 = Vector2.dot(normal, vIn1v) - offset;
+    double distance0 = normal.dot(vIn0v) - offset;
+    double distance1 = normal.dot(vIn1v) - offset;
 
     // If the points are behind the plane
     if (distance0 <= 0.0) {
@@ -308,11 +308,11 @@ class Collision {
     }
 
     manifold.type = ManifoldType.CIRCLES;
-    manifold.localPoint.set(circle1p);
+    manifold.localPoint.setFrom(circle1p);
     manifold.localNormal.setZero();
     manifold.pointCount = 1;
 
-    manifold.points[0].localPoint.set(circle2p);
+    manifold.points[0].localPoint.setFrom(circle2p);
     manifold.points[0].id.zero();
   }
 
@@ -449,8 +449,8 @@ class Collision {
       manifold.localNormal.y = cLocaly - v1.y;
       // end inline
       manifold.localNormal.normalize();
-      manifold.localPoint.set(v1);
-      manifold.points[0].localPoint.set(circlep);
+      manifold.localPoint.setFrom(v1);
+      manifold.points[0].localPoint.setFrom(circlep);
       manifold.points[0].id.zero();
     } else if (u2 <= 0.0) {
       // inlined
@@ -469,8 +469,8 @@ class Collision {
       manifold.localNormal.y = cLocaly - v2.y;
       // end inline
       manifold.localNormal.normalize();
-      manifold.localPoint.set(v2);
-      manifold.points[0].localPoint.set(circlep);
+      manifold.localPoint.setFrom(v2);
+      manifold.points[0].localPoint.setFrom(circlep);
       manifold.points[0].id.zero();
     } else {
       // Vec2 faceCenter = 0.5f * (v1 + v2);
@@ -498,10 +498,10 @@ class Collision {
 
       manifold.pointCount = 1;
       manifold.type = ManifoldType.FACE_A;
-      manifold.localNormal.set(normals[vertIndex1]);
+      manifold.localNormal.setFrom(normals[vertIndex1]);
       manifold.localPoint.x = fcx; // (faceCenter)
       manifold.localPoint.y = fcy;
-      manifold.points[0].localPoint.set(circlep);
+      manifold.points[0].localPoint.setFrom(circlep);
       manifold.points[0].id.zero();
     }
   }
@@ -705,8 +705,8 @@ class Collision {
 
     final int iv1 = edge1;
     final int iv2 = edge1 + 1 < count1 ? edge1 + 1 : 0;
-    _v11.set(vertices1[iv1]);
-    _v12.set(vertices1[iv2]);
+    _v11.setFrom(vertices1[iv1]);
+    _v12.setFrom(vertices1[iv2]);
     _localTangent.x = _v12.x - _v11.x;
     _localTangent.y = _v12.y - _v11.y;
     _localTangent.normalize();
@@ -769,8 +769,8 @@ class Collision {
     }
 
     // Now _clipPoints2 contains the clipped points.
-    manifold.localNormal.set(_localNormal);
-    manifold.localPoint.set(_planePoint);
+    manifold.localNormal.setFrom(_localNormal);
+    manifold.localPoint.setFrom(_planePoint);
 
     int pointCount = 0;
     for (int i = 0; i < Settings.maxManifoldPoints; ++i) {
@@ -818,11 +818,11 @@ class Collision {
 
     final Vector2 A = edgeA.m_vertex1;
     final Vector2 B = edgeA.m_vertex2;
-    _e.set(B).sub(A);
+    _e.setFrom(B).sub(A);
 
     // Barycentric coordinates
-    double u = Vector2.dot(_e, _temp.set(B).sub(_Q));
-    double v = Vector2.dot(_e, _temp.set(_Q).sub(A));
+    double u = _e.dot(_temp.setFrom(B).sub(_Q));
+    double v = _e.dot(_temp.setFrom(_Q).sub(A));
 
     double radius = edgeA.radius + circleB.radius;
 
@@ -833,8 +833,8 @@ class Collision {
     // Region A
     if (v <= 0.0) {
       final Vector2 P = A;
-      _d.set(_Q).sub(P);
-      double dd = Vector2.dot(_d, _d);
+      _d.setFrom(_Q).sub(P);
+      double dd = _d.dot(_d);
       if (dd > radius * radius) {
         return;
       }
@@ -843,8 +843,8 @@ class Collision {
       if (edgeA.m_hasVertex0) {
         final Vector2 A1 = edgeA.m_vertex0;
         final Vector2 B1 = A;
-        _e1.set(B1).sub(A1);
-        double u1 = Vector2.dot(_e1, _temp.set(B1).sub(_Q));
+        _e1.setFrom(B1).sub(A1);
+        double u1 = _e1.dot(_temp.setFrom(B1).sub(_Q));
 
         // Is the circle in Region AB of the previous edge?
         if (u1 > 0.0) {
@@ -857,18 +857,18 @@ class Collision {
       manifold.pointCount = 1;
       manifold.type = ManifoldType.CIRCLES;
       manifold.localNormal.setZero();
-      manifold.localPoint.set(P);
+      manifold.localPoint.setFrom(P);
       // manifold.points[0].id.key = 0;
       manifold.points[0].id.set(_cf);
-      manifold.points[0].localPoint.set(circleB.m_p);
+      manifold.points[0].localPoint.setFrom(circleB.m_p);
       return;
     }
 
     // Region B
     if (u <= 0.0) {
       Vector2 P = B;
-      _d.set(_Q).sub(P);
-      double dd = Vector2.dot(_d, _d);
+      _d.setFrom(_Q).sub(P);
+      double dd = _d.dot(_d);
       if (dd > radius * radius) {
         return;
       }
@@ -878,8 +878,8 @@ class Collision {
         final Vector2 B2 = edgeA.m_vertex3;
         final Vector2 A2 = B;
         final Vector2 e2 = _e1;
-        e2.set(B2).sub(A2);
-        double v2 = Vector2.dot(e2, _temp.set(_Q).sub(A2));
+        e2.setFrom(B2).sub(A2);
+        double v2 = e2.dot(_temp.setFrom(_Q).sub(A2));
 
         // Is the circle in Region AB of the next edge?
         if (v2 > 0.0) {
@@ -892,29 +892,29 @@ class Collision {
       manifold.pointCount = 1;
       manifold.type = ManifoldType.CIRCLES;
       manifold.localNormal.setZero();
-      manifold.localPoint.set(P);
+      manifold.localPoint.setFrom(P);
       // manifold.points[0].id.key = 0;
       manifold.points[0].id.set(_cf);
-      manifold.points[0].localPoint.set(circleB.m_p);
+      manifold.points[0].localPoint.setFrom(circleB.m_p);
       return;
     }
 
     // Region AB
-    double den = Vector2.dot(_e, _e);
+    double den = _e.dot(_e);
     assert(den > 0.0);
 
     // Vec2 P = (1.0f / den) * (u * A + v * B);
-    _P.set(A).mul(u).add(_temp.set(B).mul(v));
-    _P.mul(1.0 / den);
-    _d.set(_Q).sub(_P);
-    double dd = Vector2.dot(_d, _d);
+    _P.setFrom(A).scale(u).add(_temp.setFrom(B).scale(v));
+    _P.scale(1.0 / den);
+    _d.setFrom(_Q).sub(_P);
+    double dd = _d.dot(_d);
     if (dd > radius * radius) {
       return;
     }
 
     _n.x = -_e.y;
     _n.y = _e.x;
-    if (Vector2.dot(_n, _temp.set(_Q).sub(A)) < 0.0) {
+    if (_n.dot(_temp.setFrom(_Q).sub(A)) < 0.0) {
       _n.setValues(-_n.x, -_n.y);
     }
     _n.normalize();
@@ -923,11 +923,11 @@ class Collision {
     _cf.typeA = ContactIDType.FACE.index & 0xFF;
     manifold.pointCount = 1;
     manifold.type = ManifoldType.FACE_A;
-    manifold.localNormal.set(_n);
-    manifold.localPoint.set(A);
+    manifold.localNormal.setFrom(_n);
+    manifold.localPoint.setFrom(A);
     // manifold.points[0].id.key = 0;
     manifold.points[0].id.set(_cf);
-    manifold.points[0].localPoint.set(circleB.m_p);
+    manifold.points[0].localPoint.setFrom(circleB.m_p);
   }
 
   final EPCollider _collider = new EPCollider();
@@ -998,31 +998,31 @@ class EPCollider {
     bool hasVertex0 = edgeA.m_hasVertex0;
     bool hasVertex3 = edgeA.m_hasVertex3;
 
-    _edge1.set(m_v2).sub(m_v1);
+    _edge1.setFrom(m_v2).sub(m_v1);
     _edge1.normalize();
     m_normal1.setValues(_edge1.y, -_edge1.x);
-    double offset1 = Vector2.dot(m_normal1, _temp.set(m_centroidB).sub(m_v1));
+    double offset1 = m_normal1.dot(_temp.setFrom(m_centroidB).sub(m_v1));
     double offset0 = 0.0,
         offset2 = 0.0;
     bool convex1 = false,
-        convex2 = false;
+         convex2 = false;
 
     // Is there a preceding edge?
     if (hasVertex0) {
-      _edge0.set(m_v1).sub(m_v0);
+      _edge0.setFrom(m_v1).sub(m_v0);
       _edge0.normalize();
       m_normal0.setValues(_edge0.y, -_edge0.x);
-      convex1 = Vector2.cross(_edge0, _edge1) >= 0.0;
-      offset0 = Vector2.dot(m_normal0, _temp.set(m_centroidB).sub(m_v0));
+      convex1 = _edge0.cross(_edge1) >= 0.0;
+      offset0 = m_normal0.dot(_temp.setFrom(m_centroidB).sub(m_v0));
     }
 
     // Is there a following edge?
     if (hasVertex3) {
-      _edge2.set(m_v3).sub(m_v2);
+      _edge2.setFrom(m_v3).sub(m_v2);
       _edge2.normalize();
       m_normal2.setValues(_edge2.y, -_edge2.x);
-      convex2 = Vector2.cross(_edge1, _edge2) > 0.0;
-      offset2 = Vector2.dot(m_normal2, _temp.set(m_centroidB).sub(m_v2));
+      convex2 = _edge1.cross(_edge2) > 0.0;
+      offset2 = m_normal2.dot(_temp.setFrom(m_centroidB).sub(m_v2));
     }
 
     // Determine front or back collision. Determine collision normal limits.
@@ -1238,9 +1238,9 @@ class EPCollider {
 
       // Search for the polygon normal that is most anti-parallel to the edge normal.
       int bestIndex = 0;
-      double bestValue = Vector2.dot(m_normal, m_polygonB.normals[0]);
+      double bestValue = m_normal.dot( m_polygonB.normals[0]);
       for (int i = 1; i < m_polygonB.count; ++i) {
-        double value = Vector2.dot(m_normal, m_polygonB.normals[i]);
+        double value = m_normal.dot(m_polygonB.normals[i]);
         if (value < bestValue) {
           bestValue = value;
           bestIndex = i;
@@ -1250,13 +1250,13 @@ class EPCollider {
       int i1 = bestIndex;
       int i2 = i1 + 1 < m_polygonB.count ? i1 + 1 : 0;
 
-      ie0.v.set(m_polygonB.vertices[i1]);
+      ie0.v.setFrom(m_polygonB.vertices[i1]);
       ie0.id.indexA = 0;
       ie0.id.indexB = i1 & 0xFF;
       ie0.id.typeA = ContactIDType.FACE.index & 0xFF;
       ie0.id.typeB = ContactIDType.VERTEX.index & 0xFF;
 
-      ie1.v.set(m_polygonB.vertices[i2]);
+      ie1.v.setFrom(m_polygonB.vertices[i2]);
       ie1.id.indexA = 0;
       ie1.id.indexB = i2 & 0xFF;
       ie1.id.typeA = ContactIDType.FACE.index & 0xFF;
@@ -1265,26 +1265,26 @@ class EPCollider {
       if (m_front) {
         _rf.i1 = 0;
         _rf.i2 = 1;
-        _rf.v1.set(m_v1);
-        _rf.v2.set(m_v2);
-        _rf.normal.set(m_normal1);
+        _rf.v1.setFrom(m_v1);
+        _rf.v2.setFrom(m_v2);
+        _rf.normal.setFrom(m_normal1);
       } else {
         _rf.i1 = 1;
         _rf.i2 = 0;
-        _rf.v1.set(m_v2);
-        _rf.v2.set(m_v1);
-        _rf.normal.set(m_normal1).negate();
+        _rf.v1.setFrom(m_v2);
+        _rf.v2.setFrom(m_v1);
+        _rf.normal.setFrom(m_normal1).negate();
       }
     } else {
       manifold.type = ManifoldType.FACE_B;
 
-      ie0.v.set(m_v1);
+      ie0.v.setFrom(m_v1);
       ie0.id.indexA = 0;
       ie0.id.indexB = primaryAxis.index & 0xFF;
       ie0.id.typeA = ContactIDType.VERTEX.index & 0xFF;
       ie0.id.typeB = ContactIDType.FACE.index & 0xFF;
 
-      ie1.v.set(m_v2);
+      ie1.v.setFrom(m_v2);
       ie1.id.indexA = 0;
       ie1.id.indexB = primaryAxis.index & 0xFF;
       ie1.id.typeA = ContactIDType.VERTEX.index & 0xFF;
@@ -1292,15 +1292,15 @@ class EPCollider {
 
       _rf.i1 = primaryAxis.index;
       _rf.i2 = _rf.i1 + 1 < m_polygonB.count ? _rf.i1 + 1 : 0;
-      _rf.v1.set(m_polygonB.vertices[_rf.i1]);
-      _rf.v2.set(m_polygonB.vertices[_rf.i2]);
-      _rf.normal.set(m_polygonB.normals[_rf.i1]);
+      _rf.v1.setFrom(m_polygonB.vertices[_rf.i1]);
+      _rf.v2.setFrom(m_polygonB.vertices[_rf.i2]);
+      _rf.normal.setFrom(m_polygonB.normals[_rf.i1]);
     }
 
     _rf.sideNormal1.setValues(_rf.normal.y, -_rf.normal.x);
-    _rf.sideNormal2.set(_rf.sideNormal1).negate();
-    _rf.sideOffset1 = Vector2.dot(_rf.sideNormal1, _rf.v1);
-    _rf.sideOffset2 = Vector2.dot(_rf.sideNormal2, _rf.v2);
+    _rf.sideNormal2.setFrom(_rf.sideNormal1).negate();
+    _rf.sideOffset1 = _rf.sideNormal1.dot(_rf.v1);
+    _rf.sideOffset2 = _rf.sideNormal2.dot(_rf.v2);
 
     // Clip incident edge against extruded edge1 side edges.
     int np;
@@ -1323,11 +1323,11 @@ class EPCollider {
 
     // Now _clipPoints2 contains the clipped points.
     if (primaryAxis.type == EPAxisType.EDGE_A) {
-      manifold.localNormal.set(_rf.normal);
-      manifold.localPoint.set(_rf.v1);
+      manifold.localNormal.setFrom(_rf.normal);
+      manifold.localPoint.setFrom(_rf.v1);
     } else {
-      manifold.localNormal.set(polygonB.m_normals[_rf.i1]);
-      manifold.localPoint.set(polygonB.m_vertices[_rf.i1]);
+      manifold.localNormal.setFrom(polygonB.m_normals[_rf.i1]);
+      manifold.localPoint.setFrom(polygonB.m_vertices[_rf.i1]);
     }
 
     int pointCount = 0;
@@ -1335,7 +1335,7 @@ class EPCollider {
       double separation;
 
       separation =
-          Vector2.dot(_rf.normal, _temp.set(_clipPoints2[i].v).sub(_rf.v1));
+          _rf.normal.dot(_temp.setFrom(_clipPoints2[i].v).sub(_rf.v1));
 
       if (separation <= m_radius) {
         ManifoldPoint cp = manifold.points[pointCount];
@@ -1346,7 +1346,7 @@ class EPCollider {
               m_xf, _clipPoints2[i].v, cp.localPoint);
           cp.id.set(_clipPoints2[i].id);
         } else {
-          cp.localPoint.set(_clipPoints2[i].v);
+          cp.localPoint.setFrom(_clipPoints2[i].v);
           cp.id.typeA = _clipPoints2[i].id.typeB;
           cp.id.typeB = _clipPoints2[i].id.typeA;
           cp.id.indexA = _clipPoints2[i].id.indexB;
@@ -1415,12 +1415,12 @@ class EPCollider {
 
       // Adjacency
       if (_n.x * _perp.x + _n.y * _perp.y >= 0.0) {
-        if (Vector2.dot(_temp.set(_n).sub(m_upperLimit), m_normal) <
+        if (_temp.setFrom(_n).sub(m_upperLimit).dot(m_normal) <
             -Settings.angularSlop) {
           continue;
         }
       } else {
-        if (Vector2.dot(_temp.set(_n).sub(m_lowerLimit), m_normal) <
+        if (_temp.setFrom(_n).sub(m_lowerLimit).dot(m_normal) <
             -Settings.angularSlop) {
           continue;
         }

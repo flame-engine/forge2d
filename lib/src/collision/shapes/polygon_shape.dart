@@ -74,10 +74,10 @@ class PolygonShape extends Shape {
 
   Shape clone() {
     PolygonShape shape = new PolygonShape();
-    shape.m_centroid.set(this.m_centroid);
+    shape.m_centroid.setFrom(this.m_centroid);
     for (int i = 0; i < shape.m_normals.length; i++) {
-      shape.m_normals[i].set(m_normals[i]);
-      shape.m_vertices[i].set(m_vertices[i]);
+      shape.m_normals[i].setFrom(m_normals[i]);
+      shape.m_vertices[i].setFrom(m_vertices[i]);
     }
     shape.setRadius(this.getRadius());
     shape.m_count = this.m_count;
@@ -170,15 +170,15 @@ class PolygonShape extends Shape {
           continue;
         }
 
-        Vector2 r = _pool1.set(ps[ie]).sub(ps[hull[m]]);
-        Vector2 v = _pool2.set(ps[j]).sub(ps[hull[m]]);
-        double c = Vector2.cross(r, v);
+        Vector2 r = _pool1.setFrom(ps[ie]).sub(ps[hull[m]]);
+        Vector2 v = _pool2.setFrom(ps[j]).sub(ps[hull[m]]);
+        double c = r.cross(v);
         if (c < 0.0) {
           ie = j;
         }
 
         // Collinearity check
-        if (c == 0.0 && v.lengthSquared() > r.lengthSquared()) {
+        if (c == 0.0 && v.length2 > r.length2) {
           ie = j;
         }
       }
@@ -198,7 +198,7 @@ class PolygonShape extends Shape {
       if (m_vertices[i] == null) {
         m_vertices[i] = new Vector2.zero();
       }
-      m_vertices[i].set(ps[hull[i]]);
+      m_vertices[i].setFrom(ps[hull[i]]);
     }
 
     final Vector2 edge = _pool1;
@@ -207,9 +207,9 @@ class PolygonShape extends Shape {
     for (int i = 0; i < m_count; ++i) {
       final int i1 = i;
       final int i2 = i + 1 < m_count ? i + 1 : 0;
-      edge.set(m_vertices[i2]).sub(m_vertices[i1]);
+      edge.setFrom(m_vertices[i2]).sub(m_vertices[i1]);
 
-      assert(edge.lengthSquared() > Settings.EPSILON * Settings.EPSILON);
+      assert(edge.length2 > Settings.EPSILON * Settings.EPSILON);
       Vector2.crossToOutUnsafeVec2Dbl(edge, 1.0, m_normals[i]);
       m_normals[i].normalize();
     }
@@ -256,10 +256,10 @@ class PolygonShape extends Shape {
     m_normals[1].setValues(1.0, 0.0);
     m_normals[2].setValues(0.0, 1.0);
     m_normals[3].setValues(-1.0, 0.0);
-    m_centroid.set(center);
+    m_centroid.setFrom(center);
 
     final Transform xf = _poolt1;
-    xf.p.set(center);
+    xf.p.setFrom(center);
     xf.q.setAngle(angle);
 
     // Transform vertices and normals.
@@ -512,22 +512,22 @@ class PolygonShape extends Shape {
       final Vector2 p2 = vs[i];
       final Vector2 p3 = i + 1 < count ? vs[i + 1] : vs[0];
 
-      e1.set(p2).sub(p1);
-      e2.set(p3).sub(p1);
+      e1.setFrom(p2).sub(p1);
+      e2.setFrom(p3).sub(p1);
 
-      final double D = Vector2.cross(e1, e2);
+      final double D = e1.cross(e2);
 
       final double triangleArea = 0.5 * D;
       area += triangleArea;
 
       // Area weighted centroid
-      e1.set(p1).add(p2).add(p3).mul(triangleArea * inv3);
+      e1.setFrom(p1).add(p2).add(p3).scale(triangleArea * inv3);
       out.add(e1);
     }
 
     // Centroid
     assert(area > Settings.EPSILON);
-    out.mul(1.0 / area);
+    out.scale(1.0 / area);
   }
 
   void computeMass(final MassData massData, double density) {
@@ -570,7 +570,7 @@ class PolygonShape extends Shape {
     for (int i = 0; i < m_count; ++i) {
       s.add(m_vertices[i]);
     }
-    s.mul(1.0 / m_count);
+    s.scale(1.0 / m_count);
 
     final double k_inv3 = 1.0 / 3.0;
 
@@ -579,13 +579,13 @@ class PolygonShape extends Shape {
 
     for (int i = 0; i < m_count; ++i) {
       // Triangle vertices.
-      e1.set(m_vertices[i]).sub(s);
+      e1.setFrom(m_vertices[i]).sub(s);
       e2
-          .set(s)
+          .setFrom(s)
           .negate()
           .add(i + 1 < m_count ? m_vertices[i + 1] : m_vertices[0]);
 
-      final double D = Vector2.cross(e1, e2);
+      final double D = e1.cross(e2);
 
       final double triangleArea = 0.5 * D;
       area += triangleArea;
@@ -610,14 +610,14 @@ class PolygonShape extends Shape {
 
     // Center of mass
     assert(area > Settings.EPSILON);
-    center.mul(1.0 / area);
-    massData.center.set(center).add(s);
+    center.scale(1.0 / area);
+    massData.center.setFrom(center).add(s);
 
     // Inertia tensor relative to the local origin (point s)
     massData.I = I * density;
 
     // Shift to center of mass then to original body origin.
-    massData.I += massData.mass * (Vector2.dot(massData.center, massData.center));
+    massData.I += massData.mass * (massData.center.dot(massData.center));
   }
 
   /**
@@ -630,15 +630,15 @@ class PolygonShape extends Shape {
       int i1 = i;
       int i2 = i < m_count - 1 ? i1 + 1 : 0;
       Vector2 p = m_vertices[i1];
-      Vector2 e = _pool1.set(m_vertices[i2]).sub(p);
+      Vector2 e = _pool1.setFrom(m_vertices[i2]).sub(p);
 
       for (int j = 0; j < m_count; ++j) {
         if (j == i1 || j == i2) {
           continue;
         }
 
-        Vector2 v = _pool2.set(m_vertices[j]).sub(p);
-        double c = Vector2.cross(e, v);
+        Vector2 v = _pool2.setFrom(m_vertices[j]).sub(p);
+        double c = e.cross(v);
         if (c < 0.0) {
           return false;
         }

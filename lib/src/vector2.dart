@@ -30,6 +30,7 @@ import 'dart:typed_data';
 import 'math_utils.dart' as MathUtils;
 import 'settings.dart' as Settings;
 
+
 class Vector2 {
   final Float64List _d = new Float64List(2);
 
@@ -69,7 +70,7 @@ class Vector2 {
   }
 
   /** Set this vector to another vector. */
-  Vector2 set(Vector2 v) {
+  Vector2 setFrom(Vector2 v) {
     this.x = v.x;
     this.y = v.y;
     return this;
@@ -125,7 +126,7 @@ class Vector2 {
   }
 
   /** Multiply this vector by a number and return result - alters this vector. */
-  Vector2 mul(double a) {
+  Vector2 scale(double a) {
     x *= a;
     y *= a;
     return this;
@@ -148,7 +149,7 @@ class Vector2 {
   }
 
   /** Return the squared length of this vector. */
-  double lengthSquared() {
+  double get length2 {
     return (x * x + y * y);
   }
   
@@ -188,7 +189,7 @@ class Vector2 {
     return new Vector2(x.abs(), y.abs());
   }
 
-  void absLocal() {
+  void absolute() {
     x = x.abs();
     y = y.abs();
   }
@@ -216,12 +217,12 @@ class Vector2 {
     out.y = a.y.abs();
   }
 
-  static double dot(final Vector2 a, final Vector2 b) {
-    return a.x * b.x + a.y * b.y;
+  double dot(final Vector2 b) {
+    return x * b.x + y * b.y;
   }
 
-  static double cross(Vector2 a, Vector2 b) {
-    return a.x * b.y - a.y * b.x;
+  double cross(Vector2 b) {
+    return x * b.y - y * b.x;
   }
 
   static Vector2 crossVec2Dbl(Vector2 a, double s) {
@@ -296,4 +297,5 @@ class Vector2 {
         MathUtils.approxEquals(y, other.y);
   }
 }
+ 
 

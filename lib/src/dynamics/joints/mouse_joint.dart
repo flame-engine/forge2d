@@ -59,7 +59,7 @@ class MouseJoint extends Joint {
     assert(def.frequencyHz >= 0);
     assert(def.dampingRatio >= 0);
 
-    _m_targetA.set(def.target);
+    _m_targetA.setFrom(def.target);
     Transform.mulTransToOutUnsafeVec2(
         m_bodyB.getTransform(), _m_targetA, _m_localAnchorB);
 
@@ -71,7 +71,7 @@ class MouseJoint extends Joint {
   }
 
   void getAnchorA(Vector2 argOut) {
-    argOut.set(_m_targetA);
+    argOut.setFrom(_m_targetA);
   }
 
   void getAnchorB(Vector2 argOut) {
@@ -79,7 +79,7 @@ class MouseJoint extends Joint {
   }
 
   void getReactionForce(double invDt, Vector2 argOut) {
-    argOut.set(_m_impulse).mul(invDt);
+    argOut.setFrom(_m_impulse).scale(invDt);
   }
 
   double getReactionTorque(double invDt) {
@@ -90,7 +90,7 @@ class MouseJoint extends Joint {
     if (m_bodyB.isAwake() == false) {
       m_bodyB.setAwake(true);
     }
-    _m_targetA.set(target);
+    _m_targetA.setFrom(target);
   }
 
   Vector2 getTarget() {
@@ -126,7 +126,7 @@ class MouseJoint extends Joint {
 
   void initVelocityConstraints(final SolverData data) {
     _m_indexB = m_bodyB.m_islandIndex;
-    _m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    _m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     _m_invMassB = m_bodyB.m_invMass;
     _m_invIB = m_bodyB.m_invI;
 
@@ -165,7 +165,7 @@ class MouseJoint extends Joint {
 
     // Compute the effective mass matrix.
     Rot.mulToOutUnsafe(
-        qB, temp.set(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
+        qB, temp.setFrom(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
 
     // K = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
     // = [1/m1+1/m2 0 ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]
@@ -178,17 +178,17 @@ class MouseJoint extends Joint {
 
     K.invertToOut(_m_mass);
 
-    _m_C.set(cB).add(_m_rB).sub(_m_targetA);
-    _m_C.mul(_m_beta);
+    _m_C.setFrom(cB).add(_m_rB).sub(_m_targetA);
+    _m_C.scale(_m_beta);
 
     // Cheat with some damping
     wB *= 0.98;
 
     if (data.step.warmStarting) {
-      _m_impulse.mul(data.step.dtRatio);
+      _m_impulse.scale(data.step.dtRatio);
       vB.x += _m_invMassB * _m_impulse.x;
       vB.y += _m_invMassB * _m_impulse.y;
-      wB += _m_invIB * Vector2.cross(_m_rB, _m_impulse);
+      wB += _m_invIB * _m_rB.cross(_m_impulse);
     } else {
       _m_impulse.setZero();
     }
@@ -218,25 +218,25 @@ class MouseJoint extends Joint {
     final Vector2 temp = pool.popVec2();
 
     temp
-        .set(_m_impulse)
-        .mul(_m_gamma)
+        .setFrom(_m_impulse)
+        .scale(_m_gamma)
         .add(_m_C)
         .add(Cdot)
         .negate();
     Mat22.mulToOutUnsafeVec2_(_m_mass, temp, impulse);
 
     Vector2 oldImpulse = temp;
-    oldImpulse.set(_m_impulse);
+    oldImpulse.setFrom(_m_impulse);
     _m_impulse.add(impulse);
     double maxImpulse = data.step.dt * _m_maxForce;
-    if (_m_impulse.lengthSquared() > maxImpulse * maxImpulse) {
-      _m_impulse.mul(maxImpulse / _m_impulse.length);
+    if (_m_impulse.length2 > maxImpulse * maxImpulse) {
+      _m_impulse.scale(maxImpulse / _m_impulse.length);
     }
-    impulse.set(_m_impulse).sub(oldImpulse);
+    impulse.setFrom(_m_impulse).sub(oldImpulse);
 
     vB.x += _m_invMassB * impulse.x;
     vB.y += _m_invMassB * impulse.y;
-    wB += _m_invIB * Vector2.cross(_m_rB, impulse);
+    wB += _m_invIB * _m_rB.cross(impulse);
 
 //    data.velocities[m_indexB].v.set(vB);
     data.velocities[_m_indexB].w = wB;

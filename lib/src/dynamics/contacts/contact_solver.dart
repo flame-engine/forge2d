@@ -131,12 +131,12 @@ class ContactSolver {
       pc.indexB = bodyB.m_islandIndex;
       pc.invMassA = bodyA.m_invMass;
       pc.invMassB = bodyB.m_invMass;
-      pc.localCenterA.set(bodyA.m_sweep.localCenter);
-      pc.localCenterB.set(bodyB.m_sweep.localCenter);
+      pc.localCenterA.setFrom(bodyA.m_sweep.localCenter);
+      pc.localCenterB.setFrom(bodyB.m_sweep.localCenter);
       pc.invIA = bodyA.m_invI;
       pc.invIB = bodyB.m_invI;
-      pc.localNormal.set(manifold.localNormal);
-      pc.localPoint.set(manifold.localPoint);
+      pc.localNormal.setFrom(manifold.localNormal);
+      pc.localPoint.setFrom(manifold.localPoint);
       pc.pointCount = pointCount;
       pc.radiusA = radiusA;
       pc.radiusB = radiusB;
@@ -574,8 +574,8 @@ class ContactSolver {
                   .sub(vA)
                   .sub(Vector2.crossDblVec2(wA, cp2rA));
               // Compute normal velocity
-              vn1 = Vector2.dot(dv1, normal);
-              vn2 = Vector2.dot(dv2, normal);
+              vn1 = dv1.dot(normal);
+              vn2 = dv2.dot(normal);
 
               assert((vn1 - cp1.velocityBias).abs() < k_errorTol);
               assert((vn2 - cp2.velocityBias).abs() < k_errorTol);
@@ -648,7 +648,7 @@ class ContactSolver {
                   .sub(vA)
                   .sub(Vector2.crossDblVec2(wA, cp1rA));
               // Compute normal velocity
-              vn1 = Vector2.dot(dv1, normal);
+              vn1 = dv1.dot(normal);
 
               assert((vn1 - cp1.velocityBias).abs() < k_errorTol);
             }
@@ -717,7 +717,7 @@ class ContactSolver {
                   .sub(vA)
                   .sub(Vector2.crossDblVec2(wA, cp2rA));
               // Compute normal velocity
-              vn2 = Vector2.dot(dv2, normal);
+              vn2 = dv2.dot(normal);
 
               assert((vn2 - cp2.velocityBias).abs() < k_errorTol);
             }

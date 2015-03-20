@@ -234,7 +234,7 @@ class Island {
       double w = b._angularVelocity;
 
       // Store positions for continuous collision.
-      bm_sweep.c0.set(bm_sweep.c);
+      bm_sweep.c0.setFrom(bm_sweep.c);
       bm_sweep.a0 = bm_sweep.a;
 
       if (b.m_type == BodyType.DYNAMIC) {
@@ -395,7 +395,7 @@ class Island {
 
         if ((b.m_flags & Body.e_autoSleepFlag) == 0 ||
             b._angularVelocity * b._angularVelocity > angTolSqr ||
-            Vector2.dot(b._linearVelocity, b._linearVelocity) > linTolSqr) {
+            b._linearVelocity.dot(b._linearVelocity) > linTolSqr) {
           b.m_sleepTime = 0.0;
           minSleepTime = 0.0;
         } else {
@@ -482,7 +482,7 @@ class Island {
     m_bodies[toiIndexA].m_sweep.c0.x = m_positions[toiIndexA].c.x;
     m_bodies[toiIndexA].m_sweep.c0.y = m_positions[toiIndexA].c.y;
     m_bodies[toiIndexA].m_sweep.a0 = m_positions[toiIndexA].a;
-    m_bodies[toiIndexB].m_sweep.c0.set(m_positions[toiIndexB].c);
+    m_bodies[toiIndexB].m_sweep.c0.setFrom(m_positions[toiIndexB].c);
     m_bodies[toiIndexB].m_sweep.a0 = m_positions[toiIndexB].a;
 
     // No warm starting is needed for TOI events because warm
@@ -514,7 +514,7 @@ class Island {
         double ratio = Settings.maxTranslation /
             Math.sqrt(
                 translationx * translationx + translationy * translationy);
-        v.mul(ratio);
+        v.scale(ratio);
       }
 
       double rotation = h * w;

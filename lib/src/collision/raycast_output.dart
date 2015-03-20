@@ -33,7 +33,7 @@ class RayCastOutput {
   double fraction = 0.0;
 
   void set(final RayCastOutput rco) {
-    normal.set(rco.normal);
+    normal.setFrom(rco.normal);
     fraction = rco.fraction;
   }
 }

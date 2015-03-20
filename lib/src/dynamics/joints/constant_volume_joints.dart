@@ -147,10 +147,10 @@ class ConstantVolumeJoint extends Joint {
       delta.setValues(toExtrude * (_normals[i].x + _normals[next].x),
           toExtrude * (_normals[i].y + _normals[next].y));
       // sumdeltax += dx;
-      double normSqrd = delta.lengthSquared();
+      double normSqrd = delta.length2;
       if (normSqrd >
           Settings.maxLinearCorrection * Settings.maxLinearCorrection) {
-        delta.mul(Settings.maxLinearCorrection / Math.sqrt(normSqrd));
+        delta.scale(Settings.maxLinearCorrection / Math.sqrt(normSqrd));
       }
       if (normSqrd > Settings.linearSlop * Settings.linearSlop) {
         done = false;
@@ -174,7 +174,7 @@ class ConstantVolumeJoint extends Joint {
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i].set(positions[_bodies[next].m_islandIndex].c);
+      d[i].setFrom(positions[_bodies[next].m_islandIndex].c);
       d[i].sub(positions[_bodies[prev].m_islandIndex].c);
     }
 
@@ -211,10 +211,10 @@ class ConstantVolumeJoint extends Joint {
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i].set(positions[_bodies[next].m_islandIndex].c);
+      d[i].setFrom(positions[_bodies[next].m_islandIndex].c);
       d[i].sub(positions[_bodies[prev].m_islandIndex].c);
-      dotMassSum += (d[i].lengthSquared()) / _bodies[i].mass;
-      crossMassSum += Vector2.cross(velocities[_bodies[i].m_islandIndex].v, d[i]);
+      dotMassSum += (d[i].length2) / _bodies[i].mass;
+      crossMassSum += velocities[_bodies[i].m_islandIndex].v.cross(d[i]);
     }
     double lambda = -2.0 * crossMassSum / dotMassSum;
     // System.out.println(crossMassSum + " " +dotMassSum);

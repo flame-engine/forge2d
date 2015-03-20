@@ -52,7 +52,7 @@ class MassData {
   void set(MassData md) {
     mass = md.mass;
     I = md.I;
-    center.set(md.center);
+    center.setFrom(md.center);
   }
 
   /** Return a copy of this object. */

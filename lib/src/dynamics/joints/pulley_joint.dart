@@ -65,10 +65,10 @@ class PulleyJoint extends Joint {
 
   PulleyJoint(IWorldPool argWorldPool, PulleyJointDef def)
       : super(argWorldPool, def) {
-    _m_groundAnchorA.set(def.groundAnchorA);
-    _m_groundAnchorB.set(def.groundAnchorB);
-    _m_localAnchorA.set(def.localAnchorA);
-    _m_localAnchorB.set(def.localAnchorB);
+    _m_groundAnchorA.setFrom(def.groundAnchorA);
+    _m_groundAnchorB.setFrom(def.groundAnchorB);
+    _m_localAnchorA.setFrom(def.localAnchorA);
+    _m_localAnchorB.setFrom(def.localAnchorB);
 
     assert(def.ratio != 0.0);
     _m_ratio = def.ratio;
@@ -123,7 +123,7 @@ class PulleyJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.set(_m_uB).mul(_m_impulse).mul(inv_dt);
+    argOut.setFrom(_m_uB).scale(_m_impulse).scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -165,8 +165,8 @@ class PulleyJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     _m_indexA = m_bodyA.m_islandIndex;
     _m_indexB = m_bodyB.m_islandIndex;
-    _m_localCenterA.set(m_bodyA.m_sweep.localCenter);
-    _m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    _m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
+    _m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     _m_invMassA = m_bodyA.m_invMass;
     _m_invMassB = m_bodyB.m_invMass;
     _m_invIA = m_bodyA.m_invI;
@@ -191,31 +191,31 @@ class PulleyJoint extends Joint {
 
     // Compute the effective masses.
     Rot.mulToOutUnsafe(
-        qA, temp.set(_m_localAnchorA).sub(_m_localCenterA), _m_rA);
+        qA, temp.setFrom(_m_localAnchorA).sub(_m_localCenterA), _m_rA);
     Rot.mulToOutUnsafe(
-        qB, temp.set(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
+        qB, temp.setFrom(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
 
-    _m_uA.set(cA).add(_m_rA).sub(_m_groundAnchorA);
-    _m_uB.set(cB).add(_m_rB).sub(_m_groundAnchorB);
+    _m_uA.setFrom(cA).add(_m_rA).sub(_m_groundAnchorA);
+    _m_uB.setFrom(cB).add(_m_rB).sub(_m_groundAnchorB);
 
     double lengthA = _m_uA.length;
     double lengthB = _m_uB.length;
 
     if (lengthA > 10.0 * Settings.linearSlop) {
-      _m_uA.mul(1.0 / lengthA);
+      _m_uA.scale(1.0 / lengthA);
     } else {
       _m_uA.setZero();
     }
 
     if (lengthB > 10.0 * Settings.linearSlop) {
-      _m_uB.mul(1.0 / lengthB);
+      _m_uB.scale(1.0 / lengthB);
     } else {
       _m_uB.setZero();
     }
 
     // Compute effective mass.
-    double ruA = Vector2.cross(_m_rA, _m_uA);
-    double ruB = Vector2.cross(_m_rB, _m_uB);
+    double ruA = _m_rA.cross(_m_uA);
+    double ruB = _m_rB.cross(_m_uB);
 
     double mA = _m_invMassA + _m_invIA * ruA * ruA;
     double mB = _m_invMassB + _m_invIB * ruB * ruB;
@@ -235,15 +235,15 @@ class PulleyJoint extends Joint {
       final Vector2 PA = pool.popVec2();
       final Vector2 PB = pool.popVec2();
 
-      PA.set(_m_uA).mul(-_m_impulse);
-      PB.set(_m_uB).mul(-_m_ratio * _m_impulse);
+      PA.setFrom(_m_uA).scale(-_m_impulse);
+      PB.setFrom(_m_uB).scale(-_m_ratio * _m_impulse);
 
       vA.x += _m_invMassA * PA.x;
       vA.y += _m_invMassA * PA.y;
-      wA += _m_invIA * Vector2.cross(_m_rA, PA);
+      wA += _m_invIA * _m_rA.cross(PA);
       vB.x += _m_invMassB * PB.x;
       vB.y += _m_invMassB * PB.y;
-      wB += _m_invIB * Vector2.cross(_m_rB, PB);
+      wB += _m_invIB * _m_rB.cross(PB);
 
       pool.pushVec2(2);
     } else {
@@ -274,18 +274,18 @@ class PulleyJoint extends Joint {
     Vector2.crossToOutUnsafeDblVec2(wB, _m_rB, vpB);
     vpB.add(vB);
 
-    double Cdot = -Vector2.dot(_m_uA, vpA) - _m_ratio * Vector2.dot(_m_uB, vpB);
+    double Cdot = -_m_uA.dot(vpA) - _m_ratio * _m_uB.dot(vpB);
     double impulse = -_m_mass * Cdot;
     _m_impulse += impulse;
 
-    PA.set(_m_uA).mul(-impulse);
-    PB.set(_m_uB).mul(-_m_ratio * impulse);
+    PA.setFrom(_m_uA).scale(-impulse);
+    PB.setFrom(_m_uB).scale(-_m_ratio * impulse);
     vA.x += _m_invMassA * PA.x;
     vA.y += _m_invMassA * PA.y;
-    wA += _m_invIA * Vector2.cross(_m_rA, PA);
+    wA += _m_invIA * _m_rA.cross(PA);
     vB.x += _m_invMassB * PB.x;
     vB.y += _m_invMassB * PB.y;
-    wB += _m_invIB * Vector2.cross(_m_rB, PB);
+    wB += _m_invIB * _m_rB.cross(PB);
 
 //    data.velocities[m_indexA].v.set(vA);
     data.velocities[_m_indexA].w = wA;
@@ -315,31 +315,31 @@ class PulleyJoint extends Joint {
     qB.setAngle(aB);
 
     Rot.mulToOutUnsafe(
-        qA, temp.set(_m_localAnchorA).sub(_m_localCenterA), rA);
+        qA, temp.setFrom(_m_localAnchorA).sub(_m_localCenterA), rA);
     Rot.mulToOutUnsafe(
-        qB, temp.set(_m_localAnchorB).sub(_m_localCenterB), rB);
+        qB, temp.setFrom(_m_localAnchorB).sub(_m_localCenterB), rB);
 
-    uA.set(cA).add(rA).sub(_m_groundAnchorA);
-    uB.set(cB).add(rB).sub(_m_groundAnchorB);
+    uA.setFrom(cA).add(rA).sub(_m_groundAnchorA);
+    uB.setFrom(cB).add(rB).sub(_m_groundAnchorB);
 
     double lengthA = uA.length;
     double lengthB = uB.length;
 
     if (lengthA > 10.0 * Settings.linearSlop) {
-      uA.mul(1.0 / lengthA);
+      uA.scale(1.0 / lengthA);
     } else {
       uA.setZero();
     }
 
     if (lengthB > 10.0 * Settings.linearSlop) {
-      uB.mul(1.0 / lengthB);
+      uB.scale(1.0 / lengthB);
     } else {
       uB.setZero();
     }
 
     // Compute effective mass.
-    double ruA = Vector2.cross(rA, uA);
-    double ruB = Vector2.cross(rB, uB);
+    double ruA = rA.cross(uA);
+    double ruB = rB.cross(uB);
 
     double mA = _m_invMassA + _m_invIA * ruA * ruA;
     double mB = _m_invMassB + _m_invIB * ruB * ruB;
@@ -355,15 +355,15 @@ class PulleyJoint extends Joint {
 
     double impulse = -mass * C;
 
-    PA.set(uA).mul(-impulse);
-    PB.set(uB).mul(-_m_ratio * impulse);
+    PA.setFrom(uA).scale(-impulse);
+    PB.setFrom(uB).scale(-_m_ratio * impulse);
 
     cA.x += _m_invMassA * PA.x;
     cA.y += _m_invMassA * PA.y;
-    aA += _m_invIA * Vector2.cross(rA, PA);
+    aA += _m_invIA * rA.cross(PA);
     cB.x += _m_invMassB * PB.x;
     cB.y += _m_invMassB * PB.y;
-    aB += _m_invIB * Vector2.cross(rB, PB);
+    aB += _m_invIB * rB.cross(PB);
 
 //    data.positions[m_indexA].c.set(cA);
     data.positions[_m_indexA].a = aA;

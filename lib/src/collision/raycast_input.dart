@@ -33,8 +33,8 @@ class RayCastInput {
   double maxFraction = 0.0;
 
   void set(final RayCastInput rci) {
-    p1.set(rci.p1);
-    p2.set(rci.p2);
+    p1.setFrom(rci.p1);
+    p2.setFrom(rci.p2);
     maxFraction = rci.maxFraction;
   }
 }

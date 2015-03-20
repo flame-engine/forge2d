@@ -82,8 +82,8 @@ class RevoluteJoint extends Joint {
 
   RevoluteJoint(IWorldPool argWorld, RevoluteJointDef def)
       : super(argWorld, def) {
-    m_localAnchorA.set(def.localAnchorA);
-    m_localAnchorB.set(def.localAnchorB);
+    m_localAnchorA.setFrom(def.localAnchorA);
+    m_localAnchorB.setFrom(def.localAnchorB);
     m_referenceAngle = def.referenceAngle;
 
     m_lowerAngle = def.lowerAngle;
@@ -97,8 +97,8 @@ class RevoluteJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     m_indexA = m_bodyA.m_islandIndex;
     m_indexB = m_bodyB.m_islandIndex;
-    m_localCenterA.set(m_bodyA.m_sweep.localCenter);
-    m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
+    m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     m_invMassA = m_bodyA.m_invMass;
     m_invMassB = m_bodyB.m_invMass;
     m_invIA = m_bodyA.m_invI;
@@ -122,9 +122,9 @@ class RevoluteJoint extends Joint {
 
     // Compute the effective masses.
     Rot.mulToOutUnsafe(
-        qA, temp.set(m_localAnchorA).sub(m_localCenterA), m_rA);
+        qA, temp.setFrom(m_localAnchorA).sub(m_localCenterA), m_rA);
     Rot.mulToOutUnsafe(
-        qB, temp.set(m_localAnchorB).sub(m_localCenterB), m_rB);
+        qB, temp.setFrom(m_localAnchorB).sub(m_localCenterB), m_rB);
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -195,11 +195,11 @@ class RevoluteJoint extends Joint {
 
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
-      wA -= iA * (Vector2.cross(m_rA, P) + m_motorImpulse + m_impulse.z);
+      wA -= iA * (m_rA.cross(P) + m_motorImpulse + m_impulse.z);
 
       vB.x += mB * P.x;
       vB.y += mB * P.y;
-      wB += iB * (Vector2.cross(m_rB, P) + m_motorImpulse + m_impulse.z);
+      wB += iB * (m_rB.cross(P) + m_motorImpulse + m_impulse.z);
       pool.pushVec2(1);
     } else {
       m_impulse.setZero();
@@ -270,7 +270,7 @@ class RevoluteJoint extends Joint {
           final Vector2 rhs = pool.popVec2();
           rhs
               .setValues(m_mass.ez.x, m_mass.ez.y)
-              .mul(m_impulse.z)
+              .scale(m_impulse.z)
               .sub(Cdot1);
           m_mass.solve22ToOut(rhs, temp);
           impulse.x = temp.x;
@@ -289,7 +289,7 @@ class RevoluteJoint extends Joint {
           final Vector2 rhs = pool.popVec2();
           rhs
               .setValues(m_mass.ez.x, m_mass.ez.y)
-              .mul(m_impulse.z)
+              .scale(m_impulse.z)
               .sub(Cdot1);
           m_mass.solve22ToOut(rhs, temp);
           impulse.x = temp.x;
@@ -309,11 +309,11 @@ class RevoluteJoint extends Joint {
 
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
-      wA -= iA * (Vector2.cross(m_rA, P) + impulse.z);
+      wA -= iA * (m_rA.cross(P) + impulse.z);
 
       vB.x += mB * P.x;
       vB.y += mB * P.y;
-      wB += iB * (Vector2.cross(m_rB, P) + impulse.z);
+      wB += iB * (m_rB.cross(P) + impulse.z);
 
       pool.pushVec2(2);
       pool.pushVec3(2);
@@ -333,11 +333,11 @@ class RevoluteJoint extends Joint {
 
       vA.x -= mA * impulse.x;
       vA.y -= mA * impulse.y;
-      wA -= iA * Vector2.cross(m_rA, impulse);
+      wA -= iA * m_rA.cross(impulse);
 
       vB.x += mB * impulse.x;
       vB.y += mB * impulse.y;
-      wB += iB * Vector2.cross(m_rB, impulse);
+      wB += iB * m_rB.cross(impulse);
 
       pool.pushVec2(2);
     }
@@ -411,10 +411,10 @@ class RevoluteJoint extends Joint {
       final Vector2 impulse = pool.popVec2();
 
       Rot.mulToOutUnsafe(
-          qA, C.set(m_localAnchorA).sub(m_localCenterA), rA);
+          qA, C.setFrom(m_localAnchorA).sub(m_localCenterA), rA);
       Rot.mulToOutUnsafe(
-          qB, C.set(m_localAnchorB).sub(m_localCenterB), rB);
-      C.set(cB).add(rB).sub(cA).sub(rA);
+          qB, C.setFrom(m_localAnchorB).sub(m_localCenterB), rB);
+      C.setFrom(cB).add(rB).sub(cA).sub(rA);
       positionError = C.length;
 
       double mA = m_invMassA,
@@ -432,11 +432,11 @@ class RevoluteJoint extends Joint {
 
       cA.x -= mA * impulse.x;
       cA.y -= mA * impulse.y;
-      aA -= iA * Vector2.cross(rA, impulse);
+      aA -= iA * rA.cross(impulse);
 
       cB.x += mB * impulse.x;
       cB.y += mB * impulse.y;
-      aB += iB * Vector2.cross(rB, impulse);
+      aB += iB * rB.cross(impulse);
 
       pool.pushVec2(4);
       pool.pushMat22(1);
@@ -473,7 +473,7 @@ class RevoluteJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.setValues(m_impulse.x, m_impulse.y).mul(inv_dt);
+    argOut.setValues(m_impulse.x, m_impulse.y).scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {

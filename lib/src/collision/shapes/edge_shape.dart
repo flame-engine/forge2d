@@ -61,8 +61,8 @@ class EdgeShape extends Shape {
   }
 
   void set(Vector2 v1, Vector2 v2) {
-    m_vertex1.set(v1);
-    m_vertex2.set(v2);
+    m_vertex1.setFrom(v1);
+    m_vertex2.setFrom(v2);
     m_hasVertex0 = m_hasVertex3 = false;
   }
 
@@ -221,7 +221,7 @@ class EdgeShape extends Shape {
 
   void computeMass(MassData massData, double density) {
     massData.mass = 0.0;
-    massData.center.set(m_vertex1).add(m_vertex2).mul(0.5);
+    massData.center.setFrom(m_vertex1).add(m_vertex2).scale(0.5);
     massData.I = 0.0;
   }
 
@@ -230,10 +230,10 @@ class EdgeShape extends Shape {
     edge.radius = this.radius;
     edge.m_hasVertex0 = this.m_hasVertex0;
     edge.m_hasVertex3 = this.m_hasVertex3;
-    edge.m_vertex0.set(this.m_vertex0);
-    edge.m_vertex1.set(this.m_vertex1);
-    edge.m_vertex2.set(this.m_vertex2);
-    edge.m_vertex3.set(this.m_vertex3);
+    edge.m_vertex0.setFrom(this.m_vertex0);
+    edge.m_vertex1.setFrom(this.m_vertex1);
+    edge.m_vertex2.setFrom(this.m_vertex2);
+    edge.m_vertex3.setFrom(this.m_vertex3);
     return edge;
   }
 }

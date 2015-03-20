@@ -68,7 +68,7 @@ class ManifoldPoint {
    * @param cp the point to copy from
    */
   void set(final ManifoldPoint cp) {
-    localPoint.set(cp.localPoint);
+    localPoint.setFrom(cp.localPoint);
     normalImpulse = cp.normalImpulse;
     tangentImpulse = cp.tangentImpulse;
     id.set(cp.id);

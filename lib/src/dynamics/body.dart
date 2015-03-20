@@ -116,12 +116,12 @@ class Body {
       m_flags |= e_activeFlag;
     }
 
-    m_xf.p.set(bd.position);
+    m_xf.p.setFrom(bd.position);
     m_xf.q.setAngle(bd.angle);
 
     m_sweep.localCenter.setZero();
-    m_sweep.c0.set(m_xf.p);
-    m_sweep.c.set(m_xf.p);
+    m_sweep.c0.setFrom(m_xf.p);
+    m_sweep.c.setFrom(m_xf.p);
     m_sweep.a0 = bd.angle;
     m_sweep.a = bd.angle;
     m_sweep.alpha0 = 0.0;
@@ -131,7 +131,7 @@ class Body {
     m_prev = null;
     m_next = null;
 
-    _linearVelocity.set(bd.linearVelocity);
+    _linearVelocity.setFrom(bd.linearVelocity);
     _angularVelocity = bd.angularVelocity;
 
     m_linearDamping = bd.linearDamping;
@@ -310,13 +310,13 @@ class Body {
     }
 
     m_xf.q.setAngle(angle);
-    m_xf.p.set(position);
+    m_xf.p.setFrom(position);
 
     // m_sweep.c0 = m_sweep.c = Mul(m_xf, m_sweep.localCenter);
     Transform.mulToOutUnsafeVec2(m_xf, m_sweep.localCenter, m_sweep.c);
     m_sweep.a = angle;
 
-    m_sweep.c0.set(m_sweep.c);
+    m_sweep.c0.setFrom(m_sweep.c);
     m_sweep.a0 = m_sweep.a;
 
     BroadPhase broadPhase = m_world.m_contactManager.m_broadPhase;
@@ -372,11 +372,11 @@ class Body {
       return;
     }
 
-    if (Vector2.dot(v, v) > 0.0) {
+    if (v.dot(v) > 0.0) {
       setAwake(true);
     }
 
-    _linearVelocity.set(v);
+    _linearVelocity.setFrom(v);
   }
 
   /**
@@ -610,23 +610,23 @@ class Body {
     m_invMass = 1.0 / _mass;
 
     if (massData.I > 0.0 && (m_flags & e_fixedRotationFlag) == 0.0) {
-      m_I = massData.I - _mass * Vector2.dot(massData.center, massData.center);
+      m_I = massData.I - _mass * massData.center.dot(massData.center);
       assert(m_I > 0.0);
       m_invI = 1.0 / m_I;
     }
 
     final Vector2 oldCenter = m_world.getPool().popVec2();
     // Move center of mass.
-    oldCenter.set(m_sweep.c);
-    m_sweep.localCenter.set(massData.center);
+    oldCenter.setFrom(m_sweep.c);
+    m_sweep.localCenter.setFrom(massData.center);
     // m_sweep.c0 = m_sweep.c = Mul(m_xf, m_sweep.localCenter);
     Transform.mulToOutUnsafeVec2(m_xf, m_sweep.localCenter, m_sweep.c0);
-    m_sweep.c.set(m_sweep.c0);
+    m_sweep.c.setFrom(m_sweep.c0);
 
     // Update center of mass velocity.
     // m_linearVelocity += Cross(m_angularVelocity, m_sweep.c - oldCenter);
     final Vector2 temp = m_world.getPool().popVec2();
-    temp.set(m_sweep.c).sub(oldCenter);
+    temp.setFrom(m_sweep.c).sub(oldCenter);
     Vector2.crossToOutDblVec2(_angularVelocity, temp, temp);
     _linearVelocity.add(temp);
 
@@ -651,8 +651,8 @@ class Body {
     // Static and kinematic bodies have zero mass.
     if (m_type == BodyType.STATIC || m_type == BodyType.KINEMATIC) {
       // m_sweep.c0 = m_sweep.c = m_xf.position;
-      m_sweep.c0.set(m_xf.p);
-      m_sweep.c.set(m_xf.p);
+      m_sweep.c0.setFrom(m_xf.p);
+      m_sweep.c.setFrom(m_xf.p);
       m_sweep.a0 = m_sweep.a;
       return;
     }
@@ -671,7 +671,7 @@ class Body {
       f.getMassData(massData);
       _mass += massData.mass;
       // center += massData.mass * massData.center;
-      temp.set(massData.center).mul(massData.mass);
+      temp.setFrom(massData.center).scale(massData.mass);
       localCenter.add(temp);
       m_I += massData.I;
     }
@@ -679,7 +679,7 @@ class Body {
     // Compute center of mass.
     if (_mass > 0.0) {
       m_invMass = 1.0 / _mass;
-      localCenter.mul(m_invMass);
+      localCenter.scale(m_invMass);
     } else {
       // Force all dynamic bodies to have a positive mass.
       _mass = 1.0;
@@ -688,7 +688,7 @@ class Body {
 
     if (m_I > 0.0 && (m_flags & e_fixedRotationFlag) == 0.0) {
       // Center the inertia about the center of mass.
-      m_I -= _mass * Vector2.dot(localCenter, localCenter);
+      m_I -= _mass * localCenter.dot(localCenter);
       assert(m_I > 0.0);
       m_invI = 1.0 / m_I;
     } else {
@@ -698,15 +698,15 @@ class Body {
 
     Vector2 oldCenter = m_world.getPool().popVec2();
     // Move center of mass.
-    oldCenter.set(m_sweep.c);
-    m_sweep.localCenter.set(localCenter);
+    oldCenter.setFrom(m_sweep.c);
+    m_sweep.localCenter.setFrom(localCenter);
     // m_sweep.c0 = m_sweep.c = Mul(m_xf, m_sweep.localCenter);
     Transform.mulToOutUnsafeVec2(m_xf, m_sweep.localCenter, m_sweep.c0);
-    m_sweep.c.set(m_sweep.c0);
+    m_sweep.c.setFrom(m_sweep.c0);
 
     // Update center of mass velocity.
     // m_linearVelocity += Cross(m_angularVelocity, m_sweep.c - oldCenter);
-    temp.set(m_sweep.c).sub(oldCenter);
+    temp.setFrom(m_sweep.c).sub(oldCenter);
 
     final Vector2 temp2 = oldCenter;
     Vector2.crossToOutUnsafeDblVec2(_angularVelocity, temp, temp2);
@@ -860,7 +860,7 @@ class Body {
       _linearVelocity.setZero();
       _angularVelocity = 0.0;
       m_sweep.a0 = m_sweep.a;
-      m_sweep.c0.set(m_sweep.c);
+      m_sweep.c0.setFrom(m_sweep.c);
       synchronizeFixtures();
     }
 
@@ -1139,12 +1139,12 @@ class Body {
   void advance(double t) {
     // Advance to the new safe time. This doesn't sync the broad-phase.
     m_sweep.advance(t);
-    m_sweep.c.set(m_sweep.c0);
+    m_sweep.c.setFrom(m_sweep.c0);
     m_sweep.a = m_sweep.a0;
     m_xf.q.setAngle(m_sweep.a);
     // m_xf.position = m_sweep.c - Mul(m_xf.R, m_sweep.localCenter);
     Rot.mulToOutUnsafe(m_xf.q, m_sweep.localCenter, m_xf.p);
-    m_xf.p.mul(-1.0).add(m_sweep.c);
+    m_xf.p.scale(-1.0).add(m_sweep.c);
   }
 
   String toString() {

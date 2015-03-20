@@ -109,12 +109,12 @@ class Bench2D {
       Vector2 deltaY = new Vector2(1.125, 0.0);
 
       for (int i = 0; i < PYRAMID_SIZE; ++i) {
-        y.set(x);
+        y.setFrom(x);
 
         for (int j = i; j < PYRAMID_SIZE; ++j) {
           BodyDef bd = new BodyDef();
           bd.type = BodyType.DYNAMIC;
-          bd.position.set(y);
+          bd.position.setFrom(y);
           Body body = world.createBody(bd);
           body.createFixtureFromShape(shape, 5.0);
           topBody = body;

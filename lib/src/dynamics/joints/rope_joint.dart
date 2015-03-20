@@ -58,8 +58,8 @@ class RopeJoint extends Joint {
   LimitState m_state = LimitState.INACTIVE;
 
   RopeJoint(IWorldPool worldPool, RopeJointDef def) : super(worldPool, def) {
-    m_localAnchorA.set(def.localAnchorA);
-    m_localAnchorB.set(def.localAnchorB);
+    m_localAnchorA.setFrom(def.localAnchorA);
+    m_localAnchorB.setFrom(def.localAnchorB);
 
     m_maxLength = def.maxLength;
   }
@@ -67,8 +67,8 @@ class RopeJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     m_indexA = m_bodyA.m_islandIndex;
     m_indexB = m_bodyB.m_islandIndex;
-    m_localCenterA.set(m_bodyA.m_sweep.localCenter);
-    m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
+    m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     m_invMassA = m_bodyA.m_invMass;
     m_invMassB = m_bodyB.m_invMass;
     m_invIA = m_bodyA.m_invI;
@@ -93,11 +93,11 @@ class RopeJoint extends Joint {
 
     // Compute the effective masses.
     Rot.mulToOutUnsafe(
-        qA, temp.set(m_localAnchorA).sub(m_localCenterA), m_rA);
+        qA, temp.setFrom(m_localAnchorA).sub(m_localCenterA), m_rA);
     Rot.mulToOutUnsafe(
-        qB, temp.set(m_localAnchorB).sub(m_localCenterB), m_rB);
+        qB, temp.setFrom(m_localAnchorB).sub(m_localCenterB), m_rB);
 
-    m_u.set(cB).add(m_rB).sub(cA).sub(m_rA);
+    m_u.setFrom(cB).add(m_rB).sub(cA).sub(m_rA);
 
     m_length = m_u.length;
 
@@ -109,7 +109,7 @@ class RopeJoint extends Joint {
     }
 
     if (m_length > Settings.linearSlop) {
-      m_u.mul(1.0 / m_length);
+      m_u.scale(1.0 / m_length);
     } else {
       m_u.setZero();
       m_mass = 0.0;
@@ -118,8 +118,8 @@ class RopeJoint extends Joint {
     }
 
     // Compute effective mass.
-    double crA = Vector2.cross(m_rA, m_u);
-    double crB = Vector2.cross(m_rB, m_u);
+    double crA = m_rA.cross(m_u);
+    double crB = m_rB.cross(m_u);
     double invMass =
         m_invMassA + m_invIA * crA * crA + m_invMassB + m_invIB * crB * crB;
 
@@ -168,7 +168,7 @@ class RopeJoint extends Joint {
     vpB.add(vB);
 
     double C = m_length - m_maxLength;
-    double Cdot = Vector2.dot(m_u, temp.set(vpB).sub(vpA));
+    double Cdot = m_u.dot(temp.setFrom(vpB).sub(vpA));
 
     // Predictive constraint.
     if (C < 0.0) {
@@ -215,10 +215,10 @@ class RopeJoint extends Joint {
 
     // Compute the effective masses.
     Rot.mulToOutUnsafe(
-        qA, temp.set(m_localAnchorA).sub(m_localCenterA), rA);
+        qA, temp.setFrom(m_localAnchorA).sub(m_localCenterA), rA);
     Rot.mulToOutUnsafe(
-        qB, temp.set(m_localAnchorB).sub(m_localCenterB), rB);
-    u.set(cB).add(rB).sub(cA).sub(rA);
+        qB, temp.setFrom(m_localAnchorB).sub(m_localCenterB), rB);
+    u.setFrom(cB).add(rB).sub(cA).sub(rA);
 
     double length = u.normalizeLength();
     double C = length - m_maxLength;
@@ -256,7 +256,7 @@ class RopeJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.set(m_u).mul(inv_dt).mul(m_impulse);
+    argOut.setFrom(m_u).scale(inv_dt).scale(m_impulse);
   }
 
   double getReactionTorque(double inv_dt) {

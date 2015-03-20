@@ -726,7 +726,7 @@ class World {
     if ((flags & DebugDraw.e_centerOfMassBit) != 0) {
       for (Body b = m_bodyList; b != null; b = b.getNext()) {
         xf.set(b.getTransform());
-        xf.p.set(b.worldCenter);
+        xf.p.setFrom(b.worldCenter);
         m_debugDraw.drawTransform(xf);
       }
     }
@@ -793,8 +793,8 @@ class World {
     wrcwrapper.broadPhase = m_contactManager.m_broadPhase;
     wrcwrapper.callback = callback;
     input.maxFraction = 1.0;
-    input.p1.set(point1);
-    input.p2.set(point2);
+    input.p1.setFrom(point1);
+    input.p2.setFrom(point2);
     m_contactManager.m_broadPhase.raycast(wrcwrapper, input);
   }
 
@@ -813,8 +813,8 @@ class World {
     wrcwrapper.broadPhase = m_contactManager.m_broadPhase;
     wrcwrapper.callback = callback;
     input.maxFraction = 1.0;
-    input.p1.set(point1);
-    input.p2.set(point2);
+    input.p1.setFrom(point1);
+    input.p2.setFrom(point2);
     m_contactManager.m_broadPhase.raycast(wrcwrapper, input);
     m_particleSystem.raycast(particleCallback, point1, point2);
   }
@@ -967,7 +967,7 @@ class World {
    * @param gravity
    */
   void setGravity(Vector2 gravity) {
-    m_gravity.set(gravity);
+    m_gravity.setFrom(gravity);
   }
 
   /**
@@ -1555,15 +1555,15 @@ class World {
           if (fixture.userData != null &&
               fixture.userData == LIQUID_INT) {
             Body b = fixture.getBody();
-            liquidOffset.set(b._linearVelocity);
+            liquidOffset.setFrom(b._linearVelocity);
             double linVelLength = b._linearVelocity.length;
             if (averageLinearVel == -1) {
               averageLinearVel = linVelLength;
             } else {
               averageLinearVel = .98 * averageLinearVel + .02 * linVelLength;
             }
-            liquidOffset.mul(liquidLength / averageLinearVel / 2);
-            circCenterMoved.set(center).add(liquidOffset);
+            liquidOffset.scale(liquidLength / averageLinearVel / 2);
+            circCenterMoved.setFrom(center).add(liquidOffset);
             center.sub(liquidOffset);
             m_debugDraw.drawSegment(center, circCenterMoved, liquidColor);
             return;
@@ -1613,7 +1613,7 @@ class World {
             Transform.mulToOutUnsafeVec2(xf, vertices[i], v2);
             m_debugDraw.drawSegment(v1, v2, color);
             m_debugDraw.drawCircle(v1, 0.05, color);
-            v1.set(v2);
+            v1.setFrom(v2);
           }
         }
         break;
@@ -2019,8 +2019,8 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
     if (hit) {
       double fraction = _output.fraction;
       // Vec2 point = (1.0 - fraction) * input.p1 + fraction * input.p2;
-      _temp.set(input.p2).mul(fraction);
-      _point.set(input.p1).mul(1 - fraction).add(_temp);
+      _temp.setFrom(input.p2).scale(fraction);
+      _point.setFrom(input.p1).scale(1 - fraction).add(_temp);
       return callback.reportFixture(fixture, _point, _output.normal, fraction);
     }
 

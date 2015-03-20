@@ -158,8 +158,8 @@ class ChainShape extends Shape {
   Shape clone() {
     ChainShape clone = new ChainShape();
     clone.createChain(m_vertices, m_count);
-    clone.m_prevVertex.set(m_prevVertex);
-    clone.m_nextVertex.set(m_nextVertex);
+    clone.m_prevVertex.setFrom(m_prevVertex);
+    clone.m_nextVertex.setFrom(m_nextVertex);
     clone.m_hasPrevVertex = m_hasPrevVertex;
     clone.m_hasNextVertex = m_hasNextVertex;
     return clone;
@@ -189,8 +189,8 @@ class ChainShape extends Shape {
       m_vertices[i] = new Vector2.copy(vertices[i]);
     }
     m_vertices[count] = new Vector2.copy(m_vertices[0]);
-    m_prevVertex.set(m_vertices[m_count - 2]);
-    m_nextVertex.set(m_vertices[1]);
+    m_prevVertex.setFrom(m_vertices[m_count - 2]);
+    m_nextVertex.setFrom(m_vertices[1]);
     m_hasPrevVertex = true;
     m_hasNextVertex = true;
   }
@@ -231,7 +231,7 @@ class ChainShape extends Shape {
    * @param prevVertex
    */
   void setPrevVertex(final Vector2 prevVertex) {
-    m_prevVertex.set(prevVertex);
+    m_prevVertex.setFrom(prevVertex);
     m_hasPrevVertex = true;
   }
 
@@ -241,7 +241,7 @@ class ChainShape extends Shape {
    * @param nextVertex
    */
   void setNextVertex(final Vector2 nextVertex) {
-    m_nextVertex.set(nextVertex);
+    m_nextVertex.setFrom(nextVertex);
     m_hasNextVertex = true;
   }
 }

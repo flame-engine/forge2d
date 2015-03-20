@@ -132,8 +132,8 @@ class DistanceJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     _m_indexA = m_bodyA.m_islandIndex;
     _m_indexB = m_bodyB.m_islandIndex;
-    _m_localCenterA.set(m_bodyA.m_sweep.localCenter);
-    _m_localCenterB.set(m_bodyB.m_sweep.localCenter);
+    _m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
+    _m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
     _m_invMassA = m_bodyA.m_invMass;
     _m_invMassB = m_bodyB.m_invMass;
     _m_invIA = m_bodyA.m_invI;
@@ -157,10 +157,10 @@ class DistanceJoint extends Joint {
 
     // use _m_u as temporary variable
     Rot.mulToOutUnsafe(
-        qA, _m_u.set(_m_localAnchorA).sub(_m_localCenterA), _m_rA);
+        qA, _m_u.setFrom(_m_localAnchorA).sub(_m_localCenterA), _m_rA);
     Rot.mulToOutUnsafe(
-        qB, _m_u.set(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
-    _m_u.set(cB).add(_m_rB).sub(cA).sub(_m_rA);
+        qB, _m_u.setFrom(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
+    _m_u.setFrom(cB).add(_m_rB).sub(cA).sub(_m_rA);
 
     pool.pushRot(2);
 
@@ -173,8 +173,8 @@ class DistanceJoint extends Joint {
       _m_u.setValues(0.0, 0.0);
     }
 
-    double crAu = Vector2.cross(_m_rA, _m_u);
-    double crBu = Vector2.cross(_m_rB, _m_u);
+    double crAu = _m_rA.cross(_m_u);
+    double crBu = _m_rB.cross(_m_u);
     double invMass = _m_invMassA +
         _m_invIA * crAu * crAu +
         _m_invMassB +
@@ -213,15 +213,15 @@ class DistanceJoint extends Joint {
       _m_impulse *= data.step.dtRatio;
 
       Vector2 P = pool.popVec2();
-      P.set(_m_u).mul(_m_impulse);
+      P.setFrom(_m_u).scale(_m_impulse);
 
       vA.x -= _m_invMassA * P.x;
       vA.y -= _m_invMassA * P.y;
-      wA -= _m_invIA * Vector2.cross(_m_rA, P);
+      wA -= _m_invIA * _m_rA.cross(P);
 
       vB.x += _m_invMassB * P.x;
       vB.y += _m_invMassB * P.y;
-      wB += _m_invIB * Vector2.cross(_m_rB, P);
+      wB += _m_invIB * _m_rB.cross(P);
 
       pool.pushVec2(1);
     } else {
@@ -247,7 +247,7 @@ class DistanceJoint extends Joint {
     vpA.add(vA);
     Vector2.crossToOutUnsafeDblVec2(wB, _m_rB, vpB);
     vpB.add(vB);
-    double Cdot = Vector2.dot(_m_u, vpB.sub(vpA));
+    double Cdot = _m_u.dot(vpB.sub(vpA));
 
     double impulse = -_m_mass * (Cdot + _m_bias + _m_gamma * _m_impulse);
     _m_impulse += impulse;
@@ -289,10 +289,10 @@ class DistanceJoint extends Joint {
     qB.setAngle(aB);
 
     Rot.mulToOutUnsafe(
-        qA, u.set(_m_localAnchorA).sub(_m_localCenterA), rA);
+        qA, u.setFrom(_m_localAnchorA).sub(_m_localCenterA), rA);
     Rot.mulToOutUnsafe(
-        qB, u.set(_m_localAnchorB).sub(_m_localCenterB), rB);
-    u.set(cB).add(rB).sub(cA).sub(rA);
+        qB, u.setFrom(_m_localAnchorB).sub(_m_localCenterB), rB);
+    u.setFrom(cB).add(rB).sub(cA).sub(rA);
 
     double length = u.normalizeLength();
     double C = length - _m_length;
