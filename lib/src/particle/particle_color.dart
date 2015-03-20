@@ -61,14 +61,14 @@ class ParticleColor {
     setRGBA(r, g, b, a);
   }
 
-  ParticleColor.color3f(Color3i color) {
-    setColor3f(color);
+  ParticleColor.color3i(Color3i color) {
+    setColor3i(color);
   }
 
-  void setColor3f(Color3i color) {
-    r = (255 * color.x).floor().toInt();
-    g = (255 * color.y).floor().toInt();
-    b = (255 * color.z).floor().toInt();
+  void setColor3i(Color3i color) {
+    r = color.x;
+    g = color.y;
+    b = color.z;
     a = 255;
   }
 
