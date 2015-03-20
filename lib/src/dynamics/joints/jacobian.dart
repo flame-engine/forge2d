@@ -25,7 +25,7 @@
 part of box2d;
 
 class Jacobian {
-  final Vec2 linearA = new Vec2.zero();
+  final Vector2 linearA = new Vector2.zero();
   double angularA = 0.0;
   double angularB = 0.0;
 }

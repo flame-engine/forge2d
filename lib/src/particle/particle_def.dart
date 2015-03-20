@@ -33,10 +33,10 @@ class ParticleDef {
   int flags = 0;
 
   /** The world position of the particle. */
-  final Vec2 position = new Vec2.zero();
+  final Vector2 position = new Vector2.zero();
 
   /** The linear velocity of the particle in world co-ordinates. */
-  final Vec2 velocity = new Vec2.zero();
+  final Vector2 velocity = new Vector2.zero();
 
   /** The color of the particle. */
   ParticleColor color;

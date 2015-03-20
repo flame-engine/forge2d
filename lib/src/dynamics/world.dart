@@ -50,7 +50,7 @@ class World {
   int m_bodyCount = 0;
   int m_jointCount = 0;
 
-  final Vec2 m_gravity;
+  final Vector2 m_gravity;
   bool m_allowSleep = false;
 
   // Body m_groundBody;
@@ -93,7 +93,7 @@ class World {
    *
    * @param gravity the world gravity vector.
    */
-  factory World.withGravity(Vec2 gravity) {
+  factory World.withGravity(Vector2 gravity) {
     var w = new World.withPool(gravity,
         new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
     return w;
@@ -104,19 +104,19 @@ class World {
    *
    * @param gravity the world gravity vector.
    */
-  factory World.withPool(Vec2 gravity, IWorldPool pool) {
+  factory World.withPool(Vector2 gravity, IWorldPool pool) {
     var w = new World.withPoolAndStrategy(gravity, pool, new DynamicTree());
     return w;
   }
 
   factory World.withPoolAndStrategy(
-      Vec2 gravity, IWorldPool pool, BroadPhaseStrategy strategy) {
+      Vector2 gravity, IWorldPool pool, BroadPhaseStrategy strategy) {
     var w = new World(gravity, pool, new DefaultBroadPhaseBuffer(strategy));
     return w;
   }
 
-  World(Vec2 gravity, this.pool, BroadPhase broadPhase)
-      : m_gravity = new Vec2.copy(gravity) {
+  World(Vector2 gravity, this.pool, BroadPhase broadPhase)
+      : m_gravity = new Vector2.copy(gravity) {
     m_destructionListener = null;
     m_debugDraw = null;
 
@@ -639,8 +639,8 @@ class World {
 
   final Color3i color = new Color3i.zero();
   final Transform xf = new Transform.zero();
-  final Vec2 cA = new Vec2.zero();
-  final Vec2 cB = new Vec2.zero();
+  final Vector2 cA = new Vector2.zero();
+  final Vector2 cB = new Vector2.zero();
   final Vec2Array avs = new Vec2Array();
 
   /**
@@ -711,11 +711,11 @@ class World {
             FixtureProxy proxy = f.m_proxies[i];
             AABB aabb = m_contactManager.m_broadPhase.getFatAABB(proxy.proxyId);
             if (aabb != null) {
-              List<Vec2> vs = avs.get(4);
-              vs[0].setXY(aabb.lowerBound.x, aabb.lowerBound.y);
-              vs[1].setXY(aabb.upperBound.x, aabb.lowerBound.y);
-              vs[2].setXY(aabb.upperBound.x, aabb.upperBound.y);
-              vs[3].setXY(aabb.lowerBound.x, aabb.upperBound.y);
+              List<Vector2> vs = avs.get(4);
+              vs[0].setValues(aabb.lowerBound.x, aabb.lowerBound.y);
+              vs[1].setValues(aabb.upperBound.x, aabb.lowerBound.y);
+              vs[2].setValues(aabb.upperBound.x, aabb.upperBound.y);
+              vs[3].setValues(aabb.lowerBound.x, aabb.upperBound.y);
               m_debugDraw.drawPolygon(vs, 4, color);
             }
           }
@@ -789,7 +789,7 @@ class World {
    * @param point1 the ray starting point
    * @param point2 the ray ending point
    */
-  void raycast(RayCastCallback callback, Vec2 point1, Vec2 point2) {
+  void raycast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
     wrcwrapper.broadPhase = m_contactManager.m_broadPhase;
     wrcwrapper.callback = callback;
     input.maxFraction = 1.0;
@@ -809,7 +809,7 @@ class World {
    * @param point2 the ray ending point
    */
   void raycastTwoCallBacks(RayCastCallback callback,
-      ParticleRaycastCallback particleCallback, Vec2 point1, Vec2 point2) {
+      ParticleRaycastCallback particleCallback, Vector2 point1, Vector2 point2) {
     wrcwrapper.broadPhase = m_contactManager.m_broadPhase;
     wrcwrapper.callback = callback;
     input.maxFraction = 1.0;
@@ -828,7 +828,7 @@ class World {
    * @param point2 the ray ending point
    */
   void raycastParticle(
-      ParticleRaycastCallback particleCallback, Vec2 point1, Vec2 point2) {
+      ParticleRaycastCallback particleCallback, Vector2 point1, Vector2 point2) {
     m_particleSystem.raycast(particleCallback, point1, point2);
   }
 
@@ -966,7 +966,7 @@ class World {
    *
    * @param gravity
    */
-  void setGravity(Vec2 gravity) {
+  void setGravity(Vector2 gravity) {
     m_gravity.set(gravity);
   }
 
@@ -975,7 +975,7 @@ class World {
    *
    * @return
    */
-  Vec2 getGravity() {
+  Vector2 getGravity() {
     return m_gravity;
   }
 
@@ -1489,10 +1489,10 @@ class World {
     Body bodyB = joint.getBodyB();
     Transform xf1 = bodyA.getTransform();
     Transform xf2 = bodyB.getTransform();
-    Vec2 x1 = xf1.p;
-    Vec2 x2 = xf2.p;
-    Vec2 p1 = pool.popVec2();
-    Vec2 p2 = pool.popVec2();
+    Vector2 x1 = xf1.p;
+    Vector2 x2 = xf2.p;
+    Vector2 p1 = pool.popVec2();
+    Vector2 p2 = pool.popVec2();
     joint.getAnchorA(p1);
     joint.getAnchorB(p2);
 
@@ -1507,8 +1507,8 @@ class World {
       case JointType.PULLEY:
         {
           PulleyJoint pulley = joint;
-          Vec2 s1 = pulley.getGroundAnchorA();
-          Vec2 s2 = pulley.getGroundAnchorB();
+          Vector2 s1 = pulley.getGroundAnchorA();
+          Vector2 s2 = pulley.getGroundAnchorB();
           m_debugDraw.drawSegment(s1, p1, color);
           m_debugDraw.drawSegment(s2, p2, color);
           m_debugDraw.drawSegment(s1, s2, color);
@@ -1531,14 +1531,14 @@ class World {
   static int LIQUID_INT = 1234598372;
   double liquidLength = .12;
   double averageLinearVel = -1.0;
-  final Vec2 liquidOffset = new Vec2.zero();
-  final Vec2 circCenterMoved = new Vec2.zero();
+  final Vector2 liquidOffset = new Vector2.zero();
+  final Vector2 circCenterMoved = new Vector2.zero();
   final Color3i liquidColor = new Color3i.fromRGBd(.4, .4, 1.0);
 
-  final Vec2 center = new Vec2.zero();
-  final Vec2 axis = new Vec2.zero();
-  final Vec2 v1 = new Vec2.zero();
-  final Vec2 v2 = new Vec2.zero();
+  final Vector2 center = new Vector2.zero();
+  final Vector2 axis = new Vector2.zero();
+  final Vector2 v1 = new Vector2.zero();
+  final Vector2 v2 = new Vector2.zero();
   final Vec2Array tlvertices = new Vec2Array();
 
   void drawShape(Fixture fixture, Transform xf, Color3i color, bool wireframe) {
@@ -1556,15 +1556,15 @@ class World {
               fixture.userData == LIQUID_INT) {
             Body b = fixture.getBody();
             liquidOffset.set(b._linearVelocity);
-            double linVelLength = b._linearVelocity.length();
+            double linVelLength = b._linearVelocity.length;
             if (averageLinearVel == -1) {
               averageLinearVel = linVelLength;
             } else {
               averageLinearVel = .98 * averageLinearVel + .02 * linVelLength;
             }
-            liquidOffset.mulLocal(liquidLength / averageLinearVel / 2);
-            circCenterMoved.set(center).addLocal(liquidOffset);
-            center.subLocal(liquidOffset);
+            liquidOffset.mul(liquidLength / averageLinearVel / 2);
+            circCenterMoved.set(center).add(liquidOffset);
+            center.sub(liquidOffset);
             m_debugDraw.drawSegment(center, circCenterMoved, liquidColor);
             return;
           }
@@ -1581,7 +1581,7 @@ class World {
           PolygonShape poly = fixture.getShape();
           int vertexCount = poly.m_count;
           assert(vertexCount <= Settings.maxPolygonVertices);
-          List<Vec2> vertices = tlvertices.get(Settings.maxPolygonVertices);
+          List<Vector2> vertices = tlvertices.get(Settings.maxPolygonVertices);
 
           for (int i = 0; i < vertexCount; ++i) {
             // vertices[i] = Mul(xf, poly.m_vertices[i]);
@@ -1606,7 +1606,7 @@ class World {
         {
           ChainShape chain = fixture.getShape();
           int count = chain.m_count;
-          List<Vec2> vertices = chain.m_vertices;
+          List<Vector2> vertices = chain.m_vertices;
 
           Transform.mulToOutUnsafeVec2(xf, vertices[0], v1);
           for (int i = 1; i < count; ++i) {
@@ -1628,7 +1628,7 @@ class World {
     int particleCount = system.getParticleCount();
     if (particleCount != 0) {
       double particleRadius = system.getParticleRadius();
-      List<Vec2> positionBuffer = system.getParticlePositionBuffer();
+      List<Vector2> positionBuffer = system.getParticlePositionBuffer();
       List<ParticleColor> colorBuffer = null;
       if (system.m_colorBuffer.data != null) {
         colorBuffer = system.getParticleColorBuffer();
@@ -1903,11 +1903,11 @@ class World {
     return m_particleSystem.getParticleFlagsBuffer();
   }
 
-  List<Vec2> getParticlePositionBuffer() {
+  List<Vector2> getParticlePositionBuffer() {
     return m_particleSystem.getParticlePositionBuffer();
   }
 
-  List<Vec2> getParticleVelocityBuffer() {
+  List<Vector2> getParticleVelocityBuffer() {
     return m_particleSystem.getParticleVelocityBuffer();
   }
 
@@ -1933,11 +1933,11 @@ class World {
     m_particleSystem.setParticleFlagsBuffer(buffer, capacity);
   }
 
-  void setParticlePositionBuffer(List<Vec2> buffer, int capacity) {
+  void setParticlePositionBuffer(List<Vector2> buffer, int capacity) {
     m_particleSystem.setParticlePositionBuffer(buffer, capacity);
   }
 
-  void setParticleVelocityBuffer(List<Vec2> buffer, int capacity) {
+  void setParticleVelocityBuffer(List<Vector2> buffer, int capacity) {
     m_particleSystem.setParticleVelocityBuffer(buffer, capacity);
   }
 
@@ -2006,8 +2006,8 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
 
   // djm pooling
   final RayCastOutput _output = new RayCastOutput();
-  final Vec2 _temp = new Vec2.zero();
-  final Vec2 _point = new Vec2.zero();
+  final Vector2 _temp = new Vector2.zero();
+  final Vector2 _point = new Vector2.zero();
 
   double raycastCallback(RayCastInput input, int nodeId) {
     Object userData = broadPhase.getUserData(nodeId);
@@ -2019,8 +2019,8 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
     if (hit) {
       double fraction = _output.fraction;
       // Vec2 point = (1.0 - fraction) * input.p1 + fraction * input.p2;
-      _temp.set(input.p2).mulLocal(fraction);
-      _point.set(input.p1).mulLocal(1 - fraction).addLocal(_temp);
+      _temp.set(input.p2).mul(fraction);
+      _point.set(input.p1).mul(1 - fraction).add(_temp);
       return callback.reportFixture(fixture, _point, _output.normal, fraction);
     }
 

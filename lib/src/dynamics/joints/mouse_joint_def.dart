@@ -33,7 +33,7 @@ class MouseJointDef extends JointDef {
   /**
    * The initial world target point. This is assumed to coincide with the body anchor initially.
    */
-  final Vec2 target = new Vec2.zero();
+  final Vector2 target = new Vector2.zero();
 
   /**
    * The maximum constraint force that can be exerted to move the candidate body. Usually you will

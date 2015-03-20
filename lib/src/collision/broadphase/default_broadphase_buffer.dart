@@ -67,7 +67,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     _m_tree.destroyProxy(proxyId);
   }
 
-  void moveProxy(int proxyId, final AABB aabb, final Vec2 displacement) {
+  void moveProxy(int proxyId, final AABB aabb, final Vector2 displacement) {
     bool buffer = _m_tree.moveProxy(proxyId, aabb, displacement);
     if (buffer) {
       bufferMove(proxyId);

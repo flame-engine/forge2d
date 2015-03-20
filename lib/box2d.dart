@@ -32,10 +32,10 @@ import 'src/buffer_utils.dart' as BufferUtils;
 import 'src/common.dart';
 import 'src/math_utils.dart' as MathUtils;
 import 'src/settings.dart' as Settings;
-import 'src/vec2.dart';
+import 'src/vector2.dart';
 
 export 'src/common.dart';
-export 'src/vec2.dart';
+export 'src/vector2.dart';
 
 part 'src/callbacks/contact_filter.dart';
 part 'src/callbacks/contact_impulse.dart';

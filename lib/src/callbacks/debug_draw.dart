@@ -81,7 +81,7 @@ abstract class DebugDraw {
    * @param vertexCount
    * @param color
    */
-  void drawPolygon(List<Vec2> vertices, int vertexCount, Color3i color) {
+  void drawPolygon(List<Vector2> vertices, int vertexCount, Color3i color) {
     if (vertexCount == 1) {
       drawSegment(vertices[0], vertices[0], color);
       return;
@@ -96,7 +96,7 @@ abstract class DebugDraw {
     }
   }
 
-  void drawPoint(Vec2 argPoint, double argRadiusOnScreen, Color3i argColor);
+  void drawPoint(Vector2 argPoint, double argRadiusOnScreen, Color3i argColor);
 
   /**
    * Draw a solid closed polygon provided in CCW order.
@@ -105,7 +105,7 @@ abstract class DebugDraw {
    * @param vertexCount
    * @param color
    */
-  void drawSolidPolygon(List<Vec2> vertices, int vertexCount, Color3i color);
+  void drawSolidPolygon(List<Vector2> vertices, int vertexCount, Color3i color);
 
   /**
    * Draw a circle.
@@ -114,10 +114,10 @@ abstract class DebugDraw {
    * @param radius
    * @param color
    */
-  void drawCircle(Vec2 center, double radius, Color3i color);
+  void drawCircle(Vector2 center, double radius, Color3i color);
 
   /** Draws a circle with an axis */
-  void drawCircleAxis(Vec2 center, double radius, Vec2 axis, Color3i color) {
+  void drawCircleAxis(Vector2 center, double radius, Vector2 axis, Color3i color) {
     drawCircle(center, radius, color);
   }
 
@@ -129,7 +129,7 @@ abstract class DebugDraw {
    * @param axis
    * @param color
    */
-  void drawSolidCircle(Vec2 center, double radius, Vec2 axis, Color3i color);
+  void drawSolidCircle(Vector2 center, double radius, Vector2 axis, Color3i color);
 
   /**
    * Draw a line segment.
@@ -138,7 +138,7 @@ abstract class DebugDraw {
    * @param p2
    * @param color
    */
-  void drawSegment(Vec2 p1, Vec2 p2, Color3i color);
+  void drawSegment(Vector2 p1, Vector2 p2, Color3i color);
 
   /**
    * Draw a transform. Choose your own length scale
@@ -163,7 +163,7 @@ abstract class DebugDraw {
    * @param colors can be null
    */
   void drawParticles(
-      List<Vec2> centers, double radius, List<ParticleColor> colors, int count);
+      List<Vector2> centers, double radius, List<ParticleColor> colors, int count);
 
   /**
    * Draw a particle array
@@ -171,12 +171,12 @@ abstract class DebugDraw {
    * @param colors can be null
    */
   void drawParticlesWireframe(
-      List<Vec2> centers, double radius, List<ParticleColor> colors, int count);
+      List<Vector2> centers, double radius, List<ParticleColor> colors, int count);
 
   /** Called at the end of drawing a world */
   void flush() {}
 
-  void drawString(Vec2 pos, String s, Color3i color) {
+  void drawString(Vector2 pos, String s, Color3i color) {
     drawStringXY(pos.x, pos.y, s, color);
   }
 
@@ -198,7 +198,7 @@ abstract class DebugDraw {
    * @param argScreen
    * @param argWorld
    */
-  void getScreenToWorldToOut(Vec2 argScreen, Vec2 argWorld) {
+  void getScreenToWorldToOut(Vector2 argScreen, Vector2 argWorld) {
     viewportTransform.getScreenToWorld(argScreen, argWorld);
   }
 
@@ -206,7 +206,7 @@ abstract class DebugDraw {
    * @param argWorld
    * @param argScreen
    */
-  void getWorldToScreenToOut(Vec2 argWorld, Vec2 argScreen) {
+  void getWorldToScreenToOut(Vector2 argWorld, Vector2 argScreen) {
     viewportTransform.getWorldToScreen(argWorld, argScreen);
   }
 
@@ -217,8 +217,8 @@ abstract class DebugDraw {
    * @param worldY
    * @param argScreen
    */
-  void getWorldToScreenToOutXY(double worldX, double worldY, Vec2 argScreen) {
-    argScreen.setXY(worldX, worldY);
+  void getWorldToScreenToOutXY(double worldX, double worldY, Vector2 argScreen) {
+    argScreen.setValues(worldX, worldY);
     viewportTransform.getWorldToScreen(argScreen, argScreen);
   }
 
@@ -227,8 +227,8 @@ abstract class DebugDraw {
    * 
    * @param argWorld
    */
-  Vec2 getWorldToScreen(Vec2 argWorld) {
-    Vec2 screen = new Vec2.zero();
+  Vector2 getWorldToScreen(Vector2 argWorld) {
+    Vector2 screen = new Vector2.zero();
     viewportTransform.getWorldToScreen(argWorld, screen);
     return screen;
   }
@@ -239,8 +239,8 @@ abstract class DebugDraw {
    * @param worldX
    * @param worldY
    */
-  Vec2 getWorldToScreenXY(double worldX, double worldY) {
-    Vec2 argScreen = new Vec2(worldX, worldY);
+  Vector2 getWorldToScreenXY(double worldX, double worldY) {
+    Vector2 argScreen = new Vector2(worldX, worldY);
     viewportTransform.getWorldToScreen(argScreen, argScreen);
     return argScreen;
   }
@@ -252,8 +252,8 @@ abstract class DebugDraw {
    * @param screenY
    * @param argWorld
    */
-  void getScreenToWorldToOutXY(double screenX, double screenY, Vec2 argWorld) {
-    argWorld.setXY(screenX, screenY);
+  void getScreenToWorldToOutXY(double screenX, double screenY, Vector2 argWorld) {
+    argWorld.setValues(screenX, screenY);
     viewportTransform.getScreenToWorld(argWorld, argWorld);
   }
 
@@ -262,8 +262,8 @@ abstract class DebugDraw {
    * 
    * @param argScreen
    */
-  Vec2 getScreenToWorld(Vec2 argScreen) {
-    Vec2 world = new Vec2.zero();
+  Vector2 getScreenToWorld(Vector2 argScreen) {
+    Vector2 world = new Vector2.zero();
     viewportTransform.getScreenToWorld(argScreen, world);
     return world;
   }
@@ -274,8 +274,8 @@ abstract class DebugDraw {
    * @param screenX
    * @param screenY
    */
-  Vec2 getScreenToWorldXY(double screenX, double screenY) {
-    Vec2 screen = new Vec2(screenX, screenY);
+  Vector2 getScreenToWorldXY(double screenX, double screenY) {
+    Vector2 screen = new Vector2(screenX, screenY);
     viewportTransform.getScreenToWorld(screen, screen);
     return screen;
   }

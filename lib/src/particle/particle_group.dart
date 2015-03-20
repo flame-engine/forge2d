@@ -36,8 +36,8 @@ class ParticleGroup {
   int m_timestamp = 0;
   double m_mass = 0.0;
   double m_inertia = 0.0;
-  final Vec2 m_center = new Vec2.zero();
-  final Vec2 m_linearVelocity = new Vec2.zero();
+  final Vector2 m_center = new Vector2.zero();
+  final Vector2 m_linearVelocity = new Vector2.zero();
   double m_angularVelocity = 0.0;
   final Transform m_transform = new Transform.zero();
 
@@ -95,12 +95,12 @@ class ParticleGroup {
     return m_inertia;
   }
 
-  Vec2 getCenter() {
+  Vector2 getCenter() {
     updateStatistics();
     return m_center;
   }
 
-  Vec2 getLinearVelocity() {
+  Vector2 getLinearVelocity() {
     updateStatistics();
     return m_linearVelocity;
   }
@@ -114,7 +114,7 @@ class ParticleGroup {
     return m_transform;
   }
 
-  Vec2 getPosition() {
+  Vector2 getPosition() {
     return m_transform.p;
   }
 
@@ -138,10 +138,10 @@ class ParticleGroup {
       m_linearVelocity.setZero();
       for (int i = m_firstIndex; i < m_lastIndex; i++) {
         m_mass += m;
-        Vec2 pos = m_system.m_positionBuffer.data[i];
+        Vector2 pos = m_system.m_positionBuffer.data[i];
         m_center.x += m * pos.x;
         m_center.y += m * pos.y;
-        Vec2 vel = m_system.m_velocityBuffer.data[i];
+        Vector2 vel = m_system.m_velocityBuffer.data[i];
         m_linearVelocity.x += m * vel.x;
         m_linearVelocity.y += m * vel.y;
       }
@@ -154,8 +154,8 @@ class ParticleGroup {
       m_inertia = 0.0;
       m_angularVelocity = 0.0;
       for (int i = m_firstIndex; i < m_lastIndex; i++) {
-        Vec2 pos = m_system.m_positionBuffer.data[i];
-        Vec2 vel = m_system.m_velocityBuffer.data[i];
+        Vector2 pos = m_system.m_positionBuffer.data[i];
+        Vector2 vel = m_system.m_velocityBuffer.data[i];
         double px = pos.x - m_center.x;
         double py = pos.y - m_center.y;
         double vx = vel.x - m_linearVelocity.x;

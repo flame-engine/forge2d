@@ -34,12 +34,12 @@ class FrictionJointDef extends JointDef {
   /**
    * The local anchor point relative to bodyA's origin.
    */
-  final Vec2 localAnchorA;
+  final Vector2 localAnchorA;
 
   /**
    * The local anchor point relative to bodyB's origin.
    */
-  final Vec2 localAnchorB;
+  final Vector2 localAnchorB;
 
   /**
    * The maximum friction force in N.
@@ -52,15 +52,15 @@ class FrictionJointDef extends JointDef {
   double maxTorque = 0.0;
 
   FrictionJointDef()
-      : localAnchorA = new Vec2.zero(),
-        localAnchorB = new Vec2.zero(),
+      : localAnchorA = new Vector2.zero(),
+        localAnchorB = new Vector2.zero(),
         super(JointType.FRICTION);
 
   /**
    * Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
    * axis.
    */
-  void initialize(Body bA, Body bB, Vec2 anchor) {
+  void initialize(Body bA, Body bB, Vector2 anchor) {
     bodyA = bA;
     bodyB = bB;
     bA.getLocalPointToOut(anchor, localAnchorA);

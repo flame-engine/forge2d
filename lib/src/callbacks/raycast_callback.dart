@@ -45,5 +45,5 @@ abstract class RayCastCallback {
    * @param fraction
    */
   double reportFixture(
-      Fixture fixture, Vec2 point, Vec2 normal, double fraction);
+      Fixture fixture, Vector2 point, Vector2 normal, double fraction);
 }

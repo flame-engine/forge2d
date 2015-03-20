@@ -32,10 +32,10 @@ part of box2d.common;
 class Sweep {
 
   /** Local center of mass position */
-  final Vec2 localCenter = new Vec2.zero();
+  final Vector2 localCenter = new Vector2.zero();
   /** Center world positions */
-  final Vec2 c0 = new Vec2.zero(),
-      c = new Vec2.zero();
+  final Vector2 c0 = new Vector2.zero(),
+      c = new Vector2.zero();
   /** World angles */
   double a0 = 0.0,
       a = 0.0;

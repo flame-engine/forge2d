@@ -38,7 +38,7 @@ part of box2d;
  */
 class ManifoldPoint {
   /** usage depends on manifold type */
-  final Vec2 localPoint;
+  final Vector2 localPoint;
   /** the non-penetration impulse */
   double normalImpulse = 0.0;
   /** the friction impulse */
@@ -50,7 +50,7 @@ class ManifoldPoint {
    * Blank manifold point with everything zeroed out.
    */
   ManifoldPoint()
-      : localPoint = new Vec2.zero(),
+      : localPoint = new Vector2.zero(),
         id = new ContactID();
 
   /**

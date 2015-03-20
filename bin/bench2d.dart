@@ -86,7 +86,7 @@ class Bench2D {
   Body topBody = null;
 
   Bench2D() {
-    Vec2 gravity = new Vec2(0.0, -10.0);
+    Vector2 gravity = new Vector2(0.0, -10.0);
     world = new World.withGravity(gravity);
 
     {
@@ -94,7 +94,7 @@ class Bench2D {
       Body ground = world.createBody(bd);
 
       EdgeShape shape = new EdgeShape();
-      shape.set(new Vec2(-40.0, 0.0), new Vec2(40.0, 0.0));
+      shape.set(new Vector2(-40.0, 0.0), new Vector2(40.0, 0.0));
       ground.createFixtureFromShape(shape, 0.0);
     }
 
@@ -103,10 +103,10 @@ class Bench2D {
       PolygonShape shape = new PolygonShape();
       shape.setAsBoxXY(a, a);
 
-      Vec2 x = new Vec2(-7.0, 0.75);
-      Vec2 y = new Vec2.zero();
-      Vec2 deltaX = new Vec2(0.5625, 1.0);
-      Vec2 deltaY = new Vec2(1.125, 0.0);
+      Vector2 x = new Vector2(-7.0, 0.75);
+      Vector2 y = new Vector2.zero();
+      Vector2 deltaX = new Vector2(0.5625, 1.0);
+      Vector2 deltaY = new Vector2(1.125, 0.0);
 
       for (int i = 0; i < PYRAMID_SIZE; ++i) {
         y.set(x);
@@ -118,10 +118,10 @@ class Bench2D {
           Body body = world.createBody(bd);
           body.createFixtureFromShape(shape, 5.0);
           topBody = body;
-          y.addLocal(deltaY);
+          y.add(deltaY);
         }
 
-        x.addLocal(deltaX);
+        x.add(deltaX);
       }
     }
   }
@@ -135,12 +135,12 @@ class Bench2D {
   }
 
   void checksum(World world) {
-    Vec2 positionSum = new Vec2.zero();
-    Vec2 linearVelocitySum = new Vec2.zero();
+    Vector2 positionSum = new Vector2.zero();
+    Vector2 linearVelocitySum = new Vector2.zero();
     double angularVelocitySum = 0.0;
     var checksum = (Body b) {
-      positionSum = positionSum.add(b.position);
-      linearVelocitySum = linearVelocitySum.add(b.linearVelocity);
+      positionSum = positionSum + b.position;
+      linearVelocitySum = linearVelocitySum + b.linearVelocity;
       angularVelocitySum += b.angularVelocity;
     };
     Body firstBody = world.m_bodyList;

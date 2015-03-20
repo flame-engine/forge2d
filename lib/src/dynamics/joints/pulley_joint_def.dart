@@ -35,22 +35,22 @@ class PulleyJointDef extends JointDef {
   /**
    * The first ground anchor in world coordinates. This point never moves.
    */
-  Vec2 groundAnchorA = new Vec2(-1.0, 1.0);
+  Vector2 groundAnchorA = new Vector2(-1.0, 1.0);
 
   /**
    * The second ground anchor in world coordinates. This point never moves.
    */
-  Vec2 groundAnchorB = new Vec2(1.0, 1.0);
+  Vector2 groundAnchorB = new Vector2(1.0, 1.0);
 
   /**
    * The local anchor point relative to bodyA's origin.
    */
-  Vec2 localAnchorA = new Vec2(-1.0, 0.0);
+  Vector2 localAnchorA = new Vector2(-1.0, 0.0);
 
   /**
    * The local anchor point relative to bodyB's origin.
    */
-  Vec2 localAnchorB = new Vec2(1.0, 0.0);
+  Vector2 localAnchorB = new Vector2(1.0, 0.0);
 
   /**
    * The a reference length for the segment attached to bodyA.
@@ -74,18 +74,18 @@ class PulleyJointDef extends JointDef {
   /**
    * Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
    */
-  void initialize(Body b1, Body b2, Vec2 ga1, Vec2 ga2, Vec2 anchor1,
-      Vec2 anchor2, double r) {
+  void initialize(Body b1, Body b2, Vector2 ga1, Vector2 ga2, Vector2 anchor1,
+      Vector2 anchor2, double r) {
     bodyA = b1;
     bodyB = b2;
     groundAnchorA = ga1;
     groundAnchorB = ga2;
     localAnchorA = bodyA.getLocalPoint(anchor1);
     localAnchorB = bodyB.getLocalPoint(anchor2);
-    Vec2 d1 = anchor1.sub(ga1);
-    lengthA = d1.length();
-    Vec2 d2 = anchor2.sub(ga2);
-    lengthB = d2.length();
+    Vector2 d1 = anchor1 - ga1;
+    lengthA = d1.length;
+    Vector2 d2 = anchor2 - ga2;
+    lengthB = d2.length;
     ratio = r;
     assert(ratio > Settings.EPSILON);
   }

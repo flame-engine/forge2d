@@ -30,7 +30,7 @@ import 'dart:typed_data';
 import 'math_utils.dart' as MathUtils;
 import 'settings.dart' as Settings;
 
-class Vec2 {
+class Vector2 {
   final Float64List _d = new Float64List(2);
 
   void set x(double v) {
@@ -43,14 +43,14 @@ class Vec2 {
   double get x => _d[0];
   double get y => _d[1];
 
-  Vec2(double x, double y) {
+  Vector2(double x, double y) {
     _d[0] = x;
     _d[1] = y;
   }
 
-  Vec2.zero();
+  Vector2.zero();
 
-  Vec2.copy(Vec2 other) {
+  Vector2.copy(Vector2 other) {
     _d[0] = other._d[0];
     _d[1] = other._d[1];
   }
@@ -62,87 +62,88 @@ class Vec2 {
   }
 
   /** Set the vector component-wise. */
-  Vec2 setXY(double x, double y) {
+  Vector2 setValues(double x, double y) {
     this.x = x;
     this.y = y;
     return this;
   }
 
   /** Set this vector to another vector. */
-  Vec2 set(Vec2 v) {
+  Vector2 set(Vector2 v) {
     this.x = v.x;
     this.y = v.y;
     return this;
   }
 
-  /** Return the sum of this vector and another; does not alter either one. */
-  Vec2 add(Vec2 v) {
-    return new Vec2(x + v.x, y + v.y);
+  /// Negate.
+  Vector2 operator-() => new Vector2(-x, -y);
+
+  /// Add two vectors.
+  Vector2 operator+(Vector2 other) => new Vector2(x + other.x, y + other.y);
+
+  /// Subtract two vectors.
+  Vector2 operator-(Vector2 other) => new Vector2(x - other.x, y - other.y);
+
+  /// Scale.
+  Vector2 operator/(double scale) {
+    var o = 1.0 / scale;
+    return new Vector2(x * o, y * o);
   }
 
-  /** Return the difference of this vector and another; does not alter either one. */
-  Vec2 sub(Vec2 v) {
-    return new Vec2(x - v.x, y - v.y);
-  }
-
-  /** Return this vector multiplied by a scalar; does not alter this vector. */
-  Vec2 mul(double a) {
-    return new Vec2(x * a, y * a);
-  }
-
-  /** Return the negation of this vector; does not alter this vector. */
-  Vec2 negate() {
-    return new Vec2(-x, -y);
+  /// Scale.
+  Vector2 operator*(double scale) {
+    var o = scale;
+    return new Vector2(x * o, y * o);
   }
 
   /** Flip the vector and return it - alters this vector. */
-  Vec2 negateLocal() {
+  Vector2 negate() {
     x = -x;
     y = -y;
     return this;
   }
 
   /** Add another vector to this one and returns result - alters this vector. */
-  Vec2 addLocal(Vec2 v) {
+  Vector2 add(Vector2 v) {
     x += v.x;
     y += v.y;
     return this;
   }
 
   /** Adds values to this vector and returns result - alters this vector. */
-  Vec2 addLocalXY(double x, double y) {
+  Vector2 addValues(double x, double y) {
     this.x += x;
     this.y += y;
     return this;
   }
 
   /** Subtract another vector from this one and return result - alters this vector. */
-  Vec2 subLocal(Vec2 v) {
+  Vector2 sub(Vector2 v) {
     x -= v.x;
     y -= v.y;
     return this;
   }
 
   /** Multiply this vector by a number and return result - alters this vector. */
-  Vec2 mulLocal(double a) {
+  Vector2 mul(double a) {
     x *= a;
     y *= a;
     return this;
   }
 
   /** Get the skew vector such that dot(skew_vec, other) == cross(vec, other) */
-  Vec2 skew() {
-    return new Vec2(-y, x);
+  Vector2 skew() {
+    return new Vector2(-y, x);
   }
 
   /** Get the skew vector such that dot(skew_vec, other) == cross(vec, other) */
-  void skewVec2(Vec2 out) {
+  void skewVec2(Vector2 out) {
     out.x = -y;
     out.y = x;
   }
 
   /** Return the length of this vector. */
-  double length() {
+  double get length {
     return Math.sqrt(x * x + y * y);
   }
 
@@ -150,10 +151,23 @@ class Vec2 {
   double lengthSquared() {
     return (x * x + y * y);
   }
+  
+  /// Normalize [this].
+  Vector2 normalize() {
+    double l = length;
+    // TODO(johnmccutchan): Use an epsilon.
+    if (l == 0.0) {
+      return this;
+    }
+    l = 1.0 / l;
+    x *= l;
+    y *= l;
+    return this;
+  }
 
   /** Normalize this vector and return the length before normalization. Alters this vector. */
-  double normalize() {
-    double len = length();
+  double normalizeLength() {
+    double len = length;
     if (len < Settings.EPSILON) {
       return 0.0;
     }
@@ -170,8 +184,8 @@ class Vec2 {
   }
 
   /** Return a new vector that has positive components. */
-  Vec2 abs() {
-    return new Vec2(x.abs(), y.abs());
+  Vector2 abs() {
+    return new Vector2(x.abs(), y.abs());
   }
 
   void absLocal() {
@@ -181,8 +195,8 @@ class Vec2 {
 
   // @Override // annotation omitted for GWT-compatibility
   /** Return a copy of this vector. */
-  Vec2 clone() {
-    return new Vec2(x, y);
+  Vector2 clone() {
+    return new Vector2(x, y);
   }
 
   String toString() {
@@ -193,74 +207,74 @@ class Vec2 {
    * Static
    */
 
-  static Vec2 abs_(Vec2 a) {
-    return new Vec2(a.x.abs(), a.y.abs());
+  static Vector2 abs_(Vector2 a) {
+    return new Vector2(a.x.abs(), a.y.abs());
   }
 
-  static void absToOut(Vec2 a, Vec2 out) {
+  static void absToOut(Vector2 a, Vector2 out) {
     out.x = a.x.abs();
     out.y = a.y.abs();
   }
 
-  static double dot(final Vec2 a, final Vec2 b) {
+  static double dot(final Vector2 a, final Vector2 b) {
     return a.x * b.x + a.y * b.y;
   }
 
-  static double cross(Vec2 a, Vec2 b) {
+  static double cross(Vector2 a, Vector2 b) {
     return a.x * b.y - a.y * b.x;
   }
 
-  static Vec2 crossVec2Dbl(Vec2 a, double s) {
-    return new Vec2(s * a.y, -s * a.x);
+  static Vector2 crossVec2Dbl(Vector2 a, double s) {
+    return new Vector2(s * a.y, -s * a.x);
   }
 
-  static void crossToOutVec2Dbl(Vec2 a, double s, Vec2 out) {
+  static void crossToOutVec2Dbl(Vector2 a, double s, Vector2 out) {
     final double tempy = -s * a.x;
     out.x = s * a.y;
     out.y = tempy;
   }
 
-  static void crossToOutUnsafeVec2Dbl(Vec2 a, double s, Vec2 out) {
+  static void crossToOutUnsafeVec2Dbl(Vector2 a, double s, Vector2 out) {
     assert(out != a);
     out.x = s * a.y;
     out.y = -s * a.x;
   }
 
-  static Vec2 crossDblVec2(double s, Vec2 a) {
-    return new Vec2(-s * a.y, s * a.x);
+  static Vector2 crossDblVec2(double s, Vector2 a) {
+    return new Vector2(-s * a.y, s * a.x);
   }
 
-  static void crossToOutDblVec2(double s, Vec2 a, Vec2 out) {
+  static void crossToOutDblVec2(double s, Vector2 a, Vector2 out) {
     final double tempY = s * a.x;
     out.x = -s * a.y;
     out.y = tempY;
   }
 
-  static void crossToOutUnsafeDblVec2(double s, Vec2 a, Vec2 out) {
+  static void crossToOutUnsafeDblVec2(double s, Vector2 a, Vector2 out) {
     assert(out != a);
     out.x = -s * a.y;
     out.y = s * a.x;
   }
 
-  static void negateToOut(Vec2 a, Vec2 out) {
+  static void negateToOut(Vector2 a, Vector2 out) {
     out.x = -a.x;
     out.y = -a.y;
   }
 
-  static Vec2 min(Vec2 a, Vec2 b) {
-    return new Vec2(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y);
+  static Vector2 minV2(Vector2 a, Vector2 b) {
+    return new Vector2(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y);
   }
 
-  static Vec2 max(Vec2 a, Vec2 b) {
-    return new Vec2(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y);
+  static Vector2 maxV2(Vector2 a, Vector2 b) {
+    return new Vector2(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y);
   }
 
-  static void minToOut(Vec2 a, Vec2 b, Vec2 out) {
+  static void min(Vector2 a, Vector2 b, Vector2 out) {
     out.x = a.x < b.x ? a.x : b.x;
     out.y = a.y < b.y ? a.y : b.y;
   }
 
-  static void maxToOut(Vec2 a, Vec2 b, Vec2 out) {
+  static void max(Vector2 a, Vector2 b, Vector2 out) {
     out.x = a.x > b.x ? a.x : b.x;
     out.y = a.y > b.y ? a.y : b.y;
   }
@@ -268,17 +282,18 @@ class Vec2 {
   bool equals(Object obj) {
     if (identical(this, obj)) return true;
     if (obj == null) return false;
-    if (obj is! Vec2) return false;
-    Vec2 other = obj;
+    if (obj is! Vector2) return false;
+    Vector2 other = obj;
     return ((x == other.x) && (y == other.y));
   }
 
   bool approxEquals(Object obj) {
     if (identical(this, obj)) return true;
     if (obj == null) return false;
-    if (obj is! Vec2) return false;
-    Vec2 other = obj;
+    if (obj is! Vector2) return false;
+    Vector2 other = obj;
     return MathUtils.approxEquals(x, other.x) &&
         MathUtils.approxEquals(y, other.y);
   }
 }
+

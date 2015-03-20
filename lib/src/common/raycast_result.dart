@@ -26,7 +26,7 @@ part of box2d.common;
 
 class RaycastResult {
   double lambda = 0.0;
-  final Vec2 normal = new Vec2.zero();
+  final Vector2 normal = new Vector2.zero();
 
   RaycastResult set(RaycastResult argOther) {
     lambda = argOther.lambda;

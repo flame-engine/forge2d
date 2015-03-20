@@ -46,7 +46,7 @@ class BodyDef {
    * The world position of the body. Avoid creating bodies at the origin since this can lead to many
    * overlapping shapes.
    */
-  Vec2 position = new Vec2.zero();
+  Vector2 position = new Vector2.zero();
 
   /**
    * The world angle of the body in radians.
@@ -56,7 +56,7 @@ class BodyDef {
   /**
    * The linear velocity of the body in world co-ordinates.
    */
-  Vec2 linearVelocity = new Vec2.zero();
+  Vector2 linearVelocity = new Vector2.zero();
 
   /**
    * The angular velocity of the body.
@@ -146,7 +146,7 @@ class BodyDef {
    * The world position of the body. Avoid creating bodies at the origin since this can lead to many
    * overlapping shapes.
    */
-  Vec2 getPosition() {
+  Vector2 getPosition() {
     return position;
   }
 
@@ -154,7 +154,7 @@ class BodyDef {
    * The world position of the body. Avoid creating bodies at the origin since this can lead to many
    * overlapping shapes.
    */
-  void setPosition(Vec2 position) {
+  void setPosition(Vector2 position) {
     this.position = position;
   }
 
@@ -175,14 +175,14 @@ class BodyDef {
   /**
    * The linear velocity of the body in world co-ordinates.
    */
-  Vec2 getLinearVelocity() {
+  Vector2 getLinearVelocity() {
     return linearVelocity;
   }
 
   /**
    * The linear velocity of the body in world co-ordinates.
    */
-  void setLinearVelocity(Vec2 linearVelocity) {
+  void setLinearVelocity(Vector2 linearVelocity) {
     this.linearVelocity = linearVelocity;
   }
 

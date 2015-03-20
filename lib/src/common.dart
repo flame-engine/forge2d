@@ -1,7 +1,7 @@
 library box2d.common;
 
 import 'math_utils.dart' as MathUtils;
-import 'vec2.dart';
+import 'vector2.dart';
 
 part 'common/color3i.dart';
 part 'common/iviewporttransform.dart';

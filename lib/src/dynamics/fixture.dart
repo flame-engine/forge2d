@@ -188,7 +188,7 @@ class Fixture {
    * @param p a point in world coordinates.
    * @return
    */
-  bool testPoint(final Vec2 p) {
+  bool testPoint(final Vector2 p) {
     return m_shape.testPoint(m_body.m_xf, p);
   }
 
@@ -268,7 +268,7 @@ class Fixture {
    * @param p a point in world coordinates.
    * @return distance
    */
-  double computeDistance(Vec2 p, int childIndex, Vec2 normalOut) {
+  double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) {
     return m_shape.computeDistanceToOut(
         m_body.getTransform(), p, childIndex, normalOut);
   }
@@ -366,7 +366,7 @@ class Fixture {
 
   final AABB _pool1 = new AABB();
   final AABB _pool2 = new AABB();
-  final Vec2 _displacement = new Vec2.zero();
+  final Vector2 _displacement = new Vector2.zero();
 
   /**
    * Internal method

@@ -28,7 +28,7 @@ part of box2d;
  * A circle shape.
  */
 class CircleShape extends Shape {
-  final Vec2 m_p = new Vec2.zero();
+  final Vector2 m_p = new Vector2.zero();
 
   CircleShape() : super(ShapeType.CIRCLE) {
     radius = 0.0;
@@ -50,7 +50,7 @@ class CircleShape extends Shape {
    * @param d
    * @return
    */
-  int getSupport(final Vec2 d) => 0;
+  int getSupport(final Vector2 d) => 0;
 
   /**
    * Get the supporting vertex in the given direction.
@@ -58,7 +58,7 @@ class CircleShape extends Shape {
    * @param d
    * @return
    */
-  Vec2 getSupportVertex(final Vec2 d) => m_p;
+  Vector2 getSupportVertex(final Vector2 d) => m_p;
 
   /**
    * Get the vertex count.
@@ -73,19 +73,19 @@ class CircleShape extends Shape {
    * @param index
    * @return
    */
-  Vec2 getVertex(final int index) {
+  Vector2 getVertex(final int index) {
     assert(index == 0);
     return m_p;
   }
 
-  bool testPoint(final Transform transform, final Vec2 p) {
+  bool testPoint(final Transform transform, final Vector2 p) {
     // Rot.mulToOutUnsafe(transform.q, m_p, center);
     // center.addLocal(transform.p);
     //
     // final Vec2 d = center.subLocal(p).negateLocal();
     // return Vec2.dot(d, d) <= m_radius * m_radius;
     final Rot q = transform.q;
-    final Vec2 tp = transform.p;
+    final Vector2 tp = transform.p;
     double centerx = -(q.c * m_p.x - q.s * m_p.y + tp.x - p.x);
     double centery = -(q.s * m_p.x + q.c * m_p.y + tp.y - p.y);
 
@@ -93,7 +93,7 @@ class CircleShape extends Shape {
   }
 
   double computeDistanceToOut(
-      Transform xf, Vec2 p, int childIndex, Vec2 normalOut) {
+      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
     final Rot xfq = xf.q;
     double centerx = xfq.c * m_p.x - xfq.s * m_p.y + xf.p.x;
     double centery = xfq.s * m_p.x + xfq.c * m_p.y + xf.p.y;
@@ -111,10 +111,10 @@ class CircleShape extends Shape {
   // norm(x) = radius
   bool raycast(RayCastOutput output, RayCastInput input, Transform transform,
       int childIndex) {
-    final Vec2 inputp1 = input.p1;
-    final Vec2 inputp2 = input.p2;
+    final Vector2 inputp1 = input.p1;
+    final Vector2 inputp2 = input.p2;
     final Rot tq = transform.q;
-    final Vec2 tp = transform.p;
+    final Vector2 tp = transform.p;
 
     // Rot.mulToOutUnsafe(transform.q, m_p, position);
     // position.addLocal(transform.p);
@@ -158,7 +158,7 @@ class CircleShape extends Shape {
 
   void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
     final Rot tq = transform.q;
-    final Vec2 tp = transform.p;
+    final Vector2 tp = transform.p;
     final double px = tq.c * m_p.x - tq.s * m_p.y + tp.x;
     final double py = tq.s * m_p.x + tq.c * m_p.y + tp.y;
 

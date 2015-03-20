@@ -104,17 +104,17 @@ class Mat33 {
         v.x * A.ex.z + v.y * A.ey.z + v.z * A.ez.z);
   }
 
-  static Vec2 mul22(Mat33 A, Vec2 v) {
-    return new Vec2(A.ex.x * v.x + A.ey.x * v.y, A.ex.y * v.x + A.ey.y * v.y);
+  static Vector2 mul22(Mat33 A, Vector2 v) {
+    return new Vector2(A.ex.x * v.x + A.ey.x * v.y, A.ex.y * v.x + A.ey.y * v.y);
   }
 
-  static void mul22ToOut(Mat33 A, Vec2 v, Vec2 out) {
+  static void mul22ToOut(Mat33 A, Vector2 v, Vector2 out) {
     final double tempx = A.ex.x * v.x + A.ey.x * v.y;
     out.y = A.ex.y * v.x + A.ey.y * v.y;
     out.x = tempx;
   }
 
-  static void mul22ToOutUnsafe(Mat33 A, Vec2 v, Vec2 out) {
+  static void mul22ToOutUnsafe(Mat33 A, Vector2 v, Vector2 out) {
     assert(v != out);
     out.y = A.ex.y * v.x + A.ey.y * v.y;
     out.x = A.ex.x * v.x + A.ey.x * v.y;
@@ -142,8 +142,8 @@ class Mat33 {
    * @param b
    * @return
    */
-  Vec2 solve22(Vec2 b) {
-    Vec2 x = new Vec2.zero();
+  Vector2 solve22(Vector2 b) {
+    Vector2 x = new Vector2.zero();
     solve22ToOut(b, x);
     return x;
   }
@@ -155,7 +155,7 @@ class Mat33 {
    * @param b
    * @return
    */
-  void solve22ToOut(Vec2 b, Vec2 out) {
+  void solve22ToOut(Vector2 b, Vector2 out) {
     final double a11 = ex.x,
         a12 = ey.x,
         a21 = ex.y,

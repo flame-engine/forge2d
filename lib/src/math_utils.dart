@@ -27,27 +27,27 @@ library box2d.math_utils;
 import 'dart:math' as Math;
 import 'dart:typed_data';
 
-import 'vec2.dart';
+import 'vector2.dart';
 import 'settings.dart' as Settings;
 
 export 'dart:math' show cos, atan2;
 
 const double TWOPI = Math.PI * 2.0;
 
-double distanceSquared(Vec2 v1, Vec2 v2) {
+double distanceSquared(Vector2 v1, Vector2 v2) {
   double dx = (v1.x - v2.x);
   double dy = (v1.y - v2.y);
   return dx * dx + dy * dy;
 }
 
-double distance(Vec2 v1, Vec2 v2) => Math.sqrt(distanceSquared(v1, v2));
+double distance(Vector2 v1, Vector2 v2) => Math.sqrt(distanceSquared(v1, v2));
 
 /** Returns the closest value to 'a' that is in between 'low' and 'high' */
 double clampDouble(final double a, final double low, final double high) =>
     Math.max(low, Math.min(a, high));
 
-Vec2 clampVec2(final Vec2 a, final Vec2 low, final Vec2 high) {
-  final Vec2 min = new Vec2.zero();
+Vector2 clampVec2(final Vector2 a, final Vector2 low, final Vector2 high) {
+  final Vector2 min = new Vector2.zero();
   min.x = a.x < high.x ? a.x : high.x;
   min.y = a.y < high.y ? a.y : high.y;
   min.x = low.x > min.x ? low.x : min.x;

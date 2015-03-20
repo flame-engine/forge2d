@@ -42,8 +42,8 @@ class DistanceJoint extends Joint {
   double _m_bias = 0.0;
 
   // Solver shared
-  final Vec2 _m_localAnchorA;
-  final Vec2 _m_localAnchorB;
+  final Vector2 _m_localAnchorA;
+  final Vector2 _m_localAnchorB;
   double _m_gamma = 0.0;
   double _m_impulse = 0.0;
   double _m_length = 0.0;
@@ -51,11 +51,11 @@ class DistanceJoint extends Joint {
   // Solver temp
   int _m_indexA = 0;
   int _m_indexB = 0;
-  final Vec2 _m_u = new Vec2.zero();
-  final Vec2 _m_rA = new Vec2.zero();
-  final Vec2 _m_rB = new Vec2.zero();
-  final Vec2 _m_localCenterA = new Vec2.zero();
-  final Vec2 _m_localCenterB = new Vec2.zero();
+  final Vector2 _m_u = new Vector2.zero();
+  final Vector2 _m_rA = new Vector2.zero();
+  final Vector2 _m_rB = new Vector2.zero();
+  final Vector2 _m_localCenterA = new Vector2.zero();
+  final Vector2 _m_localCenterB = new Vector2.zero();
   double _m_invMassA = 0.0;
   double _m_invMassB = 0.0;
   double _m_invIA = 0.0;
@@ -95,19 +95,19 @@ class DistanceJoint extends Joint {
     return _m_dampingRatio;
   }
 
-  void getAnchorA(Vec2 argOut) {
+  void getAnchorA(Vector2 argOut) {
     m_bodyA.getWorldPointToOut(_m_localAnchorA, argOut);
   }
 
-  void getAnchorB(Vec2 argOut) {
+  void getAnchorB(Vector2 argOut) {
     m_bodyB.getWorldPointToOut(_m_localAnchorB, argOut);
   }
 
-  Vec2 getLocalAnchorA() {
+  Vector2 getLocalAnchorA() {
     return _m_localAnchorA;
   }
 
-  Vec2 getLocalAnchorB() {
+  Vector2 getLocalAnchorB() {
     return _m_localAnchorB;
   }
 
@@ -115,7 +115,7 @@ class DistanceJoint extends Joint {
    * Get the reaction force given the inverse time step. Unit is N.
    */
 
-  void getReactionForce(double inv_dt, Vec2 argOut) {
+  void getReactionForce(double inv_dt, Vector2 argOut) {
     argOut.x = _m_impulse * _m_u.x * inv_dt;
     argOut.y = _m_impulse * _m_u.y * inv_dt;
   }
@@ -139,14 +139,14 @@ class DistanceJoint extends Joint {
     _m_invIA = m_bodyA.m_invI;
     _m_invIB = m_bodyB.m_invI;
 
-    Vec2 cA = data.positions[_m_indexA].c;
+    Vector2 cA = data.positions[_m_indexA].c;
     double aA = data.positions[_m_indexA].a;
-    Vec2 vA = data.velocities[_m_indexA].v;
+    Vector2 vA = data.velocities[_m_indexA].v;
     double wA = data.velocities[_m_indexA].w;
 
-    Vec2 cB = data.positions[_m_indexB].c;
+    Vector2 cB = data.positions[_m_indexB].c;
     double aB = data.positions[_m_indexB].a;
-    Vec2 vB = data.velocities[_m_indexB].v;
+    Vector2 vB = data.velocities[_m_indexB].v;
     double wB = data.velocities[_m_indexB].w;
 
     final Rot qA = pool.popRot();
@@ -157,24 +157,24 @@ class DistanceJoint extends Joint {
 
     // use _m_u as temporary variable
     Rot.mulToOutUnsafe(
-        qA, _m_u.set(_m_localAnchorA).subLocal(_m_localCenterA), _m_rA);
+        qA, _m_u.set(_m_localAnchorA).sub(_m_localCenterA), _m_rA);
     Rot.mulToOutUnsafe(
-        qB, _m_u.set(_m_localAnchorB).subLocal(_m_localCenterB), _m_rB);
-    _m_u.set(cB).addLocal(_m_rB).subLocal(cA).subLocal(_m_rA);
+        qB, _m_u.set(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
+    _m_u.set(cB).add(_m_rB).sub(cA).sub(_m_rA);
 
     pool.pushRot(2);
 
     // Handle singularity.
-    double length = _m_u.length();
+    double length = _m_u.length;
     if (length > Settings.linearSlop) {
       _m_u.x *= 1.0 / length;
       _m_u.y *= 1.0 / length;
     } else {
-      _m_u.setXY(0.0, 0.0);
+      _m_u.setValues(0.0, 0.0);
     }
 
-    double crAu = Vec2.cross(_m_rA, _m_u);
-    double crBu = Vec2.cross(_m_rB, _m_u);
+    double crAu = Vector2.cross(_m_rA, _m_u);
+    double crBu = Vector2.cross(_m_rB, _m_u);
     double invMass = _m_invMassA +
         _m_invIA * crAu * crAu +
         _m_invMassB +
@@ -212,16 +212,16 @@ class DistanceJoint extends Joint {
       // Scale the impulse to support a variable time step.
       _m_impulse *= data.step.dtRatio;
 
-      Vec2 P = pool.popVec2();
-      P.set(_m_u).mulLocal(_m_impulse);
+      Vector2 P = pool.popVec2();
+      P.set(_m_u).mul(_m_impulse);
 
       vA.x -= _m_invMassA * P.x;
       vA.y -= _m_invMassA * P.y;
-      wA -= _m_invIA * Vec2.cross(_m_rA, P);
+      wA -= _m_invIA * Vector2.cross(_m_rA, P);
 
       vB.x += _m_invMassB * P.x;
       vB.y += _m_invMassB * P.y;
-      wB += _m_invIB * Vec2.cross(_m_rB, P);
+      wB += _m_invIB * Vector2.cross(_m_rB, P);
 
       pool.pushVec2(1);
     } else {
@@ -234,20 +234,20 @@ class DistanceJoint extends Joint {
   }
 
   void solveVelocityConstraints(final SolverData data) {
-    Vec2 vA = data.velocities[_m_indexA].v;
+    Vector2 vA = data.velocities[_m_indexA].v;
     double wA = data.velocities[_m_indexA].w;
-    Vec2 vB = data.velocities[_m_indexB].v;
+    Vector2 vB = data.velocities[_m_indexB].v;
     double wB = data.velocities[_m_indexB].w;
 
-    final Vec2 vpA = pool.popVec2();
-    final Vec2 vpB = pool.popVec2();
+    final Vector2 vpA = pool.popVec2();
+    final Vector2 vpB = pool.popVec2();
 
     // Cdot = dot(u, v + cross(w, r))
-    Vec2.crossToOutUnsafeDblVec2(wA, _m_rA, vpA);
-    vpA.addLocal(vA);
-    Vec2.crossToOutUnsafeDblVec2(wB, _m_rB, vpB);
-    vpB.addLocal(vB);
-    double Cdot = Vec2.dot(_m_u, vpB.subLocal(vpA));
+    Vector2.crossToOutUnsafeDblVec2(wA, _m_rA, vpA);
+    vpA.add(vA);
+    Vector2.crossToOutUnsafeDblVec2(wB, _m_rB, vpB);
+    vpB.add(vB);
+    double Cdot = Vector2.dot(_m_u, vpB.sub(vpA));
 
     double impulse = -_m_mass * (Cdot + _m_bias + _m_gamma * _m_impulse);
     _m_impulse += impulse;
@@ -276,25 +276,25 @@ class DistanceJoint extends Joint {
     }
     final Rot qA = pool.popRot();
     final Rot qB = pool.popRot();
-    final Vec2 rA = pool.popVec2();
-    final Vec2 rB = pool.popVec2();
-    final Vec2 u = pool.popVec2();
+    final Vector2 rA = pool.popVec2();
+    final Vector2 rB = pool.popVec2();
+    final Vector2 u = pool.popVec2();
 
-    Vec2 cA = data.positions[_m_indexA].c;
+    Vector2 cA = data.positions[_m_indexA].c;
     double aA = data.positions[_m_indexA].a;
-    Vec2 cB = data.positions[_m_indexB].c;
+    Vector2 cB = data.positions[_m_indexB].c;
     double aB = data.positions[_m_indexB].a;
 
     qA.setAngle(aA);
     qB.setAngle(aB);
 
     Rot.mulToOutUnsafe(
-        qA, u.set(_m_localAnchorA).subLocal(_m_localCenterA), rA);
+        qA, u.set(_m_localAnchorA).sub(_m_localCenterA), rA);
     Rot.mulToOutUnsafe(
-        qB, u.set(_m_localAnchorB).subLocal(_m_localCenterB), rB);
-    u.set(cB).addLocal(rB).subLocal(cA).subLocal(rA);
+        qB, u.set(_m_localAnchorB).sub(_m_localCenterB), rB);
+    u.set(cB).add(rB).sub(cA).sub(rA);
 
-    double length = u.normalize();
+    double length = u.normalizeLength();
     double C = length - _m_length;
     C = MathUtils.clampDouble(
         C, -Settings.maxLinearCorrection, Settings.maxLinearCorrection);

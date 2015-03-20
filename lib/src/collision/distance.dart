@@ -28,9 +28,9 @@ part of box2d;
  * GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
  */
 class _SimplexVertex {
-  final Vec2 wA = new Vec2.zero(); // support point in shapeA
-  final Vec2 wB = new Vec2.zero(); // support point in shapeB
-  final Vec2 w = new Vec2.zero(); // wB - wA
+  final Vector2 wA = new Vector2.zero(); // support point in shapeA
+  final Vector2 wB = new Vector2.zero(); // support point in shapeB
+  final Vector2 w = new Vector2.zero(); // wB - wA
   double a = 0.0; // barycentric coordinate for closest point
   int indexA = 0; // wA index
   int indexB = 0; // wB index
@@ -95,11 +95,11 @@ class _Simplex {
       _SimplexVertex v = vertices[i];
       v.indexA = cache.indexA[i];
       v.indexB = cache.indexB[i];
-      Vec2 wALocal = proxyA.getVertex(v.indexA);
-      Vec2 wBLocal = proxyB.getVertex(v.indexB);
+      Vector2 wALocal = proxyA.getVertex(v.indexA);
+      Vector2 wBLocal = proxyB.getVertex(v.indexB);
       Transform.mulToOutUnsafeVec2(transformA, wALocal, v.wA);
       Transform.mulToOutUnsafeVec2(transformB, wBLocal, v.wB);
-      v.w.set(v.wB).subLocal(v.wA);
+      v.w.set(v.wB).sub(v.wA);
       v.a = 0.0;
     }
 
@@ -121,11 +121,11 @@ class _Simplex {
       _SimplexVertex v = vertices[0];
       v.indexA = 0;
       v.indexB = 0;
-      Vec2 wALocal = proxyA.getVertex(0);
-      Vec2 wBLocal = proxyB.getVertex(0);
+      Vector2 wALocal = proxyA.getVertex(0);
+      Vector2 wBLocal = proxyB.getVertex(0);
       Transform.mulToOutUnsafeVec2(transformA, wALocal, v.wA);
       Transform.mulToOutUnsafeVec2(transformB, wBLocal, v.wB);
-      v.w.set(v.wB).subLocal(v.wA);
+      v.w.set(v.wB).sub(v.wA);
       m_count = 1;
     }
   }
@@ -140,25 +140,25 @@ class _Simplex {
     }
   }
 
-  final Vec2 _e12 = new Vec2.zero();
+  final Vector2 _e12 = new Vector2.zero();
 
-  void getSearchDirection(final Vec2 out) {
+  void getSearchDirection(final Vector2 out) {
     switch (m_count) {
       case 1:
-        out.set(m_v1.w).negateLocal();
+        out.set(m_v1.w).negate();
         return;
       case 2:
-        _e12.set(m_v2.w).subLocal(m_v1.w);
+        _e12.set(m_v2.w).sub(m_v1.w);
         // use out for a temp variable real quick
-        out.set(m_v1.w).negateLocal();
-        double sgn = Vec2.cross(_e12, out);
+        out.set(m_v1.w).negate();
+        double sgn = Vector2.cross(_e12, out);
 
         if (sgn > 0.0) {
           // Origin is left of e12.
-          Vec2.crossToOutUnsafeDblVec2(1.0, _e12, out);
+          Vector2.crossToOutUnsafeDblVec2(1.0, _e12, out);
         } else {
           // Origin is right of e12.
-          Vec2.crossToOutUnsafeVec2Dbl(_e12, 1.0, out);
+          Vector2.crossToOutUnsafeVec2Dbl(_e12, 1.0, out);
         }
         return;
       default:
@@ -169,15 +169,15 @@ class _Simplex {
   }
 
   // djm pooled
-  final Vec2 _case2 = new Vec2.zero();
-  final Vec2 _case22 = new Vec2.zero();
+  final Vector2 _case2 = new Vector2.zero();
+  final Vector2 _case22 = new Vector2.zero();
 
   /**
    * this returns pooled objects. don't keep or modify them
    * 
    * @return
    */
-  void getClosestPoint(final Vec2 out) {
+  void getClosestPoint(final Vector2 out) {
     switch (m_count) {
       case 0:
         assert(false);
@@ -187,8 +187,8 @@ class _Simplex {
         out.set(m_v1.w);
         return;
       case 2:
-        _case22.set(m_v2.w).mulLocal(m_v2.a);
-        _case2.set(m_v1.w).mulLocal(m_v1.a).addLocal(_case22);
+        _case22.set(m_v2.w).mul(m_v2.a);
+        _case2.set(m_v1.w).mul(m_v1.a).add(_case22);
         out.set(_case2);
         return;
       case 3:
@@ -202,10 +202,10 @@ class _Simplex {
   }
 
   // djm pooled, and from above
-  final Vec2 _case3 = new Vec2.zero();
-  final Vec2 _case33 = new Vec2.zero();
+  final Vector2 _case3 = new Vector2.zero();
+  final Vector2 _case33 = new Vector2.zero();
 
-  void getWitnessPoints(Vec2 pA, Vec2 pB) {
+  void getWitnessPoints(Vector2 pA, Vector2 pB) {
     switch (m_count) {
       case 0:
         assert(false);
@@ -217,20 +217,20 @@ class _Simplex {
         break;
 
       case 2:
-        _case2.set(m_v1.wA).mulLocal(m_v1.a);
-        pA.set(m_v2.wA).mulLocal(m_v2.a).addLocal(_case2);
+        _case2.set(m_v1.wA).mul(m_v1.a);
+        pA.set(m_v2.wA).mul(m_v2.a).add(_case2);
         // m_v1.a * m_v1.wA + m_v2.a * m_v2.wA;
         // *pB = m_v1.a * m_v1.wB + m_v2.a * m_v2.wB;
-        _case2.set(m_v1.wB).mulLocal(m_v1.a);
-        pB.set(m_v2.wB).mulLocal(m_v2.a).addLocal(_case2);
+        _case2.set(m_v1.wB).mul(m_v1.a);
+        pB.set(m_v2.wB).mul(m_v2.a).add(_case2);
 
         break;
 
       case 3:
-        pA.set(m_v1.wA).mulLocal(m_v1.a);
-        _case3.set(m_v2.wA).mulLocal(m_v2.a);
-        _case33.set(m_v3.wA).mulLocal(m_v3.a);
-        pA.addLocal(_case3).addLocal(_case33);
+        pA.set(m_v1.wA).mul(m_v1.a);
+        _case3.set(m_v2.wA).mul(m_v2.a);
+        _case33.set(m_v3.wA).mul(m_v3.a);
+        pA.add(_case3).add(_case33);
         pB.set(pA);
         // *pA = m_v1.a * m_v1.wA + m_v2.a * m_v2.wA + m_v3.a * m_v3.wA;
         // *pB = *pA;
@@ -256,10 +256,10 @@ class _Simplex {
         return MathUtils.distance(m_v1.w, m_v2.w);
 
       case 3:
-        _case3.set(m_v2.w).subLocal(m_v1.w);
-        _case33.set(m_v3.w).subLocal(m_v1.w);
+        _case3.set(m_v2.w).sub(m_v1.w);
+        _case33.set(m_v3.w).sub(m_v1.w);
         // return Vec2.cross(m_v2.w - m_v1.w, m_v3.w - m_v1.w);
-        return Vec2.cross(_case3, _case33);
+        return Vector2.cross(_case3, _case33);
 
       default:
         assert(false);
@@ -295,12 +295,12 @@ class _Simplex {
     // Solution
     // a1 = d12_1 / d12
     // a2 = d12_2 / d12
-    final Vec2 w1 = m_v1.w;
-    final Vec2 w2 = m_v2.w;
-    _e12.set(w2).subLocal(w1);
+    final Vector2 w1 = m_v1.w;
+    final Vector2 w2 = m_v2.w;
+    _e12.set(w2).sub(w1);
 
     // w1 region
-    double d12_2 = -Vec2.dot(w1, _e12);
+    double d12_2 = -Vector2.dot(w1, _e12);
     if (d12_2 <= 0.0) {
       // a2 <= 0, so we clamp it to 0
       m_v1.a = 1.0;
@@ -309,7 +309,7 @@ class _Simplex {
     }
 
     // w2 region
-    double d12_1 = Vec2.dot(w2, _e12);
+    double d12_1 = Vector2.dot(w2, _e12);
     if (d12_1 <= 0.0) {
       // a1 <= 0, so we clamp it to 0
       m_v2.a = 1.0;
@@ -326,11 +326,11 @@ class _Simplex {
   }
 
   // djm pooled, and from above
-  final Vec2 _e13 = new Vec2.zero();
-  final Vec2 _e23 = new Vec2.zero();
-  final Vec2 _w1 = new Vec2.zero();
-  final Vec2 _w2 = new Vec2.zero();
-  final Vec2 _w3 = new Vec2.zero();
+  final Vector2 _e13 = new Vector2.zero();
+  final Vector2 _e23 = new Vector2.zero();
+  final Vector2 _w1 = new Vector2.zero();
+  final Vector2 _w2 = new Vector2.zero();
+  final Vector2 _w3 = new Vector2.zero();
 
   /**
    * Solve a line segment using barycentric coordinates.<br/>
@@ -349,9 +349,9 @@ class _Simplex {
     // [1 1 ][a1] = [1]
     // [w1.e12 w2.e12][a2] = [0]
     // a3 = 0
-    _e12.set(_w2).subLocal(_w1);
-    double w1e12 = Vec2.dot(_w1, _e12);
-    double w2e12 = Vec2.dot(_w2, _e12);
+    _e12.set(_w2).sub(_w1);
+    double w1e12 = Vector2.dot(_w1, _e12);
+    double w2e12 = Vector2.dot(_w2, _e12);
     double d12_1 = w2e12;
     double d12_2 = -w1e12;
 
@@ -359,9 +359,9 @@ class _Simplex {
     // [1 1 ][a1] = [1]
     // [w1.e13 w3.e13][a3] = [0]
     // a2 = 0
-    _e13.set(_w3).subLocal(_w1);
-    double w1e13 = Vec2.dot(_w1, _e13);
-    double w3e13 = Vec2.dot(_w3, _e13);
+    _e13.set(_w3).sub(_w1);
+    double w1e13 = Vector2.dot(_w1, _e13);
+    double w3e13 = Vector2.dot(_w3, _e13);
     double d13_1 = w3e13;
     double d13_2 = -w1e13;
 
@@ -369,18 +369,18 @@ class _Simplex {
     // [1 1 ][a2] = [1]
     // [w2.e23 w3.e23][a3] = [0]
     // a1 = 0
-    _e23.set(_w3).subLocal(_w2);
-    double w2e23 = Vec2.dot(_w2, _e23);
-    double w3e23 = Vec2.dot(_w3, _e23);
+    _e23.set(_w3).sub(_w2);
+    double w2e23 = Vector2.dot(_w2, _e23);
+    double w3e23 = Vector2.dot(_w3, _e23);
     double d23_1 = w3e23;
     double d23_2 = -w2e23;
 
     // Triangle123
-    double n123 = Vec2.cross(_e12, _e13);
+    double n123 = Vector2.cross(_e12, _e13);
 
-    double d123_1 = n123 * Vec2.cross(_w2, _w3);
-    double d123_2 = n123 * Vec2.cross(_w3, _w1);
-    double d123_3 = n123 * Vec2.cross(_w1, _w2);
+    double d123_1 = n123 * Vector2.cross(_w2, _w3);
+    double d123_2 = n123 * Vector2.cross(_w3, _w1);
+    double d123_3 = n123 * Vector2.cross(_w1, _w2);
 
     // w1 region
     if (d12_2 <= 0.0 && d13_2 <= 0.0) {
@@ -444,16 +444,16 @@ class _Simplex {
 } // Class _Simplex
 
 class DistanceProxy {
-  final List<Vec2> m_vertices;
+  final List<Vector2> m_vertices;
   int m_count;
   double m_radius;
-  final List<Vec2> m_buffer;
+  final List<Vector2> m_buffer;
 
   DistanceProxy()
-      : m_vertices = new List<Vec2>(Settings.maxPolygonVertices),
-        m_buffer = new List<Vec2>(2) {
+      : m_vertices = new List<Vector2>(Settings.maxPolygonVertices),
+        m_buffer = new List<Vector2>(2) {
     for (int i = 0; i < m_vertices.length; i++) {
-      m_vertices[i] = new Vec2.zero();
+      m_vertices[i] = new Vector2.zero();
     }
     m_count = 0;
     m_radius = 0.0;
@@ -514,11 +514,11 @@ class DistanceProxy {
    * @param d
    * @return
    */
-  int getSupport(final Vec2 d) {
+  int getSupport(final Vector2 d) {
     int bestIndex = 0;
-    double bestValue = Vec2.dot(m_vertices[0], d);
+    double bestValue = Vector2.dot(m_vertices[0], d);
     for (int i = 1; i < m_count; i++) {
-      double value = Vec2.dot(m_vertices[i], d);
+      double value = Vector2.dot(m_vertices[i], d);
       if (value > bestValue) {
         bestIndex = i;
         bestValue = value;
@@ -534,11 +534,11 @@ class DistanceProxy {
    * @param d
    * @return
    */
-  Vec2 getSupportVertex(final Vec2 d) {
+  Vector2 getSupportVertex(final Vector2 d) {
     int bestIndex = 0;
-    double bestValue = Vec2.dot(m_vertices[0], d);
+    double bestValue = Vector2.dot(m_vertices[0], d);
     for (int i = 1; i < m_count; i++) {
-      double value = Vec2.dot(m_vertices[i], d);
+      double value = Vector2.dot(m_vertices[i], d);
       if (value > bestValue) {
         bestIndex = i;
         bestValue = value;
@@ -563,7 +563,7 @@ class DistanceProxy {
    * @param index
    * @return
    */
-  Vec2 getVertex(int index) {
+  Vector2 getVertex(int index) {
     assert(0 <= index && index < m_count);
     return m_vertices[index];
   }
@@ -579,10 +579,10 @@ class Distance {
   _Simplex _simplex = new _Simplex();
   List<int> _saveA = BufferUtils.allocClearIntList(3);
   List<int> _saveB = BufferUtils.allocClearIntList(3);
-  Vec2 _closestPoint = new Vec2.zero();
-  Vec2 _d = new Vec2.zero();
-  Vec2 _temp = new Vec2.zero();
-  Vec2 _normal = new Vec2.zero();
+  Vector2 _closestPoint = new Vector2.zero();
+  Vector2 _d = new Vector2.zero();
+  Vector2 _temp = new Vector2.zero();
+  Vector2 _normal = new Vector2.zero();
 
   /**
    * Compute the closest points between two shapes. Supports any combination of: CircleShape and
@@ -681,16 +681,16 @@ class Distance {
       // Compute a tentative new simplex vertex using support points.
       _SimplexVertex vertex = vertices[_simplex.m_count];
 
-      Rot.mulTransUnsafeVec2(transformA.q, _d.negateLocal(), _temp);
+      Rot.mulTransUnsafeVec2(transformA.q, _d.negate(), _temp);
       vertex.indexA = proxyA.getSupport(_temp);
       Transform.mulToOutUnsafeVec2(
           transformA, proxyA.getVertex(vertex.indexA), vertex.wA);
       // Vec2 wBLocal;
-      Rot.mulTransUnsafeVec2(transformB.q, _d.negateLocal(), _temp);
+      Rot.mulTransUnsafeVec2(transformB.q, _d.negate(), _temp);
       vertex.indexB = proxyB.getSupport(_temp);
       Transform.mulToOutUnsafeVec2(
           transformB, proxyB.getVertex(vertex.indexB), vertex.wB);
-      vertex.w.set(vertex.wB).subLocal(vertex.wA);
+      vertex.w.set(vertex.wB).sub(vertex.wA);
 
       // Iteration count is equated to the number of support point calls.
       ++iter;
@@ -733,17 +733,17 @@ class Distance {
         // Shapes are still no overlapped.
         // Move the witness points to the outer surface.
         output.distance -= rA + rB;
-        _normal.set(output.pointB).subLocal(output.pointA);
+        _normal.set(output.pointB).sub(output.pointA);
         _normal.normalize();
-        _temp.set(_normal).mulLocal(rA);
-        output.pointA.addLocal(_temp);
-        _temp.set(_normal).mulLocal(rB);
-        output.pointB.subLocal(_temp);
+        _temp.set(_normal).mul(rA);
+        output.pointA.add(_temp);
+        _temp.set(_normal).mul(rB);
+        output.pointB.sub(_temp);
       } else {
         // Shapes are overlapped when radii are considered.
         // Move the witness points to the middle.
         // Vec2 p = 0.5f * (output.pointA + output.pointB);
-        output.pointA.addLocal(output.pointB).mulLocal(.5);
+        output.pointA.add(output.pointB).mul(.5);
         output.pointB.set(output.pointA);
         output.distance = 0.0;
       }

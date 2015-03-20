@@ -29,7 +29,7 @@ class ConstantVolumeJoint extends Joint {
   Float64List _targetLengths;
   double _targetVolume = 0.0;
 
-  List<Vec2> _normals;
+  List<Vector2> _normals;
   double _m_impulse = 0.0;
 
   World _world;
@@ -59,10 +59,7 @@ class ConstantVolumeJoint extends Joint {
     _targetLengths = new Float64List(_bodies.length);
     for (int i = 0; i < _targetLengths.length; ++i) {
       final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
-      double dist = _bodies[i]
-          .worldCenter
-          .sub(_bodies[next].worldCenter)
-          .length();
+      double dist = (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
       _targetLengths[i] = dist;
     }
     _targetVolume = getBodyArea();
@@ -86,9 +83,9 @@ class ConstantVolumeJoint extends Joint {
       _distanceJoints = def.joints.toList();
     }
 
-    _normals = new List<Vec2>(_bodies.length);
+    _normals = new List<Vector2>(_bodies.length);
     for (int i = 0; i < _normals.length; ++i) {
-      _normals[i] = new Vec2.zero();
+      _normals[i] = new Vector2.zero();
     }
   }
 
@@ -139,7 +136,7 @@ class ConstantVolumeJoint extends Joint {
       perimeter += dist;
     }
 
-    final Vec2 delta = pool.popVec2();
+    final Vector2 delta = pool.popVec2();
 
     double deltaArea = _targetVolume - getSolverArea(positions);
     double toExtrude = 0.5 * deltaArea / perimeter; // *relaxationFactor
@@ -147,13 +144,13 @@ class ConstantVolumeJoint extends Joint {
     bool done = true;
     for (int i = 0; i < _bodies.length; ++i) {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      delta.setXY(toExtrude * (_normals[i].x + _normals[next].x),
+      delta.setValues(toExtrude * (_normals[i].x + _normals[next].x),
           toExtrude * (_normals[i].y + _normals[next].y));
       // sumdeltax += dx;
       double normSqrd = delta.lengthSquared();
       if (normSqrd >
           Settings.maxLinearCorrection * Settings.maxLinearCorrection) {
-        delta.mulLocal(Settings.maxLinearCorrection / Math.sqrt(normSqrd));
+        delta.mul(Settings.maxLinearCorrection / Math.sqrt(normSqrd));
       }
       if (normSqrd > Settings.linearSlop * Settings.linearSlop) {
         done = false;
@@ -172,13 +169,13 @@ class ConstantVolumeJoint extends Joint {
   void initVelocityConstraints(final SolverData step) {
     List<Velocity> velocities = step.velocities;
     List<Position> positions = step.positions;
-    final List<Vec2> d = pool.getVec2Array(_bodies.length);
+    final List<Vector2> d = pool.getVec2Array(_bodies.length);
 
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
       d[i].set(positions[_bodies[next].m_islandIndex].c);
-      d[i].subLocal(positions[_bodies[prev].m_islandIndex].c);
+      d[i].sub(positions[_bodies[prev].m_islandIndex].c);
     }
 
     if (step.step.warmStarting) {
@@ -209,15 +206,15 @@ class ConstantVolumeJoint extends Joint {
 
     List<Velocity> velocities = step.velocities;
     List<Position> positions = step.positions;
-    final List<Vec2> d = pool.getVec2Array(_bodies.length);
+    final List<Vector2> d = pool.getVec2Array(_bodies.length);
 
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
       d[i].set(positions[_bodies[next].m_islandIndex].c);
-      d[i].subLocal(positions[_bodies[prev].m_islandIndex].c);
+      d[i].sub(positions[_bodies[prev].m_islandIndex].c);
       dotMassSum += (d[i].lengthSquared()) / _bodies[i].mass;
-      crossMassSum += Vec2.cross(velocities[_bodies[i].m_islandIndex].v, d[i]);
+      crossMassSum += Vector2.cross(velocities[_bodies[i].m_islandIndex].v, d[i]);
     }
     double lambda = -2.0 * crossMassSum / dotMassSum;
     // System.out.println(crossMassSum + " " +dotMassSum);
@@ -234,13 +231,13 @@ class ConstantVolumeJoint extends Joint {
   }
 
   /** No-op */
-  void getAnchorA(Vec2 argOut) {}
+  void getAnchorA(Vector2 argOut) {}
 
   /** No-op */
-  void getAnchorB(Vec2 argOut) {}
+  void getAnchorB(Vector2 argOut) {}
 
   /** No-op */
-  void getReactionForce(double inv_dt, Vec2 argOut) {}
+  void getReactionForce(double inv_dt, Vector2 argOut) {}
 
   /** No-op */
   double getReactionTorque(double inv_dt) {

@@ -35,12 +35,12 @@ class RopeJointDef extends JointDef {
   /**
    * The local anchor point relative to bodyA's origin.
    */
-  final Vec2 localAnchorA = new Vec2.zero();
+  final Vector2 localAnchorA = new Vector2.zero();
 
   /**
    * The local anchor point relative to bodyB's origin.
    */
-  final Vec2 localAnchorB = new Vec2.zero();
+  final Vector2 localAnchorB = new Vector2.zero();
 
   /**
    * The maximum length of the rope. Warning: this must be larger than b2_linearSlop or the joint
@@ -49,7 +49,7 @@ class RopeJointDef extends JointDef {
   double maxLength = 0.0;
 
   RopeJointDef() : super(JointType.ROPE) {
-    localAnchorA.setXY(-1.0, 0.0);
-    localAnchorB.setXY(1.0, 0.0);
+    localAnchorA.setValues(-1.0, 0.0);
+    localAnchorB.setValues(1.0, 0.0);
   }
 }

@@ -36,5 +36,5 @@ abstract class ParticleRaycastCallback {
    * @param fraction
    * @return
    */
-  double reportParticle(int index, Vec2 point, Vec2 normal, double fraction);
+  double reportParticle(int index, Vector2 point, Vector2 normal, double fraction);
 }

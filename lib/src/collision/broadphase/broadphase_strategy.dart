@@ -48,7 +48,7 @@ abstract class BroadPhaseStrategy {
    * 
    * @return true if the proxy was re-inserted.
    */
-  bool moveProxy(int proxyId, AABB aabb, Vec2 displacement);
+  bool moveProxy(int proxyId, AABB aabb, Vector2 displacement);
 
   Object getUserData(int proxyId);
 

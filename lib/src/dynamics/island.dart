@@ -219,7 +219,7 @@ class Island {
   final SolverData _solverData = new SolverData();
   final ContactSolverDef _solverDef = new ContactSolverDef();
 
-  void solve(Profile profile, TimeStep step, Vec2 gravity, bool allowSleep) {
+  void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
 
     // System.out.println("Solving Island");
     double h = step.dt;
@@ -228,9 +228,9 @@ class Island {
     for (int i = 0; i < m_bodyCount; ++i) {
       final Body b = m_bodies[i];
       final Sweep bm_sweep = b.m_sweep;
-      final Vec2 c = bm_sweep.c;
+      final Vector2 c = bm_sweep.c;
       double a = bm_sweep.a;
-      final Vec2 v = b._linearVelocity;
+      final Vector2 v = b._linearVelocity;
       double w = b._angularVelocity;
 
       // Store positions for continuous collision.
@@ -311,9 +311,9 @@ class Island {
 
     // Integrate positions
     for (int i = 0; i < m_bodyCount; ++i) {
-      final Vec2 c = m_positions[i].c;
+      final Vector2 c = m_positions[i].c;
       double a = m_positions[i].a;
-      final Vec2 v = m_velocities[i].v;
+      final Vector2 v = m_velocities[i].v;
       double w = m_velocities[i].w;
 
       // Check for large velocities
@@ -395,7 +395,7 @@ class Island {
 
         if ((b.m_flags & Body.e_autoSleepFlag) == 0 ||
             b._angularVelocity * b._angularVelocity > angTolSqr ||
-            Vec2.dot(b._linearVelocity, b._linearVelocity) > linTolSqr) {
+            Vector2.dot(b._linearVelocity, b._linearVelocity) > linTolSqr) {
           b.m_sleepTime = 0.0;
           minSleepTime = 0.0;
         } else {
@@ -501,9 +501,9 @@ class Island {
 
     // Integrate positions
     for (int i = 0; i < m_bodyCount; ++i) {
-      Vec2 c = m_positions[i].c;
+      Vector2 c = m_positions[i].c;
       double a = m_positions[i].a;
-      Vec2 v = m_velocities[i].v;
+      Vector2 v = m_velocities[i].v;
       double w = m_velocities[i].w;
 
       // Check for large velocities
@@ -514,7 +514,7 @@ class Island {
         double ratio = Settings.maxTranslation /
             Math.sqrt(
                 translationx * translationx + translationy * translationy);
-        v.mulLocal(ratio);
+        v.mul(ratio);
       }
 
       double rotation = h * w;

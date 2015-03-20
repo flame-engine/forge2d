@@ -32,10 +32,10 @@ part of box2d;
  */
 
 class ChainShape extends Shape {
-  List<Vec2> m_vertices;
+  List<Vector2> m_vertices;
   int m_count = 0;
-  final Vec2 m_prevVertex = new Vec2.zero(),
-      m_nextVertex = new Vec2.zero();
+  final Vector2 m_prevVertex = new Vector2.zero(),
+      m_nextVertex = new Vector2.zero();
   bool m_hasPrevVertex = false,
       m_hasNextVertex = false;
 
@@ -61,15 +61,15 @@ class ChainShape extends Shape {
     assert(0 <= index && index < m_count - 1);
     edge.radius = radius;
 
-    final Vec2 v0 = m_vertices[index + 0];
-    final Vec2 v1 = m_vertices[index + 1];
+    final Vector2 v0 = m_vertices[index + 0];
+    final Vector2 v1 = m_vertices[index + 1];
     edge.m_vertex1.x = v0.x;
     edge.m_vertex1.y = v0.y;
     edge.m_vertex2.x = v1.x;
     edge.m_vertex2.y = v1.y;
 
     if (index > 0) {
-      Vec2 v = m_vertices[index - 1];
+      Vector2 v = m_vertices[index - 1];
       edge.m_vertex0.x = v.x;
       edge.m_vertex0.y = v.y;
       edge.m_hasVertex0 = true;
@@ -80,7 +80,7 @@ class ChainShape extends Shape {
     }
 
     if (index < m_count - 2) {
-      Vec2 v = m_vertices[index + 2];
+      Vector2 v = m_vertices[index + 2];
       edge.m_vertex3.x = v.x;
       edge.m_vertex3.y = v.y;
       edge.m_hasVertex3 = true;
@@ -92,13 +92,13 @@ class ChainShape extends Shape {
   }
 
   double computeDistanceToOut(
-      Transform xf, Vec2 p, int childIndex, Vec2 normalOut) {
+      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
     final EdgeShape edge = _pool0;
     getChildEdge(edge, childIndex);
     return edge.computeDistanceToOut(xf, p, 0, normalOut);
   }
 
-  bool testPoint(Transform xf, Vec2 p) {
+  bool testPoint(Transform xf, Vector2 p) {
     return false;
   }
 
@@ -113,10 +113,10 @@ class ChainShape extends Shape {
     if (i2 == m_count) {
       i2 = 0;
     }
-    Vec2 v = m_vertices[i1];
+    Vector2 v = m_vertices[i1];
     edgeShape.m_vertex1.x = v.x;
     edgeShape.m_vertex1.y = v.y;
-    Vec2 v1 = m_vertices[i2];
+    Vector2 v1 = m_vertices[i2];
     edgeShape.m_vertex2.x = v1.x;
     edgeShape.m_vertex2.y = v1.y;
 
@@ -125,8 +125,8 @@ class ChainShape extends Shape {
 
   void computeAABB(AABB aabb, Transform xf, int childIndex) {
     assert(childIndex < m_count);
-    final Vec2 lower = aabb.lowerBound;
-    final Vec2 upper = aabb.upperBound;
+    final Vector2 lower = aabb.lowerBound;
+    final Vector2 upper = aabb.upperBound;
 
     int i1 = childIndex;
     int i2 = childIndex + 1;
@@ -134,10 +134,10 @@ class ChainShape extends Shape {
       i2 = 0;
     }
 
-    final Vec2 vi1 = m_vertices[i1];
-    final Vec2 vi2 = m_vertices[i2];
+    final Vector2 vi1 = m_vertices[i1];
+    final Vector2 vi2 = m_vertices[i2];
     final Rot xfq = xf.q;
-    final Vec2 xfp = xf.p;
+    final Vector2 xfp = xf.p;
     double v1x = (xfq.c * vi1.x - xfq.s * vi1.y) + xfp.x;
     double v1y = (xfq.s * vi1.x + xfq.c * vi1.y) + xfp.y;
     double v2x = (xfq.c * vi2.x - xfq.s * vi2.y) + xfp.x;
@@ -171,14 +171,14 @@ class ChainShape extends Shape {
    * @param vertices an array of vertices, these are copied
    * @param count the vertex count
    */
-  void createLoop(final List<Vec2> vertices, int count) {
+  void createLoop(final List<Vector2> vertices, int count) {
     assert(m_vertices == null && m_count == 0);
     assert(count >= 3);
     m_count = count + 1;
-    m_vertices = new List<Vec2>(m_count);
+    m_vertices = new List<Vector2>(m_count);
     for (int i = 1; i < count; i++) {
-      Vec2 v1 = vertices[i - 1];
-      Vec2 v2 = vertices[i];
+      Vector2 v1 = vertices[i - 1];
+      Vector2 v2 = vertices[i];
       // If the code crashes here, it means your vertices are too close together.
       if (MathUtils.distanceSquared(v1, v2) <
           Settings.linearSlop * Settings.linearSlop) {
@@ -186,9 +186,9 @@ class ChainShape extends Shape {
       }
     }
     for (int i = 0; i < count; i++) {
-      m_vertices[i] = new Vec2.copy(vertices[i]);
+      m_vertices[i] = new Vector2.copy(vertices[i]);
     }
-    m_vertices[count] = new Vec2.copy(m_vertices[0]);
+    m_vertices[count] = new Vector2.copy(m_vertices[0]);
     m_prevVertex.set(m_vertices[m_count - 2]);
     m_nextVertex.set(m_vertices[1]);
     m_hasPrevVertex = true;
@@ -201,14 +201,14 @@ class ChainShape extends Shape {
    * @param vertices an array of vertices, these are copied
    * @param count the vertex count
    */
-  void createChain(final List<Vec2> vertices, int count) {
+  void createChain(final List<Vector2> vertices, int count) {
     assert(m_vertices == null && m_count == 0);
     assert(count >= 2);
     m_count = count;
-    m_vertices = new List<Vec2>(m_count);
+    m_vertices = new List<Vector2>(m_count);
     for (int i = 1; i < m_count; i++) {
-      Vec2 v1 = vertices[i - 1];
-      Vec2 v2 = vertices[i];
+      Vector2 v1 = vertices[i - 1];
+      Vector2 v2 = vertices[i];
       // If the code crashes here, it means your vertices are too close together.
       if (MathUtils.distanceSquared(v1, v2) <
           Settings.linearSlop * Settings.linearSlop) {
@@ -216,7 +216,7 @@ class ChainShape extends Shape {
       }
     }
     for (int i = 0; i < m_count; i++) {
-      m_vertices[i] = new Vec2.copy(vertices[i]);
+      m_vertices[i] = new Vector2.copy(vertices[i]);
     }
     m_hasPrevVertex = false;
     m_hasNextVertex = false;
@@ -230,7 +230,7 @@ class ChainShape extends Shape {
    * 
    * @param prevVertex
    */
-  void setPrevVertex(final Vec2 prevVertex) {
+  void setPrevVertex(final Vector2 prevVertex) {
     m_prevVertex.set(prevVertex);
     m_hasPrevVertex = true;
   }
@@ -240,7 +240,7 @@ class ChainShape extends Shape {
    * 
    * @param nextVertex
    */
-  void setNextVertex(final Vec2 nextVertex) {
+  void setNextVertex(final Vector2 nextVertex) {
     m_nextVertex.set(nextVertex);
     m_hasNextVertex = true;
   }

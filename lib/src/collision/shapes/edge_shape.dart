@@ -35,20 +35,20 @@ class EdgeShape extends Shape {
   /**
    * edge vertex 1
    */
-  final Vec2 m_vertex1 = new Vec2.zero();
+  final Vector2 m_vertex1 = new Vector2.zero();
   /**
    * edge vertex 2
    */
-  final Vec2 m_vertex2 = new Vec2.zero();
+  final Vector2 m_vertex2 = new Vector2.zero();
 
   /**
    * optional adjacent vertex 1. Used for smooth collision
    */
-  final Vec2 m_vertex0 = new Vec2.zero();
+  final Vector2 m_vertex0 = new Vector2.zero();
   /**
    * optional adjacent vertex 2. Used for smooth collision
    */
-  final Vec2 m_vertex3 = new Vec2.zero();
+  final Vector2 m_vertex3 = new Vector2.zero();
   bool m_hasVertex0 = false,
       m_hasVertex3 = false;
 
@@ -60,21 +60,21 @@ class EdgeShape extends Shape {
     return 1;
   }
 
-  void set(Vec2 v1, Vec2 v2) {
+  void set(Vector2 v1, Vector2 v2) {
     m_vertex1.set(v1);
     m_vertex2.set(v2);
     m_hasVertex0 = m_hasVertex3 = false;
   }
 
-  bool testPoint(Transform xf, Vec2 p) {
+  bool testPoint(Transform xf, Vector2 p) {
     return false;
   }
 
   // for pooling
-  final Vec2 normal = new Vec2.zero();
+  final Vector2 normal = new Vector2.zero();
 
   double computeDistanceToOut(
-      Transform xf, Vec2 p, int childIndex, Vec2 normalOut) {
+      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
     double xfqc = xf.q.c;
     double xfqs = xf.q.s;
     double xfpx = xf.p.x;
@@ -118,10 +118,10 @@ class EdgeShape extends Shape {
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
     double tempx, tempy;
-    final Vec2 v1 = m_vertex1;
-    final Vec2 v2 = m_vertex2;
+    final Vector2 v1 = m_vertex1;
+    final Vector2 v2 = m_vertex2;
     final Rot xfq = xf.q;
-    final Vec2 xfp = xf.p;
+    final Vector2 xfp = xf.p;
 
     // Put the ray into the edge's frame of reference.
     // b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
@@ -199,8 +199,8 @@ class EdgeShape extends Shape {
   }
 
   void computeAABB(AABB aabb, Transform xf, int childIndex) {
-    final Vec2 lowerBound = aabb.lowerBound;
-    final Vec2 upperBound = aabb.upperBound;
+    final Vector2 lowerBound = aabb.lowerBound;
+    final Vector2 upperBound = aabb.upperBound;
     final Rot xfq = xf.q;
 
     final double v1x = (xfq.c * m_vertex1.x - xfq.s * m_vertex1.y) + xf.p.x;
@@ -221,7 +221,7 @@ class EdgeShape extends Shape {
 
   void computeMass(MassData massData, double density) {
     massData.mass = 0.0;
-    massData.center.set(m_vertex1).addLocal(m_vertex2).mulLocal(0.5);
+    massData.center.set(m_vertex1).add(m_vertex2).mul(0.5);
     massData.I = 0.0;
   }
 

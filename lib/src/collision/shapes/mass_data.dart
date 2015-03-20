@@ -29,14 +29,14 @@ class MassData {
   /** The mass of the shape, usually in kilograms. */
   double mass = 0.0;
   /** The position of the shape's centroid relative to the shape's origin. */
-  final Vec2 center;
+  final Vector2 center;
   /** The rotational inertia of the shape about the local origin. */
   double I = 0.0;
 
   /**
    * Blank mass data
    */
-  MassData() : this.center = new Vec2.zero();
+  MassData() : this.center = new Vector2.zero();
 
   /**
    * Copies from the given mass data

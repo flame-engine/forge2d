@@ -25,6 +25,6 @@
 part of box2d;
 
 class Velocity {
-  final Vec2 v = new Vec2.zero();
+  final Vector2 v = new Vector2.zero();
   double w = 0.0;
 }

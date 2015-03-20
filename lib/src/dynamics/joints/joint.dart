@@ -146,14 +146,14 @@ abstract class Joint {
    * 
    * @return
    */
-  void getAnchorA(Vec2 out);
+  void getAnchorA(Vector2 out);
 
   /**
    * get the anchor point on bodyB in world coordinates.
    * 
    * @return
    */
-  void getAnchorB(Vec2 out);
+  void getAnchorB(Vector2 out);
 
   /**
    * get the reaction force on body2 at the joint anchor in Newtons.
@@ -161,7 +161,7 @@ abstract class Joint {
    * @param inv_dt
    * @return
    */
-  void getReactionForce(double inv_dt, Vec2 out);
+  void getReactionForce(double inv_dt, Vector2 out);
 
   /**
    * get the reaction torque on body2 in N*m.

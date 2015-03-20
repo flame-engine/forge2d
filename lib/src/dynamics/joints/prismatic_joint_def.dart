@@ -40,17 +40,17 @@ class PrismaticJointDef extends JointDef {
   /**
    * The local anchor point relative to body1's origin.
    */
-  final Vec2 localAnchorA = new Vec2.zero();
+  final Vector2 localAnchorA = new Vector2.zero();
 
   /**
    * The local anchor point relative to body2's origin.
    */
-  final Vec2 localAnchorB = new Vec2.zero();
+  final Vector2 localAnchorB = new Vector2.zero();
 
   /**
    * The local translation axis in body1.
    */
-  final Vec2 localAxisA = new Vec2(1.0, 0.0);
+  final Vector2 localAxisA = new Vector2(1.0, 0.0);
 
   /**
    * The constrained angle between the bodies: body2_angle - body1_angle.
@@ -93,7 +93,7 @@ class PrismaticJointDef extends JointDef {
    * Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
    * axis.
    */
-  void initialize(Body b1, Body b2, Vec2 anchor, Vec2 axis) {
+  void initialize(Body b1, Body b2, Vector2 anchor, Vector2 axis) {
     bodyA = b1;
     bodyB = b2;
     bodyA.getLocalPointToOut(anchor, localAnchorA);

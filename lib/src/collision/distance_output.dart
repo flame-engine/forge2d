@@ -29,10 +29,10 @@ part of box2d;
  */
 class DistanceOutput {
   /** Closest point on shapeA */
-  final Vec2 pointA = new Vec2.zero();
+  final Vector2 pointA = new Vector2.zero();
 
   /** Closest point on shapeB */
-  final Vec2 pointB = new Vec2.zero();
+  final Vector2 pointB = new Vector2.zero();
 
   double distance = 0.0;
 

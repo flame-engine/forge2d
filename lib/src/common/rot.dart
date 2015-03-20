@@ -62,12 +62,12 @@ class Rot {
 
   double getAngle() => MathUtils.atan2(s, c);
 
-  void getXAxis(Vec2 xAxis) {
-    xAxis.setXY(c, s);
+  void getXAxis(Vector2 xAxis) {
+    xAxis.setValues(c, s);
   }
 
-  void getYAxis(Vec2 yAxis) {
-    yAxis.setXY(-s, c);
+  void getYAxis(Vector2 yAxis) {
+    yAxis.setValues(-s, c);
   }
 
   Rot clone() {
@@ -109,24 +109,24 @@ class Rot {
     out.c = q.c * r.c + q.s * r.s;
   }
 
-  static void mulToOut(Rot q, Vec2 v, Vec2 out) {
+  static void mulToOut(Rot q, Vector2 v, Vector2 out) {
     double tempy = q.s * v.x + q.c * v.y;
     out.x = q.c * v.x - q.s * v.y;
     out.y = tempy;
   }
 
-  static void mulToOutUnsafe(Rot q, Vec2 v, Vec2 out) {
+  static void mulToOutUnsafe(Rot q, Vector2 v, Vector2 out) {
     out.x = q.c * v.x - q.s * v.y;
     out.y = q.s * v.x + q.c * v.y;
   }
 
-  static void mulTransVec2(Rot q, Vec2 v, Vec2 out) {
+  static void mulTransVec2(Rot q, Vector2 v, Vector2 out) {
     final double tempy = -q.s * v.x + q.c * v.y;
     out.x = q.c * v.x + q.s * v.y;
     out.y = tempy;
   }
 
-  static void mulTransUnsafeVec2(Rot q, Vec2 v, Vec2 out) {
+  static void mulTransUnsafeVec2(Rot q, Vector2 v, Vector2 out) {
     out.x = q.c * v.x + q.s * v.y;
     out.y = -q.s * v.x + q.c * v.y;
   }

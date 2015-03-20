@@ -42,13 +42,13 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
   int _m_freeList;
 
-  final List<Vec2> drawVecs = new List<Vec2>(4);
+  final List<Vector2> drawVecs = new List<Vector2>(4);
 
   DynamicTreeFlatNodes() {
     _expandBuffers(0, _m_nodeCapacity);
 
     for (int i = 0; i < drawVecs.length; i++) {
-      drawVecs[i] = new Vec2.zero();
+      drawVecs[i] = new Vector2.zero();
     }
   }
 
@@ -99,7 +99,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     _freeNode(proxyId);
   }
 
-  bool moveProxy(int proxyId, final AABB aabb, Vec2 displacement) {
+  bool moveProxy(int proxyId, final AABB aabb, Vector2 displacement) {
     assert(0 <= proxyId && proxyId < _m_nodeCapacity);
     final int node = proxyId;
     assert(m_child1[node] == NULL_NODE);
@@ -116,8 +116,8 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     _removeLeaf(node);
 
     // Extend AABB
-    final Vec2 lowerBound = nodeAABB.lowerBound;
-    final Vec2 upperBound = nodeAABB.upperBound;
+    final Vector2 lowerBound = nodeAABB.lowerBound;
+    final Vector2 upperBound = nodeAABB.upperBound;
     lowerBound.x = aabb.lowerBound.x - Settings.aabbExtension;
     lowerBound.y = aabb.lowerBound.y - Settings.aabbExtension;
     upperBound.x = aabb.upperBound.x + Settings.aabbExtension;
@@ -184,13 +184,13 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     }
   }
 
-  final Vec2 _r = new Vec2.zero();
+  final Vector2 _r = new Vector2.zero();
   final AABB _aabb = new AABB();
   final RayCastInput _subInput = new RayCastInput();
 
   void raycast(TreeRayCastCallback callback, RayCastInput input) {
-    final Vec2 p1 = input.p1;
-    final Vec2 p2 = input.p2;
+    final Vector2 p1 = input.p1;
+    final Vector2 p2 = input.p2;
     double p1x = p1.x,
         p2x = p2.x,
         p1y = p1.y,
@@ -835,7 +835,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   }
 
   final Color3i _color = new Color3i.zero();
-  final Vec2 _textVec = new Vec2.zero();
+  final Vector2 _textVec = new Vector2.zero();
 
   void drawTreeX(DebugDraw argDraw, int node, int spot, int height) {
     AABB a = m_aabb[node];

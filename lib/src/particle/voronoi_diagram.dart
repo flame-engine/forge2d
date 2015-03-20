@@ -29,7 +29,7 @@ abstract class VoronoiDiagramCallback {
 }
 
 class VoronoiGenerator {
-  final Vec2 center = new Vec2.zero();
+  final Vector2 center = new Vector2.zero();
   int tag = 0;
 }
 
@@ -103,15 +103,15 @@ class VoronoiDiagram {
     }
   }
 
-  void addGenerator(Vec2 center, int tag) {
+  void addGenerator(Vector2 center, int tag) {
     VoronoiGenerator g = _m_generatorBuffer[_m_generatorCount++];
     g.center.x = center.x;
     g.center.y = center.y;
     g.tag = tag;
   }
 
-  final Vec2 _lower = new Vec2.zero();
-  final Vec2 _upper = new Vec2.zero();
+  final Vector2 _lower = new Vector2.zero();
+  final Vector2 _upper = new Vector2.zero();
   MutableStack<VoronoiDiagramTask> _taskPool =
       new VoronoiDiagramTaskMutableStack(50);
 
@@ -127,8 +127,8 @@ class VoronoiDiagram {
     _upper.y = -double.MAX_FINITE;
     for (int k = 0; k < _m_generatorCount; k++) {
       VoronoiGenerator g = _m_generatorBuffer[k];
-      Vec2.minToOut(_lower, g.center, _lower);
-      Vec2.maxToOut(_upper, g.center, _upper);
+      Vector2.min(_lower, g.center, _lower);
+      Vector2.max(_upper, g.center, _upper);
     }
     _m_countX = 1 + (inverseRadius * (_upper.x - _lower.x)).toInt();
     _m_countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();

@@ -25,8 +25,8 @@
 part of box2d;
 
 class VelocityConstraintPoint {
-  final Vec2 rA = new Vec2.zero();
-  final Vec2 rB = new Vec2.zero();
+  final Vector2 rA = new Vector2.zero();
+  final Vector2 rB = new Vector2.zero();
   double normalImpulse = 0.0;
   double tangentImpulse = 0.0;
   double normalMass = 0.0;
@@ -37,7 +37,7 @@ class VelocityConstraintPoint {
 class ContactVelocityConstraint {
   List<VelocityConstraintPoint> points =
       new List<VelocityConstraintPoint>(Settings.maxManifoldPoints);
-  final Vec2 normal = new Vec2.zero();
+  final Vector2 normal = new Vector2.zero();
   final Mat22 normalMass = new Mat22.zero();
   final Mat22 K = new Mat22.zero();
   int indexA = 0;

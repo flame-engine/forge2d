@@ -73,7 +73,7 @@ abstract class Shape {
    * @param xf the shape world transform.
    * @param p a point in world coordinates.
    */
-  bool testPoint(final Transform xf, final Vec2 p);
+  bool testPoint(final Transform xf, final Vector2 p);
 
   /**
    * Cast a ray against a child shape.
@@ -114,7 +114,7 @@ abstract class Shape {
    * @return distance returns the distance from the current shape.
    */
   double computeDistanceToOut(
-      Transform xf, Vec2 p, int childIndex, Vec2 normalOut);
+      Transform xf, Vector2 p, int childIndex, Vector2 normalOut);
 
   Shape clone();
 }

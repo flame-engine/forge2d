@@ -54,10 +54,10 @@ class Manifold {
   final List<ManifoldPoint> points;
 
   /** not use for Type::e_points */
-  final Vec2 localNormal;
+  final Vector2 localNormal;
 
   /** usage depends on manifold type */
-  final Vec2 localPoint;
+  final Vector2 localPoint;
 
   ManifoldType type = ManifoldType.CIRCLES;
 
@@ -69,8 +69,8 @@ class Manifold {
    */
   Manifold()
       : points = new List<ManifoldPoint>(Settings.maxManifoldPoints),
-        localNormal = new Vec2.zero(),
-        localPoint = new Vec2.zero() {
+        localNormal = new Vector2.zero(),
+        localPoint = new Vector2.zero() {
     for (int i = 0; i < Settings.maxManifoldPoints; i++) {
       points[i] = new ManifoldPoint();
     }

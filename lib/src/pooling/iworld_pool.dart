@@ -39,9 +39,9 @@ abstract class IWorldPool {
 
   IDynamicStack<Contact> getChainPolyContactStack();
 
-  Vec2 popVec2();
+  Vector2 popVec2();
 
-  List<Vec2> popVec2Some(int num);
+  List<Vector2> popVec2Some(int num);
 
   void pushVec2(int num);
 
@@ -81,5 +81,5 @@ abstract class IWorldPool {
 
   List<int> getIntArray(int argLength);
 
-  List<Vec2> getVec2Array(int argLength);
+  List<Vector2> getVec2Array(int argLength);
 }

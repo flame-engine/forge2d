@@ -33,7 +33,7 @@ class MotorJointDef extends JointDef {
   /**
    * Position of bodyB minus the position of bodyA, in bodyA's frame, in meters.
    */
-  final Vec2 linearOffset = new Vec2.zero();
+  final Vector2 linearOffset = new Vector2.zero();
 
   /**
    * The bodyB angle minus bodyA angle in radians.
@@ -60,7 +60,7 @@ class MotorJointDef extends JointDef {
   void initialize(Body bA, Body bB) {
     bodyA = bA;
     bodyB = bB;
-    Vec2 xB = bodyB.position;
+    Vector2 xB = bodyB.position;
     bodyA.getLocalPointToOut(xB, linearOffset);
 
     double angleA = bodyA.getAngle();

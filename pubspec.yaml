@@ -1,2 +1,4 @@
 name: box2d
 homepage: https://github.com/google/dbox2d
+dependencies:
+  vector_math:

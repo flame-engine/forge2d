@@ -27,16 +27,16 @@ part of box2d;
 /** An axis-aligned bounding box. */
 class AABB {
   /** Bottom left vertex of bounding box. */
-  final Vec2 lowerBound;
+  final Vector2 lowerBound;
   /** Top right vertex of bounding box. */
-  final Vec2 upperBound;
+  final Vector2 upperBound;
 
   /**
    * Creates the default object, with vertices at 0,0 and 0,0.
    */
   AABB()
-      : lowerBound = new Vec2.zero(),
-        upperBound = new Vec2.zero();
+      : lowerBound = new Vector2.zero(),
+        upperBound = new Vector2.zero();
 
   /**
    * Copies from the given object
@@ -44,8 +44,8 @@ class AABB {
    * @param copy the object to copy from
    */
   AABB.copy(final AABB copy)
-      : lowerBound = new Vec2.copy(copy.lowerBound),
-        upperBound = new Vec2.copy(copy.upperBound);
+      : lowerBound = new Vector2.copy(copy.lowerBound),
+        upperBound = new Vector2.copy(copy.upperBound);
 
   /**
    * Creates an AABB object using the given bounding vertices.
@@ -53,9 +53,9 @@ class AABB {
    * @param lowerVertex the bottom left vertex of the bounding box
    * @param maxVertex the top right vertex of the bounding box
    */
-  AABB.withVec2(final Vec2 lowerVertex, final Vec2 upperVertex)
-      : lowerBound = new Vec2.copy(lowerVertex),
-        upperBound = new Vec2.copy(upperVertex);
+  AABB.withVec2(final Vector2 lowerVertex, final Vector2 upperVertex)
+      : lowerBound = new Vector2.copy(lowerVertex),
+        upperBound = new Vector2.copy(upperVertex);
 
   /**
    * Sets this object from the given object
@@ -63,10 +63,10 @@ class AABB {
    * @param aabb the object to copy from
    */
   void set(final AABB aabb) {
-    Vec2 v = aabb.lowerBound;
+    Vector2 v = aabb.lowerBound;
     lowerBound.x = v.x;
     lowerBound.y = v.y;
-    Vec2 v1 = aabb.upperBound;
+    Vector2 v1 = aabb.upperBound;
     upperBound.x = v1.x;
     upperBound.y = v1.y;
   }
@@ -89,14 +89,14 @@ class AABB {
    * 
    * @return
    */
-  Vec2 getCenter() {
-    final Vec2 center = new Vec2.copy(lowerBound);
-    center.addLocal(upperBound);
-    center.mulLocal(.5);
+  Vector2 getCenter() {
+    final Vector2 center = new Vector2.copy(lowerBound);
+    center.add(upperBound);
+    center.mul(.5);
     return center;
   }
 
-  void getCenterToOut(final Vec2 out) {
+  void getCenterToOut(final Vector2 out) {
     out.x = (lowerBound.x + upperBound.x) * .5;
     out.y = (lowerBound.y + upperBound.y) * .5;
   }
@@ -106,19 +106,19 @@ class AABB {
    * 
    * @return
    */
-  Vec2 getExtents() {
-    final Vec2 center = new Vec2.copy(upperBound);
-    center.subLocal(lowerBound);
-    center.mulLocal(.5);
+  Vector2 getExtents() {
+    final Vector2 center = new Vector2.copy(upperBound);
+    center.sub(lowerBound);
+    center.mul(.5);
     return center;
   }
 
-  void getExtentsToOut(final Vec2 out) {
+  void getExtentsToOut(final Vector2 out) {
     out.x = (upperBound.x - lowerBound.x) * .5;
     out.y = (upperBound.y - lowerBound.y) * .5; // thanks FDN1
   }
 
-  void getVertices(List<Vec2> argRay) {
+  void getVertices(List<Vector2> argRay) {
     argRay[0].set(lowerBound);
     argRay[1].set(lowerBound);
     argRay[1].x += upperBound.x - lowerBound.x;
@@ -214,14 +214,14 @@ class AABB {
     double tmin = -double.MAX_FINITE;
     double tmax = double.MAX_FINITE;
 
-    final Vec2 p = argPool.popVec2();
-    final Vec2 d = argPool.popVec2();
-    final Vec2 absD = argPool.popVec2();
-    final Vec2 normal = argPool.popVec2();
+    final Vector2 p = argPool.popVec2();
+    final Vector2 d = argPool.popVec2();
+    final Vector2 absD = argPool.popVec2();
+    final Vector2 normal = argPool.popVec2();
 
     p.set(input.p1);
-    d.set(input.p2).subLocal(input.p1);
-    Vec2.absToOut(d, absD);
+    d.set(input.p2).sub(input.p1);
+    Vector2.absToOut(d, absD);
 
     // x then y
     if (absD.x < Settings.EPSILON) {

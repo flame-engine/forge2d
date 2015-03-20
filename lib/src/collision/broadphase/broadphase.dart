@@ -47,7 +47,7 @@ abstract class BroadPhase {
    * Call MoveProxy as many times as you like, then when you are done call UpdatePairs to finalized
    * the proxy pairs (for your time step).
    */
-  void moveProxy(int proxyId, AABB aabb, Vec2 displacement);
+  void moveProxy(int proxyId, AABB aabb, Vector2 displacement);
 
   void touchProxy(int proxyId);
 

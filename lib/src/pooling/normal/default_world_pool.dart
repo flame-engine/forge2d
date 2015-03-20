@@ -29,10 +29,10 @@ part of box2d;
  * only be used temporarily, and then pushed back (with the exception of arrays).
  */
 
-class OrderedStackVec2 extends OrderedStack<Vec2> {
+class OrderedStackVec2 extends OrderedStack<Vector2> {
   OrderedStackVec2(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  Vec2 newInstance() => new Vec2.zero();
+  Vector2 newInstance() => new Vector2.zero();
 }
 class OrderedStackVec3 extends OrderedStack<Vec3> {
   OrderedStackVec3(int argStackSize, int argContainerSize)
@@ -107,7 +107,7 @@ class MutableStackChainAndPolygonContact
 }
 
 class DefaultWorldPool implements IWorldPool {
-  final OrderedStack<Vec2> _vecs;
+  final OrderedStack<Vector2> _vecs;
   final OrderedStack<Vec3> _vec3s;
   final OrderedStack<Mat22> _mats;
   final OrderedStack<Mat33> _mat33s;
@@ -116,7 +116,7 @@ class DefaultWorldPool implements IWorldPool {
 
   final HashMap<int, Float64List> _afloats = new HashMap<int, Float64List>();
   final HashMap<int, List<int>> _aints = new HashMap<int, List<int>>();
-  final HashMap<int, List<Vec2>> _avecs = new HashMap<int, List<Vec2>>();
+  final HashMap<int, List<Vector2>> _avecs = new HashMap<int, List<Vector2>>();
 
   IWorldPool _world;
 
@@ -189,11 +189,11 @@ class DefaultWorldPool implements IWorldPool {
     return _chpstack;
   }
 
-  Vec2 popVec2() {
+  Vector2 popVec2() {
     return _vecs.pop();
   }
 
-  List<Vec2> popVec2Some(int argNum) {
+  List<Vector2> popVec2Some(int argNum) {
     return _vecs.popSome(argNum);
   }
 
@@ -285,11 +285,11 @@ class DefaultWorldPool implements IWorldPool {
     return _aints[argLength];
   }
 
-  List<Vec2> getVec2Array(int argLength) {
+  List<Vector2> getVec2Array(int argLength) {
     if (!_avecs.containsKey(argLength)) {
-      List<Vec2> ray = new List<Vec2>(argLength);
+      List<Vector2> ray = new List<Vector2>(argLength);
       for (int i = 0; i < argLength; i++) {
-        ray[i] = new Vec2.zero();
+        ray[i] = new Vector2.zero();
       }
       _avecs[argLength] = ray;
     }

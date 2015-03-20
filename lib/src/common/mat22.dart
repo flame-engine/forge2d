@@ -28,7 +28,7 @@ part of box2d.common;
  * A 2-by-2 matrix. Stored in column-major order.
  */
 class Mat22 {
-  final Vec2 ex, ey;
+  final Vector2 ex, ey;
 
   /** Convert the matrix to printable format. */
   String toString() {
@@ -43,8 +43,8 @@ class Mat22 {
    * problem
    */
   Mat22.zero()
-      : ex = new Vec2.zero(),
-        ey = new Vec2.zero();
+      : ex = new Vector2.zero(),
+        ey = new Vector2.zero();
 
   /**
    * Create a matrix with given vectors as columns.
@@ -52,7 +52,7 @@ class Mat22 {
    * @param c1 Column 1 of matrix
    * @param c2 Column 2 of matrix
    */
-  Mat22(final Vec2 c1, final Vec2 c2)
+  Mat22(final Vector2 c1, final Vector2 c2)
       : ex = c1.clone(),
         ey = c2.clone();
 
@@ -66,8 +66,8 @@ class Mat22 {
    */
   Mat22.withCoords(final double exx, final double col2x, final double exy,
       final double col2y)
-      : ex = new Vec2(exx, exy),
-        ey = new Vec2(col2x, col2y);
+      : ex = new Vector2(exx, exy),
+        ey = new Vector2(col2x, col2y);
 
   /**
    * Set as a copy of another matrix.
@@ -147,7 +147,7 @@ class Mat22 {
    * @param c1 Column 1
    * @param c2 Column 2
    */
-  void setVec2(final Vec2 c1, final Vec2 c2) {
+  void setVec2(final Vector2 c1, final Vector2 c2) {
     ex.x = c1.x;
     ey.x = c2.x;
     ex.y = c1.y;
@@ -240,17 +240,17 @@ class Mat22 {
    * @param v Vector to multiply by matrix.
    * @return Resulting vector
    */
-  Vec2 mulVec2(final Vec2 v) {
-    return new Vec2(ex.x * v.x + ey.x * v.y, ex.y * v.x + ey.y * v.y);
+  Vector2 mulVec2(final Vector2 v) {
+    return new Vector2(ex.x * v.x + ey.x * v.y, ex.y * v.x + ey.y * v.y);
   }
 
-  void mulToOutVec2(final Vec2 v, final Vec2 out) {
+  void mulToOutVec2(final Vector2 v, final Vector2 out) {
     final double tempy = ex.y * v.x + ey.y * v.y;
     out.x = ex.x * v.x + ey.x * v.y;
     out.y = tempy;
   }
 
-  void mulToOutUnsafeVec2(final Vec2 v, final Vec2 out) {
+  void mulToOutUnsafeVec2(final Vector2 v, final Vector2 out) {
     assert(v != out);
     out.x = ex.x * v.x + ey.x * v.y;
     out.y = ex.y * v.x + ey.y * v.y;
@@ -315,11 +315,11 @@ class Mat22 {
      */
     final Mat22 C = new Mat22.zero();
 
-    C.ex.x = Vec2.dot(this.ex, B.ex);
-    C.ex.y = Vec2.dot(this.ey, B.ex);
+    C.ex.x = Vector2.dot(this.ex, B.ex);
+    C.ex.y = Vector2.dot(this.ey, B.ex);
 
-    C.ey.x = Vec2.dot(this.ex, B.ey);
-    C.ey.y = Vec2.dot(this.ey, B.ey);
+    C.ey.x = Vector2.dot(this.ex, B.ey);
+    C.ey.y = Vector2.dot(this.ey, B.ey);
     return C;
   }
 
@@ -358,13 +358,13 @@ class Mat22 {
    * @param v
    * @return
    */
-  Vec2 mulTransVec2(final Vec2 v) {
+  Vector2 mulTransVec2(final Vector2 v) {
     // return new Vec2(Vec2.dot(v, ex), Vec2.dot(v, col2));
-    return new Vec2((v.x * ex.x + v.y * ex.y), (v.x * ey.x + v.y * ey.y));
+    return new Vector2((v.x * ex.x + v.y * ex.y), (v.x * ey.x + v.y * ey.y));
   }
 
   /* djm added */
-  void mulTransToOutVec2(final Vec2 v, final Vec2 out) {
+  void mulTransToOutVec2(final Vector2 v, final Vector2 out) {
     /*
      * out.x = Vec2.dot(v, ex); out.y = Vec2.dot(v, col2);
      */
@@ -410,7 +410,7 @@ class Mat22 {
    *
    * @return The vector x that solves the above equation.
    */
-  Vec2 solve(final Vec2 b) {
+  Vector2 solve(final Vector2 b) {
     final double a11 = ex.x,
         a12 = ey.x,
         a21 = ex.y,
@@ -419,12 +419,12 @@ class Mat22 {
     if (det != 0.0) {
       det = 1.0 / det;
     }
-    final Vec2 x =
-        new Vec2(det * (a22 * b.x - a12 * b.y), det * (a11 * b.y - a21 * b.x));
+    final Vector2 x =
+        new Vector2(det * (a22 * b.x - a12 * b.y), det * (a11 * b.y - a21 * b.x));
     return x;
   }
 
-  void solveToOut(final Vec2 b, final Vec2 out) {
+  void solveToOut(final Vector2 b, final Vector2 out) {
     final double a11 = ex.x,
         a12 = ey.x,
         a21 = ex.y,
@@ -438,18 +438,18 @@ class Mat22 {
     out.y = tempy;
   }
 
-  static Vec2 mulVec2_(final Mat22 R, final Vec2 v) {
+  static Vector2 mulVec2_(final Mat22 R, final Vector2 v) {
     // return R.mul(v);
-    return new Vec2(R.ex.x * v.x + R.ey.x * v.y, R.ex.y * v.x + R.ey.y * v.y);
+    return new Vector2(R.ex.x * v.x + R.ey.x * v.y, R.ex.y * v.x + R.ey.y * v.y);
   }
 
-  static void mulToOutVec2_(final Mat22 R, final Vec2 v, final Vec2 out) {
+  static void mulToOutVec2_(final Mat22 R, final Vector2 v, final Vector2 out) {
     final double tempy = R.ex.y * v.x + R.ey.y * v.y;
     out.x = R.ex.x * v.x + R.ey.x * v.y;
     out.y = tempy;
   }
 
-  static void mulToOutUnsafeVec2_(final Mat22 R, final Vec2 v, final Vec2 out) {
+  static void mulToOutUnsafeVec2_(final Mat22 R, final Vector2 v, final Vector2 out) {
     assert(v != out);
     out.x = R.ex.x * v.x + R.ey.x * v.y;
     out.y = R.ex.y * v.x + R.ey.y * v.y;
@@ -485,19 +485,19 @@ class Mat22 {
     out.ey.y = A.ex.y * B.ey.x + A.ey.y * B.ey.y;
   }
 
-  static Vec2 mulTransVec2_(final Mat22 R, final Vec2 v) {
-    return new Vec2(
+  static Vector2 mulTransVec2_(final Mat22 R, final Vector2 v) {
+    return new Vector2(
         (v.x * R.ex.x + v.y * R.ex.y), (v.x * R.ey.x + v.y * R.ey.y));
   }
 
-  static void mulTransToOutVec2_(final Mat22 R, final Vec2 v, final Vec2 out) {
+  static void mulTransToOutVec2_(final Mat22 R, final Vector2 v, final Vector2 out) {
     double outx = v.x * R.ex.x + v.y * R.ex.y;
     out.y = v.x * R.ey.x + v.y * R.ey.y;
     out.x = outx;
   }
 
   static void mulTransToOutUnsafeVec2(
-      final Mat22 R, final Vec2 v, final Vec2 out) {
+      final Mat22 R, final Vector2 v, final Vector2 out) {
     assert(out != v);
     out.y = v.x * R.ey.x + v.y * R.ey.y;
     out.x = v.x * R.ex.x + v.y * R.ex.y;

@@ -32,7 +32,7 @@ class ParticleBodyContact {
   /** Weight of the contact. A value between 0.0f and 1.0f. */
   double weight = 0.0;
   /** The normalized direction from the particle to the body. */
-  final Vec2 normal = new Vec2.zero();
+  final Vector2 normal = new Vector2.zero();
   /** The effective mass used in calculating force. */
   double mass = 0.0;
 }

@@ -25,9 +25,9 @@
 part of box2d;
 
 class Vec2Array {
-  final HashMap<int, List<Vec2>> _map = new HashMap<int, List<Vec2>>();
+  final HashMap<int, List<Vector2>> _map = new HashMap<int, List<Vector2>>();
 
-  List<Vec2> get(int argLength) {
+  List<Vector2> get(int argLength) {
     assert(argLength > 0);
 
     if (!_map.containsKey(argLength)) {
@@ -39,10 +39,10 @@ class Vec2Array {
     return _map[argLength];
   }
 
-  List<Vec2> getInitializedArray(int argLength) {
-    final List<Vec2> ray = new List<Vec2>(argLength);
+  List<Vector2> getInitializedArray(int argLength) {
+    final List<Vector2> ray = new List<Vector2>(argLength);
     for (int i = 0; i < ray.length; i++) {
-      ray[i] = new Vec2.zero();
+      ray[i] = new Vector2.zero();
     }
     return ray;
   }

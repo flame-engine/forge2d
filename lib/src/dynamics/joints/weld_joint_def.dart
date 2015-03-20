@@ -28,12 +28,12 @@ class WeldJointDef extends JointDef {
   /**
    * The local anchor point relative to body1's origin.
    */
-  final Vec2 localAnchorA = new Vec2.zero();
+  final Vector2 localAnchorA = new Vector2.zero();
 
   /**
    * The local anchor point relative to body2's origin.
    */
-  final Vec2 localAnchorB = new Vec2.zero();
+  final Vector2 localAnchorB = new Vector2.zero();
 
   /**
    * The body2 angle minus body1 angle in the reference state (radians).
@@ -59,7 +59,7 @@ class WeldJointDef extends JointDef {
    * @param bB
    * @param anchor
    */
-  void initialize(Body bA, Body bB, Vec2 anchor) {
+  void initialize(Body bA, Body bB, Vector2 anchor) {
     bodyA = bA;
     bodyB = bB;
     bodyA.getLocalPointToOut(anchor, localAnchorA);
