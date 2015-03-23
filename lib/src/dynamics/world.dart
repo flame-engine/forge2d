@@ -724,10 +724,11 @@ class World {
     }
 
     if ((flags & DebugDraw.e_centerOfMassBit) != 0) {
+      final Color3i xfColor = new Color3i(255, 0, 0);
       for (Body b = m_bodyList; b != null; b = b.getNext()) {
         xf.set(b.getTransform());
         xf.p.setFrom(b.worldCenter);
-        m_debugDraw.drawTransform(xf);
+        m_debugDraw.drawTransform(xf, xfColor);
       }
     }
 

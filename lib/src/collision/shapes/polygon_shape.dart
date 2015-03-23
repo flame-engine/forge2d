@@ -271,6 +271,21 @@ class PolygonShape extends Shape {
     }
   }
 
+  /**
+   * Set this as a single edge.
+   */
+  void setAsEdge(Vector2 v1, Vector2 v2) {
+    m_count = 2;
+    m_vertices[0].setFrom(v1);
+    m_vertices[1].setFrom(v2);
+    m_centroid.setFrom(v1).add(v2).scale(0.5);
+    m_normals[0].setFrom(v2).sub(v1);
+    m_normals[0].scaleOrthogonalInto(-1.0, m_normals[0]);
+    m_normals[0].normalize();
+    m_normals[1].setFrom(m_normals[0]).negate();
+  }
+
+  
   int getChildCount() {
     return 1;
   }

@@ -55,6 +55,19 @@ Vector2 clampVec2(final Vector2 a, final Vector2 low, final Vector2 high) {
   return min;
 }
 
+/**
+ * Given a value within the range specified by [fromMin] and [fromMax],
+ * returns a value with the same relative position in the range specified
+ * from [toMin] and [toMax]. For example, given a [val] of 2 in the
+ * "from range" of 0-4, and a "to range" of 10-20, would return 15.
+ */
+double translateAndScale(
+    double val, double fromMin, double fromMax, double toMin, double toMax) {
+  final double mult = (val - fromMin) / (fromMax - fromMin);
+  final double res = toMin + mult * (toMax - toMin);
+  return res;
+}
+
 bool approxEquals(num expected, num actual, [num tolerance = null]) {
   if (tolerance == null) {
     tolerance = (expected / 1e4).abs();

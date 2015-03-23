@@ -47,13 +47,13 @@ abstract class DebugDraw {
   /** Draw only the wireframe for drawing performance */
   static const int e_wireframeDrawingBit = 1 << 7;
 
-  int m_drawFlags = 0;
-  IViewportTransform viewportTransform;
+  int m_drawFlags = e_shapeBit;
+  ViewportTransform viewportTransform;
 
   DebugDraw.zero();
   DebugDraw(this.viewportTransform);
 
-  void setViewportTransform(IViewportTransform viewportTransform) {
+  void setViewportTransform(ViewportTransform viewportTransform) {
     this.viewportTransform = viewportTransform;
   }
 
@@ -147,7 +147,7 @@ abstract class DebugDraw {
    * 
    * @param xf
    */
-  void drawTransform(Transform xf);
+  void drawTransform(Transform xf, Color3i color);
 
   /**
    * Draw a string.
@@ -182,7 +182,7 @@ abstract class DebugDraw {
     drawStringXY(pos.x, pos.y, s, color);
   }
 
-  IViewportTransform getViewportTranform() {
+  ViewportTransform getViewportTranform() {
     return viewportTransform;
   }
 
