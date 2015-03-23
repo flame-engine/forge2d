@@ -809,7 +809,8 @@ class World {
    * @param point2 the ray ending point
    */
   void raycastTwoCallBacks(RayCastCallback callback,
-      ParticleRaycastCallback particleCallback, Vector2 point1, Vector2 point2) {
+      ParticleRaycastCallback particleCallback, Vector2 point1,
+      Vector2 point2) {
     wrcwrapper.broadPhase = m_contactManager.m_broadPhase;
     wrcwrapper.callback = callback;
     input.maxFraction = 1.0;
@@ -827,8 +828,8 @@ class World {
    * @param point1 the ray starting point
    * @param point2 the ray ending point
    */
-  void raycastParticle(
-      ParticleRaycastCallback particleCallback, Vector2 point1, Vector2 point2) {
+  void raycastParticle(ParticleRaycastCallback particleCallback, Vector2 point1,
+      Vector2 point2) {
     m_particleSystem.raycast(particleCallback, point1, point2);
   }
 
@@ -1552,8 +1553,7 @@ class World {
           double radius = circle.radius;
           xf.q.getXAxis(axis);
 
-          if (fixture.userData != null &&
-              fixture.userData == LIQUID_INT) {
+          if (fixture.userData != null && fixture.userData == LIQUID_INT) {
             Body b = fixture.getBody();
             liquidOffset.setFrom(b._linearVelocity);
             double linVelLength = b._linearVelocity.length;

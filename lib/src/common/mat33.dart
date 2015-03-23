@@ -105,7 +105,8 @@ class Mat33 {
   }
 
   static Vector2 mul22(Mat33 A, Vector2 v) {
-    return new Vector2(A.ex.x * v.x + A.ey.x * v.y, A.ex.y * v.x + A.ey.y * v.y);
+    return new Vector2(
+        A.ex.x * v.x + A.ey.x * v.y, A.ex.y * v.x + A.ey.y * v.y);
   }
 
   static void mul22ToOut(Mat33 A, Vector2 v, Vector2 out) {

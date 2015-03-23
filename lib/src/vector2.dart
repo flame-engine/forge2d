@@ -30,7 +30,6 @@ import 'dart:typed_data';
 import 'math_utils.dart' as MathUtils;
 import 'settings.dart' as Settings;
 
-
 class Vector2 {
   final Float64List _d = new Float64List(2);
 
@@ -77,22 +76,22 @@ class Vector2 {
   }
 
   /// Negate.
-  Vector2 operator-() => new Vector2(-x, -y);
+  Vector2 operator -() => new Vector2(-x, -y);
 
   /// Add two vectors.
-  Vector2 operator+(Vector2 other) => new Vector2(x + other.x, y + other.y);
+  Vector2 operator +(Vector2 other) => new Vector2(x + other.x, y + other.y);
 
   /// Subtract two vectors.
-  Vector2 operator-(Vector2 other) => new Vector2(x - other.x, y - other.y);
+  Vector2 operator -(Vector2 other) => new Vector2(x - other.x, y - other.y);
 
   /// Scale.
-  Vector2 operator/(double scale) {
+  Vector2 operator /(double scale) {
     var o = 1.0 / scale;
     return new Vector2(x * o, y * o);
   }
 
   /// Scale.
-  Vector2 operator*(double scale) {
+  Vector2 operator *(double scale) {
     var o = scale;
     return new Vector2(x * o, y * o);
   }
@@ -152,7 +151,7 @@ class Vector2 {
   double get length2 {
     return (x * x + y * y);
   }
-  
+
   /// Normalize [this].
   Vector2 normalize() {
     double l = length;
@@ -297,5 +296,3 @@ class Vector2 {
         MathUtils.approxEquals(y, other.y);
   }
 }
- 
-

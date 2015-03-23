@@ -217,12 +217,7 @@ class MouseJoint extends Joint {
     final Vector2 impulse = pool.popVec2();
     final Vector2 temp = pool.popVec2();
 
-    temp
-        .setFrom(_m_impulse)
-        .scale(_m_gamma)
-        .add(_m_C)
-        .add(Cdot)
-        .negate();
+    temp.setFrom(_m_impulse).scale(_m_gamma).add(_m_C).add(Cdot).negate();
     Mat22.mulToOutUnsafeVec2_(_m_mass, temp, impulse);
 
     Vector2 oldImpulse = temp;

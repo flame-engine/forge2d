@@ -268,10 +268,7 @@ class RevoluteJoint extends Joint {
         double newImpulse = m_impulse.z + impulse.z;
         if (newImpulse < 0.0) {
           final Vector2 rhs = pool.popVec2();
-          rhs
-              .setValues(m_mass.ez.x, m_mass.ez.y)
-              .scale(m_impulse.z)
-              .sub(Cdot1);
+          rhs.setValues(m_mass.ez.x, m_mass.ez.y).scale(m_impulse.z).sub(Cdot1);
           m_mass.solve22ToOut(rhs, temp);
           impulse.x = temp.x;
           impulse.y = temp.y;
@@ -287,10 +284,7 @@ class RevoluteJoint extends Joint {
         double newImpulse = m_impulse.z + impulse.z;
         if (newImpulse > 0.0) {
           final Vector2 rhs = pool.popVec2();
-          rhs
-              .setValues(m_mass.ez.x, m_mass.ez.y)
-              .scale(m_impulse.z)
-              .sub(Cdot1);
+          rhs.setValues(m_mass.ez.x, m_mass.ez.y).scale(m_impulse.z).sub(Cdot1);
           m_mass.solve22ToOut(rhs, temp);
           impulse.x = temp.x;
           impulse.y = temp.y;
@@ -410,10 +404,8 @@ class RevoluteJoint extends Joint {
       final Vector2 C = pool.popVec2();
       final Vector2 impulse = pool.popVec2();
 
-      Rot.mulToOutUnsafe(
-          qA, C.setFrom(m_localAnchorA).sub(m_localCenterA), rA);
-      Rot.mulToOutUnsafe(
-          qB, C.setFrom(m_localAnchorB).sub(m_localCenterB), rB);
+      Rot.mulToOutUnsafe(qA, C.setFrom(m_localAnchorA).sub(m_localCenterA), rA);
+      Rot.mulToOutUnsafe(qB, C.setFrom(m_localAnchorB).sub(m_localCenterB), rB);
       C.setFrom(cB).add(rB).sub(cA).sub(rA);
       positionError = C.length;
 

@@ -49,11 +49,11 @@ class Color3i {
     y = g;
     z = b;
   }
-  
+
   void setFromRGBd(double r, double g, double b) {
     x = (r * 255).floor().toInt();
     y = (g * 255).floor().toInt();
-    z = (b * 255).floor().toInt();   
+    z = (b * 255).floor().toInt();
   }
 
   void setColor3i(Color3i argColor) {

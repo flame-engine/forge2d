@@ -41,13 +41,15 @@ class PolygonShape extends Shape {
    * The vertices of the shape. Note: use getVertexCount(), not m_vertices.length, to get number of
    * active vertices.
    */
-  final List<Vector2> m_vertices = new List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> m_vertices =
+      new List<Vector2>(Settings.maxPolygonVertices);
 
   /**
    * The normals of the shape. Note: use getVertexCount(), not m_normals.length, to get number of
    * active normals.
    */
-  final List<Vector2> m_normals = new List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> m_normals =
+      new List<Vector2>(Settings.maxPolygonVertices);
 
   /**
    * Number of active vertices in the shape.
@@ -245,8 +247,8 @@ class PolygonShape extends Shape {
    * @param center the center of the box in local coordinates.
    * @param angle the rotation of the box in local coordinates.
    */
-  void setAsBox(
-      final double hx, final double hy, final Vector2 center, final double angle) {
+  void setAsBox(final double hx, final double hy, final Vector2 center,
+      final double angle) {
     m_count = 4;
     m_vertices[0].setValues(-hx, -hy);
     m_vertices[1].setValues(hx, -hy);

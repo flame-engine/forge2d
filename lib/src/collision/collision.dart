@@ -1005,7 +1005,7 @@ class EPCollider {
     double offset0 = 0.0,
         offset2 = 0.0;
     bool convex1 = false,
-         convex2 = false;
+        convex2 = false;
 
     // Is there a preceding edge?
     if (hasVertex0) {
@@ -1238,7 +1238,7 @@ class EPCollider {
 
       // Search for the polygon normal that is most anti-parallel to the edge normal.
       int bestIndex = 0;
-      double bestValue = m_normal.dot( m_polygonB.normals[0]);
+      double bestValue = m_normal.dot(m_polygonB.normals[0]);
       for (int i = 1; i < m_polygonB.count; ++i) {
         double value = m_normal.dot(m_polygonB.normals[i]);
         if (value < bestValue) {
@@ -1334,8 +1334,7 @@ class EPCollider {
     for (int i = 0; i < Settings.maxManifoldPoints; ++i) {
       double separation;
 
-      separation =
-          _rf.normal.dot(_temp.setFrom(_clipPoints2[i].v).sub(_rf.v1));
+      separation = _rf.normal.dot(_temp.setFrom(_clipPoints2[i].v).sub(_rf.v1));
 
       if (separation <= m_radius) {
         ManifoldPoint cp = manifold.points[pointCount];

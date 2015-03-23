@@ -419,8 +419,8 @@ class Mat22 {
     if (det != 0.0) {
       det = 1.0 / det;
     }
-    final Vector2 x =
-        new Vector2(det * (a22 * b.x - a12 * b.y), det * (a11 * b.y - a21 * b.x));
+    final Vector2 x = new Vector2(
+        det * (a22 * b.x - a12 * b.y), det * (a11 * b.y - a21 * b.x));
     return x;
   }
 
@@ -440,7 +440,8 @@ class Mat22 {
 
   static Vector2 mulVec2_(final Mat22 R, final Vector2 v) {
     // return R.mul(v);
-    return new Vector2(R.ex.x * v.x + R.ey.x * v.y, R.ex.y * v.x + R.ey.y * v.y);
+    return new Vector2(
+        R.ex.x * v.x + R.ey.x * v.y, R.ex.y * v.x + R.ey.y * v.y);
   }
 
   static void mulToOutVec2_(final Mat22 R, final Vector2 v, final Vector2 out) {
@@ -449,7 +450,8 @@ class Mat22 {
     out.y = tempy;
   }
 
-  static void mulToOutUnsafeVec2_(final Mat22 R, final Vector2 v, final Vector2 out) {
+  static void mulToOutUnsafeVec2_(
+      final Mat22 R, final Vector2 v, final Vector2 out) {
     assert(v != out);
     out.x = R.ex.x * v.x + R.ey.x * v.y;
     out.y = R.ex.y * v.x + R.ey.y * v.y;
@@ -490,7 +492,8 @@ class Mat22 {
         (v.x * R.ex.x + v.y * R.ex.y), (v.x * R.ey.x + v.y * R.ey.y));
   }
 
-  static void mulTransToOutVec2_(final Mat22 R, final Vector2 v, final Vector2 out) {
+  static void mulTransToOutVec2_(
+      final Mat22 R, final Vector2 v, final Vector2 out) {
     double outx = v.x * R.ex.x + v.y * R.ex.y;
     out.y = v.x * R.ey.x + v.y * R.ey.y;
     out.x = outx;

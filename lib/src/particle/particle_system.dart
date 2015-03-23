@@ -1391,8 +1391,7 @@ class ParticleSystem {
         final Vector2 pc = m_positionBuffer.data[c];
         final double px = 1.0 / 3 * (pa.x + pb.x + pc.x);
         final double py = 1.0 / 3 * (pa.y + pb.y + pc.y);
-        double rs =
-            oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
+        double rs = oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
         double rc = oa.dot(pa) + ob.dot(pb) + oc.dot(pc);
         double r2 = rs * rs + rc * rc;
         double invR = r2 == 0 ? double.MAX_FINITE : Math.sqrt(1.0 / r2);
@@ -2125,8 +2124,8 @@ class ParticleSystem {
    * @param point1
    * @param point2
    */
-  void raycast(
-      ParticleRaycastCallback callback, final Vector2 point1, final Vector2 point2) {
+  void raycast(ParticleRaycastCallback callback, final Vector2 point1,
+      final Vector2 point2) {
     if (m_proxyCount == 0) {
       return;
     }

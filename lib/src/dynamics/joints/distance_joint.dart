@@ -288,10 +288,8 @@ class DistanceJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOutUnsafe(
-        qA, u.setFrom(_m_localAnchorA).sub(_m_localCenterA), rA);
-    Rot.mulToOutUnsafe(
-        qB, u.setFrom(_m_localAnchorB).sub(_m_localCenterB), rB);
+    Rot.mulToOutUnsafe(qA, u.setFrom(_m_localAnchorA).sub(_m_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB, u.setFrom(_m_localAnchorB).sub(_m_localCenterB), rB);
     u.setFrom(cB).add(rB).sub(cA).sub(rA);
 
     double length = u.normalizeLength();

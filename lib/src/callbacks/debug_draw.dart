@@ -117,7 +117,8 @@ abstract class DebugDraw {
   void drawCircle(Vector2 center, double radius, Color3i color);
 
   /** Draws a circle with an axis */
-  void drawCircleAxis(Vector2 center, double radius, Vector2 axis, Color3i color) {
+  void drawCircleAxis(
+      Vector2 center, double radius, Vector2 axis, Color3i color) {
     drawCircle(center, radius, color);
   }
 
@@ -129,7 +130,8 @@ abstract class DebugDraw {
    * @param axis
    * @param color
    */
-  void drawSolidCircle(Vector2 center, double radius, Vector2 axis, Color3i color);
+  void drawSolidCircle(
+      Vector2 center, double radius, Vector2 axis, Color3i color);
 
   /**
    * Draw a line segment.
@@ -162,16 +164,16 @@ abstract class DebugDraw {
    * 
    * @param colors can be null
    */
-  void drawParticles(
-      List<Vector2> centers, double radius, List<ParticleColor> colors, int count);
+  void drawParticles(List<Vector2> centers, double radius,
+      List<ParticleColor> colors, int count);
 
   /**
    * Draw a particle array
    * 
    * @param colors can be null
    */
-  void drawParticlesWireframe(
-      List<Vector2> centers, double radius, List<ParticleColor> colors, int count);
+  void drawParticlesWireframe(List<Vector2> centers, double radius,
+      List<ParticleColor> colors, int count);
 
   /** Called at the end of drawing a world */
   void flush() {}
@@ -217,7 +219,8 @@ abstract class DebugDraw {
    * @param worldY
    * @param argScreen
    */
-  void getWorldToScreenToOutXY(double worldX, double worldY, Vector2 argScreen) {
+  void getWorldToScreenToOutXY(
+      double worldX, double worldY, Vector2 argScreen) {
     argScreen.setValues(worldX, worldY);
     viewportTransform.getWorldToScreen(argScreen, argScreen);
   }
@@ -252,7 +255,8 @@ abstract class DebugDraw {
    * @param screenY
    * @param argWorld
    */
-  void getScreenToWorldToOutXY(double screenX, double screenY, Vector2 argWorld) {
+  void getScreenToWorldToOutXY(
+      double screenX, double screenY, Vector2 argWorld) {
     argWorld.setValues(screenX, screenY);
     viewportTransform.getScreenToWorld(argWorld, argWorld);
   }

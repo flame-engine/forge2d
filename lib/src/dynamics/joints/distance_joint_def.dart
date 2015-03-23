@@ -62,8 +62,8 @@ class DistanceJointDef extends JointDef {
    * @param anchor1 World anchor on first body
    * @param anchor2 World anchor on second body
    */
-  void initialize(
-      final Body b1, final Body b2, final Vector2 anchor1, final Vector2 anchor2) {
+  void initialize(final Body b1, final Body b2, final Vector2 anchor1,
+      final Vector2 anchor2) {
     bodyA = b1;
     bodyB = b2;
     localAnchorA.setFrom(bodyA.getLocalPoint(anchor1));

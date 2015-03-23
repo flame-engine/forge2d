@@ -79,7 +79,8 @@ class Transform {
         (T.q.s * v.x + T.q.c * v.y) + T.p.y);
   }
 
-  static void mulToOutVec2(final Transform T, final Vector2 v, final Vector2 out) {
+  static void mulToOutVec2(
+      final Transform T, final Vector2 v, final Vector2 out) {
     final double tempy = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
     out.x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
     out.y = tempy;
