@@ -353,7 +353,7 @@ class SeparationFunction {
       _localPointB2.setFrom(m_proxyB.getVertex(cache.indexB[1]));
 
       _temp.setFrom(_localPointB2).sub(_localPointB1);
-      Vector2.crossToOutUnsafeVec2Dbl(_temp, 1.0, m_axis);
+      _temp.scaleOrthogonalInto(-1.0, m_axis);
       m_axis.normalize();
 
       Rot.mulToOutUnsafe(_xfb.q, m_axis, _normal);
@@ -379,7 +379,7 @@ class SeparationFunction {
       _localPointA2.setFrom(m_proxyA.getVertex(cache.indexA[1]));
 
       _temp.setFrom(_localPointA2).sub(_localPointA1);
-      Vector2.crossToOutUnsafeVec2Dbl(_temp, 1.0, m_axis);
+      _temp.scaleOrthogonalInto(-1.0, m_axis);
       m_axis.normalize();
 
       Rot.mulToOutUnsafe(_xfa.q, m_axis, _normal);

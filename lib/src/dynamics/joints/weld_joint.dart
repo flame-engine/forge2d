@@ -267,8 +267,8 @@ class WeldJoint extends Joint {
       wA -= iA * impulse2;
       wB += iB * impulse2;
 
-      Vector2.crossToOutUnsafeDblVec2(wB, m_rB, Cdot1);
-      Vector2.crossToOutUnsafeDblVec2(wA, m_rA, temp);
+      m_rB.scaleOrthogonalInto(wB, Cdot1);
+      m_rA.scaleOrthogonalInto(wA, temp);
       Cdot1.add(vB).sub(vA).sub(temp);
 
       final Vector2 impulse1 = P;
@@ -286,8 +286,8 @@ class WeldJoint extends Joint {
       vB.y += mB * P.y;
       wB += iB * m_rB.cross(P);
     } else {
-      Vector2.crossToOutUnsafeDblVec2(wA, m_rA, temp);
-      Vector2.crossToOutUnsafeDblVec2(wB, m_rB, Cdot1);
+      m_rA.scaleOrthogonalInto(wA, temp);
+      m_rB.scaleOrthogonalInto(wB, Cdot1);
       Cdot1.add(vB).sub(vA).sub(temp);
       double Cdot2 = wB - wA;
 

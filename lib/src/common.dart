@@ -1,7 +1,7 @@
 library box2d.common;
 
 import 'math_utils.dart' as MathUtils;
-import 'vector2.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector2;
 
 part 'common/color3i.dart';
 part 'common/mat22.dart';

@@ -575,11 +575,19 @@ class Mat22 {
     if (obj is! Mat22) return false;
     Mat22 other = obj;
     if (ex == null) {
-      if (other.ex != null) return false;
-    } else if (!ex.equals(other.ex)) return false;
+      if (other.ex != null) {
+        return false;
+      }
+    } else if (!MathUtils.vector2Equals(ex, other.ex)) {
+      return false;
+    }
     if (ey == null) {
-      if (other.ey != null) return false;
-    } else if (!ey.equals(other.ey)) return false;
+      if (other.ey != null) {
+        return false;
+      }
+    } else if (!MathUtils.vector2Equals(ey, other.ey)) {
+      return false;
+    }
     return true;
   }
 }

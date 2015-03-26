@@ -735,8 +735,7 @@ class ParticleSystem {
             particleDef.position.x = p.x;
             particleDef.position.y = p.y;
             p.sub(groupDef.position);
-            Vector2.crossToOutUnsafeDblVec2(
-                groupDef.angularVelocity, p, particleDef.velocity);
+            p.scaleOrthogonalInto(groupDef.angularVelocity, particleDef.velocity);
             particleDef.velocity.add(groupDef.linearVelocity);
             createParticle(particleDef);
           }

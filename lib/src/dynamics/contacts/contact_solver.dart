@@ -564,15 +564,15 @@ class ContactSolver {
             if (DEBUG_SOLVER) {
               // Postconditions
               Vector2 dv1 = vB +
-                  Vector2
+                  MathUtils
                       .crossDblVec2(wB, cp1rB)
                       .sub(vA)
-                      .sub(Vector2.crossDblVec2(wA, cp1rA));
+                      .sub(MathUtils.crossDblVec2(wA, cp1rA));
               Vector2 dv2 = vB +
-                  Vector2
+                  MathUtils
                       .crossDblVec2(wB, cp2rB)
                       .sub(vA)
-                      .sub(Vector2.crossDblVec2(wA, cp2rA));
+                      .sub(MathUtils.crossDblVec2(wA, cp2rA));
               // Compute normal velocity
               vn1 = dv1.dot(normal);
               vn2 = dv2.dot(normal);
@@ -643,10 +643,10 @@ class ContactSolver {
             if (DEBUG_SOLVER) {
               // Postconditions
               Vector2 dv1 = vB +
-                  Vector2
+                  MathUtils
                       .crossDblVec2(wB, cp1rB)
                       .sub(vA)
-                      .sub(Vector2.crossDblVec2(wA, cp1rA));
+                      .sub(MathUtils.crossDblVec2(wA, cp1rA));
               // Compute normal velocity
               vn1 = dv1.dot(normal);
 
@@ -713,10 +713,10 @@ class ContactSolver {
             if (DEBUG_SOLVER) {
               // Postconditions
               Vector2 dv2 = vB +
-                  Vector2
+                  MathUtils
                       .crossDblVec2(wB, cp2rB)
                       .sub(vA)
-                      .sub(Vector2.crossDblVec2(wA, cp2rA));
+                      .sub(MathUtils.crossDblVec2(wA, cp2rA));
               // Compute normal velocity
               vn2 = dv2.dot(normal);
 

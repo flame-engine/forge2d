@@ -155,10 +155,10 @@ class _Simplex {
 
         if (sgn > 0.0) {
           // Origin is left of e12.
-          Vector2.crossToOutUnsafeDblVec2(1.0, _e12, out);
+          _e12.scaleOrthogonalInto(1.0, out);
         } else {
           // Origin is right of e12.
-          Vector2.crossToOutUnsafeVec2Dbl(_e12, 1.0, out);
+          _e12.scaleOrthogonalInto(-1.0, out);
         }
         return;
       default:

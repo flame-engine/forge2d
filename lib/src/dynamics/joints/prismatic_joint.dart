@@ -142,7 +142,7 @@ class PrismaticJoint extends Joint {
         m_localXAxisA = new Vector2.copy(def.localAxisA)..normalize(),
         m_localYAxisA = new Vector2.zero(),
         super(argWorld, def) {
-    Vector2.crossToOutUnsafeDblVec2(1.0, m_localXAxisA, m_localYAxisA);
+    m_localXAxisA.scaleOrthogonalInto(1.0, m_localYAxisA);
     m_referenceAngle = def.referenceAngle;
 
     m_lowerTranslation = def.lowerTranslation;
@@ -215,9 +215,9 @@ class PrismaticJoint extends Joint {
     double wA = bA._angularVelocity;
     double wB = bB._angularVelocity;
 
-    Vector2.crossToOutUnsafeDblVec2(wA, axis, temp);
-    Vector2.crossToOutUnsafeDblVec2(wB, rB, temp2);
-    Vector2.crossToOutUnsafeDblVec2(wA, rA, temp3);
+    axis.scaleOrthogonalInto(wA, temp);
+    rB.scaleOrthogonalInto(wB, temp2);
+    rA.scaleOrthogonalInto(wA, temp3);
 
     temp2.add(vB).sub(vA).sub(temp3);
     double speed = d.dot(temp) + axis.dot(temp2);

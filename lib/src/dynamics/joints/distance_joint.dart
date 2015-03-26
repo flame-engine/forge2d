@@ -243,9 +243,9 @@ class DistanceJoint extends Joint {
     final Vector2 vpB = pool.popVec2();
 
     // Cdot = dot(u, v + cross(w, r))
-    Vector2.crossToOutUnsafeDblVec2(wA, _m_rA, vpA);
+    _m_rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
-    Vector2.crossToOutUnsafeDblVec2(wB, _m_rB, vpB);
+    _m_rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
     double Cdot = _m_u.dot(vpB.sub(vpA));
 

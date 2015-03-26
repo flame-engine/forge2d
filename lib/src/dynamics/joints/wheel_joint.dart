@@ -95,7 +95,7 @@ class WheelJoint extends Joint {
     m_localAnchorA.setFrom(def.localAnchorA);
     m_localAnchorB.setFrom(def.localAnchorB);
     m_localXAxisA.setFrom(def.localAxisA);
-    Vector2.crossToOutUnsafeDblVec2(1.0, m_localXAxisA, m_localYAxisA);
+    m_localXAxisA.scaleOrthogonalInto(1.0, m_localYAxisA);
 
     m_motorMass = 0.0;
     m_motorImpulse = 0.0;

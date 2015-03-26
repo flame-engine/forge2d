@@ -212,7 +212,7 @@ class PolygonShape extends Shape {
       edge.setFrom(m_vertices[i2]).sub(m_vertices[i1]);
 
       assert(edge.length2 > Settings.EPSILON * Settings.EPSILON);
-      Vector2.crossToOutUnsafeVec2Dbl(edge, 1.0, m_normals[i]);
+      edge.scaleOrthogonalInto(-1.0, m_normals[i]);
       m_normals[i].normalize();
     }
 

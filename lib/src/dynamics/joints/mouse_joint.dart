@@ -54,7 +54,7 @@ class MouseJoint extends Joint {
   final Vector2 _m_C = new Vector2.zero();
 
   MouseJoint(IWorldPool argWorld, MouseJointDef def) : super(argWorld, def) {
-    assert(def.target.isValid());
+    assert(MathUtils.vector2IsValid(def.target));
     assert(def.maxForce >= 0);
     assert(def.frequencyHz >= 0);
     assert(def.dampingRatio >= 0);
@@ -211,7 +211,7 @@ class MouseJoint extends Joint {
 
     // Cdot = v + cross(w, r)
     final Vector2 Cdot = pool.popVec2();
-    Vector2.crossToOutUnsafeDblVec2(wB, _m_rB, Cdot);
+    _m_rB.scaleOrthogonalInto(wB, Cdot);
     Cdot.add(vB);
 
     final Vector2 impulse = pool.popVec2();

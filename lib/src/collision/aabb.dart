@@ -81,7 +81,8 @@ class AABB {
     if (dy < 0) {
       return false;
     }
-    return lowerBound.isValid() && upperBound.isValid();
+    return MathUtils.vector2IsValid(lowerBound) &&
+        MathUtils.vector2IsValid(upperBound);
   }
 
   /**

@@ -230,8 +230,8 @@ class FrictionJoint extends Joint {
       final Vector2 Cdot = pool.popVec2();
       final Vector2 temp = pool.popVec2();
 
-      Vector2.crossToOutUnsafeDblVec2(wA, m_rA, temp);
-      Vector2.crossToOutUnsafeDblVec2(wB, m_rB, Cdot);
+      m_rA.scaleOrthogonalInto(wA, temp);
+      m_rB.scaleOrthogonalInto(wB, Cdot);
       Cdot.add(vB).sub(vA).sub(temp);
 
       final Vector2 impulse = pool.popVec2();

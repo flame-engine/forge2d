@@ -92,8 +92,8 @@ class Body {
   Object userData;
 
   Body(final BodyDef bd, this.m_world) {
-    assert(bd.position.isValid());
-    assert(bd.linearVelocity.isValid());
+    assert(MathUtils.vector2IsValid(bd.position));
+    assert(MathUtils.vector2IsValid(bd.linearVelocity));
     assert(bd.gravityScale >= 0.0);
     assert(bd.angularDamping >= 0.0);
     assert(bd.linearDamping >= 0.0);
@@ -627,7 +627,7 @@ class Body {
     // m_linearVelocity += Cross(m_angularVelocity, m_sweep.c - oldCenter);
     final Vector2 temp = m_world.getPool().popVec2();
     temp.setFrom(m_sweep.c).sub(oldCenter);
-    Vector2.crossToOutDblVec2(_angularVelocity, temp, temp);
+    temp.scaleOrthogonalInto(_angularVelocity, temp);
     _linearVelocity.add(temp);
 
     m_world.getPool().pushVec2(2);
@@ -709,7 +709,7 @@ class Body {
     temp.setFrom(m_sweep.c).sub(oldCenter);
 
     final Vector2 temp2 = oldCenter;
-    Vector2.crossToOutUnsafeDblVec2(_angularVelocity, temp, temp2);
+    temp.scaleOrthogonalInto(_angularVelocity, temp2);
     _linearVelocity.add(temp2);
 
     m_world.getPool().pushVec2(3);

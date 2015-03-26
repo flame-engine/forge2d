@@ -269,9 +269,9 @@ class PulleyJoint extends Joint {
     final Vector2 PA = pool.popVec2();
     final Vector2 PB = pool.popVec2();
 
-    Vector2.crossToOutUnsafeDblVec2(wA, _m_rA, vpA);
+    _m_rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
-    Vector2.crossToOutUnsafeDblVec2(wB, _m_rB, vpB);
+    _m_rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
 
     double Cdot = -_m_uA.dot(vpA) - _m_ratio * _m_uB.dot(vpB);

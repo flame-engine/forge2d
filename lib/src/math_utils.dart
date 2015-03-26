@@ -26,8 +26,8 @@ library box2d.math_utils;
 
 import 'dart:math' as Math;
 import 'dart:typed_data';
+import 'package:vector_math/vector_math_64.dart' show Vector2;
 
-import 'vector2.dart';
 import 'settings.dart' as Settings;
 
 export 'dart:math' show cos, atan2;
@@ -73,6 +73,21 @@ bool approxEquals(num expected, num actual, [num tolerance = null]) {
     tolerance = (expected / 1e4).abs();
   }
   return ((expected - actual).abs() <= tolerance);
+}
+
+Vector2 crossDblVec2(double s, Vector2 a) {
+  return new Vector2(-s * a.y, s * a.x);
+}
+
+bool vector2Equals(Vector2 a, Vector2 b) {
+  if ((a == null) || (b == null)) return false;
+  if (identical(a, b)) return true;
+  if (a is! Vector2 || b is! Vector2) return false;
+  return ((a.x == b.x) && (a.y == b.y));
+}
+
+bool vector2IsValid(Vector2 v) {
+  return !v.x.isNaN && !v.x.isInfinite && !v.y.isNaN && !v.y.isInfinite;
 }
 
 double sin(double x) {

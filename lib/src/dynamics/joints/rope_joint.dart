@@ -162,9 +162,9 @@ class RopeJoint extends Joint {
     Vector2 vpB = pool.popVec2();
     Vector2 temp = pool.popVec2();
 
-    Vector2.crossToOutUnsafeDblVec2(wA, m_rA, vpA);
+    m_rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
-    Vector2.crossToOutUnsafeDblVec2(wB, m_rB, vpB);
+    m_rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
 
     double C = m_length - m_maxLength;
