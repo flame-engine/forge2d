@@ -587,7 +587,7 @@ class PolygonShape extends Shape {
     for (int i = 0; i < m_count; ++i) {
       s.add(m_vertices[i]);
     }
-    s.scale(1.0 / m_count);
+    s.scale(1.0 / m_count.toDouble());
 
     final double k_inv3 = 1.0 / 3.0;
 

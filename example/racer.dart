@@ -120,19 +120,19 @@ class Racer extends Demo implements ContactListener {
 
     shape.setAsEdge(new Vector2(-boundaryX, -boundaryY),
         new Vector2(boundaryX, -boundaryY));
-    Fixture boundaryFixture = boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
     shape.setAsEdge(
         new Vector2(boundaryX, -boundaryY), new Vector2(boundaryX, boundaryY));
-    boundaryFixture = boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
     shape.setAsEdge(
         new Vector2(boundaryX, boundaryY), new Vector2(-boundaryX, boundaryY));
-    boundaryFixture = boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
     shape.setAsEdge(new Vector2(-boundaryX, boundaryY),
         new Vector2(-boundaryX, -boundaryY));
-    boundaryFixture = boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
   }
 
   void _handleKeyDown(KeyboardEvent event) {

@@ -35,7 +35,7 @@ class Car {
     final PolygonShape shape = new PolygonShape();
     shape.set(vertices, vertices.length);
 
-    final Fixture fixture = _body.createFixtureFromShape(shape, 0.1);
+    _body.createFixtureFromShape(shape, 0.1);
 
     final RevoluteJointDef jointDef = new RevoluteJointDef();
     jointDef.bodyA = _body;

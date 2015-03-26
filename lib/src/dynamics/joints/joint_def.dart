@@ -31,9 +31,6 @@ part of box2d;
 class JointDef {
   JointDef(JointType type) {
     this.type = type;
-    userData = null;
-    bodyA = null;
-    bodyB = null;
     collideConnected = false;
   }
   /**

@@ -1516,6 +1516,11 @@ class World {
           m_debugDraw.drawSegment(s1, s2, color);
         }
         break;
+
+      case JointType.FRICTION:
+        m_debugDraw.drawSegment(x1, x2, color);
+        break;
+
       case JointType.CONSTANT_VOLUME:
       case JointType.MOUSE:
         // don't draw this
