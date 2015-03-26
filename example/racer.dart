@@ -80,7 +80,7 @@ class Racer extends Demo implements ContactListener {
 
   void preSolve(Contact contact, Manifold oldManifold) {}
   void postSolve(Contact contact, ContactImpulse impulse) {}
-  
+
   double radians(double deg) => deg * (PI / 180.0);
 
   void _createGround() {
@@ -95,13 +95,11 @@ class Racer extends Demo implements ContactListener {
     fixtureDef.isSensor = true;
 
     fixtureDef.userData = new GroundArea(0.001, false);
-    shape.setAsBox(
-        27.0, 21.0, new Vector2(-30.0, 30.0), radians(20.0));
+    shape.setAsBox(27.0, 21.0, new Vector2(-30.0, 30.0), radians(20.0));
     _groundBody.createFixtureFromFixtureDef(fixtureDef);
 
     fixtureDef.userData = new GroundArea(0.2, false);
-    shape.setAsBox(
-        27.0, 15.0, new Vector2(20.0, 40.0), radians(-40.0));
+    shape.setAsBox(27.0, 15.0, new Vector2(20.0, 40.0), radians(-40.0));
     _groundBody.createFixtureFromFixtureDef(fixtureDef);
   }
 
@@ -120,6 +118,7 @@ class Racer extends Demo implements ContactListener {
 
     shape.setAsEdge(new Vector2(-boundaryX, -boundaryY),
         new Vector2(boundaryX, -boundaryY));
+
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
     shape.setAsEdge(

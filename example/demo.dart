@@ -87,11 +87,10 @@ abstract class Demo {
   Element worldStepTime;
 
   Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
-      : this.world =
-          new World.withPool((gravity == null) ? new Vector2(0.0, GRAVITY) : gravity,
-              new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE)),
-        _stopwatch = new Stopwatch()
-          ..start() {
+      : this.world = new World.withPool(
+          (gravity == null) ? new Vector2(0.0, GRAVITY) : gravity,
+          new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE)),
+        _stopwatch = new Stopwatch()..start() {
     querySelector("#title").innerHtml = name;
   }
 

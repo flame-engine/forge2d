@@ -285,7 +285,6 @@ class PolygonShape extends Shape {
     m_normals[1].setFrom(m_normals[0]).negate();
   }
 
-  
   int getChildCount() {
     return 1;
   }

@@ -75,8 +75,7 @@ class FrictionJointTest extends Demo {
 
   void _createBoxShapeAndFixture() {
     final PolygonShape boxShape = new PolygonShape();
-    boxShape.setAsBox(
-        3.0, 1.5, new Vector2.zero(), Math.PI / 2);
+    boxShape.setAsBox(3.0, 1.5, new Vector2.zero(), Math.PI / 2);
 
     // Define fixture (links body and shape)
     _boxFixture = new FixtureDef();

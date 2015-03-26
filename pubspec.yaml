@@ -1,4 +1,6 @@
 name: box2d
 homepage: https://github.com/google/dbox2d
 dependencies:
-  vector_math:
+  vector_math: '>=1.4.3 <2.0.0'
+dev_dependencies:
+  browser: '>=0.10.0 <0.11.0'

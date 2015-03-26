@@ -278,7 +278,7 @@ class Vector2 {
     out.x = a.x > b.x ? a.x : b.x;
     out.y = a.y > b.y ? a.y : b.y;
   }
-  
+
   /// Rotate [this] by 90 degrees then scale it. Store result in [out]. Return [out].
   Vector2 scaleOrthogonalInto(double scale, Vector2 out) {
     out.setValues(-scale * y, scale * x);

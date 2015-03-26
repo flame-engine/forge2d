@@ -51,7 +51,7 @@ class Tire {
     _body.applyLinearImpulse(
         impulse.scale(_currentTraction), _body.worldCenter, true);
     _body.applyAngularImpulse(
-        0.1 * _currentTraction * _body.getInertia()* (-_body.angularVelocity));
+        0.1 * _currentTraction * _body.getInertia() * (-_body.angularVelocity));
 
     Vector2 currentForwardNormal = _forwardVelocity;
     final double currentForwardSpeed = currentForwardNormal.length;
