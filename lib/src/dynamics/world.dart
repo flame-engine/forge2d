@@ -1216,7 +1216,7 @@ class World {
           c = c.m_next) {
         // Invalidate TOI
         c.m_flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
-        c.m_toiCount = 0.0;
+        c.m_toiCount = 0;
         c.m_toi = 1.0;
       }
     }

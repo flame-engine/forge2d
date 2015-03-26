@@ -63,7 +63,7 @@ abstract class Contact {
 
   final Manifold m_manifold = new Manifold();
 
-  double m_toiCount = 0.0;
+  int m_toiCount = 0;
   double m_toi = 0.0;
 
   double m_friction = 0.0;
@@ -100,7 +100,7 @@ abstract class Contact {
     m_nodeB.next = null;
     m_nodeB.other = null;
 
-    m_toiCount = 0.0;
+    m_toiCount = 0;
     m_friction = Contact.mixFriction(fA.m_friction, fB.m_friction);
     m_restitution = Contact.mixRestitution(fA.m_restitution, fB.m_restitution);
 
