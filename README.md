@@ -1,5 +1,5 @@
 # dbox2d
-This is a port of Java's Box2D libraries written by Daniel Murphy (status
+This is a Dart port of Java's Box2D libraries written by Daniel Murphy (status
 February 2015). First Dart port of an earlier version of Box2D library was
 done by Dominic Hamon. We are grateful for his work.
 
