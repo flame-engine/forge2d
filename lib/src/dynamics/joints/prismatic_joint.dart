@@ -758,12 +758,11 @@ class PrismaticJoint extends Joint {
         k22 = 1.0;
       }
 
-      final Mat22 K = pool.popMat22();
-      K.ex.setValues(k11, k12);
-      K.ey.setValues(k12, k22);
+      final Matrix2 K = pool.popMat22();
 
+      K.setValues(k11, k12, k12, k22);
       // temp is impulse1
-      K.solveToOut(C1.negate(), temp);
+      Matrix2.solve(K, temp, C1.negate());
       C1.negate();
 
       impulse.x = temp.x;

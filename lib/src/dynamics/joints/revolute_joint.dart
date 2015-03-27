@@ -414,12 +414,14 @@ class RevoluteJoint extends Joint {
       double iA = m_invIA,
           iB = m_invIB;
 
-      final Mat22 K = pool.popMat22();
-      K.ex.x = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
-      K.ex.y = -iA * rA.x * rA.y - iB * rB.x * rB.y;
-      K.ey.x = K.ex.y;
-      K.ey.y = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
-      K.solveToOut(C, impulse);
+      final Matrix2 K = pool.popMat22();
+      double a11 = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
+      double a21= -iA * rA.x * rA.y - iB * rB.x * rB.y;
+      double a12 = a21;
+      double a22 = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
+      
+      K.setValues(a11, a21, a12, a22);
+      Matrix2.solve(K, impulse, C);
       impulse.negate();
 
       cA.x -= mA * impulse.x;

@@ -39,10 +39,10 @@ class OrderedStackVec3 extends OrderedStack<Vec3> {
       : super(argStackSize, argContainerSize);
   Vec3 newInstance() => new Vec3.zero();
 }
-class OrderedStackMat22 extends OrderedStack<Mat22> {
+class OrderedStackMat22 extends OrderedStack<Matrix2> {
   OrderedStackMat22(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  Mat22 newInstance() => new Mat22.zero();
+  Matrix2 newInstance() => new Matrix2.zero();
 }
 class OrderedStackMat33 extends OrderedStack<Mat33> {
   OrderedStackMat33(int argStackSize, int argContainerSize)
@@ -109,7 +109,7 @@ class MutableStackChainAndPolygonContact
 class DefaultWorldPool implements IWorldPool {
   final OrderedStack<Vector2> _vecs;
   final OrderedStack<Vec3> _vec3s;
-  final OrderedStack<Mat22> _mats;
+  final OrderedStack<Matrix2> _mats;
   final OrderedStack<Mat33> _mat33s;
   final OrderedStack<AABB> _aabbs;
   final OrderedStack<Rot> _rots;
@@ -213,11 +213,11 @@ class DefaultWorldPool implements IWorldPool {
     _vec3s.push(argNum);
   }
 
-  Mat22 popMat22() {
+  Matrix2 popMat22() {
     return _mats.pop();
   }
 
-  List<Mat22> popMat22Some(int argNum) {
+  List<Matrix2> popMat22Some(int argNum) {
     return _mats.popSome(argNum);
   }
 

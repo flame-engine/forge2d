@@ -38,8 +38,8 @@ class ContactVelocityConstraint {
   List<VelocityConstraintPoint> points =
       new List<VelocityConstraintPoint>(Settings.maxManifoldPoints);
   final Vector2 normal = new Vector2.zero();
-  final Mat22 normalMass = new Mat22.zero();
-  final Mat22 K = new Mat22.zero();
+  final Matrix2 normalMass = new Matrix2.zero();
+  final Matrix2 K = new Matrix2.zero();
   int indexA = 0;
   int indexB = 0;
   double invMassA = 0.0,

@@ -47,7 +47,7 @@ class FrictionJoint extends Joint {
   double m_invMassB = 0.0;
   double m_invIA = 0.0;
   double m_invIB = 0.0;
-  final Mat22 m_linearMass = new Mat22.zero();
+  final Matrix2 m_linearMass = new Matrix2.zero();
   double m_angularMass = 0.0;
 
   FrictionJoint(IWorldPool argWorldPool, FrictionJointDef def)
@@ -150,13 +150,15 @@ class FrictionJoint extends Joint {
     double iA = m_invIA,
         iB = m_invIB;
 
-    final Mat22 K = pool.popMat22();
-    K.ex.x = mA + mB + iA * m_rA.y * m_rA.y + iB * m_rB.y * m_rB.y;
-    K.ex.y = -iA * m_rA.x * m_rA.y - iB * m_rB.x * m_rB.y;
-    K.ey.x = K.ex.y;
-    K.ey.y = mA + mB + iA * m_rA.x * m_rA.x + iB * m_rB.x * m_rB.x;
+    final Matrix2 K = pool.popMat22();
+    double a11 = mA + mB + iA * m_rA.y * m_rA.y + iB * m_rB.y * m_rB.y;
+    double a21 = -iA * m_rA.x * m_rA.y - iB * m_rB.x * m_rB.y;
+    double a12 = a21;
+    double a22 = mA + mB + iA * m_rA.x * m_rA.x + iB * m_rB.x * m_rB.x;
 
-    K.invertToOut(m_linearMass);
+    K.setValues(a11, a12, a21, a22);
+    m_linearMass.setFrom(K);
+    m_linearMass.invert();
 
     m_angularMass = iA + iB;
     if (m_angularMass > 0.0) {
@@ -235,7 +237,7 @@ class FrictionJoint extends Joint {
       Cdot.add(vB).sub(vA).sub(temp);
 
       final Vector2 impulse = pool.popVec2();
-      Mat22.mulToOutUnsafeVec2_(m_linearMass, Cdot, impulse);
+      m_linearMass.transformed(Cdot, impulse);
       impulse.negate();
 
       final Vector2 oldImpulse = pool.popVec2();

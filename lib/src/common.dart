@@ -4,7 +4,6 @@ import 'math_utils.dart' as MathUtils;
 import 'package:vector_math/vector_math_64.dart' show Vector2;
 
 part 'common/color3i.dart';
-part 'common/mat22.dart';
 part 'common/mat33.dart';
 part 'common/raycast_result.dart';
 part 'common/rot.dart';

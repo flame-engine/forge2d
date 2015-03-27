@@ -50,7 +50,7 @@ class MouseJoint extends Joint {
   final Vector2 _m_localCenterB = new Vector2.zero();
   double _m_invMassB = 0.0;
   double _m_invIB = 0.0;
-  final Mat22 _m_mass = new Mat22.zero();
+  final Matrix2 _m_mass = new Matrix2.zero();
   final Vector2 _m_C = new Vector2.zero();
 
   MouseJoint(IWorldPool argWorld, MouseJointDef def) : super(argWorld, def) {
@@ -170,13 +170,15 @@ class MouseJoint extends Joint {
     // K = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
     // = [1/m1+1/m2 0 ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]
     // [ 0 1/m1+1/m2] [-r1.x*r1.y r1.x*r1.x] [-r1.x*r1.y r1.x*r1.x]
-    final Mat22 K = pool.popMat22();
-    K.ex.x = _m_invMassB + _m_invIB * _m_rB.y * _m_rB.y + _m_gamma;
-    K.ex.y = -_m_invIB * _m_rB.x * _m_rB.y;
-    K.ey.x = K.ex.y;
-    K.ey.y = _m_invMassB + _m_invIB * _m_rB.x * _m_rB.x + _m_gamma;
+    final Matrix2 K = pool.popMat22();
+    double a11 = _m_invMassB + _m_invIB * _m_rB.y * _m_rB.y + _m_gamma;
+    double a21 = -_m_invIB * _m_rB.x * _m_rB.y;
+    double a12 = a21;
+    double a22 = _m_invMassB + _m_invIB * _m_rB.x * _m_rB.x + _m_gamma;
 
-    K.invertToOut(_m_mass);
+    K.setValues(a11, a21, a12, a22);
+    _m_mass.setFrom(K);
+    _m_mass.invert();
 
     _m_C.setFrom(cB).add(_m_rB).sub(_m_targetA);
     _m_C.scale(_m_beta);
@@ -218,7 +220,7 @@ class MouseJoint extends Joint {
     final Vector2 temp = pool.popVec2();
 
     temp.setFrom(_m_impulse).scale(_m_gamma).add(_m_C).add(Cdot).negate();
-    Mat22.mulToOutUnsafeVec2_(_m_mass, temp, impulse);
+    _m_mass.transformed(temp, impulse);
 
     Vector2 oldImpulse = temp;
     oldImpulse.setFrom(_m_impulse);

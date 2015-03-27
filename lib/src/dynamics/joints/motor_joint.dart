@@ -66,7 +66,7 @@ class MotorJoint extends Joint {
   double _m_invMassB = 0.0;
   double _m_invIA = 0.0;
   double _m_invIB = 0.0;
-  final Mat22 _m_linearMass = new Mat22.zero();
+  final Matrix2 _m_linearMass = new Matrix2.zero();
   double _m_angularMass = 0.0;
 
   MotorJoint(IWorldPool pool, MotorJointDef def) : super(pool, def) {
@@ -202,7 +202,7 @@ class MotorJoint extends Joint {
     final Rot qA = pool.popRot();
     final Rot qB = pool.popRot();
     final Vector2 temp = pool.popVec2();
-    Mat22 K = pool.popMat22();
+    Matrix2 K = pool.popMat22();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -228,12 +228,14 @@ class MotorJoint extends Joint {
     double iA = _m_invIA,
         iB = _m_invIB;
 
-    K.ex.x = mA + mB + iA * _m_rA.y * _m_rA.y + iB * _m_rB.y * _m_rB.y;
-    K.ex.y = -iA * _m_rA.x * _m_rA.y - iB * _m_rB.x * _m_rB.y;
-    K.ey.x = K.ex.y;
-    K.ey.y = mA + mB + iA * _m_rA.x * _m_rA.x + iB * _m_rB.x * _m_rB.x;
+    double a11 = mA + mB + iA * _m_rA.y * _m_rA.y + iB * _m_rB.y * _m_rB.y;
+    double a21 = -iA * _m_rA.x * _m_rA.y - iB * _m_rB.x * _m_rB.y;
+    double a12 = a21;
+    double a22 = mA + mB + iA * _m_rA.x * _m_rA.x + iB * _m_rB.x * _m_rB.x;
 
-    K.invertToOut(_m_linearMass);
+    K.setValues(a11, a21, a12, a22);
+    _m_linearMass.setFrom(K);
+    _m_linearMass.invert();
 
     _m_angularMass = iA + iB;
     if (_m_angularMass > 0.0) {
@@ -323,7 +325,7 @@ class MotorJoint extends Joint {
           inv_h * _m_correctionFactor * _m_linearError.y;
 
       final Vector2 impulse = temp;
-      Mat22.mulToOutUnsafeVec2_(_m_linearMass, Cdot, impulse);
+      _m_linearMass.transformed(Cdot, impulse);
       impulse.negate();
       final Vector2 oldImpulse = pool.popVec2();
       oldImpulse.setFrom(_m_linearImpulse);

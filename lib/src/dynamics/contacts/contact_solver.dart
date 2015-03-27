@@ -315,11 +315,9 @@ class ContactSolver {
         double k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
         if (k11 * k11 < k_maxConditionNumber * (k11 * k22 - k12 * k12)) {
           // K is safe to invert.
-          vc.K.ex.x = k11;
-          vc.K.ex.y = k12;
-          vc.K.ey.x = k12;
-          vc.K.ey.y = k22;
-          vc.K.invertToOut(vc.normalMass);
+          vc.K.setValues(k11, k12, k12, k22);
+          vc.normalMass.setFrom(vc.K);
+          vc.normalMass.invert();
         } else {
           // The constraints are redundant, just use one.
           // TODO_ERIN use deepest?
@@ -491,9 +489,9 @@ class ContactSolver {
         double by = vn2 - cp2.velocityBias;
 
         // Compute b'
-        Mat22 R = vc.K;
-        bx -= R.ex.x * ax + R.ey.x * ay;
-        by -= R.ex.y * ax + R.ey.y * ay;
+        Matrix2 R = vc.K;
+        bx -= R.entry(0, 0) * ax + R.entry(0, 1) * ay;
+        by -= R.entry(1, 0) * ax + R.entry(1, 1) * ay;
 
         // final double k_errorTol = 1e-3f;
         // B2_NOT_USED(k_errorTol);
@@ -508,9 +506,9 @@ class ContactSolver {
           // x' = - inv(A) * b'
           //
           // Vec2 x = - Mul(c.normalMass, b);
-          Mat22 R1 = vc.normalMass;
-          double xx = R1.ex.x * bx + R1.ey.x * by;
-          double xy = R1.ex.y * bx + R1.ey.y * by;
+          Matrix2 R1 = vc.normalMass;
+          double xx = R1.entry(0, 0) * bx + R1.entry(0, 1) * by;
+          double xy = R1.entry(1, 0) * bx + R1.entry(1, 1) * by;
           xx *= -1;
           xy *= -1;
 
@@ -592,7 +590,7 @@ class ContactSolver {
           xx = -cp1.normalMass * bx;
           xy = 0.0;
           vn1 = 0.0;
-          vn2 = vc.K.ex.y * xx + by;
+          vn2 = vc.K.entry(1, 0) * xx + by;
 
           if (xx >= 0.0 && vn2 >= 0.0) {
             // Get the incremental impulse
@@ -663,7 +661,7 @@ class ContactSolver {
           //
           xx = 0.0;
           xy = -cp2.normalMass * by;
-          vn1 = vc.K.ey.x * xy + bx;
+          vn1 = vc.K.entry(0, 1) * xy + bx;
           vn2 = 0.0;
 
           if (xy >= 0.0 && vn1 >= 0.0) {
