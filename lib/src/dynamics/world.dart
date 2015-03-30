@@ -57,7 +57,7 @@ class World {
 
   DestructionListener m_destructionListener;
   ParticleDestructionListener m_particleDestructionListener;
-  DebugDraw m_debugDraw;
+  DebugDraw debugDraw;
 
   final IWorldPool pool;
 
@@ -118,7 +118,7 @@ class World {
   World(Vector2 gravity, this.pool, BroadPhase broadPhase)
       : m_gravity = new Vector2.copy(gravity) {
     m_destructionListener = null;
-    m_debugDraw = null;
+    debugDraw = null;
 
     m_bodyList = null;
     m_jointList = null;
@@ -290,7 +290,7 @@ class World {
    * @param debugDraw
    */
   void setDebugDraw(DebugDraw debugDraw) {
-    m_debugDraw = debugDraw;
+    debugDraw = debugDraw;
   }
 
   /**
@@ -647,11 +647,11 @@ class World {
    * Call this to draw shapes and other debug draw data.
    */
   void drawDebugData() {
-    if (m_debugDraw == null) {
+    if (debugDraw == null) {
       return;
     }
 
-    int flags = m_debugDraw.getFlags();
+    int flags = debugDraw.getFlags();
     bool wireframe = (flags & DebugDraw.e_wireframeDrawingBit) != 0;
 
     if ((flags & DebugDraw.e_shapeBit) != 0) {
@@ -694,7 +694,7 @@ class World {
         Fixture fixtureB = c.fixtureB;
         fixtureA.getAABB(c.getChildIndexA()).getCenterToOut(cA);
         fixtureB.getAABB(c.getChildIndexB()).getCenterToOut(cB);
-        m_debugDraw.drawSegment(cA, cB, color);
+        debugDraw.drawSegment(cA, cB, color);
       }
     }
 
@@ -716,7 +716,7 @@ class World {
               vs[1].setValues(aabb.upperBound.x, aabb.lowerBound.y);
               vs[2].setValues(aabb.upperBound.x, aabb.upperBound.y);
               vs[3].setValues(aabb.lowerBound.x, aabb.upperBound.y);
-              m_debugDraw.drawPolygon(vs, 4, color);
+              debugDraw.drawPolygon(vs, 4, color);
             }
           }
         }
@@ -728,15 +728,15 @@ class World {
       for (Body b = m_bodyList; b != null; b = b.getNext()) {
         xf.set(b.getTransform());
         xf.p.setFrom(b.worldCenter);
-        m_debugDraw.drawTransform(xf, xfColor);
+        debugDraw.drawTransform(xf, xfColor);
       }
     }
 
     if ((flags & DebugDraw.e_dynamicTreeBit) != 0) {
-      m_contactManager.m_broadPhase.drawTree(m_debugDraw);
+      m_contactManager.m_broadPhase.drawTree(debugDraw);
     }
 
-    m_debugDraw.flush();
+    debugDraw.flush();
   }
 
   final WorldQueryWrapper wqwrapper = new WorldQueryWrapper();
@@ -1503,7 +1503,7 @@ class World {
     switch (joint.getType()) {
       // TODO djm write after writing joints
       case JointType.DISTANCE:
-        m_debugDraw.drawSegment(p1, p2, color);
+        debugDraw.drawSegment(p1, p2, color);
         break;
 
       case JointType.PULLEY:
@@ -1511,14 +1511,14 @@ class World {
           PulleyJoint pulley = joint;
           Vector2 s1 = pulley.getGroundAnchorA();
           Vector2 s2 = pulley.getGroundAnchorB();
-          m_debugDraw.drawSegment(s1, p1, color);
-          m_debugDraw.drawSegment(s2, p2, color);
-          m_debugDraw.drawSegment(s1, s2, color);
+          debugDraw.drawSegment(s1, p1, color);
+          debugDraw.drawSegment(s2, p2, color);
+          debugDraw.drawSegment(s1, s2, color);
         }
         break;
 
       case JointType.FRICTION:
-        m_debugDraw.drawSegment(x1, x2, color);
+        debugDraw.drawSegment(x1, x2, color);
         break;
 
       case JointType.CONSTANT_VOLUME:
@@ -1526,9 +1526,9 @@ class World {
         // don't draw this
         break;
       default:
-        m_debugDraw.drawSegment(x1, p1, color);
-        m_debugDraw.drawSegment(p1, p2, color);
-        m_debugDraw.drawSegment(x2, p2, color);
+        debugDraw.drawSegment(x1, p1, color);
+        debugDraw.drawSegment(p1, p2, color);
+        debugDraw.drawSegment(x2, p2, color);
     }
     pool.pushVec2(2);
   }
@@ -1571,13 +1571,13 @@ class World {
             liquidOffset.scale(liquidLength / averageLinearVel / 2);
             circCenterMoved.setFrom(center).add(liquidOffset);
             center.sub(liquidOffset);
-            m_debugDraw.drawSegment(center, circCenterMoved, liquidColor);
+            debugDraw.drawSegment(center, circCenterMoved, liquidColor);
             return;
           }
           if (wireframe) {
-            m_debugDraw.drawCircleAxis(center, radius, axis, color);
+            debugDraw.drawCircleAxis(center, radius, axis, color);
           } else {
-            m_debugDraw.drawSolidCircle(center, radius, axis, color);
+            debugDraw.drawSolidCircle(center, radius, axis, color);
           }
         }
         break;
@@ -1594,9 +1594,9 @@ class World {
             Transform.mulToOutUnsafeVec2(xf, poly.m_vertices[i], vertices[i]);
           }
           if (wireframe) {
-            m_debugDraw.drawPolygon(vertices, vertexCount, color);
+            debugDraw.drawPolygon(vertices, vertexCount, color);
           } else {
-            m_debugDraw.drawSolidPolygon(vertices, vertexCount, color);
+            debugDraw.drawSolidPolygon(vertices, vertexCount, color);
           }
         }
         break;
@@ -1605,7 +1605,7 @@ class World {
           EdgeShape edge = fixture.getShape();
           Transform.mulToOutUnsafeVec2(xf, edge.m_vertex1, v1);
           Transform.mulToOutUnsafeVec2(xf, edge.m_vertex2, v2);
-          m_debugDraw.drawSegment(v1, v2, color);
+          debugDraw.drawSegment(v1, v2, color);
         }
         break;
       case ShapeType.CHAIN:
@@ -1617,8 +1617,8 @@ class World {
           Transform.mulToOutUnsafeVec2(xf, vertices[0], v1);
           for (int i = 1; i < count; ++i) {
             Transform.mulToOutUnsafeVec2(xf, vertices[i], v2);
-            m_debugDraw.drawSegment(v1, v2, color);
-            m_debugDraw.drawCircle(v1, 0.05, color);
+            debugDraw.drawSegment(v1, v2, color);
+            debugDraw.drawCircle(v1, 0.05, color);
             v1.setFrom(v2);
           }
         }
@@ -1630,7 +1630,7 @@ class World {
 
   void drawParticleSystem(ParticleSystem system) {
     bool wireframe =
-        (m_debugDraw.getFlags() & DebugDraw.e_wireframeDrawingBit) != 0;
+        (debugDraw.getFlags() & DebugDraw.e_wireframeDrawingBit) != 0;
     int particleCount = system.getParticleCount();
     if (particleCount != 0) {
       double particleRadius = system.getParticleRadius();
@@ -1640,10 +1640,10 @@ class World {
         colorBuffer = system.getParticleColorBuffer();
       }
       if (wireframe) {
-        m_debugDraw.drawParticlesWireframe(
+        debugDraw.drawParticlesWireframe(
             positionBuffer, particleRadius, colorBuffer, particleCount);
       } else {
-        m_debugDraw.drawParticles(
+        debugDraw.drawParticles(
             positionBuffer, particleRadius, colorBuffer, particleCount);
       }
     }

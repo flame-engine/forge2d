@@ -129,7 +129,7 @@ abstract class Demo {
     debugDraw = new CanvasDraw(viewport, ctx);
 
     // Have the world draw itself for debugging purposes.
-    world.m_debugDraw = debugDraw;
+    world.debugDraw = debugDraw;
 
     frameCount = 0;
     fpsCounter = querySelector("#fps-counter");

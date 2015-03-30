@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015,  Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -24,12 +24,6 @@
 
 library box2d_browser;
 
-import 'dart:html';
-import 'package:box2d/box2d.dart';
-import 'src/math_utils.dart' as MathUtils;
-
-export 'package:box2d/box2d.dart';
-export 'src/math_utils.dart';
-
-part 'src/callbacks/canvas_draw.dart';
-part 'src/common/canvas_viewport_transform.dart';
+export 'box2d.dart';
+export 'src/callbacks/canvas_draw.dart';
+export 'src/common/canvas_viewport_transform.dart';

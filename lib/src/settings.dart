@@ -31,44 +31,7 @@ const int INTEGER_MAX_VALUE = 0x3FFFFFFF;
 /** A "close to zero" float epsilon value for use */
 const double EPSILON = 1.1920928955078125E-7;
 
-const double PI = Math.PI;
-
 const int CONTACT_STACK_INIT_SIZE = 10;
-
-// In Dart sinLUT is slwoer than using native Math.sin.
-const bool SINCOS_LUT_ENABLED = false;
-/**
-   * smaller the precision, the larger the table. If a small table is used (eg, precision is .006 or
-   * greater), make sure you set the table to lerp it's results. Accuracy chart is in the MathUtils
-   * source. Or, run the tests yourself in {@link SinCosTest}.</br> </br> Good lerp precision
-   * values:
-   * <ul>
-   * <li>.0092</li>
-   * <li>.008201</li>
-   * <li>.005904</li>
-   * <li>.005204</li>
-   * <li>.004305</li>
-   * <li>.002807</li>
-   * <li>.001508</li>
-   * <li>9.32500E-4</li>
-   * <li>7.48000E-4</li>
-   * <li>8.47000E-4</li>
-   * <li>.0005095</li>
-   * <li>.0001098</li>
-   * <li>9.50499E-5</li>
-   * <li>6.08500E-5</li>
-   * <li>3.07000E-5</li>
-   * <li>1.53999E-5</li>
-   * </ul>
-   */
-const double SINCOS_LUT_PRECISION = .00011;
-final int SINCOS_LUT_LENGTH = (Math.PI * 2.0 / SINCOS_LUT_PRECISION).ceil();
-/**
- * Use if the table's precision is large (eg .006 or greater). Although it is more expensive, it
- * greatly increases accuracy. Look in the MathUtils source for some test results on the accuracy
- * and speed of lerp vs non lerp. Or, run the tests yourself in {@link SinCosTest}.
- */
-const bool SINCOS_LUT_LERP = false;
 
 /**
  * The maximum number of contact points between two convex shapes.

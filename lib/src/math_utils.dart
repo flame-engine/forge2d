@@ -25,22 +25,14 @@
 library box2d.math_utils;
 
 import 'dart:math' as Math;
-import 'dart:typed_data';
-import 'package:vector_math/vector_math_64.dart' show Vector2;
 
-import 'settings.dart' as Settings;
-
-export 'dart:math' show cos, atan2;
+import 'vector_math.dart';
 
 const double TWOPI = Math.PI * 2.0;
 
-double distanceSquared(Vector2 v1, Vector2 v2) {
-  double dx = (v1.x - v2.x);
-  double dy = (v1.y - v2.y);
-  return dx * dx + dy * dy;
-}
+double distanceSquared(Vector2 v1, Vector2 v2) => v1.distanceToSquared(v2);
 
-double distance(Vector2 v1, Vector2 v2) => Math.sqrt(distanceSquared(v1, v2));
+double distance(Vector2 v1, Vector2 v2) => v1.distanceTo(v2);
 
 /** Returns the closest value to 'a' that is in between 'low' and 'high' */
 double clampDouble(final double a, final double low, final double high) =>
@@ -88,51 +80,4 @@ bool vector2Equals(Vector2 a, Vector2 b) {
 
 bool vector2IsValid(Vector2 v) {
   return !v.x.isNaN && !v.x.isInfinite && !v.y.isNaN && !v.y.isInfinite;
-}
-
-double sin(double x) {
-  if (Settings.SINCOS_LUT_ENABLED) {
-    return _sinLUT(x);
-  } else {
-    return Math.sin(x);
-  }
-}
-
-// Optimize sin and cos. Note: using LUT worsens performance.
-final Float64List _sinTable = _initSinLUT();
-
-Float64List _initSinLUT() {
-  var table = new Float64List(Settings.SINCOS_LUT_LENGTH);
-  for (int i = 0; i < Settings.SINCOS_LUT_LENGTH; i++) {
-    table[i] = Math.sin(i * Settings.SINCOS_LUT_PRECISION);
-  }
-  return table;
-}
-
-double _sinLUT(double x) {
-  x %= TWOPI;
-
-  if (x < 0) {
-    x += TWOPI;
-  }
-
-  if (Settings.SINCOS_LUT_LERP) {
-    x /= Settings.SINCOS_LUT_PRECISION;
-
-    final int index = x.toInt();
-
-    if (index != 0) {
-      x %= index;
-    }
-
-    // the next index is 0
-    if (index == Settings.SINCOS_LUT_LENGTH - 1) {
-      return ((1 - x) * _sinTable[index] + x * _sinTable[0]);
-    } else {
-      return ((1 - x) * _sinTable[index] + x * _sinTable[index + 1]);
-    }
-  } else {
-    return _sinTable[(x / Settings.SINCOS_LUT_PRECISION).round() %
-        Settings.SINCOS_LUT_LENGTH];
-  }
 }

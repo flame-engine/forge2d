@@ -27,15 +27,16 @@ library box2d;
 import 'dart:collection';
 import 'dart:math' as Math;
 import 'dart:typed_data';
-import 'package:vector_math/vector_math_64.dart' show Vector2, Matrix2;
+
 
 import 'src/buffer_utils.dart' as BufferUtils;
 import 'src/common.dart';
 import 'src/math_utils.dart' as MathUtils;
 import 'src/settings.dart' as Settings;
+import 'src/vector_math.dart';
 
-export 'package:vector_math/vector_math_64.dart' show Vector2, Matrix2;
 export 'src/common.dart';
+export 'src/vector_math.dart';
 
 part 'src/callbacks/contact_filter.dart';
 part 'src/callbacks/contact_impulse.dart';
