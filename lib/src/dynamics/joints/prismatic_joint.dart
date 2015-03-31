@@ -107,7 +107,7 @@ class PrismaticJoint extends Joint {
   double m_referenceAngle;
 
   // TODO(srdjan): Make fields below private.
-  final Vec3 m_impulse = new Vec3.zero();
+  final Vector3 m_impulse = new Vector3.zero();
   double m_motorImpulse = 0.0;
   double m_lowerTranslation = 0.0;
   double m_upperTranslation = 0.0;
@@ -132,7 +132,7 @@ class PrismaticJoint extends Joint {
       m_s2 = 0.0;
   double m_a1 = 0.0,
       m_a2 = 0.0;
-  final Mat33 m_K = new Mat33.zero();
+  final Matrix3 m_K = new Matrix3.zero();
   double m_motorMass =
       0.0; // effective mass for motor/limit translational constraint.
 
@@ -443,9 +443,7 @@ class PrismaticJoint extends Joint {
       double k23 = iA * m_a1 + iB * m_a2;
       double k33 = mA + mB + iA * m_a1 * m_a1 + iB * m_a2 * m_a2;
 
-      m_K.ex.setXYZ(k11, k12, k13);
-      m_K.ey.setXYZ(k12, k22, k23);
-      m_K.ez.setXYZ(k13, k23, k33);
+      m_K.setValues(k11, k12, k13, k12, k22, k23, k13, k23, k33);
     }
 
     // Compute motor and limit terms.
@@ -479,7 +477,7 @@ class PrismaticJoint extends Joint {
 
     if (data.step.warmStarting) {
       // Account for variable time step.
-      m_impulse.mulLocal(data.step.dtRatio);
+      m_impulse.scale(data.step.dtRatio);
       m_motorImpulse *= data.step.dtRatio;
 
       final Vector2 P = pool.popVec2();
@@ -568,16 +566,17 @@ class PrismaticJoint extends Joint {
       temp.setFrom(vB).sub(vA);
       Cdot2 = m_axis.dot(temp) + m_a2 * wB - m_a1 * wA;
 
-      final Vec3 Cdot = pool.popVec3();
-      Cdot.setXYZ(Cdot1.x, Cdot1.y, Cdot2);
+      final Vector3 Cdot = pool.popVec3();
+      Cdot.setValues(Cdot1.x, Cdot1.y, Cdot2);
 
-      final Vec3 f1 = pool.popVec3();
-      final Vec3 df = pool.popVec3();
+      final Vector3 f1 = pool.popVec3();
+      final Vector3 df = pool.popVec3();
 
-      f1.set(m_impulse);
-      m_K.solve33ToOut(Cdot.negateLocal(), df);
+      f1.setFrom(m_impulse);
+      Matrix3.solve(m_K, df, Cdot.negate());
+
       // Cdot.negateLocal(); not used anymore
-      m_impulse.addLocal(df);
+      m_impulse.add(df);
 
       if (m_limitState == LimitState.AT_LOWER) {
         m_impulse.z = Math.max(m_impulse.z, 0.0);
@@ -590,15 +589,17 @@ class PrismaticJoint extends Joint {
       final Vector2 b = pool.popVec2();
       final Vector2 f2r = pool.popVec2();
 
-      temp.setValues(m_K.ez.x, m_K.ez.y).scale(m_impulse.z - f1.z);
+      temp
+          .setValues(m_K.entry(0, 2), m_K.entry(1, 2))
+          .scale(m_impulse.z - f1.z);
       b.setFrom(Cdot1).negate().sub(temp);
 
-      m_K.solve22ToOut(b, f2r);
+      Matrix3.solve2(m_K, f2r, b);
       f2r.add(new Vector2(f1.x, f1.y));
       m_impulse.x = f2r.x;
       m_impulse.y = f2r.y;
 
-      df.set(m_impulse).subLocal(f1);
+      df.setFrom(m_impulse).sub(f1);
 
       final Vector2 P = pool.popVec2();
       temp.setFrom(m_axis).scale(df.z);
@@ -620,7 +621,7 @@ class PrismaticJoint extends Joint {
     } else {
       // Limit is inactive, just solve the prismatic constraint in block form.
       final Vector2 df = pool.popVec2();
-      m_K.solve22ToOut(Cdot1.negate(), df);
+      Matrix3.solve2(m_K, df, Cdot1.negate());
       Cdot1.negate();
 
       m_impulse.x += df.x;
@@ -661,7 +662,7 @@ class PrismaticJoint extends Joint {
     final Vector2 temp = pool.popVec2();
     final Vector2 C1 = pool.popVec2();
 
-    final Vec3 impulse = pool.popVec3();
+    final Vector3 impulse = pool.popVec3();
 
     Vector2 cA = data.positions[m_indexA].c;
     double aA = data.positions[m_indexA].a;
@@ -737,17 +738,15 @@ class PrismaticJoint extends Joint {
       double k23 = iA * a1 + iB * a2;
       double k33 = mA + mB + iA * a1 * a1 + iB * a2 * a2;
 
-      final Mat33 K = pool.popMat33();
-      K.ex.setXYZ(k11, k12, k13);
-      K.ey.setXYZ(k12, k22, k23);
-      K.ez.setXYZ(k13, k23, k33);
+      final Matrix3 K = pool.popMat33();
+      K.setValues(k11, k12, k13, k12, k22, k23, k13, k23, k33);
 
-      final Vec3 C = pool.popVec3();
+      final Vector3 C = pool.popVec3();
       C.x = C1.x;
       C.y = C1.y;
       C.z = C2;
 
-      K.solve33ToOut(C.negateLocal(), impulse);
+      Matrix3.solve(K, impulse, C.negate());
       pool.pushVec3(1);
       pool.pushMat33(1);
     } else {

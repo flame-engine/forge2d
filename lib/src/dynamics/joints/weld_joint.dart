@@ -55,7 +55,7 @@ class WeldJoint extends Joint {
   final Vector2 m_localAnchorB;
   double m_referenceAngle = 0.0;
   double m_gamma = 0.0;
-  final Vec3 m_impulse;
+  final Vector3 m_impulse;
 
   // Solver temp
   int m_indexA = 0;
@@ -68,12 +68,12 @@ class WeldJoint extends Joint {
   double m_invMassB = 0.0;
   double m_invIA = 0.0;
   double m_invIB = 0.0;
-  final Mat33 m_mass = new Mat33.zero();
+  final Matrix3 m_mass = new Matrix3.zero();
 
   WeldJoint(IWorldPool argWorld, WeldJointDef def)
       : m_localAnchorA = new Vector2.copy(def.localAnchorA),
         m_localAnchorB = new Vector2.copy(def.localAnchorB),
-        m_impulse = new Vec3.zero(),
+        m_impulse = new Vector3.zero(),
         super(argWorld, def) {
     m_referenceAngle = def.referenceAngle;
     m_frequencyHz = def.frequencyHz;
@@ -172,20 +172,22 @@ class WeldJoint extends Joint {
     double iA = m_invIA,
         iB = m_invIB;
 
-    final Mat33 K = pool.popMat33();
+    final Matrix3 K = pool.popMat33();
 
-    K.ex.x = mA + mB + m_rA.y * m_rA.y * iA + m_rB.y * m_rB.y * iB;
-    K.ey.x = -m_rA.y * m_rA.x * iA - m_rB.y * m_rB.x * iB;
-    K.ez.x = -m_rA.y * iA - m_rB.y * iB;
-    K.ex.y = K.ey.x;
-    K.ey.y = mA + mB + m_rA.x * m_rA.x * iA + m_rB.x * m_rB.x * iB;
-    K.ez.y = m_rA.x * iA + m_rB.x * iB;
-    K.ex.z = K.ez.x;
-    K.ey.z = K.ez.y;
-    K.ez.z = iA + iB;
+    double ex_x = mA + mB + m_rA.y * m_rA.y * iA + m_rB.y * m_rB.y * iB;
+    double ey_x = -m_rA.y * m_rA.x * iA - m_rB.y * m_rB.x * iB;
+    double ez_x = -m_rA.y * iA - m_rB.y * iB;
+    double ex_y = K.entry(0, 1);
+    double ey_y = mA + mB + m_rA.x * m_rA.x * iA + m_rB.x * m_rB.x * iB;
+    double ez_y = m_rA.x * iA + m_rB.x * iB;
+    double ex_z = K.entry(0, 2);
+    double ey_z = K.entry(1, 2);
+    double ez_z = iA + iB;
+
+    K.setValues(ex_x, ex_y, ex_z, ey_x, ey_y, ey_z, ez_x, ez_y, ez_z);
 
     if (m_frequencyHz > 0.0) {
-      K.getInverse22(m_mass);
+      MathUtils.matrix3GetInverse22(K, m_mass);
 
       double invM = iA + iB;
       double m = invM > 0.0 ? 1.0 / invM : 0.0;
@@ -208,9 +210,9 @@ class WeldJoint extends Joint {
       m_bias = C * h * k * m_gamma;
 
       invM += m_gamma;
-      m_mass.ez.z = invM != 0.0 ? 1.0 / invM : 0.0;
+      m_mass.setEntry(2, 2, (invM != 0.0 ? 1.0 / invM : 0.0));
     } else {
-      K.getSymInverse33(m_mass);
+      MathUtils.matrix3GetSymInverse33(K, m_mass);
       m_gamma = 0.0;
       m_bias = 0.0;
     }
@@ -218,7 +220,7 @@ class WeldJoint extends Joint {
     if (data.step.warmStarting) {
       final Vector2 P = pool.popVec2();
       // Scale impulses to support a variable time step.
-      m_impulse.mulLocal(data.step.dtRatio);
+      m_impulse.scale(data.step.dtRatio);
 
       P.setValues(m_impulse.x, m_impulse.y);
 
@@ -261,7 +263,8 @@ class WeldJoint extends Joint {
     if (m_frequencyHz > 0.0) {
       double Cdot2 = wB - wA;
 
-      double impulse2 = -m_mass.ez.z * (Cdot2 + m_bias + m_gamma * m_impulse.z);
+      double impulse2 =
+          -m_mass.entry(2, 2) * (Cdot2 + m_bias + m_gamma * m_impulse.z);
       m_impulse.z += impulse2;
 
       wA -= iA * impulse2;
@@ -272,7 +275,7 @@ class WeldJoint extends Joint {
       Cdot1.add(vB).sub(vA).sub(temp);
 
       final Vector2 impulse1 = P;
-      Mat33.mul22ToOutUnsafe(m_mass, Cdot1, impulse1);
+      MathUtils.matrix3Mul22ToOutUnsafe(m_mass, Cdot1, impulse1);
       impulse1.negate();
 
       m_impulse.x += impulse1.x;
@@ -291,13 +294,14 @@ class WeldJoint extends Joint {
       Cdot1.add(vB).sub(vA).sub(temp);
       double Cdot2 = wB - wA;
 
-      final Vec3 Cdot = pool.popVec3();
-      Cdot.setXYZ(Cdot1.x, Cdot1.y, Cdot2);
+      final Vector3 Cdot = pool.popVec3();
+      Cdot.setValues(Cdot1.x, Cdot1.y, Cdot2);
 
-      final Vec3 impulse = pool.popVec3();
-      Mat33.mulToOutUnsafe(m_mass, Cdot, impulse);
-      impulse.negateLocal();
-      m_impulse.addLocal(impulse);
+      final Vector3 impulse = pool.popVec3();
+      MathUtils.matrix3MulToOutUnsafe(m_mass, Cdot, impulse);
+
+      impulse.negate();
+      m_impulse.add(impulse);
 
       P.setValues(impulse.x, impulse.y);
 
@@ -345,26 +349,29 @@ class WeldJoint extends Joint {
         qB, temp.setFrom(m_localAnchorB).sub(m_localCenterB), rB);
     double positionError, angularError;
 
-    final Mat33 K = pool.popMat33();
+    final Matrix3 K = pool.popMat33();
     final Vector2 C1 = pool.popVec2();
     final Vector2 P = pool.popVec2();
 
-    K.ex.x = mA + mB + rA.y * rA.y * iA + rB.y * rB.y * iB;
-    K.ey.x = -rA.y * rA.x * iA - rB.y * rB.x * iB;
-    K.ez.x = -rA.y * iA - rB.y * iB;
-    K.ex.y = K.ey.x;
-    K.ey.y = mA + mB + rA.x * rA.x * iA + rB.x * rB.x * iB;
-    K.ez.y = rA.x * iA + rB.x * iB;
-    K.ex.z = K.ez.x;
-    K.ey.z = K.ez.y;
-    K.ez.z = iA + iB;
+    double ex_x = mA + mB + rA.y * rA.y * iA + rB.y * rB.y * iB;
+    double ey_x = -rA.y * rA.x * iA - rB.y * rB.x * iB;
+    double ez_x = -rA.y * iA - rB.y * iB;
+    double ex_y = K.entry(0, 1);
+    double ey_y = mA + mB + rA.x * rA.x * iA + rB.x * rB.x * iB;
+    double ez_y = rA.x * iA + rB.x * iB;
+    double ex_z = K.entry(0, 2);
+    double ey_z = K.entry(1, 2);
+    double ez_z = iA + iB;
+
+    K.setValues(ex_x, ex_y, ex_z, ey_x, ey_y, ey_z, ez_x, ez_y, ez_z);
+
     if (m_frequencyHz > 0.0) {
       C1.setFrom(cB).add(rB).sub(cA).sub(rA);
 
       positionError = C1.length;
       angularError = 0.0;
 
-      K.solve22ToOut(C1, P);
+      Matrix3.solve2(K, P, C1);
       P.negate();
 
       cA.x -= mA * P.x;
@@ -381,12 +388,12 @@ class WeldJoint extends Joint {
       positionError = C1.length;
       angularError = C2.abs();
 
-      final Vec3 C = pool.popVec3();
-      final Vec3 impulse = pool.popVec3();
-      C.setXYZ(C1.x, C1.y, C2);
+      final Vector3 C = pool.popVec3();
+      final Vector3 impulse = pool.popVec3();
+      C.setValues(C1.x, C1.y, C2);
 
-      K.solve33ToOut(C, impulse);
-      impulse.negateLocal();
+      Matrix3.solve(K, impulse, C);
+      impulse.negate();
       P.setValues(impulse.x, impulse.y);
 
       cA.x -= mA * P.x;

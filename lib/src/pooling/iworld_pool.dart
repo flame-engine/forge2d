@@ -45,9 +45,9 @@ abstract class IWorldPool {
 
   void pushVec2(int num);
 
-  Vec3 popVec3();
+  Vector3 popVec3();
 
-  List<Vec3> popVec3Some(int num);
+  List<Vector3> popVec3Some(int num);
 
   void pushVec3(int num);
 
@@ -57,7 +57,7 @@ abstract class IWorldPool {
 
   void pushMat22(int num);
 
-  Mat33 popMat33();
+  Matrix3 popMat33();
 
   void pushMat33(int num);
 
