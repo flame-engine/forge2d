@@ -1,9 +1,16 @@
 name: box2d
-homepage: https://github.com/google/dbox2d
+version: 0.2.0-alpha.0
+authors:
+- Kevin Moore <kevmoo@google.com>
+- Srdjan Mitrovic <srdjan@google.com>
+description: A Dart 2D physics engine
+homepage: https://github.com/google/box2d.dart
 dependencies:
   vector_math: '>=1.4.3 <2.0.0'
 dev_dependencies:
   browser: '>=0.10.0 <0.11.0'
 transformers:
 - $dart2js:
-    commandLineOptions: [--trust-type-annotations, --trust-primitives]
+    commandLineOptions:
+    - --trust-type-annotations
+    - --trust-primitives
