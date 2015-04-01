@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bench2d</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+  </head>
+  <body>
+    <script type="text/javascript">
+      console.log('Loading Bench2d');
+      if(navigator.userAgent.indexOf('(Dart)') != -1) {
+        console.log('Dart supported. High-five!');
+      } else {
+        console.log('Browser does not support Dart. Expect JS fallback.');
+      }
+    </script>
+    <script type="application/dart" src="bench2d_web.dart"></script>
+    <script src="packages/browser/dart.js"></script>
+  </body>
+</html>

@@ -28,7 +28,6 @@ import 'dart:collection';
 import 'dart:math' as Math;
 import 'dart:typed_data';
 
-
 import 'src/buffer_utils.dart' as BufferUtils;
 import 'src/common.dart';
 import 'src/math_utils.dart' as MathUtils;

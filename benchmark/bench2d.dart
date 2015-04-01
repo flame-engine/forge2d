@@ -24,34 +24,78 @@
 
 import 'package:box2d/box2d.dart';
 
-main() {
-  Bench2D bench = new Bench2D();
-  bench.warmup();
-  bench.bench();
+void main() {
+  new Bench2d()
+    ..initialize()
+    ..warmup()
+    ..bench();
 }
 
-class Bench2D {
-  static const bool DEBUG = false;
-  static const bool CHECKSUM = false;
-
-  static const int FRAMES = 256;
-  static const int PYRAMID_SIZE = 40;
-
-  World world;
-  Body groundBody;
-
-  double meanF(List<double> values) {
-    double total = 0.0;
-    for (int i = 0; i < FRAMES; ++i) {
-      total += values[i];
-    }
-    return total / FRAMES;
+void log(String msg) {
+  if (DEBUG) {
+    print(msg);
   }
+}
 
-  // Simple nearest-rank %ile (on sorted array). We should have enough samples to make this reasonable.
-  double percentile(List<double> values, double pc) {
-    int rank = (pc * values.length) ~/ 100;
-    return values[rank];
+const bool DEBUG = const bool.fromEnvironment('debug', defaultValue: false);
+
+const bool CHECKSUM =
+    const bool.fromEnvironment('checksum', defaultValue: false);
+
+const int FRAMES = 256;
+const int PYRAMID_SIZE = 40;
+
+const double _timeStep = 1.0 / 60.0;
+
+double meanF(List<double> values) {
+  double total = 0.0;
+  for (int i = 0; i < FRAMES; ++i) {
+    total += values[i];
+  }
+  return total / FRAMES;
+}
+
+// Simple nearest-rank %ile (on sorted array). We should have enough samples to make this reasonable.
+double percentile(List<double> values, double pc) {
+  int rank = (pc * values.length) ~/ 100;
+  return values[rank];
+}
+
+class Bench2d {
+  final World world;
+
+  Bench2d() : world = new World.withGravity(new Vector2(0.0, -10.0));
+
+  void initialize() {
+    BodyDef bd = new BodyDef();
+    Body ground = world.createBody(bd);
+
+    EdgeShape groundShape = new EdgeShape()
+      ..set(new Vector2(-40.0, 0.0), new Vector2(40.0, 0.0));
+    ground.createFixtureFromShape(groundShape, 0.0);
+
+    // add boxes
+    const boxSize = .5;
+    PolygonShape shape = new PolygonShape()..setAsBoxXY(boxSize, boxSize);
+
+    Vector2 x = new Vector2(-7.0, 0.75);
+    Vector2 y = new Vector2.zero();
+    Vector2 deltaX = new Vector2(0.5625, 1.0);
+    Vector2 deltaY = new Vector2(1.125, 0.0);
+
+    for (int i = 0; i < PYRAMID_SIZE; ++i) {
+      y.setFrom(x);
+
+      for (int j = i; j < PYRAMID_SIZE; ++j) {
+        BodyDef bd = new BodyDef()
+          ..type = BodyType.DYNAMIC
+          ..position.setFrom(y);
+        world.createBody(bd)..createFixtureFromShape(shape, 5.0);
+        y.add(deltaY);
+      }
+
+      x.add(deltaX);
+    }
   }
 
   List<double> bench() {
@@ -69,8 +113,8 @@ class Bench2D {
     double mean = meanF(times);
     double fifth = percentile(times, 5.0);
     double ninetyFifth = percentile(times, 95.0);
-    print(
-        "Benchmark complete.\nms/frame: $mean 5th %ile: ${percentile(times, 5.0)} 95th %ile: ${percentile(times, 95.0)}");
+    print("Benchmark complete.\n"
+        "ms/frame: $mean 5th %ile: ${percentile(times, 5.0)} 95th %ile: ${percentile(times, 95.0)}");
     if (CHECKSUM) {
       checksum(world);
     }
@@ -83,55 +127,8 @@ class Bench2D {
     }
   }
 
-  Body topBody = null;
-
-  Bench2D() {
-    Vector2 gravity = new Vector2(0.0, -10.0);
-    world = new World.withGravity(gravity);
-
-    {
-      BodyDef bd = new BodyDef();
-      Body ground = world.createBody(bd);
-
-      EdgeShape shape = new EdgeShape();
-      shape.set(new Vector2(-40.0, 0.0), new Vector2(40.0, 0.0));
-      ground.createFixtureFromShape(shape, 0.0);
-    }
-
-    {
-      double a = .5;
-      PolygonShape shape = new PolygonShape();
-      shape.setAsBoxXY(a, a);
-
-      Vector2 x = new Vector2(-7.0, 0.75);
-      Vector2 y = new Vector2.zero();
-      Vector2 deltaX = new Vector2(0.5625, 1.0);
-      Vector2 deltaY = new Vector2(1.125, 0.0);
-
-      for (int i = 0; i < PYRAMID_SIZE; ++i) {
-        y.setFrom(x);
-
-        for (int j = i; j < PYRAMID_SIZE; ++j) {
-          BodyDef bd = new BodyDef();
-          bd.type = BodyType.DYNAMIC;
-          bd.position.setFrom(y);
-          Body body = world.createBody(bd);
-          body.createFixtureFromShape(shape, 5.0);
-          topBody = body;
-          y.add(deltaY);
-        }
-
-        x.add(deltaX);
-      }
-    }
-  }
-
-  static int stepCount = 0;
-
   void step() {
-    double timeStep = 1.0 / 60.0;
-    world.stepDt(timeStep, 3, 3);
-    stepCount++;
+    world.stepDt(_timeStep, 3, 3);
   }
 
   void checksum(World world) {
@@ -148,11 +145,5 @@ class Bench2D {
     world.forEachBody(checksum);
     print(
         "pos: $positionSum linVel $linearVelocitySum angVel $angularVelocitySum");
-  }
-
-  void log(String msg) {
-    if (DEBUG) {
-      print(msg);
-    }
   }
 }
