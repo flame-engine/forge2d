@@ -198,17 +198,17 @@ class PrismaticJoint extends Joint {
     Vector2 temp2 = pool.popVec2();
     Vector2 temp3 = pool.popVec2();
 
-    temp.setFrom(m_localAnchorA).sub(bA.m_sweep.localCenter);
-    Rot.mulToOutUnsafe(bA.m_xf.q, temp, rA);
+    temp.setFrom(m_localAnchorA).sub(bA.sweep.localCenter);
+    Rot.mulToOutUnsafe(bA.xf.q, temp, rA);
 
-    temp.setFrom(m_localAnchorB).sub(bB.m_sweep.localCenter);
-    Rot.mulToOutUnsafe(bB.m_xf.q, temp, rB);
+    temp.setFrom(m_localAnchorB).sub(bB.sweep.localCenter);
+    Rot.mulToOutUnsafe(bB.xf.q, temp, rB);
 
-    p1.setFrom(bA.m_sweep.c).add(rA);
-    p2.setFrom(bB.m_sweep.c).add(rB);
+    p1.setFrom(bA.sweep.c).add(rA);
+    p2.setFrom(bB.sweep.c).add(rB);
 
     d.setFrom(p2).sub(p1);
-    Rot.mulToOutUnsafe(bA.m_xf.q, m_localXAxisA, axis);
+    Rot.mulToOutUnsafe(bA.xf.q, m_localXAxisA, axis);
 
     Vector2 vA = bA._linearVelocity;
     Vector2 vB = bB._linearVelocity;
@@ -372,14 +372,14 @@ class PrismaticJoint extends Joint {
   }
 
   void initVelocityConstraints(final SolverData data) {
-    m_indexA = m_bodyA.m_islandIndex;
-    m_indexB = m_bodyB.m_islandIndex;
-    m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
-    m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
-    m_invMassA = m_bodyA.m_invMass;
-    m_invMassB = m_bodyB.m_invMass;
-    m_invIA = m_bodyA.m_invI;
-    m_invIB = m_bodyB.m_invI;
+    m_indexA = m_bodyA.islandIndex;
+    m_indexB = m_bodyB.islandIndex;
+    m_localCenterA.setFrom(m_bodyA.sweep.localCenter);
+    m_localCenterB.setFrom(m_bodyB.sweep.localCenter);
+    m_invMassA = m_bodyA.invMass;
+    m_invMassB = m_bodyB.invMass;
+    m_invIA = m_bodyA.invI;
+    m_invIB = m_bodyB.invI;
 
     Vector2 cA = data.positions[m_indexA].c;
     double aA = data.positions[m_indexA].a;

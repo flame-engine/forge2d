@@ -125,10 +125,10 @@ class MouseJoint extends Joint {
   }
 
   void initVelocityConstraints(final SolverData data) {
-    _m_indexB = m_bodyB.m_islandIndex;
-    _m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
-    _m_invMassB = m_bodyB.m_invMass;
-    _m_invIB = m_bodyB.m_invI;
+    _m_indexB = m_bodyB.islandIndex;
+    _m_localCenterB.setFrom(m_bodyB.sweep.localCenter);
+    _m_invMassB = m_bodyB.invMass;
+    _m_invIB = m_bodyB.invI;
 
     Vector2 cB = data.positions[_m_indexB].c;
     double aB = data.positions[_m_indexB].a;

@@ -29,23 +29,23 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   static const int NULL_NODE = -1;
   static const int INITIAL_BUFFER_LENGTH = 16;
 
-  int m_root = NULL_NODE;
-  List<AABB> m_aabb;
-  List<Object> m_userData;
-  List<int> m_parent;
-  List<int> m_child1;
-  List<int> m_child2;
-  List<int> m_height;
+  int _root = NULL_NODE;
+  List<AABB> _aabb;
+  List<Object> _userData;
+  List<int> _parent;
+  List<int> _child1;
+  List<int> _child2;
+  List<int> _height;
 
-  int _m_nodeCount = 0;
-  int _m_nodeCapacity = 16;
+  int _nodeCount = 0;
+  int _nodeCapacity = 16;
 
-  int _m_freeList;
+  int _freeList;
 
   final List<Vector2> drawVecs = new List<Vector2>(4);
 
   DynamicTreeFlatNodes() {
-    _expandBuffers(0, _m_nodeCapacity);
+    _expandBuffers(0, _nodeCapacity);
 
     for (int i = 0; i < drawVecs.length; i++) {
       drawVecs[i] = new Vector2.zero();
@@ -56,35 +56,35 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   static Object allocObject() => new Object();
 
   void _expandBuffers(int oldSize, int newSize) {
-    m_aabb = BufferUtils.reallocateBufferWithAlloc(
-        m_aabb, oldSize, newSize, allocAABB);
-    m_userData = BufferUtils.reallocateBufferWithAlloc(
-        m_userData, oldSize, newSize, allocObject);
-    m_parent = BufferUtils.reallocateBufferInt(m_parent, oldSize, newSize);
-    m_child1 = BufferUtils.reallocateBufferInt(m_child1, oldSize, newSize);
-    m_child2 = BufferUtils.reallocateBufferInt(m_child2, oldSize, newSize);
-    m_height = BufferUtils.reallocateBufferInt(m_height, oldSize, newSize);
+    _aabb = BufferUtils.reallocateBufferWithAlloc(
+        _aabb, oldSize, newSize, allocAABB);
+    _userData = BufferUtils.reallocateBufferWithAlloc(
+        _userData, oldSize, newSize, allocObject);
+    _parent = BufferUtils.reallocateBufferInt(_parent, oldSize, newSize);
+    _child1 = BufferUtils.reallocateBufferInt(_child1, oldSize, newSize);
+    _child2 = BufferUtils.reallocateBufferInt(_child2, oldSize, newSize);
+    _height = BufferUtils.reallocateBufferInt(_height, oldSize, newSize);
 
     // Build a linked list for the free list.
     for (int i = oldSize; i < newSize; i++) {
-      m_aabb[i] = new AABB();
-      m_parent[i] = (i == newSize - 1) ? NULL_NODE : i + 1;
-      m_height[i] = -1;
-      m_child1[i] = -1;
-      m_child2[i] = -1;
+      _aabb[i] = new AABB();
+      _parent[i] = (i == newSize - 1) ? NULL_NODE : i + 1;
+      _height[i] = -1;
+      _child1[i] = -1;
+      _child2[i] = -1;
     }
-    _m_freeList = oldSize;
+    _freeList = oldSize;
   }
 
   int createProxy(final AABB aabb, Object userData) {
     final int node = _allocateNode();
     // Fatten the aabb
-    final AABB nodeAABB = m_aabb[node];
+    final AABB nodeAABB = _aabb[node];
     nodeAABB.lowerBound.x = aabb.lowerBound.x - Settings.aabbExtension;
     nodeAABB.lowerBound.y = aabb.lowerBound.y - Settings.aabbExtension;
     nodeAABB.upperBound.x = aabb.upperBound.x + Settings.aabbExtension;
     nodeAABB.upperBound.y = aabb.upperBound.y + Settings.aabbExtension;
-    m_userData[node] = userData;
+    _userData[node] = userData;
 
     _insertLeaf(node);
 
@@ -92,19 +92,19 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   }
 
   void destroyProxy(int proxyId) {
-    assert(0 <= proxyId && proxyId < _m_nodeCapacity);
-    assert(m_child1[proxyId] == NULL_NODE);
+    assert(0 <= proxyId && proxyId < _nodeCapacity);
+    assert(_child1[proxyId] == NULL_NODE);
 
     _removeLeaf(proxyId);
     _freeNode(proxyId);
   }
 
   bool moveProxy(int proxyId, final AABB aabb, Vector2 displacement) {
-    assert(0 <= proxyId && proxyId < _m_nodeCapacity);
+    assert(0 <= proxyId && proxyId < _nodeCapacity);
     final int node = proxyId;
-    assert(m_child1[node] == NULL_NODE);
+    assert(_child1[node] == NULL_NODE);
 
-    final AABB nodeAABB = m_aabb[node];
+    final AABB nodeAABB = _aabb[node];
     // if (nodeAABB.contains(aabb)) {
     if (nodeAABB.lowerBound.x <= aabb.lowerBound.x &&
         nodeAABB.lowerBound.y <= aabb.lowerBound.y &&
@@ -143,13 +143,13 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   }
 
   Object getUserData(int proxyId) {
-    assert(0 <= proxyId && proxyId < _m_nodeCount);
-    return m_userData[proxyId];
+    assert(0 <= proxyId && proxyId < _nodeCount);
+    return _userData[proxyId];
   }
 
   AABB getFatAABB(int proxyId) {
-    assert(0 <= proxyId && proxyId < _m_nodeCount);
-    return m_aabb[proxyId];
+    assert(0 <= proxyId && proxyId < _nodeCount);
+    return _aabb[proxyId];
   }
 
   List<int> _nodeStack = BufferUtils.allocClearIntList(20);
@@ -157,7 +157,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
   void query(TreeCallback callback, AABB aabb) {
     _nodeStackIndex = 0;
-    _nodeStack[_nodeStackIndex++] = m_root;
+    _nodeStack[_nodeStackIndex++] = _root;
 
     while (_nodeStackIndex > 0) {
       int node = _nodeStack[--_nodeStackIndex];
@@ -165,8 +165,8 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
         continue;
       }
 
-      if (AABB.testOverlap(m_aabb[node], aabb)) {
-        int child1 = m_child1[node];
+      if (AABB.testOverlap(_aabb[node], aabb)) {
+        int child1 = _child1[node];
         if (child1 == NULL_NODE) {
           bool proceed = callback.treeCallback(node);
           if (!proceed) {
@@ -178,14 +178,14 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
                 _nodeStack, _nodeStack.length, _nodeStack.length * 2);
           }
           _nodeStack[_nodeStackIndex++] = child1;
-          _nodeStack[_nodeStackIndex++] = m_child2[node];
+          _nodeStack[_nodeStackIndex++] = _child2[node];
         }
       }
     }
   }
 
   final Vector2 _r = new Vector2.zero();
-  final AABB _aabb = new AABB();
+  final AABB _aabbTemp = new AABB();
   final RayCastInput _subInput = new RayCastInput();
 
   void raycast(TreeRayCastCallback callback, RayCastInput input) {
@@ -220,7 +220,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     double maxFraction = input.maxFraction;
 
     // Build a bounding box for the segment.
-    final AABB segAABB = _aabb;
+    final AABB segAABB = _aabbTemp;
     // Vec2 t = p1 + maxFraction * (p2 - p1);
     // before inline
     // temp.set(p2).subLocal(p1).mulLocal(maxFraction).addLocal(p1);
@@ -235,14 +235,14 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     // end inline
 
     _nodeStackIndex = 0;
-    _nodeStack[_nodeStackIndex++] = m_root;
+    _nodeStack[_nodeStackIndex++] = _root;
     while (_nodeStackIndex > 0) {
-      int node = _nodeStack[--_nodeStackIndex] = m_root;
+      int node = _nodeStack[--_nodeStackIndex] = _root;
       if (node == NULL_NODE) {
         continue;
       }
 
-      final AABB nodeAABB = m_aabb[node];
+      final AABB nodeAABB = _aabb[node];
       if (!AABB.testOverlap(nodeAABB, segAABB)) {
         continue;
       }
@@ -263,7 +263,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
         continue;
       }
 
-      int child1 = m_child1[node];
+      int child1 = _child1[node];
       if (child1 == NULL_NODE) {
         _subInput.p1.x = p1x;
         _subInput.p1.y = p1y;
@@ -293,23 +293,23 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
         }
       } else {
         _nodeStack[_nodeStackIndex++] = child1;
-        _nodeStack[_nodeStackIndex++] = m_child2[node];
+        _nodeStack[_nodeStackIndex++] = _child2[node];
       }
     }
   }
 
   int computeHeight() {
-    return _computeHeight(m_root);
+    return _computeHeight(_root);
   }
 
   int _computeHeight(int node) {
-    assert(0 <= node && node < _m_nodeCapacity);
+    assert(0 <= node && node < _nodeCapacity);
 
-    if (m_child1[node] == NULL_NODE) {
+    if (_child1[node] == NULL_NODE) {
       return 0;
     }
-    int height1 = _computeHeight(m_child1[node]);
-    int height2 = _computeHeight(m_child2[node]);
+    int height1 = _computeHeight(_child1[node]);
+    int height2 = _computeHeight(_child2[node]);
     return 1 + Math.max(height1, height2);
   }
 
@@ -317,40 +317,40 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
    * Validate this tree. For testing.
    */
   void validate() {
-    _validateStructure(m_root);
-    _validateMetrics(m_root);
+    _validateStructure(_root);
+    _validateMetrics(_root);
 
     int freeCount = 0;
-    int freeNode = _m_freeList;
+    int freeNode = _freeList;
     while (freeNode != NULL_NODE) {
-      assert(0 <= freeNode && freeNode < _m_nodeCapacity);
-      freeNode = m_parent[freeNode];
+      assert(0 <= freeNode && freeNode < _nodeCapacity);
+      freeNode = _parent[freeNode];
       ++freeCount;
     }
 
     assert(getHeight() == computeHeight());
-    assert(_m_nodeCount + freeCount == _m_nodeCapacity);
+    assert(_nodeCount + freeCount == _nodeCapacity);
   }
 
   int getHeight() {
-    if (m_root == NULL_NODE) {
+    if (_root == NULL_NODE) {
       return 0;
     }
-    return m_height[m_root];
+    return _height[_root];
   }
 
   int getMaxBalance() {
     int maxBalance = 0;
-    for (int i = 0; i < _m_nodeCapacity; ++i) {
-      if (m_height[i] <= 1) {
+    for (int i = 0; i < _nodeCapacity; ++i) {
+      if (_height[i] <= 1) {
         continue;
       }
 
-      assert(m_child1[i] != NULL_NODE);
+      assert(_child1[i] != NULL_NODE);
 
-      int child1 = m_child1[i];
-      int child2 = m_child2[i];
-      int balance = (m_height[child2] - m_height[child1]).abs();
+      int child1 = _child1[i];
+      int child2 = _child2[i];
+      int balance = (_height[child2] - _height[child1]).abs();
       maxBalance = Math.max(maxBalance, balance);
     }
 
@@ -358,107 +358,39 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   }
 
   double getAreaRatio() {
-    if (m_root == NULL_NODE) {
+    if (_root == NULL_NODE) {
       return 0.0;
     }
 
-    final int root = m_root;
-    double rootArea = m_aabb[root].getPerimeter();
+    final int root = _root;
+    double rootArea = _aabb[root].getPerimeter();
 
     double totalArea = 0.0;
-    for (int i = 0; i < _m_nodeCapacity; ++i) {
-      if (m_height[i] < 0) {
+    for (int i = 0; i < _nodeCapacity; ++i) {
+      if (_height[i] < 0) {
         // Free node in pool
         continue;
       }
 
-      totalArea += m_aabb[i].getPerimeter();
+      totalArea += _aabb[i].getPerimeter();
     }
 
     return totalArea / rootArea;
   }
 
-  // /**
-  // * Build an optimal tree. Very expensive. For testing.
-  // */
-  // void rebuildBottomUp() {
-  // int[] nodes = new int[_m_nodeCount];
-  // int count = 0;
-  //
-  // // Build array of leaves. Free the rest.
-  // for (int i = 0; i < _m_nodeCapacity; ++i) {
-  // if (m_nodes[i].height < 0) {
-  // // free node in pool
-  // continue;
-  // }
-  //
-  // DynamicTreeNode node = m_nodes[i];
-  // if (node.isLeaf()) {
-  // node.parent = null;
-  // nodes[count] = i;
-  // ++count;
-  // } else {
-  // freeNode(node);
-  // }
-  // }
-  //
-  // AABB b = new AABB();
-  // while (count > 1) {
-  // double minCost = Float.MAX_VALUE;
-  // int iMin = -1, jMin = -1;
-  // for (int i = 0; i < count; ++i) {
-  // AABB aabbi = m_nodes[nodes[i]].aabb;
-  //
-  // for (int j = i + 1; j < count; ++j) {
-  // AABB aabbj = m_nodes[nodes[j]].aabb;
-  // b.combine(aabbi, aabbj);
-  // double cost = b.getPerimeter();
-  // if (cost < minCost) {
-  // iMin = i;
-  // jMin = j;
-  // minCost = cost;
-  // }
-  // }
-  // }
-  //
-  // int index1 = nodes[iMin];
-  // int index2 = nodes[jMin];
-  // DynamicTreeNode child1 = m_nodes[index1];
-  // DynamicTreeNode child2 = m_nodes[index2];
-  //
-  // DynamicTreeNode parent = allocateNode();
-  // parent.child1 = child1;
-  // parent.child2 = child2;
-  // parent.height = 1 + MathUtils.max(child1.height, child2.height);
-  // parent.aabb.combine(child1.aabb, child2.aabb);
-  // parent.parent = null;
-  //
-  // child1.parent = parent;
-  // child2.parent = parent;
-  //
-  // nodes[jMin] = nodes[count - 1];
-  // nodes[iMin] = parent.id;
-  // --count;
-  // }
-  //
-  // m_root = m_nodes[nodes[0]];
-  //
-  // validate();
-  // }
-
   int _allocateNode() {
-    if (_m_freeList == NULL_NODE) {
-      assert(_m_nodeCount == _m_nodeCapacity);
-      _m_nodeCapacity *= 2;
-      _expandBuffers(_m_nodeCount, _m_nodeCapacity);
+    if (_freeList == NULL_NODE) {
+      assert(_nodeCount == _nodeCapacity);
+      _nodeCapacity *= 2;
+      _expandBuffers(_nodeCount, _nodeCapacity);
     }
-    assert(_m_freeList != NULL_NODE);
-    int node = _m_freeList;
-    _m_freeList = m_parent[node];
-    m_parent[node] = NULL_NODE;
-    m_child1[node] = NULL_NODE;
-    m_height[node] = 0;
-    ++_m_nodeCount;
+    assert(_freeList != NULL_NODE);
+    int node = _freeList;
+    _freeList = _parent[node];
+    _parent[node] = NULL_NODE;
+    _child1[node] = NULL_NODE;
+    _height[node] = 0;
+    ++_nodeCount;
     return node;
   }
 
@@ -467,30 +399,30 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
    */
   void _freeNode(int node) {
     assert(node != NULL_NODE);
-    assert(0 < _m_nodeCount);
-    m_parent[node] = _m_freeList != NULL_NODE ? _m_freeList : NULL_NODE;
-    m_height[node] = -1;
-    _m_freeList = node;
-    _m_nodeCount--;
+    assert(0 < _nodeCount);
+    _parent[node] = _freeList != NULL_NODE ? _freeList : NULL_NODE;
+    _height[node] = -1;
+    _freeList = node;
+    _nodeCount--;
   }
 
   final AABB _combinedAABB = new AABB();
 
   void _insertLeaf(int leaf) {
-    if (m_root == NULL_NODE) {
-      m_root = leaf;
-      m_parent[m_root] = NULL_NODE;
+    if (_root == NULL_NODE) {
+      _root = leaf;
+      _parent[_root] = NULL_NODE;
       return;
     }
 
     // find the best sibling
-    AABB leafAABB = m_aabb[leaf];
-    int index = m_root;
-    while (m_child1[index] != NULL_NODE) {
+    AABB leafAABB = _aabb[leaf];
+    int index = _root;
+    while (_child1[index] != NULL_NODE) {
       final int node = index;
-      int child1 = m_child1[node];
-      int child2 = m_child2[node];
-      final AABB nodeAABB = m_aabb[node];
+      int child1 = _child1[node];
+      int child2 = _child2[node];
+      final AABB nodeAABB = _aabb[node];
       double area = nodeAABB.getPerimeter();
 
       _combinedAABB.combine2(nodeAABB, leafAABB);
@@ -504,8 +436,8 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
       // Cost of descending into child1
       double cost1;
-      AABB child1AABB = m_aabb[child1];
-      if (m_child1[child1] == NULL_NODE) {
+      AABB child1AABB = _aabb[child1];
+      if (_child1[child1] == NULL_NODE) {
         _combinedAABB.combine2(leafAABB, child1AABB);
         cost1 = _combinedAABB.getPerimeter() + inheritanceCost;
       } else {
@@ -517,8 +449,8 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
       // Cost of descending into child2
       double cost2;
-      AABB child2AABB = m_aabb[child2];
-      if (m_child1[child2] == NULL_NODE) {
+      AABB child2AABB = _aabb[child2];
+      if (_child1[child2] == NULL_NODE) {
         _combinedAABB.combine2(leafAABB, child2AABB);
         cost2 = _combinedAABB.getPerimeter() + inheritanceCost;
       } else {
@@ -542,63 +474,63 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     }
 
     int sibling = index;
-    int oldParent = m_parent[sibling];
+    int oldParent = _parent[sibling];
     final int newParent = _allocateNode();
-    m_parent[newParent] = oldParent;
-    m_userData[newParent] = null;
-    m_aabb[newParent].combine2(leafAABB, m_aabb[sibling]);
-    m_height[newParent] = m_height[sibling] + 1;
+    _parent[newParent] = oldParent;
+    _userData[newParent] = null;
+    _aabb[newParent].combine2(leafAABB, _aabb[sibling]);
+    _height[newParent] = _height[sibling] + 1;
 
     if (oldParent != NULL_NODE) {
       // The sibling was not the root.
-      if (m_child1[oldParent] == sibling) {
-        m_child1[oldParent] = newParent;
+      if (_child1[oldParent] == sibling) {
+        _child1[oldParent] = newParent;
       } else {
-        m_child2[oldParent] = newParent;
+        _child2[oldParent] = newParent;
       }
 
-      m_child1[newParent] = sibling;
-      m_child2[newParent] = leaf;
-      m_parent[sibling] = newParent;
-      m_parent[leaf] = newParent;
+      _child1[newParent] = sibling;
+      _child2[newParent] = leaf;
+      _parent[sibling] = newParent;
+      _parent[leaf] = newParent;
     } else {
       // The sibling was the root.
-      m_child1[newParent] = sibling;
-      m_child2[newParent] = leaf;
-      m_parent[sibling] = newParent;
-      m_parent[leaf] = newParent;
-      m_root = newParent;
+      _child1[newParent] = sibling;
+      _child2[newParent] = leaf;
+      _parent[sibling] = newParent;
+      _parent[leaf] = newParent;
+      _root = newParent;
     }
 
     // Walk back up the tree fixing heights and AABBs
-    index = m_parent[leaf];
+    index = _parent[leaf];
     while (index != NULL_NODE) {
       index = _balance(index);
 
-      int child1 = m_child1[index];
-      int child2 = m_child2[index];
+      int child1 = _child1[index];
+      int child2 = _child2[index];
 
       assert(child1 != NULL_NODE);
       assert(child2 != NULL_NODE);
 
-      m_height[index] = 1 + Math.max(m_height[child1], m_height[child2]);
-      m_aabb[index].combine2(m_aabb[child1], m_aabb[child2]);
+      _height[index] = 1 + Math.max(_height[child1], _height[child2]);
+      _aabb[index].combine2(_aabb[child1], _aabb[child2]);
 
-      index = m_parent[index];
+      index = _parent[index];
     }
     // validate();
   }
 
   void _removeLeaf(int leaf) {
-    if (leaf == m_root) {
-      m_root = NULL_NODE;
+    if (leaf == _root) {
+      _root = NULL_NODE;
       return;
     }
 
-    int parent = m_parent[leaf];
-    int grandParent = m_parent[parent];
-    int parentChild1 = m_child1[parent];
-    int parentChild2 = m_child2[parent];
+    int parent = _parent[leaf];
+    int grandParent = _parent[parent];
+    int parentChild1 = _child1[parent];
+    int parentChild2 = _child2[parent];
     int sibling;
     if (parentChild1 == leaf) {
       sibling = parentChild2;
@@ -608,12 +540,12 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
     if (grandParent != NULL_NODE) {
       // Destroy parent and connect sibling to grandParent.
-      if (m_child1[grandParent] == parent) {
-        m_child1[grandParent] = sibling;
+      if (_child1[grandParent] == parent) {
+        _child1[grandParent] = sibling;
       } else {
-        m_child2[grandParent] = sibling;
+        _child2[grandParent] = sibling;
       }
-      m_parent[sibling] = grandParent;
+      _parent[sibling] = grandParent;
       _freeNode(parent);
 
       // Adjust ancestor bounds.
@@ -621,17 +553,17 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
       while (index != NULL_NODE) {
         index = _balance(index);
 
-        int child1 = m_child1[index];
-        int child2 = m_child2[index];
+        int child1 = _child1[index];
+        int child2 = _child2[index];
 
-        m_aabb[index].combine2(m_aabb[child1], m_aabb[child2]);
-        m_height[index] = 1 + Math.max(m_height[child1], m_height[child2]);
+        _aabb[index].combine2(_aabb[child1], _aabb[child2]);
+        _height[index] = 1 + Math.max(_height[child1], _height[child2]);
 
-        index = m_parent[index];
+        index = _parent[index];
       }
     } else {
-      m_root = sibling;
-      m_parent[sibling] = NULL_NODE;
+      _root = sibling;
+      _parent[sibling] = NULL_NODE;
       _freeNode(parent);
     }
 
@@ -644,67 +576,67 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     assert(iA != NULL_NODE);
 
     int A = iA;
-    if (m_child1[A] == NULL_NODE || m_height[A] < 2) {
+    if (_child1[A] == NULL_NODE || _height[A] < 2) {
       return iA;
     }
 
-    int iB = m_child1[A];
-    int iC = m_child2[A];
-    assert(0 <= iB && iB < _m_nodeCapacity);
-    assert(0 <= iC && iC < _m_nodeCapacity);
+    int iB = _child1[A];
+    int iC = _child2[A];
+    assert(0 <= iB && iB < _nodeCapacity);
+    assert(0 <= iC && iC < _nodeCapacity);
 
     int B = iB;
     int C = iC;
 
-    int balance = m_height[C] - m_height[B];
+    int balance = _height[C] - _height[B];
 
     // Rotate C up
     if (balance > 1) {
-      int iF = m_child1[C];
-      int iG = m_child2[C];
+      int iF = _child1[C];
+      int iG = _child2[C];
       int F = iF;
       int G = iG;
       // assert (F != null);
       // assert (G != null);
-      assert(0 <= iF && iF < _m_nodeCapacity);
-      assert(0 <= iG && iG < _m_nodeCapacity);
+      assert(0 <= iF && iF < _nodeCapacity);
+      assert(0 <= iG && iG < _nodeCapacity);
 
       // Swap A and C
-      m_child1[C] = iA;
-      int cParent = m_parent[C] = m_parent[A];
-      m_parent[A] = iC;
+      _child1[C] = iA;
+      int cParent = _parent[C] = _parent[A];
+      _parent[A] = iC;
 
       // A's old parent should point to C
       if (cParent != NULL_NODE) {
-        if (m_child1[cParent] == iA) {
-          m_child1[cParent] = iC;
+        if (_child1[cParent] == iA) {
+          _child1[cParent] = iC;
         } else {
-          assert(m_child2[cParent] == iA);
-          m_child2[cParent] = iC;
+          assert(_child2[cParent] == iA);
+          _child2[cParent] = iC;
         }
       } else {
-        m_root = iC;
+        _root = iC;
       }
 
       // Rotate
-      if (m_height[F] > m_height[G]) {
-        m_child2[C] = iF;
-        m_child2[A] = iG;
-        m_parent[G] = iA;
-        m_aabb[A].combine2(m_aabb[B], m_aabb[G]);
-        m_aabb[C].combine2(m_aabb[A], m_aabb[F]);
+      if (_height[F] > _height[G]) {
+        _child2[C] = iF;
+        _child2[A] = iG;
+        _parent[G] = iA;
+        _aabb[A].combine2(_aabb[B], _aabb[G]);
+        _aabb[C].combine2(_aabb[A], _aabb[F]);
 
-        m_height[A] = 1 + Math.max(m_height[B], m_height[G]);
-        m_height[C] = 1 + Math.max(m_height[A], m_height[F]);
+        _height[A] = 1 + Math.max(_height[B], _height[G]);
+        _height[C] = 1 + Math.max(_height[A], _height[F]);
       } else {
-        m_child2[C] = iG;
-        m_child2[A] = iF;
-        m_parent[F] = iA;
-        m_aabb[A].combine2(m_aabb[B], m_aabb[F]);
-        m_aabb[C].combine2(m_aabb[A], m_aabb[G]);
+        _child2[C] = iG;
+        _child2[A] = iF;
+        _parent[F] = iA;
+        _aabb[A].combine2(_aabb[B], _aabb[F]);
+        _aabb[C].combine2(_aabb[A], _aabb[G]);
 
-        m_height[A] = 1 + Math.max(m_height[B], m_height[F]);
-        m_height[C] = 1 + Math.max(m_height[A], m_height[G]);
+        _height[A] = 1 + Math.max(_height[B], _height[F]);
+        _height[C] = 1 + Math.max(_height[A], _height[G]);
       }
 
       return iC;
@@ -712,49 +644,49 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
     // Rotate B up
     if (balance < -1) {
-      int iD = m_child1[B];
-      int iE = m_child2[B];
+      int iD = _child1[B];
+      int iE = _child2[B];
       int D = iD;
       int E = iE;
-      assert(0 <= iD && iD < _m_nodeCapacity);
-      assert(0 <= iE && iE < _m_nodeCapacity);
+      assert(0 <= iD && iD < _nodeCapacity);
+      assert(0 <= iE && iE < _nodeCapacity);
 
       // Swap A and B
-      m_child1[B] = iA;
-      int Bparent = m_parent[B] = m_parent[A];
-      m_parent[A] = iB;
+      _child1[B] = iA;
+      int Bparent = _parent[B] = _parent[A];
+      _parent[A] = iB;
 
       // A's old parent should point to B
       if (Bparent != NULL_NODE) {
-        if (m_child1[Bparent] == iA) {
-          m_child1[Bparent] = iB;
+        if (_child1[Bparent] == iA) {
+          _child1[Bparent] = iB;
         } else {
-          assert(m_child2[Bparent] == iA);
-          m_child2[Bparent] = iB;
+          assert(_child2[Bparent] == iA);
+          _child2[Bparent] = iB;
         }
       } else {
-        m_root = iB;
+        _root = iB;
       }
 
       // Rotate
-      if (m_height[D] > m_height[E]) {
-        m_child2[B] = iD;
-        m_child1[A] = iE;
-        m_parent[E] = iA;
-        m_aabb[A].combine2(m_aabb[C], m_aabb[E]);
-        m_aabb[B].combine2(m_aabb[A], m_aabb[D]);
+      if (_height[D] > _height[E]) {
+        _child2[B] = iD;
+        _child1[A] = iE;
+        _parent[E] = iA;
+        _aabb[A].combine2(_aabb[C], _aabb[E]);
+        _aabb[B].combine2(_aabb[A], _aabb[D]);
 
-        m_height[A] = 1 + Math.max(m_height[C], m_height[E]);
-        m_height[B] = 1 + Math.max(m_height[A], m_height[D]);
+        _height[A] = 1 + Math.max(_height[C], _height[E]);
+        _height[B] = 1 + Math.max(_height[A], _height[D]);
       } else {
-        m_child2[B] = iE;
-        m_child1[A] = iD;
-        m_parent[D] = iA;
-        m_aabb[A].combine2(m_aabb[C], m_aabb[D]);
-        m_aabb[B].combine2(m_aabb[A], m_aabb[E]);
+        _child2[B] = iE;
+        _child1[A] = iD;
+        _parent[D] = iA;
+        _aabb[A].combine2(_aabb[C], _aabb[D]);
+        _aabb[B].combine2(_aabb[A], _aabb[E]);
 
-        m_height[A] = 1 + Math.max(m_height[C], m_height[D]);
-        m_height[B] = 1 + Math.max(m_height[A], m_height[E]);
+        _height[A] = 1 + Math.max(_height[C], _height[D]);
+        _height[B] = 1 + Math.max(_height[A], _height[E]);
       }
 
       return iB;
@@ -768,25 +700,25 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
       return;
     }
 
-    if (node == m_root) {
-      assert(m_parent[node] == NULL_NODE);
+    if (node == _root) {
+      assert(_parent[node] == NULL_NODE);
     }
 
-    int child1 = m_child1[node];
-    int child2 = m_child2[node];
+    int child1 = _child1[node];
+    int child2 = _child2[node];
 
     if (child1 == NULL_NODE) {
       assert(child1 == NULL_NODE);
       assert(child2 == NULL_NODE);
-      assert(m_height[node] == 0);
+      assert(_height[node] == 0);
       return;
     }
 
-    assert(child1 != NULL_NODE && 0 <= child1 && child1 < _m_nodeCapacity);
-    assert(child2 != NULL_NODE && 0 <= child2 && child2 < _m_nodeCapacity);
+    assert(child1 != NULL_NODE && 0 <= child1 && child1 < _nodeCapacity);
+    assert(child2 != NULL_NODE && 0 <= child2 && child2 < _nodeCapacity);
 
-    assert(m_parent[child1] == node);
-    assert(m_parent[child2] == node);
+    assert(_parent[child1] == node);
+    assert(_parent[child2] == node);
 
     _validateStructure(child1);
     _validateStructure(child2);
@@ -797,48 +729,48 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
       return;
     }
 
-    int child1 = m_child1[node];
-    int child2 = m_child2[node];
+    int child1 = _child1[node];
+    int child2 = _child2[node];
 
     if (child1 == NULL_NODE) {
       assert(child1 == NULL_NODE);
       assert(child2 == NULL_NODE);
-      assert(m_height[node] == 0);
+      assert(_height[node] == 0);
       return;
     }
 
-    assert(child1 != NULL_NODE && 0 <= child1 && child1 < _m_nodeCapacity);
-    assert(child2 != child1 && 0 <= child2 && child2 < _m_nodeCapacity);
+    assert(child1 != NULL_NODE && 0 <= child1 && child1 < _nodeCapacity);
+    assert(child2 != child1 && 0 <= child2 && child2 < _nodeCapacity);
 
-    int height1 = m_height[child1];
-    int height2 = m_height[child2];
+    int height1 = _height[child1];
+    int height2 = _height[child2];
     int height;
     height = 1 + Math.max(height1, height2);
-    assert(m_height[node] == height);
+    assert(_height[node] == height);
 
     AABB aabb = new AABB();
-    aabb.combine2(m_aabb[child1], m_aabb[child2]);
+    aabb.combine2(_aabb[child1], _aabb[child2]);
 
-    assert(MathUtils.vector2Equals(aabb.lowerBound, m_aabb[node].lowerBound));
-    assert(MathUtils.vector2Equals(aabb.upperBound, m_aabb[node].upperBound));
+    assert(MathUtils.vector2Equals(aabb.lowerBound, _aabb[node].lowerBound));
+    assert(MathUtils.vector2Equals(aabb.upperBound, _aabb[node].upperBound));
 
     _validateMetrics(child1);
     _validateMetrics(child2);
   }
 
   void drawTree(DebugDraw argDraw) {
-    if (m_root == NULL_NODE) {
+    if (_root == NULL_NODE) {
       return;
     }
     int height = computeHeight();
-    drawTreeX(argDraw, m_root, 0, height);
+    drawTreeX(argDraw, _root, 0, height);
   }
 
   final Color3i _color = new Color3i.zero();
   final Vector2 _textVec = new Vector2.zero();
 
   void drawTreeX(DebugDraw argDraw, int node, int spot, int height) {
-    AABB a = m_aabb[node];
+    AABB a = _aabb[node];
     a.getVertices(drawVecs);
 
     _color.setFromRGBd(
@@ -849,8 +781,8 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     argDraw.drawStringXY(
         _textVec.x, _textVec.y, "$node-${(spot + 1)}/$height", _color);
 
-    int c1 = m_child1[node];
-    int c2 = m_child2[node];
+    int c1 = _child1[node];
+    int c2 = _child2[node];
     if (c1 != NULL_NODE) {
       drawTreeX(argDraw, c1, spot + 1, height);
     }

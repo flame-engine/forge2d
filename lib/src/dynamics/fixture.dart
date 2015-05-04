@@ -147,7 +147,7 @@ class Fixture {
     }
 
     // Touch each proxy so that new pairs may be created
-    BroadPhase broadPhase = world.m_contactManager.m_broadPhase;
+    BroadPhase broadPhase = world.m_contactManager.broadPhase;
     for (int i = 0; i < m_proxyCount; ++i) {
       broadPhase.touchProxy(m_proxies[i].proxyId);
     }
@@ -189,7 +189,7 @@ class Fixture {
    * @return
    */
   bool testPoint(final Vector2 p) {
-    return m_shape.testPoint(m_body.m_xf, p);
+    return m_shape.testPoint(m_body.xf, p);
   }
 
   /**
@@ -201,7 +201,7 @@ class Fixture {
    * @param input
    */
   bool raycast(RayCastOutput output, RayCastInput input, int childIndex) {
-    return m_shape.raycast(output, input, m_body.m_xf, childIndex);
+    return m_shape.raycast(output, input, m_body.xf, childIndex);
   }
 
   /**

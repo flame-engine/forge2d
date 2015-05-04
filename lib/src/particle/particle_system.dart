@@ -376,8 +376,8 @@ class SolveCollisionCallback implements QueryCallback {
             ap.y <= aabbupperBoundy) {
           Vector2 av = system.m_velocityBuffer.data[a];
           final Vector2 temp = tempVec;
-          Transform.mulTransToOutUnsafeVec2(body.m_xf0, ap, temp);
-          Transform.mulToOutUnsafeVec2(body.m_xf, temp, input.p1);
+          Transform.mulTransToOutUnsafeVec2(body.xf0, ap, temp);
+          Transform.mulToOutUnsafeVec2(body.xf, temp, input.p1);
           input.p2.x = ap.x + step.dt * av.x;
           input.p2.y = ap.y + step.dt * av.y;
           input.maxFraction = 1.0;
@@ -1286,8 +1286,8 @@ class ParticleSystem {
       double m = contact.mass;
       Vector2 n = contact.normal;
       Vector2 p = m_positionBuffer.data[a];
-      final double tempX = p.x - b.m_sweep.c.x;
-      final double tempY = p.y - b.m_sweep.c.y;
+      final double tempX = p.x - b.sweep.c.x;
+      final double tempY = p.y - b.sweep.c.y;
       final Vector2 velA = m_velocityBuffer.data[a];
       // getLinearVelocityFromWorldPointToOut, with -= velA
       double vx = -b._angularVelocity * tempY + b._linearVelocity.x - velA.x;
@@ -1508,8 +1508,8 @@ class ParticleSystem {
         double m = contact.mass;
         Vector2 p = m_positionBuffer.data[a];
         final Vector2 va = m_velocityBuffer.data[a];
-        final double tempX = p.x - b.m_sweep.c.x;
-        final double tempY = p.y - b.m_sweep.c.y;
+        final double tempX = p.x - b.sweep.c.x;
+        final double tempY = p.y - b.sweep.c.y;
         final double vx =
             -b._angularVelocity * tempY + b._linearVelocity.x - va.x;
         final double vy =

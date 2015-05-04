@@ -218,14 +218,14 @@ class WheelJoint extends Joint {
   final Vector2 d = new Vector2.zero();
 
   void initVelocityConstraints(SolverData data) {
-    m_indexA = m_bodyA.m_islandIndex;
-    m_indexB = m_bodyB.m_islandIndex;
-    m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
-    m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
-    m_invMassA = m_bodyA.m_invMass;
-    m_invMassB = m_bodyB.m_invMass;
-    m_invIA = m_bodyA.m_invI;
-    m_invIB = m_bodyB.m_invI;
+    m_indexA = m_bodyA.islandIndex;
+    m_indexB = m_bodyB.islandIndex;
+    m_localCenterA.setFrom(m_bodyA.sweep.localCenter);
+    m_localCenterB.setFrom(m_bodyB.sweep.localCenter);
+    m_invMassA = m_bodyA.invMass;
+    m_invMassB = m_bodyB.invMass;
+    m_invIA = m_bodyA.invI;
+    m_invIB = m_bodyB.invI;
 
     double mA = m_invMassA,
         mB = m_invMassB;

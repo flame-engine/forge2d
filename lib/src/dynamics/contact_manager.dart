@@ -31,19 +31,19 @@ part of box2d;
  */
 
 class ContactManager implements PairCallback {
-  BroadPhase m_broadPhase;
-  Contact m_contactList;
-  int m_contactCount = 0;
-  ContactFilter m_contactFilter;
-  ContactListener m_contactListener;
+  BroadPhase broadPhase;
+  Contact contactList;
+  int contactCount = 0;
+  ContactFilter contactFilter;
+  ContactListener contactListener;
 
   final World _pool;
 
-  ContactManager(this._pool, BroadPhase broadPhase) {
-    m_contactList = null;
-    m_contactFilter = new ContactFilter();
-    m_contactListener = null;
-    m_broadPhase = broadPhase;
+  ContactManager(this._pool, BroadPhase broadPhase_) {
+    contactList = null;
+    contactFilter = new ContactFilter();
+    contactListener = null;
+    broadPhase = broadPhase_;
   }
 
   /**
@@ -101,8 +101,8 @@ class ContactManager implements PairCallback {
     }
 
     // Check user filtering.
-    if (m_contactFilter != null &&
-        m_contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
+    if (contactFilter != null &&
+        contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
       return;
     }
 
@@ -122,11 +122,11 @@ class ContactManager implements PairCallback {
 
     // Insert into the world.
     c.m_prev = null;
-    c.m_next = m_contactList;
-    if (m_contactList != null) {
-      m_contactList.m_prev = c;
+    c.m_next = contactList;
+    if (contactList != null) {
+      contactList.m_prev = c;
     }
-    m_contactList = c;
+    contactList = c;
 
     // Connect to island graph.
 
@@ -135,22 +135,22 @@ class ContactManager implements PairCallback {
     c.m_nodeA.other = bodyB;
 
     c.m_nodeA.prev = null;
-    c.m_nodeA.next = bodyA.m_contactList;
-    if (bodyA.m_contactList != null) {
-      bodyA.m_contactList.prev = c.m_nodeA;
+    c.m_nodeA.next = bodyA.contactList;
+    if (bodyA.contactList != null) {
+      bodyA.contactList.prev = c.m_nodeA;
     }
-    bodyA.m_contactList = c.m_nodeA;
+    bodyA.contactList = c.m_nodeA;
 
     // Connect to body B
     c.m_nodeB.contact = c;
     c.m_nodeB.other = bodyA;
 
     c.m_nodeB.prev = null;
-    c.m_nodeB.next = bodyB.m_contactList;
-    if (bodyB.m_contactList != null) {
-      bodyB.m_contactList.prev = c.m_nodeB;
+    c.m_nodeB.next = bodyB.contactList;
+    if (bodyB.contactList != null) {
+      bodyB.contactList.prev = c.m_nodeB;
     }
-    bodyB.m_contactList = c.m_nodeB;
+    bodyB.contactList = c.m_nodeB;
 
     // wake up the bodies
     if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
@@ -158,11 +158,11 @@ class ContactManager implements PairCallback {
       bodyB.setAwake(true);
     }
 
-    ++m_contactCount;
+    ++contactCount;
   }
 
   void findNewContacts() {
-    m_broadPhase.updatePairs(this);
+    broadPhase.updatePairs(this);
   }
 
   void destroy(Contact c) {
@@ -171,8 +171,8 @@ class ContactManager implements PairCallback {
     Body bodyA = fixtureA.getBody();
     Body bodyB = fixtureB.getBody();
 
-    if (m_contactListener != null && c.isTouching()) {
-      m_contactListener.endContact(c);
+    if (contactListener != null && c.isTouching()) {
+      contactListener.endContact(c);
     }
 
     // Remove from the world.
@@ -184,8 +184,8 @@ class ContactManager implements PairCallback {
       c.m_next.m_prev = c.m_prev;
     }
 
-    if (c == m_contactList) {
-      m_contactList = c.m_next;
+    if (c == contactList) {
+      contactList = c.m_next;
     }
 
     // Remove from body 1
@@ -197,8 +197,8 @@ class ContactManager implements PairCallback {
       c.m_nodeA.next.prev = c.m_nodeA.prev;
     }
 
-    if (c.m_nodeA == bodyA.m_contactList) {
-      bodyA.m_contactList = c.m_nodeA.next;
+    if (c.m_nodeA == bodyA.contactList) {
+      bodyA.contactList = c.m_nodeA.next;
     }
 
     // Remove from body 2
@@ -210,13 +210,13 @@ class ContactManager implements PairCallback {
       c.m_nodeB.next.prev = c.m_nodeB.prev;
     }
 
-    if (c.m_nodeB == bodyB.m_contactList) {
-      bodyB.m_contactList = c.m_nodeB.next;
+    if (c.m_nodeB == bodyB.contactList) {
+      bodyB.contactList = c.m_nodeB.next;
     }
 
     // Call the factory.
     _pool.pushContact(c);
-    --m_contactCount;
+    --contactCount;
   }
 
   /**
@@ -225,7 +225,7 @@ class ContactManager implements PairCallback {
    */
   void collide() {
     // Update awake contacts.
-    Contact c = m_contactList;
+    Contact c = contactList;
     while (c != null) {
       Fixture fixtureA = c.fixtureA;
       Fixture fixtureB = c.fixtureB;
@@ -245,8 +245,8 @@ class ContactManager implements PairCallback {
         }
 
         // Check user filtering.
-        if (m_contactFilter != null &&
-            m_contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
+        if (contactFilter != null &&
+            contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
           Contact cNuke = c;
           c = cNuke.getNext();
           destroy(cNuke);
@@ -257,8 +257,8 @@ class ContactManager implements PairCallback {
         c.m_flags &= ~Contact.FILTER_FLAG;
       }
 
-      bool activeA = bodyA.isAwake() && bodyA.m_type != BodyType.STATIC;
-      bool activeB = bodyB.isAwake() && bodyB.m_type != BodyType.STATIC;
+      bool activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.STATIC;
+      bool activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.STATIC;
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {
@@ -268,7 +268,7 @@ class ContactManager implements PairCallback {
 
       int proxyIdA = fixtureA.m_proxies[indexA].proxyId;
       int proxyIdB = fixtureB.m_proxies[indexB].proxyId;
-      bool overlap = m_broadPhase.testOverlap(proxyIdA, proxyIdB);
+      bool overlap = broadPhase.testOverlap(proxyIdA, proxyIdB);
 
       // Here we destroy contacts that cease to overlap in the broad-phase.
       if (overlap == false) {
@@ -279,7 +279,7 @@ class ContactManager implements PairCallback {
       }
 
       // The contact persists.
-      c.update(m_contactListener);
+      c.update(contactListener);
       c = c.getNext();
     }
   }

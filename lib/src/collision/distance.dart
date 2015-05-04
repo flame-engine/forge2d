@@ -72,16 +72,16 @@ class SimplexCache {
 }
 
 class _Simplex {
-  final _SimplexVertex m_v1 = new _SimplexVertex();
-  final _SimplexVertex m_v2 = new _SimplexVertex();
-  final _SimplexVertex m_v3 = new _SimplexVertex();
+  final _SimplexVertex v1 = new _SimplexVertex();
+  final _SimplexVertex v2 = new _SimplexVertex();
+  final _SimplexVertex v3 = new _SimplexVertex();
   final List<_SimplexVertex> vertices = new List<_SimplexVertex>(3);
-  int m_count = 0;
+  int count = 0;
 
   _Simplex() {
-    vertices[0] = m_v1;
-    vertices[1] = m_v2;
-    vertices[2] = m_v3;
+    vertices[0] = v1;
+    vertices[1] = v2;
+    vertices[2] = v3;
   }
 
   void readCache(SimplexCache cache, DistanceProxy proxyA, Transform transformA,
@@ -89,9 +89,9 @@ class _Simplex {
     assert(cache.count <= 3);
 
     // Copy data from cache.
-    m_count = cache.count;
+    count = cache.count;
 
-    for (int i = 0; i < m_count; ++i) {
+    for (int i = 0; i < count; ++i) {
       _SimplexVertex v = vertices[i];
       v.indexA = cache.indexA[i];
       v.indexB = cache.indexB[i];
@@ -105,19 +105,19 @@ class _Simplex {
 
     // Compute the new simplex metric, if it is substantially different than
     // old metric then flush the simplex.
-    if (m_count > 1) {
+    if (count > 1) {
       double metric1 = cache.metric;
       double metric2 = getMetric();
       if (metric2 < 0.5 * metric1 ||
           2.0 * metric1 < metric2 ||
           metric2 < Settings.EPSILON) {
         // Reset the simplex.
-        m_count = 0;
+        count = 0;
       }
     }
 
     // If the cache is empty or invalid ...
-    if (m_count == 0) {
+    if (count == 0) {
       _SimplexVertex v = vertices[0];
       v.indexA = 0;
       v.indexB = 0;
@@ -126,15 +126,15 @@ class _Simplex {
       Transform.mulToOutUnsafeVec2(transformA, wALocal, v.wA);
       Transform.mulToOutUnsafeVec2(transformB, wBLocal, v.wB);
       v.w.setFrom(v.wB).sub(v.wA);
-      m_count = 1;
+      count = 1;
     }
   }
 
   void writeCache(SimplexCache cache) {
     cache.metric = getMetric();
-    cache.count = m_count;
+    cache.count = count;
 
-    for (int i = 0; i < m_count; ++i) {
+    for (int i = 0; i < count; ++i) {
       cache.indexA[i] = (vertices[i].indexA).toInt();
       cache.indexB[i] = (vertices[i].indexB).toInt();
     }
@@ -143,14 +143,14 @@ class _Simplex {
   final Vector2 _e12 = new Vector2.zero();
 
   void getSearchDirection(final Vector2 out) {
-    switch (m_count) {
+    switch (count) {
       case 1:
-        out.setFrom(m_v1.w).negate();
+        out.setFrom(v1.w).negate();
         return;
       case 2:
-        _e12.setFrom(m_v2.w).sub(m_v1.w);
+        _e12.setFrom(v2.w).sub(v1.w);
         // use out for a temp variable real quick
-        out.setFrom(m_v1.w).negate();
+        out.setFrom(v1.w).negate();
         double sgn = _e12.cross(out);
 
         if (sgn > 0.0) {
@@ -178,17 +178,17 @@ class _Simplex {
    * @return
    */
   void getClosestPoint(final Vector2 out) {
-    switch (m_count) {
+    switch (count) {
       case 0:
         assert(false);
         out.setZero();
         return;
       case 1:
-        out.setFrom(m_v1.w);
+        out.setFrom(v1.w);
         return;
       case 2:
-        _case22.setFrom(m_v2.w).scale(m_v2.a);
-        _case2.setFrom(m_v1.w).scale(m_v1.a).add(_case22);
+        _case22.setFrom(v2.w).scale(v2.a);
+        _case2.setFrom(v1.w).scale(v1.a).add(_case22);
         out.setFrom(_case2);
         return;
       case 3:
@@ -206,33 +206,33 @@ class _Simplex {
   final Vector2 _case33 = new Vector2.zero();
 
   void getWitnessPoints(Vector2 pA, Vector2 pB) {
-    switch (m_count) {
+    switch (count) {
       case 0:
         assert(false);
         break;
 
       case 1:
-        pA.setFrom(m_v1.wA);
-        pB.setFrom(m_v1.wB);
+        pA.setFrom(v1.wA);
+        pB.setFrom(v1.wB);
         break;
 
       case 2:
-        _case2.setFrom(m_v1.wA).scale(m_v1.a);
-        pA.setFrom(m_v2.wA).scale(m_v2.a).add(_case2);
-        // m_v1.a * m_v1.wA + m_v2.a * m_v2.wA;
-        // *pB = m_v1.a * m_v1.wB + m_v2.a * m_v2.wB;
-        _case2.setFrom(m_v1.wB).scale(m_v1.a);
-        pB.setFrom(m_v2.wB).scale(m_v2.a).add(_case2);
+        _case2.setFrom(v1.wA).scale(v1.a);
+        pA.setFrom(v2.wA).scale(v2.a).add(_case2);
+        // v1.a * v1.wA + v2.a * v2.wA;
+        // *pB = v1.a * v1.wB + v2.a * v2.wB;
+        _case2.setFrom(v1.wB).scale(v1.a);
+        pB.setFrom(v2.wB).scale(v2.a).add(_case2);
 
         break;
 
       case 3:
-        pA.setFrom(m_v1.wA).scale(m_v1.a);
-        _case3.setFrom(m_v2.wA).scale(m_v2.a);
-        _case33.setFrom(m_v3.wA).scale(m_v3.a);
+        pA.setFrom(v1.wA).scale(v1.a);
+        _case3.setFrom(v2.wA).scale(v2.a);
+        _case33.setFrom(v3.wA).scale(v3.a);
         pA.add(_case3).add(_case33);
         pB.setFrom(pA);
-        // *pA = m_v1.a * m_v1.wA + m_v2.a * m_v2.wA + m_v3.a * m_v3.wA;
+        // *pA = v1.a * v1.wA + v2.a * v2.wA + v3.a * v3.wA;
         // *pB = *pA;
         break;
 
@@ -244,7 +244,7 @@ class _Simplex {
 
   // djm pooled, from above
   double getMetric() {
-    switch (m_count) {
+    switch (count) {
       case 0:
         assert(false);
         return 0.0;
@@ -253,12 +253,12 @@ class _Simplex {
         return 0.0;
 
       case 2:
-        return MathUtils.distance(m_v1.w, m_v2.w);
+        return MathUtils.distance(v1.w, v2.w);
 
       case 3:
-        _case3.setFrom(m_v2.w).sub(m_v1.w);
-        _case33.setFrom(m_v3.w).sub(m_v1.w);
-        // return Vec2.cross(m_v2.w - m_v1.w, m_v3.w - m_v1.w);
+        _case3.setFrom(v2.w).sub(v1.w);
+        _case33.setFrom(v3.w).sub(v1.w);
+        // return Vec2.cross(v2.w - v1.w, v3.w - v1.w);
         return _case3.cross(_case33);
 
       default:
@@ -295,16 +295,16 @@ class _Simplex {
     // Solution
     // a1 = d12_1 / d12
     // a2 = d12_2 / d12
-    final Vector2 w1 = m_v1.w;
-    final Vector2 w2 = m_v2.w;
+    final Vector2 w1 = v1.w;
+    final Vector2 w2 = v2.w;
     _e12.setFrom(w2).sub(w1);
 
     // w1 region
     double d12_2 = -w1.dot(_e12);
     if (d12_2 <= 0.0) {
       // a2 <= 0, so we clamp it to 0
-      m_v1.a = 1.0;
-      m_count = 1;
+      v1.a = 1.0;
+      count = 1;
       return;
     }
 
@@ -312,17 +312,17 @@ class _Simplex {
     double d12_1 = w2.dot(_e12);
     if (d12_1 <= 0.0) {
       // a1 <= 0, so we clamp it to 0
-      m_v2.a = 1.0;
-      m_count = 1;
-      m_v1.set(m_v2);
+      v2.a = 1.0;
+      count = 1;
+      v1.set(v2);
       return;
     }
 
     // Must be in e12 region.
     double inv_d12 = 1.0 / (d12_1 + d12_2);
-    m_v1.a = d12_1 * inv_d12;
-    m_v2.a = d12_2 * inv_d12;
-    m_count = 2;
+    v1.a = d12_1 * inv_d12;
+    v2.a = d12_2 * inv_d12;
+    count = 2;
   }
 
   // djm pooled, and from above
@@ -341,9 +341,9 @@ class _Simplex {
    * - inside the triangle
    */
   void solve3() {
-    _w1.setFrom(m_v1.w);
-    _w2.setFrom(m_v2.w);
-    _w3.setFrom(m_v3.w);
+    _w1.setFrom(v1.w);
+    _w2.setFrom(v2.w);
+    _w3.setFrom(v3.w);
 
     // Edge12
     // [1 1 ][a1] = [1]
@@ -384,79 +384,79 @@ class _Simplex {
 
     // w1 region
     if (d12_2 <= 0.0 && d13_2 <= 0.0) {
-      m_v1.a = 1.0;
-      m_count = 1;
+      v1.a = 1.0;
+      count = 1;
       return;
     }
 
     // e12
     if (d12_1 > 0.0 && d12_2 > 0.0 && d123_3 <= 0.0) {
       double inv_d12 = 1.0 / (d12_1 + d12_2);
-      m_v1.a = d12_1 * inv_d12;
-      m_v2.a = d12_2 * inv_d12;
-      m_count = 2;
+      v1.a = d12_1 * inv_d12;
+      v2.a = d12_2 * inv_d12;
+      count = 2;
       return;
     }
 
     // e13
     if (d13_1 > 0.0 && d13_2 > 0.0 && d123_2 <= 0.0) {
       double inv_d13 = 1.0 / (d13_1 + d13_2);
-      m_v1.a = d13_1 * inv_d13;
-      m_v3.a = d13_2 * inv_d13;
-      m_count = 2;
-      m_v2.set(m_v3);
+      v1.a = d13_1 * inv_d13;
+      v3.a = d13_2 * inv_d13;
+      count = 2;
+      v2.set(v3);
       return;
     }
 
     // w2 region
     if (d12_1 <= 0.0 && d23_2 <= 0.0) {
-      m_v2.a = 1.0;
-      m_count = 1;
-      m_v1.set(m_v2);
+      v2.a = 1.0;
+      count = 1;
+      v1.set(v2);
       return;
     }
 
     // w3 region
     if (d13_1 <= 0.0 && d23_1 <= 0.0) {
-      m_v3.a = 1.0;
-      m_count = 1;
-      m_v1.set(m_v3);
+      v3.a = 1.0;
+      count = 1;
+      v1.set(v3);
       return;
     }
 
     // e23
     if (d23_1 > 0.0 && d23_2 > 0.0 && d123_1 <= 0.0) {
       double inv_d23 = 1.0 / (d23_1 + d23_2);
-      m_v2.a = d23_1 * inv_d23;
-      m_v3.a = d23_2 * inv_d23;
-      m_count = 2;
-      m_v1.set(m_v3);
+      v2.a = d23_1 * inv_d23;
+      v3.a = d23_2 * inv_d23;
+      count = 2;
+      v1.set(v3);
       return;
     }
 
     // Must be in triangle123
     double inv_d123 = 1.0 / (d123_1 + d123_2 + d123_3);
-    m_v1.a = d123_1 * inv_d123;
-    m_v2.a = d123_2 * inv_d123;
-    m_v3.a = d123_3 * inv_d123;
-    m_count = 3;
+    v1.a = d123_1 * inv_d123;
+    v2.a = d123_2 * inv_d123;
+    v3.a = d123_3 * inv_d123;
+    count = 3;
   }
 } // Class _Simplex
 
 class DistanceProxy {
-  final List<Vector2> m_vertices;
-  int m_count;
-  double m_radius;
-  final List<Vector2> m_buffer;
+  final List<Vector2> vertices;
+  int count;
+  double radius;
+  final List<Vector2> buffer;
 
   DistanceProxy()
-      : m_vertices = new List<Vector2>(Settings.maxPolygonVertices),
-        m_buffer = new List<Vector2>(2) {
-    for (int i = 0; i < m_vertices.length; i++) {
-      m_vertices[i] = new Vector2.zero();
+      : vertices = new List<Vector2>(Settings.maxPolygonVertices),
+        buffer = new List<Vector2>(2) {
+    for (int i = 0; i < vertices.length; i++) {
+      vertices[i] = new Vector2.zero();
     }
-    m_count = 0;
-    m_radius = 0.0;
+    count = 0;
+    radius = 0.0;
   }
 
   /**
@@ -467,41 +467,41 @@ class DistanceProxy {
     switch (shape.getType()) {
       case ShapeType.CIRCLE:
         final CircleShape circle = shape;
-        m_vertices[0].setFrom(circle.m_p);
-        m_count = 1;
-        m_radius = circle.radius;
+        vertices[0].setFrom(circle.p);
+        count = 1;
+        radius = circle.radius;
 
         break;
       case ShapeType.POLYGON:
         final PolygonShape poly = shape;
-        m_count = poly.m_count;
-        m_radius = poly.radius;
-        for (int i = 0; i < m_count; i++) {
-          m_vertices[i].setFrom(poly.m_vertices[i]);
+        count = poly.count;
+        radius = poly.radius;
+        for (int i = 0; i < count; i++) {
+          vertices[i].setFrom(poly.vertices[i]);
         }
         break;
       case ShapeType.CHAIN:
         final ChainShape chain = shape;
         assert(0 <= index && index < chain.m_count);
 
-        m_buffer[0] = chain.m_vertices[index];
+        buffer[0] = chain._vertices[index];
         if (index + 1 < chain.m_count) {
-          m_buffer[1] = chain.m_vertices[index + 1];
+          buffer[1] = chain._vertices[index + 1];
         } else {
-          m_buffer[1] = chain.m_vertices[0];
+          buffer[1] = chain._vertices[0];
         }
 
-        m_vertices[0].setFrom(m_buffer[0]);
-        m_vertices[1].setFrom(m_buffer[1]);
-        m_count = 2;
-        m_radius = chain.radius;
+        vertices[0].setFrom(buffer[0]);
+        vertices[1].setFrom(buffer[1]);
+        count = 2;
+        radius = chain.radius;
         break;
       case ShapeType.EDGE:
         EdgeShape edge = shape;
-        m_vertices[0].setFrom(edge.m_vertex1);
-        m_vertices[1].setFrom(edge.m_vertex2);
-        m_count = 2;
-        m_radius = edge.radius;
+        vertices[0].setFrom(edge.vertex1);
+        vertices[1].setFrom(edge.vertex2);
+        count = 2;
+        radius = edge.radius;
         break;
       default:
         assert(false);
@@ -516,9 +516,9 @@ class DistanceProxy {
    */
   int getSupport(final Vector2 d) {
     int bestIndex = 0;
-    double bestValue = m_vertices[0].dot(d);
-    for (int i = 1; i < m_count; i++) {
-      double value = m_vertices[i].dot(d);
+    double bestValue = vertices[0].dot(d);
+    for (int i = 1; i < count; i++) {
+      double value = vertices[i].dot(d);
       if (value > bestValue) {
         bestIndex = i;
         bestValue = value;
@@ -536,16 +536,16 @@ class DistanceProxy {
    */
   Vector2 getSupportVertex(final Vector2 d) {
     int bestIndex = 0;
-    double bestValue = m_vertices[0].dot(d);
-    for (int i = 1; i < m_count; i++) {
-      double value = m_vertices[i].dot(d);
+    double bestValue = vertices[0].dot(d);
+    for (int i = 1; i < count; i++) {
+      double value = vertices[i].dot(d);
       if (value > bestValue) {
         bestIndex = i;
         bestValue = value;
       }
     }
 
-    return m_vertices[bestIndex];
+    return vertices[bestIndex];
   }
 
   /**
@@ -554,7 +554,7 @@ class DistanceProxy {
    * @return
    */
   int getVertexCount() {
-    return m_count;
+    return count;
   }
 
   /**
@@ -564,8 +564,8 @@ class DistanceProxy {
    * @return
    */
   Vector2 getVertex(int index) {
-    assert(0 <= index && index < m_count);
-    return m_vertices[index];
+    assert(0 <= index && index < count);
+    return vertices[index];
   }
 } // Class _DistanceProxy.
 
@@ -623,13 +623,13 @@ class Distance {
     while (iter < MAX_ITERS) {
 
       // Copy simplex so we can identify duplicates.
-      saveCount = _simplex.m_count;
+      saveCount = _simplex.count;
       for (int i = 0; i < saveCount; i++) {
         _saveA[i] = vertices[i].indexA;
         _saveB[i] = vertices[i].indexB;
       }
 
-      switch (_simplex.m_count) {
+      switch (_simplex.count) {
         case 1:
           break;
         case 2:
@@ -643,7 +643,7 @@ class Distance {
       }
 
       // If we have 3 points, then the origin is in the corresponding triangle.
-      if (_simplex.m_count == 3) {
+      if (_simplex.count == 3) {
         break;
       }
 
@@ -671,7 +671,7 @@ class Distance {
         break;
       }
       /*
-       * SimplexVertex* vertex = vertices + simplex.m_count; vertex.indexA =
+       * SimplexVertex* vertex = vertices + simplex.count; vertex.indexA =
        * proxyA.GetSupport(MulT(transformA.R, -d)); vertex.wA = Mul(transformA,
        * proxyA.GetVertex(vertex.indexA)); Vec2 wBLocal; vertex.indexB =
        * proxyB.GetSupport(MulT(transformB.R, d)); vertex.wB = Mul(transformB,
@@ -679,7 +679,7 @@ class Distance {
        */
 
       // Compute a tentative new simplex vertex using support points.
-      _SimplexVertex vertex = vertices[_simplex.m_count];
+      _SimplexVertex vertex = vertices[_simplex.count];
 
       Rot.mulTransUnsafeVec2(transformA.q, _d.negate(), _temp);
       vertex.indexA = proxyA.getSupport(_temp);
@@ -711,7 +711,7 @@ class Distance {
       }
 
       // New vertex is ok and needed.
-      ++_simplex.m_count;
+      ++_simplex.count;
     }
 
     GJK_MAX_ITERS = Math.max(GJK_MAX_ITERS, iter);
@@ -726,8 +726,8 @@ class Distance {
 
     // Apply radii if requested.
     if (input.useRadii) {
-      double rA = proxyA.m_radius;
-      double rB = proxyB.m_radius;
+      double rA = proxyA.radius;
+      double rB = proxyB.radius;
 
       if (output.distance > rA + rB && output.distance > Settings.EPSILON) {
         // Shapes are still no overlapped.

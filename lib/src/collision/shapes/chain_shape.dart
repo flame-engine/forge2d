@@ -32,12 +32,12 @@ part of box2d;
  */
 
 class ChainShape extends Shape {
-  List<Vector2> m_vertices;
+  List<Vector2> _vertices;
   int m_count = 0;
-  final Vector2 m_prevVertex = new Vector2.zero(),
-      m_nextVertex = new Vector2.zero();
-  bool m_hasPrevVertex = false,
-      m_hasNextVertex = false;
+  final Vector2 _prevVertex = new Vector2.zero(),
+      _nextVertex = new Vector2.zero();
+  bool _hasPrevVertex = false,
+      _hasNextVertex = false;
 
   final EdgeShape _pool0 = new EdgeShape();
 
@@ -46,7 +46,7 @@ class ChainShape extends Shape {
   }
 
   void clear() {
-    m_vertices = null;
+    _vertices = null;
     m_count = 0;
   }
 
@@ -61,33 +61,33 @@ class ChainShape extends Shape {
     assert(0 <= index && index < m_count - 1);
     edge.radius = radius;
 
-    final Vector2 v0 = m_vertices[index + 0];
-    final Vector2 v1 = m_vertices[index + 1];
-    edge.m_vertex1.x = v0.x;
-    edge.m_vertex1.y = v0.y;
-    edge.m_vertex2.x = v1.x;
-    edge.m_vertex2.y = v1.y;
+    final Vector2 v0 = _vertices[index + 0];
+    final Vector2 v1 = _vertices[index + 1];
+    edge.vertex1.x = v0.x;
+    edge.vertex1.y = v0.y;
+    edge.vertex2.x = v1.x;
+    edge.vertex2.y = v1.y;
 
     if (index > 0) {
-      Vector2 v = m_vertices[index - 1];
-      edge.m_vertex0.x = v.x;
-      edge.m_vertex0.y = v.y;
-      edge.m_hasVertex0 = true;
+      Vector2 v = _vertices[index - 1];
+      edge.vertex0.x = v.x;
+      edge.vertex0.y = v.y;
+      edge.hasVertex0 = true;
     } else {
-      edge.m_vertex0.x = m_prevVertex.x;
-      edge.m_vertex0.y = m_prevVertex.y;
-      edge.m_hasVertex0 = m_hasPrevVertex;
+      edge.vertex0.x = _prevVertex.x;
+      edge.vertex0.y = _prevVertex.y;
+      edge.hasVertex0 = _hasPrevVertex;
     }
 
     if (index < m_count - 2) {
-      Vector2 v = m_vertices[index + 2];
-      edge.m_vertex3.x = v.x;
-      edge.m_vertex3.y = v.y;
-      edge.m_hasVertex3 = true;
+      Vector2 v = _vertices[index + 2];
+      edge.vertex3.x = v.x;
+      edge.vertex3.y = v.y;
+      edge.hasVertex3 = true;
     } else {
-      edge.m_vertex3.x = m_nextVertex.x;
-      edge.m_vertex3.y = m_nextVertex.y;
-      edge.m_hasVertex3 = m_hasNextVertex;
+      edge.vertex3.x = _nextVertex.x;
+      edge.vertex3.y = _nextVertex.y;
+      edge.hasVertex3 = _hasNextVertex;
     }
   }
 
@@ -113,12 +113,12 @@ class ChainShape extends Shape {
     if (i2 == m_count) {
       i2 = 0;
     }
-    Vector2 v = m_vertices[i1];
-    edgeShape.m_vertex1.x = v.x;
-    edgeShape.m_vertex1.y = v.y;
-    Vector2 v1 = m_vertices[i2];
-    edgeShape.m_vertex2.x = v1.x;
-    edgeShape.m_vertex2.y = v1.y;
+    Vector2 v = _vertices[i1];
+    edgeShape.vertex1.x = v.x;
+    edgeShape.vertex1.y = v.y;
+    Vector2 v1 = _vertices[i2];
+    edgeShape.vertex2.x = v1.x;
+    edgeShape.vertex2.y = v1.y;
 
     return edgeShape.raycast(output, input, xf, 0);
   }
@@ -134,8 +134,8 @@ class ChainShape extends Shape {
       i2 = 0;
     }
 
-    final Vector2 vi1 = m_vertices[i1];
-    final Vector2 vi2 = m_vertices[i2];
+    final Vector2 vi1 = _vertices[i1];
+    final Vector2 vi2 = _vertices[i2];
     final Rot xfq = xf.q;
     final Vector2 xfp = xf.p;
     double v1x = (xfq.c * vi1.x - xfq.s * vi1.y) + xfp.x;
@@ -157,11 +157,11 @@ class ChainShape extends Shape {
 
   Shape clone() {
     ChainShape clone = new ChainShape();
-    clone.createChain(m_vertices, m_count);
-    clone.m_prevVertex.setFrom(m_prevVertex);
-    clone.m_nextVertex.setFrom(m_nextVertex);
-    clone.m_hasPrevVertex = m_hasPrevVertex;
-    clone.m_hasNextVertex = m_hasNextVertex;
+    clone.createChain(_vertices, m_count);
+    clone._prevVertex.setFrom(_prevVertex);
+    clone._nextVertex.setFrom(_nextVertex);
+    clone._hasPrevVertex = _hasPrevVertex;
+    clone._hasNextVertex = _hasNextVertex;
     return clone;
   }
 
@@ -172,10 +172,10 @@ class ChainShape extends Shape {
    * @param count the vertex count
    */
   void createLoop(final List<Vector2> vertices, int count) {
-    assert(m_vertices == null && m_count == 0);
+    assert(_vertices == null && m_count == 0);
     assert(count >= 3);
     m_count = count + 1;
-    m_vertices = new List<Vector2>(m_count);
+    _vertices = new List<Vector2>(m_count);
     for (int i = 1; i < count; i++) {
       Vector2 v1 = vertices[i - 1];
       Vector2 v2 = vertices[i];
@@ -186,13 +186,13 @@ class ChainShape extends Shape {
       }
     }
     for (int i = 0; i < count; i++) {
-      m_vertices[i] = new Vector2.copy(vertices[i]);
+      _vertices[i] = new Vector2.copy(vertices[i]);
     }
-    m_vertices[count] = new Vector2.copy(m_vertices[0]);
-    m_prevVertex.setFrom(m_vertices[m_count - 2]);
-    m_nextVertex.setFrom(m_vertices[1]);
-    m_hasPrevVertex = true;
-    m_hasNextVertex = true;
+    _vertices[count] = new Vector2.copy(_vertices[0]);
+    _prevVertex.setFrom(_vertices[m_count - 2]);
+    _nextVertex.setFrom(_vertices[1]);
+    _hasPrevVertex = true;
+    _hasNextVertex = true;
   }
 
   /**
@@ -202,10 +202,10 @@ class ChainShape extends Shape {
    * @param count the vertex count
    */
   void createChain(final List<Vector2> vertices, int count) {
-    assert(m_vertices == null && m_count == 0);
+    assert(_vertices == null && m_count == 0);
     assert(count >= 2);
     m_count = count;
-    m_vertices = new List<Vector2>(m_count);
+    _vertices = new List<Vector2>(m_count);
     for (int i = 1; i < m_count; i++) {
       Vector2 v1 = vertices[i - 1];
       Vector2 v2 = vertices[i];
@@ -216,13 +216,13 @@ class ChainShape extends Shape {
       }
     }
     for (int i = 0; i < m_count; i++) {
-      m_vertices[i] = new Vector2.copy(vertices[i]);
+      _vertices[i] = new Vector2.copy(vertices[i]);
     }
-    m_hasPrevVertex = false;
-    m_hasNextVertex = false;
+    _hasPrevVertex = false;
+    _hasNextVertex = false;
 
-    m_prevVertex.setZero();
-    m_nextVertex.setZero();
+    _prevVertex.setZero();
+    _nextVertex.setZero();
   }
 
   /**
@@ -231,8 +231,8 @@ class ChainShape extends Shape {
    * @param prevVertex
    */
   void setPrevVertex(final Vector2 prevVertex) {
-    m_prevVertex.setFrom(prevVertex);
-    m_hasPrevVertex = true;
+    _prevVertex.setFrom(prevVertex);
+    _hasPrevVertex = true;
   }
 
   /**
@@ -241,7 +241,7 @@ class ChainShape extends Shape {
    * @param nextVertex
    */
   void setNextVertex(final Vector2 nextVertex) {
-    m_nextVertex.setFrom(nextVertex);
-    m_hasNextVertex = true;
+    _nextVertex.setFrom(nextVertex);
+    _hasNextVertex = true;
   }
 }

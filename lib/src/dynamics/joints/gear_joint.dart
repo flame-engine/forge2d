@@ -128,10 +128,10 @@ class GearJoint extends Joint {
     m_bodyA = m_joint1.getBodyB();
 
     // Get geometry of joint1
-    Transform xfA = m_bodyA.m_xf;
-    double aA = m_bodyA.m_sweep.a;
-    Transform xfC = m_bodyC.m_xf;
-    double aC = m_bodyC.m_sweep.a;
+    Transform xfA = m_bodyA.xf;
+    double aA = m_bodyA.sweep.a;
+    Transform xfC = m_bodyC.xf;
+    double aC = m_bodyC.sweep.a;
 
     if (m_typeA == JointType.REVOLUTE) {
       RevoluteJoint revolute = def.joint1;
@@ -161,10 +161,10 @@ class GearJoint extends Joint {
     m_bodyB = m_joint2.getBodyB();
 
     // Get geometry of joint2
-    Transform xfB = m_bodyB.m_xf;
-    double aB = m_bodyB.m_sweep.a;
-    Transform xfD = m_bodyD.m_xf;
-    double aD = m_bodyD.m_sweep.a;
+    Transform xfB = m_bodyB.xf;
+    double aB = m_bodyB.sweep.a;
+    Transform xfD = m_bodyD.xf;
+    double aD = m_bodyD.sweep.a;
 
     if (m_typeB == JointType.REVOLUTE) {
       RevoluteJoint revolute = def.joint2;
@@ -225,22 +225,22 @@ class GearJoint extends Joint {
   }
 
   void initVelocityConstraints(SolverData data) {
-    m_indexA = m_bodyA.m_islandIndex;
-    m_indexB = m_bodyB.m_islandIndex;
-    m_indexC = m_bodyC.m_islandIndex;
-    m_indexD = m_bodyD.m_islandIndex;
-    m_lcA.setFrom(m_bodyA.m_sweep.localCenter);
-    m_lcB.setFrom(m_bodyB.m_sweep.localCenter);
-    m_lcC.setFrom(m_bodyC.m_sweep.localCenter);
-    m_lcD.setFrom(m_bodyD.m_sweep.localCenter);
-    m_mA = m_bodyA.m_invMass;
-    m_mB = m_bodyB.m_invMass;
-    m_mC = m_bodyC.m_invMass;
-    m_mD = m_bodyD.m_invMass;
-    m_iA = m_bodyA.m_invI;
-    m_iB = m_bodyB.m_invI;
-    m_iC = m_bodyC.m_invI;
-    m_iD = m_bodyD.m_invI;
+    m_indexA = m_bodyA.islandIndex;
+    m_indexB = m_bodyB.islandIndex;
+    m_indexC = m_bodyC.islandIndex;
+    m_indexD = m_bodyD.islandIndex;
+    m_lcA.setFrom(m_bodyA.sweep.localCenter);
+    m_lcB.setFrom(m_bodyB.sweep.localCenter);
+    m_lcC.setFrom(m_bodyC.sweep.localCenter);
+    m_lcD.setFrom(m_bodyD.sweep.localCenter);
+    m_mA = m_bodyA.invMass;
+    m_mB = m_bodyB.invMass;
+    m_mC = m_bodyC.invMass;
+    m_mD = m_bodyD.invMass;
+    m_iA = m_bodyA.invI;
+    m_iB = m_bodyB.invI;
+    m_iC = m_bodyC.invI;
+    m_iD = m_bodyD.invI;
 
     // Vec2 cA = data.positions[m_indexA].c;
     double aA = data.positions[m_indexA].a;

@@ -34,25 +34,25 @@ class VoronoiGenerator {
 }
 
 class VoronoiDiagramTask {
-  int m_x = 0,
-      m_y = 0,
-      m_i = 0;
-  VoronoiGenerator m_generator;
+  int _x = 0,
+      _y = 0,
+      _i = 0;
+  VoronoiGenerator _generator;
 
   VoronoiDiagramTask.zero() {}
 
   VoronoiDiagramTask(int x, int y, int i, VoronoiGenerator g) {
-    m_x = x;
-    m_y = y;
-    m_i = i;
-    m_generator = g;
+    _x = x;
+    _y = y;
+    _i = i;
+    _generator = g;
   }
 
   VoronoiDiagramTask set(int x, int y, int i, VoronoiGenerator g) {
-    m_x = x;
-    m_y = y;
-    m_i = i;
-    m_generator = g;
+    _x = x;
+    _y = y;
+    _i = i;
+    _generator = g;
     return this;
   }
 }
@@ -144,10 +144,10 @@ class VoronoiDiagram {
     }
     while (!_queue.empty()) {
       VoronoiDiagramTask front = _queue.pop();
-      int x = front.m_x;
-      int y = front.m_y;
-      int i = front.m_i;
-      VoronoiGenerator g = front.m_generator;
+      int x = front._x;
+      int y = front._y;
+      int i = front._i;
+      VoronoiGenerator g = front._generator;
       if (_m_diagram[i] == null) {
         _m_diagram[i] = g;
         if (x > 0) {
@@ -192,10 +192,10 @@ class VoronoiDiagram {
       bool updated = false;
       while (!_queue.empty()) {
         VoronoiDiagramTask front = _queue.pop();
-        int x = front.m_x;
-        int y = front.m_y;
-        int i = front.m_i;
-        VoronoiGenerator k = front.m_generator;
+        int x = front._x;
+        int y = front._y;
+        int i = front._i;
+        VoronoiGenerator k = front._generator;
         VoronoiGenerator a = _m_diagram[i];
         VoronoiGenerator b = k;
         if (a != b) {

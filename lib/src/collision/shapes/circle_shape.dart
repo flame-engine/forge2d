@@ -28,7 +28,7 @@ part of box2d;
  * A circle shape.
  */
 class CircleShape extends Shape {
-  final Vector2 m_p = new Vector2.zero();
+  final Vector2 p = new Vector2.zero();
 
   CircleShape() : super(ShapeType.CIRCLE) {
     radius = 0.0;
@@ -36,8 +36,8 @@ class CircleShape extends Shape {
 
   Shape clone() {
     CircleShape shape = new CircleShape();
-    shape.m_p.x = m_p.x;
-    shape.m_p.y = m_p.y;
+    shape.p.x = p.x;
+    shape.p.y = p.y;
     shape.radius = radius;
     return shape;
   }
@@ -58,7 +58,7 @@ class CircleShape extends Shape {
    * @param d
    * @return
    */
-  Vector2 getSupportVertex(final Vector2 d) => m_p;
+  Vector2 getSupportVertex(final Vector2 d) => p;
 
   /**
    * Get the vertex count.
@@ -75,7 +75,7 @@ class CircleShape extends Shape {
    */
   Vector2 getVertex(final int index) {
     assert(index == 0);
-    return m_p;
+    return p;
   }
 
   bool testPoint(final Transform transform, final Vector2 p) {
@@ -86,8 +86,8 @@ class CircleShape extends Shape {
     // return Vec2.dot(d, d) <= m_radius * m_radius;
     final Rot q = transform.q;
     final Vector2 tp = transform.p;
-    double centerx = -(q.c * m_p.x - q.s * m_p.y + tp.x - p.x);
-    double centery = -(q.s * m_p.x + q.c * m_p.y + tp.y - p.y);
+    double centerx = -(q.c * p.x - q.s * p.y + tp.x - p.x);
+    double centery = -(q.s * p.x + q.c * p.y + tp.y - p.y);
 
     return centerx * centerx + centery * centery <= radius * radius;
   }
@@ -95,8 +95,8 @@ class CircleShape extends Shape {
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
     final Rot xfq = xf.q;
-    double centerx = xfq.c * m_p.x - xfq.s * m_p.y + xf.p.x;
-    double centery = xfq.s * m_p.x + xfq.c * m_p.y + xf.p.y;
+    double centerx = xfq.c * p.x - xfq.s * p.y + xf.p.x;
+    double centery = xfq.s * p.x + xfq.c * p.y + xf.p.y;
     double dx = p.x - centerx;
     double dy = p.y - centery;
     double d1 = Math.sqrt(dx * dx + dy * dy);
@@ -118,8 +118,8 @@ class CircleShape extends Shape {
 
     // Rot.mulToOutUnsafe(transform.q, m_p, position);
     // position.addLocal(transform.p);
-    final double positionx = tq.c * m_p.x - tq.s * m_p.y + tp.x;
-    final double positiony = tq.s * m_p.x + tq.c * m_p.y + tp.y;
+    final double positionx = tq.c * p.x - tq.s * p.y + tp.x;
+    final double positiony = tq.s * p.x + tq.c * p.y + tp.y;
 
     final double sx = inputp1.x - positionx;
     final double sy = inputp1.y - positiony;
@@ -159,8 +159,8 @@ class CircleShape extends Shape {
   void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
     final Rot tq = transform.q;
     final Vector2 tp = transform.p;
-    final double px = tq.c * m_p.x - tq.s * m_p.y + tp.x;
-    final double py = tq.s * m_p.x + tq.c * m_p.y + tp.y;
+    final double px = tq.c * p.x - tq.s * p.y + tp.x;
+    final double py = tq.s * p.x + tq.c * p.y + tp.y;
 
     aabb.lowerBound.x = px - radius;
     aabb.lowerBound.y = py - radius;
@@ -170,12 +170,12 @@ class CircleShape extends Shape {
 
   void computeMass(final MassData massData, final double density) {
     massData.mass = density * Math.PI * radius * radius;
-    massData.center.x = m_p.x;
-    massData.center.y = m_p.y;
+    massData.center.x = p.x;
+    massData.center.y = p.y;
 
     // inertia about the local origin
     // massData.I = massData.mass * (0.5f * m_radius * m_radius + Vec2.dot(m_p, m_p));
     massData.I = massData.mass *
-        (0.5 * radius * radius + (m_p.x * m_p.x + m_p.y * m_p.y));
+        (0.5 * radius * radius + (p.x * p.x + p.y * p.y));
   }
 }

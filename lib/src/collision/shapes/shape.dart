@@ -30,17 +30,17 @@ part of box2d;
  * one or more child shapes.
  */
 abstract class Shape {
-  final ShapeType m_type;
+  final ShapeType shapeType;
   double radius = 0.0;
 
-  Shape(this.m_type);
+  Shape(this.shapeType);
 
   /**
    * Get the type of this shape. You can use this to down cast to the concrete shape.
    * 
    * @return the shape type.
    */
-  ShapeType getType() => m_type;
+  ShapeType getType() => shapeType;
 
   /**
    * The radius of the underlying shape. This can refer to different things depending on the shape

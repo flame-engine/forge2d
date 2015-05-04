@@ -33,21 +33,21 @@ part of box2d;
 abstract class DebugDraw {
 
   /** Draw shapes */
-  static const int e_shapeBit = 1 << 1;
+  static const int SHAPE_BIT = 1 << 1;
   /** Draw joint connections */
-  static const int e_jointBit = 1 << 2;
+  static const int JOINT_BIT = 1 << 2;
   /** Draw axis aligned bounding boxes */
-  static const int e_aabbBit = 1 << 3;
+  static const int AABB_BIT = 1 << 3;
   /** Draw pairs of connected objects */
-  static const int e_pairBit = 1 << 4;
+  static const int PAIR_BIT = 1 << 4;
   /** Draw center of mass frame */
-  static const int e_centerOfMassBit = 1 << 5;
+  static const int CENTER_OF_MASS_BIT = 1 << 5;
   /** Draw dynamic tree */
-  static const int e_dynamicTreeBit = 1 << 6;
+  static const int DYNAMIC_TREE_BIT = 1 << 6;
   /** Draw only the wireframe for drawing performance */
-  static const int e_wireframeDrawingBit = 1 << 7;
+  static const int WIREFRAME_DRAWING_BIT = 1 << 7;
 
-  int m_drawFlags = e_shapeBit;
+  int _drawFlags = SHAPE_BIT;
   ViewportTransform viewportTransform;
 
   DebugDraw.zero();
@@ -58,19 +58,19 @@ abstract class DebugDraw {
   }
 
   void setFlags(int flags) {
-    m_drawFlags = flags;
+    _drawFlags = flags;
   }
 
   int getFlags() {
-    return m_drawFlags;
+    return _drawFlags;
   }
 
   void appendFlags(int flags) {
-    m_drawFlags |= flags;
+    _drawFlags |= flags;
   }
 
   void clearFlags(int flags) {
-    m_drawFlags &= ~flags;
+    _drawFlags &= ~flags;
   }
 
   /**

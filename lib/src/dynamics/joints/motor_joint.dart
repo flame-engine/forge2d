@@ -180,14 +180,14 @@ class MotorJoint extends Joint {
   }
 
   void initVelocityConstraints(SolverData data) {
-    _m_indexA = m_bodyA.m_islandIndex;
-    _m_indexB = m_bodyB.m_islandIndex;
-    _m_localCenterA.setFrom(m_bodyA.m_sweep.localCenter);
-    _m_localCenterB.setFrom(m_bodyB.m_sweep.localCenter);
-    _m_invMassA = m_bodyA.m_invMass;
-    _m_invMassB = m_bodyB.m_invMass;
-    _m_invIA = m_bodyA.m_invI;
-    _m_invIB = m_bodyB.m_invI;
+    _m_indexA = m_bodyA.islandIndex;
+    _m_indexB = m_bodyB.islandIndex;
+    _m_localCenterA.setFrom(m_bodyA.sweep.localCenter);
+    _m_localCenterB.setFrom(m_bodyB.sweep.localCenter);
+    _m_invMassA = m_bodyA.invMass;
+    _m_invMassB = m_bodyB.invMass;
+    _m_invIA = m_bodyA.invI;
+    _m_invIB = m_bodyB.invI;
 
     final Vector2 cA = data.positions[_m_indexA].c;
     double aA = data.positions[_m_indexA].a;

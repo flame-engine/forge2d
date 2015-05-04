@@ -227,7 +227,7 @@ class Island {
     // Integrate velocities and apply damping. Initialize the body state.
     for (int i = 0; i < m_bodyCount; ++i) {
       final Body b = m_bodies[i];
-      final Sweep bm_sweep = b.m_sweep;
+      final Sweep bm_sweep = b.sweep;
       final Vector2 c = bm_sweep.c;
       double a = bm_sweep.a;
       final Vector2 v = b._linearVelocity;
@@ -237,12 +237,12 @@ class Island {
       bm_sweep.c0.setFrom(bm_sweep.c);
       bm_sweep.a0 = bm_sweep.a;
 
-      if (b.m_type == BodyType.DYNAMIC) {
+      if (b.bodyType == BodyType.DYNAMIC) {
         // Integrate velocities.
         // v += h * (b.m_gravityScale * gravity + b.m_invMass * b.m_force);
-        v.x += h * (b.m_gravityScale * gravity.x + b.m_invMass * b.m_force.x);
-        v.y += h * (b.m_gravityScale * gravity.y + b.m_invMass * b.m_force.y);
-        w += h * b.m_invI * b.m_torque;
+        v.x += h * (b.gravityScale * gravity.x + b.invMass * b.force.x);
+        v.y += h * (b.gravityScale * gravity.y + b.invMass * b.force.y);
+        w += h * b.invI * b.torque;
 
         // Apply damping.
         // ODE: dv/dt + c * v = 0
@@ -252,8 +252,8 @@ class Island {
         // v2 = exp(-c * dt) * v1
         // Pade approximation:
         // v2 = v1 * 1 / (1 + c * dt)
-        v.x *= 1.0 / (1.0 + h * b.m_linearDamping);
-        v.y *= 1.0 / (1.0 + h * b.m_linearDamping);
+        v.x *= 1.0 / (1.0 + h * b.linearDamping);
+        v.y *= 1.0 / (1.0 + h * b.linearDamping);
         w *= 1.0 / (1.0 + h * b.angularDamping);
       }
 
@@ -366,9 +366,9 @@ class Island {
     // Copy state buffers back to the bodies
     for (int i = 0; i < m_bodyCount; ++i) {
       Body body = m_bodies[i];
-      body.m_sweep.c.x = m_positions[i].c.x;
-      body.m_sweep.c.y = m_positions[i].c.y;
-      body.m_sweep.a = m_positions[i].a;
+      body.sweep.c.x = m_positions[i].c.x;
+      body.sweep.c.y = m_positions[i].c.y;
+      body.sweep.a = m_positions[i].a;
       body._linearVelocity.x = m_velocities[i].v.x;
       body._linearVelocity.y = m_velocities[i].v.y;
       body._angularVelocity = m_velocities[i].w;
@@ -393,14 +393,14 @@ class Island {
           continue;
         }
 
-        if ((b.m_flags & Body.e_autoSleepFlag) == 0 ||
+        if ((b.flags & Body.AUTO_SLEEP_FLAG) == 0 ||
             b._angularVelocity * b._angularVelocity > angTolSqr ||
             b._linearVelocity.dot(b._linearVelocity) > linTolSqr) {
-          b.m_sleepTime = 0.0;
+          b.sleepTime = 0.0;
           minSleepTime = 0.0;
         } else {
-          b.m_sleepTime += h;
-          minSleepTime = Math.min(minSleepTime, b.m_sleepTime);
+          b.sleepTime += h;
+          minSleepTime = Math.min(minSleepTime, b.sleepTime);
         }
       }
 
@@ -422,9 +422,9 @@ class Island {
 
     // Initialize the body state.
     for (int i = 0; i < m_bodyCount; ++i) {
-      m_positions[i].c.x = m_bodies[i].m_sweep.c.x;
-      m_positions[i].c.y = m_bodies[i].m_sweep.c.y;
-      m_positions[i].a = m_bodies[i].m_sweep.a;
+      m_positions[i].c.x = m_bodies[i].sweep.c.x;
+      m_positions[i].c.y = m_bodies[i].sweep.c.y;
+      m_positions[i].a = m_bodies[i].sweep.a;
       m_velocities[i].v.x = m_bodies[i]._linearVelocity.x;
       m_velocities[i].v.y = m_bodies[i]._linearVelocity.y;
       m_velocities[i].w = m_bodies[i]._angularVelocity;
@@ -479,11 +479,11 @@ class Island {
     // #endif
 
     // Leap of faith to new safe state.
-    m_bodies[toiIndexA].m_sweep.c0.x = m_positions[toiIndexA].c.x;
-    m_bodies[toiIndexA].m_sweep.c0.y = m_positions[toiIndexA].c.y;
-    m_bodies[toiIndexA].m_sweep.a0 = m_positions[toiIndexA].a;
-    m_bodies[toiIndexB].m_sweep.c0.setFrom(m_positions[toiIndexB].c);
-    m_bodies[toiIndexB].m_sweep.a0 = m_positions[toiIndexB].a;
+    m_bodies[toiIndexA].sweep.c0.x = m_positions[toiIndexA].c.x;
+    m_bodies[toiIndexA].sweep.c0.y = m_positions[toiIndexA].c.y;
+    m_bodies[toiIndexA].sweep.a0 = m_positions[toiIndexA].a;
+    m_bodies[toiIndexB].sweep.c0.setFrom(m_positions[toiIndexB].c);
+    m_bodies[toiIndexB].sweep.a0 = m_positions[toiIndexB].a;
 
     // No warm starting is needed for TOI events because warm
     // starting impulses were applied in the discrete solver.
@@ -537,9 +537,9 @@ class Island {
 
       // Sync bodies
       Body body = m_bodies[i];
-      body.m_sweep.c.x = c.x;
-      body.m_sweep.c.y = c.y;
-      body.m_sweep.a = a;
+      body.sweep.c.x = c.x;
+      body.sweep.c.y = c.y;
+      body.sweep.a = a;
       body._linearVelocity.x = v.x;
       body._linearVelocity.y = v.y;
       body._angularVelocity = w;
@@ -551,7 +551,7 @@ class Island {
 
   void addBody(Body body) {
     assert(m_bodyCount < m_bodyCapacity);
-    body.m_islandIndex = m_bodyCount;
+    body.islandIndex = m_bodyCount;
     m_bodies[m_bodyCount] = body;
     ++m_bodyCount;
   }

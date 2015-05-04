@@ -35,22 +35,22 @@ class EdgeShape extends Shape {
   /**
    * edge vertex 1
    */
-  final Vector2 m_vertex1 = new Vector2.zero();
+  final Vector2 vertex1 = new Vector2.zero();
   /**
    * edge vertex 2
    */
-  final Vector2 m_vertex2 = new Vector2.zero();
+  final Vector2 vertex2 = new Vector2.zero();
 
   /**
    * optional adjacent vertex 1. Used for smooth collision
    */
-  final Vector2 m_vertex0 = new Vector2.zero();
+  final Vector2 vertex0 = new Vector2.zero();
   /**
    * optional adjacent vertex 2. Used for smooth collision
    */
-  final Vector2 m_vertex3 = new Vector2.zero();
-  bool m_hasVertex0 = false,
-      m_hasVertex3 = false;
+  final Vector2 vertex3 = new Vector2.zero();
+  bool hasVertex0 = false,
+      hasVertex3 = false;
 
   EdgeShape() : super(ShapeType.EDGE) {
     radius = Settings.polygonRadius;
@@ -61,9 +61,9 @@ class EdgeShape extends Shape {
   }
 
   void set(Vector2 v1, Vector2 v2) {
-    m_vertex1.setFrom(v1);
-    m_vertex2.setFrom(v2);
-    m_hasVertex0 = m_hasVertex3 = false;
+    vertex1.setFrom(v1);
+    vertex2.setFrom(v2);
+    hasVertex0 = hasVertex3 = false;
   }
 
   bool testPoint(Transform xf, Vector2 p) {
@@ -79,10 +79,10 @@ class EdgeShape extends Shape {
     double xfqs = xf.q.s;
     double xfpx = xf.p.x;
     double xfpy = xf.p.y;
-    double v1x = (xfqc * m_vertex1.x - xfqs * m_vertex1.y) + xfpx;
-    double v1y = (xfqs * m_vertex1.x + xfqc * m_vertex1.y) + xfpy;
-    double v2x = (xfqc * m_vertex2.x - xfqs * m_vertex2.y) + xfpx;
-    double v2y = (xfqs * m_vertex2.x + xfqc * m_vertex2.y) + xfpy;
+    double v1x = (xfqc * vertex1.x - xfqs * vertex1.y) + xfpx;
+    double v1y = (xfqs * vertex1.x + xfqc * vertex1.y) + xfpy;
+    double v2x = (xfqc * vertex2.x - xfqs * vertex2.y) + xfpx;
+    double v2y = (xfqs * vertex2.x + xfqc * vertex2.y) + xfpy;
 
     double dx = p.x - v1x;
     double dy = p.y - v1y;
@@ -118,8 +118,8 @@ class EdgeShape extends Shape {
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
     double tempx, tempy;
-    final Vector2 v1 = m_vertex1;
-    final Vector2 v2 = m_vertex2;
+    final Vector2 v1 = vertex1;
+    final Vector2 v2 = vertex2;
     final Rot xfq = xf.q;
     final Vector2 xfp = xf.p;
 
@@ -203,10 +203,10 @@ class EdgeShape extends Shape {
     final Vector2 upperBound = aabb.upperBound;
     final Rot xfq = xf.q;
 
-    final double v1x = (xfq.c * m_vertex1.x - xfq.s * m_vertex1.y) + xf.p.x;
-    final double v1y = (xfq.s * m_vertex1.x + xfq.c * m_vertex1.y) + xf.p.y;
-    final double v2x = (xfq.c * m_vertex2.x - xfq.s * m_vertex2.y) + xf.p.x;
-    final double v2y = (xfq.s * m_vertex2.x + xfq.c * m_vertex2.y) + xf.p.y;
+    final double v1x = (xfq.c * vertex1.x - xfq.s * vertex1.y) + xf.p.x;
+    final double v1y = (xfq.s * vertex1.x + xfq.c * vertex1.y) + xf.p.y;
+    final double v2x = (xfq.c * vertex2.x - xfq.s * vertex2.y) + xf.p.x;
+    final double v2y = (xfq.s * vertex2.x + xfq.c * vertex2.y) + xf.p.y;
 
     lowerBound.x = v1x < v2x ? v1x : v2x;
     lowerBound.y = v1y < v2y ? v1y : v2y;
@@ -221,19 +221,19 @@ class EdgeShape extends Shape {
 
   void computeMass(MassData massData, double density) {
     massData.mass = 0.0;
-    massData.center.setFrom(m_vertex1).add(m_vertex2).scale(0.5);
+    massData.center.setFrom(vertex1).add(vertex2).scale(0.5);
     massData.I = 0.0;
   }
 
   Shape clone() {
     EdgeShape edge = new EdgeShape();
     edge.radius = this.radius;
-    edge.m_hasVertex0 = this.m_hasVertex0;
-    edge.m_hasVertex3 = this.m_hasVertex3;
-    edge.m_vertex0.setFrom(this.m_vertex0);
-    edge.m_vertex1.setFrom(this.m_vertex1);
-    edge.m_vertex2.setFrom(this.m_vertex2);
-    edge.m_vertex3.setFrom(this.m_vertex3);
+    edge.hasVertex0 = this.hasVertex0;
+    edge.hasVertex3 = this.hasVertex3;
+    edge.vertex0.setFrom(this.vertex0);
+    edge.vertex1.setFrom(this.vertex1);
+    edge.vertex2.setFrom(this.vertex2);
+    edge.vertex3.setFrom(this.vertex3);
     return edge;
   }
 }

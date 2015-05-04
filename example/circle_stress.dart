@@ -122,7 +122,7 @@ class CircleStress extends Demo {
 
         var cd = new CircleShape()
           ..radius = 1.2
-          ..m_p.setValues(xPos, yPos);
+          ..p.setValues(xPos, yPos);
 
         final fd = new FixtureDef()
           ..shape = cd
