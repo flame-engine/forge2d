@@ -123,8 +123,8 @@ abstract class Contact {
     final Shape shapeA = _fixtureA.getShape();
     final Shape shapeB = _fixtureB.getShape();
 
-    worldManifold.initialize(m_manifold, bodyA.getTransform(), shapeA.radius,
-        bodyB.getTransform(), shapeB.radius);
+    worldManifold.initialize(m_manifold, bodyA.transform, shapeA.radius,
+        bodyB.transform, shapeB.radius);
   }
 
   /**
@@ -251,8 +251,8 @@ abstract class Contact {
 
     Body bodyA = _fixtureA.getBody();
     Body bodyB = _fixtureB.getBody();
-    Transform xfA = bodyA.getTransform();
-    Transform xfB = bodyB.getTransform();
+    Transform xfA = bodyA.transform;
+    Transform xfB = bodyB.transform;
     // log.debug("TransformA: "+xfA);
     // log.debug("TransformB: "+xfB);
 

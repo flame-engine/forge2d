@@ -61,7 +61,7 @@ class MouseJoint extends Joint {
 
     _m_targetA.setFrom(def.target);
     Transform.mulTransToOutUnsafeVec2(
-        m_bodyB.getTransform(), _m_targetA, _m_localAnchorB);
+        m_bodyB.transform, _m_targetA, _m_localAnchorB);
 
     _m_maxForce = def.maxForce;
     _m_impulse.setZero();

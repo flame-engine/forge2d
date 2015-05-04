@@ -377,7 +377,7 @@ class SolveCollisionCallback implements QueryCallback {
           Vector2 av = system.m_velocityBuffer.data[a];
           final Vector2 temp = tempVec;
           Transform.mulTransToOutUnsafeVec2(body.xf0, ap, temp);
-          Transform.mulToOutUnsafeVec2(body.xf, temp, input.p1);
+          Transform.mulToOutUnsafeVec2(body.transform, temp, input.p1);
           input.p2.x = ap.x + step.dt * av.x;
           input.p2.y = ap.y + step.dt * av.y;
           input.maxFraction = 1.0;

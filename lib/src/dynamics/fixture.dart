@@ -61,9 +61,7 @@ class Fixture {
    *
    * @return the shape type.
    */
-  ShapeType getType() {
-    return m_shape.getType();
-  }
+  ShapeType getType() => m_shape.shapeType;
 
   /**
    * Get the child shape. You can modify the child shape, however you should not change the number
@@ -140,7 +138,7 @@ class Fixture {
       edge = edge.next;
     }
 
-    World world = m_body.getWorld();
+    World world = m_body.world;
 
     if (world == null) {
       return;
@@ -189,7 +187,7 @@ class Fixture {
    * @return
    */
   bool testPoint(final Vector2 p) {
-    return m_shape.testPoint(m_body.xf, p);
+    return m_shape.testPoint(m_body.transform, p);
   }
 
   /**
@@ -201,7 +199,7 @@ class Fixture {
    * @param input
    */
   bool raycast(RayCastOutput output, RayCastInput input, int childIndex) {
-    return m_shape.raycast(output, input, m_body.xf, childIndex);
+    return m_shape.raycast(output, input, m_body.transform, childIndex);
   }
 
   /**
@@ -270,7 +268,7 @@ class Fixture {
    */
   double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) {
     return m_shape.computeDistanceToOut(
-        m_body.getTransform(), p, childIndex, normalOut);
+        m_body.transform, p, childIndex, normalOut);
   }
 
   // We need separation create/destroy functions from the constructor/destructor because

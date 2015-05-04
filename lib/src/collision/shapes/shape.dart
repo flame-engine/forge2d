@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -36,40 +36,15 @@ abstract class Shape {
   Shape(this.shapeType);
 
   /**
-   * Get the type of this shape. You can use this to down cast to the concrete shape.
-   * 
-   * @return the shape type.
-   */
-  ShapeType getType() => shapeType;
-
-  /**
-   * The radius of the underlying shape. This can refer to different things depending on the shape
-   * implementation
-   * 
-   * @return
-   */
-  double getRadius() => radius;
-
-  /**
-   * Sets the radius of the underlying shape. This can refer to different things depending on the
-   * implementation
-   * 
-   * @param radius
-   */
-  void setRadius(double radius) {
-    this.radius = radius;
-  }
-
-  /**
    * Get the number of child primitives
-   * 
+   *
    * @return
    */
   int getChildCount();
 
   /**
    * Test a point for containment in this shape. This only works for convex shapes.
-   * 
+   *
    * @param xf the shape world transform.
    * @param p a point in world coordinates.
    */
@@ -77,7 +52,7 @@ abstract class Shape {
 
   /**
    * Cast a ray against a child shape.
-   * 
+   *
    * @param argOutput the ray-cast results.
    * @param argInput the ray-cast input parameters.
    * @param argTransform the transform to be applied to the shape.
@@ -89,7 +64,7 @@ abstract class Shape {
 
   /**
    * Given a transform, compute the associated axis aligned bounding box for a child shape.
-   * 
+   *
    * @param argAabb returns the axis aligned box.
    * @param argXf the world transform of the shape.
    */
@@ -98,7 +73,7 @@ abstract class Shape {
   /**
    * Compute the mass properties of this shape using its dimensions and density. The inertia tensor
    * is computed about the local origin.
-   * 
+   *
    * @param massData returns the mass data for this shape.
    * @param density the density in kilograms per meter squared.
    */
@@ -107,7 +82,7 @@ abstract class Shape {
   /**
    * Compute the distance from the current shape to the specified point. This only works for convex
    * shapes.
-   * 
+   *
    * @param xf the shape world transform.
    * @param p a point in world coordinates.
    * @param normalOut returns the direction in which the distance increases.

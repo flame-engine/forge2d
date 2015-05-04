@@ -199,16 +199,16 @@ class PrismaticJoint extends Joint {
     Vector2 temp3 = pool.popVec2();
 
     temp.setFrom(m_localAnchorA).sub(bA.sweep.localCenter);
-    Rot.mulToOutUnsafe(bA.xf.q, temp, rA);
+    Rot.mulToOutUnsafe(bA.transform.q, temp, rA);
 
     temp.setFrom(m_localAnchorB).sub(bB.sweep.localCenter);
-    Rot.mulToOutUnsafe(bB.xf.q, temp, rB);
+    Rot.mulToOutUnsafe(bB.transform.q, temp, rB);
 
     p1.setFrom(bA.sweep.c).add(rA);
     p2.setFrom(bB.sweep.c).add(rB);
 
     d.setFrom(p2).sub(p1);
-    Rot.mulToOutUnsafe(bA.xf.q, m_localXAxisA, axis);
+    Rot.mulToOutUnsafe(bA.transform.q, m_localXAxisA, axis);
 
     Vector2 vA = bA._linearVelocity;
     Vector2 vB = bB._linearVelocity;

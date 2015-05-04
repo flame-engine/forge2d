@@ -67,11 +67,11 @@ class PolygonShape extends Shape {
     for (int i = 0; i < vertices.length; i++) {
       vertices[i] = new Vector2.zero();
     }
-    ;
+
     for (int i = 0; i < normals.length; i++) {
       normals[i] = new Vector2.zero();
     }
-    setRadius(Settings.polygonRadius);
+    radius = Settings.polygonRadius;
   }
 
   Shape clone() {
@@ -81,7 +81,7 @@ class PolygonShape extends Shape {
       shape.normals[i].setFrom(normals[i]);
       shape.vertices[i].setFrom(vertices[i]);
     }
-    shape.setRadius(this.getRadius());
+    shape.radius = this.radius;
     shape.count = this.count;
     return shape;
   }
@@ -662,16 +662,6 @@ class PolygonShape extends Shape {
     }
 
     return true;
-  }
-
-  /** Get the vertices in local coordinates. */
-  List<Vector2> getVertices() {
-    return vertices;
-  }
-
-  /** Get the edge normal vectors. There is one for each vertex. */
-  List<Vector2> getNormals() {
-    return normals;
   }
 
   /** Get the centroid and apply the supplied transform. */

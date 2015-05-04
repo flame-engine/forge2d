@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -27,7 +27,7 @@ part of box2d;
 /**
  * Implement this abstract class to allow DBox2d to automatically draw your physics for debugging
  * purposes. Not intended to replace your own custom rendering routines!
- * 
+ *
  * @author Daniel Murphy
  */
 abstract class DebugDraw {
@@ -47,7 +47,7 @@ abstract class DebugDraw {
   /** Draw only the wireframe for drawing performance */
   static const int WIREFRAME_DRAWING_BIT = 1 << 7;
 
-  int _drawFlags = SHAPE_BIT;
+  int drawFlags = SHAPE_BIT;
   ViewportTransform viewportTransform;
 
   DebugDraw.zero();
@@ -57,26 +57,18 @@ abstract class DebugDraw {
     this.viewportTransform = viewportTransform;
   }
 
-  void setFlags(int flags) {
-    _drawFlags = flags;
-  }
-
-  int getFlags() {
-    return _drawFlags;
-  }
-
   void appendFlags(int flags) {
-    _drawFlags |= flags;
+    drawFlags |= flags;
   }
 
   void clearFlags(int flags) {
-    _drawFlags &= ~flags;
+    drawFlags &= ~flags;
   }
 
   /**
    * Draw a closed polygon provided in CCW order. This implementation uses
    * {@link #drawSegment(Vec2, Vec2, Color3f)} to draw each side of the polygon.
-   * 
+   *
    * @param vertices
    * @param vertexCount
    * @param color
@@ -100,7 +92,7 @@ abstract class DebugDraw {
 
   /**
    * Draw a solid closed polygon provided in CCW order.
-   * 
+   *
    * @param vertices
    * @param vertexCount
    * @param color
@@ -109,7 +101,7 @@ abstract class DebugDraw {
 
   /**
    * Draw a circle.
-   * 
+   *
    * @param center
    * @param radius
    * @param color
@@ -124,7 +116,7 @@ abstract class DebugDraw {
 
   /**
    * Draw a solid circle.
-   * 
+   *
    * @param center
    * @param radius
    * @param axis
@@ -135,7 +127,7 @@ abstract class DebugDraw {
 
   /**
    * Draw a line segment.
-   * 
+   *
    * @param p1
    * @param p2
    * @param color
@@ -144,14 +136,14 @@ abstract class DebugDraw {
 
   /**
    * Draw a transform. Choose your own length scale
-   * 
+   *
    * @param xf
    */
   void drawTransform(Transform xf, Color3i color);
 
   /**
    * Draw a string.
-   * 
+   *
    * @param x
    * @param y
    * @param s
@@ -161,7 +153,7 @@ abstract class DebugDraw {
 
   /**
    * Draw a particle array
-   * 
+   *
    * @param colors can be null
    */
   void drawParticles(List<Vector2> centers, double radius,
@@ -169,7 +161,7 @@ abstract class DebugDraw {
 
   /**
    * Draw a particle array
-   * 
+   *
    * @param colors can be null
    */
   void drawParticlesWireframe(List<Vector2> centers, double radius,
@@ -214,7 +206,7 @@ abstract class DebugDraw {
 
   /**
    * Takes the world coordinates and puts the corresponding screen coordinates in argScreen.
-   * 
+   *
    * @param worldX
    * @param worldY
    * @param argScreen
@@ -227,7 +219,7 @@ abstract class DebugDraw {
 
   /**
    * takes the world coordinate (argWorld) and returns the screen coordinates.
-   * 
+   *
    * @param argWorld
    */
   Vector2 getWorldToScreen(Vector2 argWorld) {
@@ -238,7 +230,7 @@ abstract class DebugDraw {
 
   /**
    * Takes the world coordinates and returns the screen coordinates.
-   * 
+   *
    * @param worldX
    * @param worldY
    */
@@ -250,7 +242,7 @@ abstract class DebugDraw {
 
   /**
    * takes the screen coordinates and puts the corresponding world coordinates in argWorld.
-   * 
+   *
    * @param screenX
    * @param screenY
    * @param argWorld
@@ -263,7 +255,7 @@ abstract class DebugDraw {
 
   /**
    * takes the screen coordinates (argScreen) and returns the world coordinates
-   * 
+   *
    * @param argScreen
    */
   Vector2 getScreenToWorld(Vector2 argScreen) {
@@ -274,7 +266,7 @@ abstract class DebugDraw {
 
   /**
    * takes the screen coordinates and returns the world coordinates.
-   * 
+   *
    * @param screenX
    * @param screenY
    */

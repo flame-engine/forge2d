@@ -237,7 +237,7 @@ class Island {
       bm_sweep.c0.setFrom(bm_sweep.c);
       bm_sweep.a0 = bm_sweep.a;
 
-      if (b.bodyType == BodyType.DYNAMIC) {
+      if (b._bodyType == BodyType.DYNAMIC) {
         // Integrate velocities.
         // v += h * (b.m_gravityScale * gravity + b.m_invMass * b.m_force);
         v.x += h * (b.gravityScale * gravity.x + b.invMass * b.force.x);

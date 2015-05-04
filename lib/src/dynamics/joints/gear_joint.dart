@@ -128,9 +128,9 @@ class GearJoint extends Joint {
     m_bodyA = m_joint1.getBodyB();
 
     // Get geometry of joint1
-    Transform xfA = m_bodyA.xf;
+    Transform xfA = m_bodyA.transform;
     double aA = m_bodyA.sweep.a;
-    Transform xfC = m_bodyC.xf;
+    Transform xfC = m_bodyC.transform;
     double aC = m_bodyC.sweep.a;
 
     if (m_typeA == JointType.REVOLUTE) {
@@ -161,9 +161,9 @@ class GearJoint extends Joint {
     m_bodyB = m_joint2.getBodyB();
 
     // Get geometry of joint2
-    Transform xfB = m_bodyB.xf;
+    Transform xfB = m_bodyB.transform;
     double aB = m_bodyB.sweep.a;
-    Transform xfD = m_bodyD.xf;
+    Transform xfD = m_bodyD.transform;
     double aD = m_bodyD.sweep.a;
 
     if (m_typeB == JointType.REVOLUTE) {

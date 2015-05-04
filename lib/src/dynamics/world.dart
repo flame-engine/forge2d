@@ -651,12 +651,12 @@ class World {
       return;
     }
 
-    int flags = debugDraw.getFlags();
+    int flags = debugDraw.drawFlags;
     bool wireframe = (flags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
 
     if ((flags & DebugDraw.SHAPE_BIT) != 0) {
       for (Body b = m_bodyList; b != null; b = b.getNext()) {
-        xf.set(b.getTransform());
+        xf.set(b.transform);
         for (Fixture f = b.getFixtureList(); f != null; f = f.getNext()) {
           if (b.isActive() == false) {
             color.setFromRGBd(0.5, 0.5, 0.3);
@@ -726,7 +726,7 @@ class World {
     if ((flags & DebugDraw.CENTER_OF_MASS_BIT) != 0) {
       final Color3i xfColor = new Color3i(255, 0, 0);
       for (Body b = m_bodyList; b != null; b = b.getNext()) {
-        xf.set(b.getTransform());
+        xf.set(b.transform);
         xf.p.setFrom(b.worldCenter);
         debugDraw.drawTransform(xf, xfColor);
       }
@@ -1037,7 +1037,7 @@ class World {
 
     // update previous transforms
     for (Body b = m_bodyList; b != null; b = b.next) {
-      b.xf0.set(b.xf);
+      b.xf0.set(b.transform);
     }
 
     // Size the island for the worst case.
@@ -1256,8 +1256,8 @@ class World {
           Body bA = fA.getBody();
           Body bB = fB.getBody();
 
-          BodyType typeA = bA.bodyType;
-          BodyType typeB = bB.bodyType;
+          BodyType typeA = bA._bodyType;
+          BodyType typeB = bB._bodyType;
           assert(typeA == BodyType.DYNAMIC || typeB == BodyType.DYNAMIC);
 
           bool activeA = bA.isAwake() && typeA != BodyType.STATIC;
@@ -1374,7 +1374,7 @@ class World {
       tempBodies[1] = bB;
       for (int i = 0; i < 2; ++i) {
         Body body = tempBodies[i];
-        if (body.bodyType == BodyType.DYNAMIC) {
+        if (body._bodyType == BodyType.DYNAMIC) {
           for (ContactEdge ce = body.contactList; ce != null; ce = ce.next) {
             if (island.m_bodyCount == island.m_bodyCapacity) {
               break;
@@ -1393,7 +1393,7 @@ class World {
 
             // Only add static, kinematic, or bullet bodies.
             Body other = ce.other;
-            if (other.bodyType == BodyType.DYNAMIC &&
+            if (other._bodyType == BodyType.DYNAMIC &&
                 body.isBullet() == false &&
                 other.isBullet() == false) {
               continue;
@@ -1441,7 +1441,7 @@ class World {
             // Add the other body to the island.
             other.flags |= Body.ISLAND_FLAG;
 
-            if (other.bodyType != BodyType.STATIC) {
+            if (other._bodyType != BodyType.STATIC) {
               other.setAwake(true);
             }
 
@@ -1463,7 +1463,7 @@ class World {
         Body body = island.m_bodies[i];
         body.flags &= ~Body.ISLAND_FLAG;
 
-        if (body.bodyType != BodyType.DYNAMIC) {
+        if (body._bodyType != BodyType.DYNAMIC) {
           continue;
         }
 
@@ -1489,8 +1489,8 @@ class World {
   void drawJoint(Joint joint) {
     Body bodyA = joint.getBodyA();
     Body bodyB = joint.getBodyB();
-    Transform xf1 = bodyA.getTransform();
-    Transform xf2 = bodyB.getTransform();
+    Transform xf1 = bodyA.transform;
+    Transform xf2 = bodyB.transform;
     Vector2 x1 = xf1.p;
     Vector2 x2 = xf2.p;
     Vector2 p1 = pool.popVec2();
@@ -1630,7 +1630,7 @@ class World {
 
   void drawParticleSystem(ParticleSystem system) {
     bool wireframe =
-        (debugDraw.getFlags() & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
+        (debugDraw.drawFlags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
     int particleCount = system.getParticleCount();
     if (particleCount != 0) {
       double particleRadius = system.getParticleRadius();

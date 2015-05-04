@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -174,7 +174,7 @@ class _Simplex {
 
   /**
    * this returns pooled objects. don't keep or modify them
-   * 
+   *
    * @return
    */
   void getClosestPoint(final Vector2 out) {
@@ -445,7 +445,7 @@ class _Simplex {
 
 class DistanceProxy {
   final List<Vector2> vertices;
-  int count;
+  int _count;
   double radius;
   final List<Vector2> buffer;
 
@@ -455,7 +455,7 @@ class DistanceProxy {
     for (int i = 0; i < vertices.length; i++) {
       vertices[i] = new Vector2.zero();
     }
-    count = 0;
+    _count = 0;
     radius = 0.0;
   }
 
@@ -464,19 +464,19 @@ class DistanceProxy {
    * in use.
    */
   void set(final Shape shape, int index) {
-    switch (shape.getType()) {
+    switch (shape.shapeType) {
       case ShapeType.CIRCLE:
         final CircleShape circle = shape;
         vertices[0].setFrom(circle.p);
-        count = 1;
+        _count = 1;
         radius = circle.radius;
 
         break;
       case ShapeType.POLYGON:
         final PolygonShape poly = shape;
-        count = poly.count;
+        _count = poly.count;
         radius = poly.radius;
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < _count; i++) {
           vertices[i].setFrom(poly.vertices[i]);
         }
         break;
@@ -493,14 +493,14 @@ class DistanceProxy {
 
         vertices[0].setFrom(buffer[0]);
         vertices[1].setFrom(buffer[1]);
-        count = 2;
+        _count = 2;
         radius = chain.radius;
         break;
       case ShapeType.EDGE:
         EdgeShape edge = shape;
         vertices[0].setFrom(edge.vertex1);
         vertices[1].setFrom(edge.vertex2);
-        count = 2;
+        _count = 2;
         radius = edge.radius;
         break;
       default:
@@ -510,14 +510,14 @@ class DistanceProxy {
 
   /**
    * Get the supporting vertex index in the given direction.
-   * 
+   *
    * @param d
    * @return
    */
   int getSupport(final Vector2 d) {
     int bestIndex = 0;
     double bestValue = vertices[0].dot(d);
-    for (int i = 1; i < count; i++) {
+    for (int i = 1; i < _count; i++) {
       double value = vertices[i].dot(d);
       if (value > bestValue) {
         bestIndex = i;
@@ -530,14 +530,14 @@ class DistanceProxy {
 
   /**
    * Get the supporting vertex in the given direction.
-   * 
+   *
    * @param d
    * @return
    */
   Vector2 getSupportVertex(final Vector2 d) {
     int bestIndex = 0;
     double bestValue = vertices[0].dot(d);
-    for (int i = 1; i < count; i++) {
+    for (int i = 1; i < _count; i++) {
       double value = vertices[i].dot(d);
       if (value > bestValue) {
         bestIndex = i;
@@ -550,21 +550,21 @@ class DistanceProxy {
 
   /**
    * Get the vertex count.
-   * 
+   *
    * @return
    */
   int getVertexCount() {
-    return count;
+    return _count;
   }
 
   /**
    * Get a vertex by index. Used by Distance.
-   * 
+   *
    * @param index
    * @return
    */
   Vector2 getVertex(int index) {
-    assert(0 <= index && index < count);
+    assert(0 <= index && index < _count);
     return vertices[index];
   }
 } // Class _DistanceProxy.
@@ -576,19 +576,19 @@ class Distance {
   static int GJK_ITERS = 0;
   static int GJK_MAX_ITERS = 20;
 
-  _Simplex _simplex = new _Simplex();
-  List<int> _saveA = BufferUtils.allocClearIntList(3);
-  List<int> _saveB = BufferUtils.allocClearIntList(3);
-  Vector2 _closestPoint = new Vector2.zero();
-  Vector2 _d = new Vector2.zero();
-  Vector2 _temp = new Vector2.zero();
-  Vector2 _normal = new Vector2.zero();
+  final _Simplex _simplex = new _Simplex();
+  final List<int> _saveA = BufferUtils.allocClearIntList(3);
+  final List<int> _saveB = BufferUtils.allocClearIntList(3);
+  final Vector2 _closestPoint = new Vector2.zero();
+  final Vector2 _d = new Vector2.zero();
+  final Vector2 _temp = new Vector2.zero();
+  final Vector2 _normal = new Vector2.zero();
 
   /**
    * Compute the closest points between two shapes. Supports any combination of: CircleShape and
    * PolygonShape. The simplex cache is input/output. On the first call set SimplexCache.count to
    * zero.
-   * 
+   *
    * @param output
    * @param cache
    * @param input
