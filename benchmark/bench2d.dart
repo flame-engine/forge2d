@@ -140,7 +140,7 @@ class Bench2d {
       linearVelocitySum = linearVelocitySum + b.linearVelocity;
       angularVelocitySum += b.angularVelocity;
     };
-    Body firstBody = world.m_bodyList;
+    Body firstBody = world.bodyList;
     print(firstBody);
     world.forEachBody(checksum);
     print(

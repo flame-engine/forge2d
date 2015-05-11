@@ -39,13 +39,5 @@ class DynamicTreeNode {
   final int id;
   int height = 0;
 
-  Object getUserData() {
-    return userData;
-  }
-
-  void setUserData(Object argData) {
-    userData = argData;
-  }
-
   DynamicTreeNode(this.id);
 }

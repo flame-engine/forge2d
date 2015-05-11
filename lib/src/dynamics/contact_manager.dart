@@ -121,36 +121,36 @@ class ContactManager implements PairCallback {
     bodyB = fixtureB.getBody();
 
     // Insert into the world.
-    c.m_prev = null;
-    c.m_next = contactList;
+    c._prev = null;
+    c._next = contactList;
     if (contactList != null) {
-      contactList.m_prev = c;
+      contactList._prev = c;
     }
     contactList = c;
 
     // Connect to island graph.
 
     // Connect to body A
-    c.m_nodeA.contact = c;
-    c.m_nodeA.other = bodyB;
+    c._nodeA.contact = c;
+    c._nodeA.other = bodyB;
 
-    c.m_nodeA.prev = null;
-    c.m_nodeA.next = bodyA.contactList;
-    if (bodyA.contactList != null) {
-      bodyA.contactList.prev = c.m_nodeA;
+    c._nodeA.prev = null;
+    c._nodeA.next = bodyA._contactList;
+    if (bodyA._contactList != null) {
+      bodyA._contactList.prev = c._nodeA;
     }
-    bodyA.contactList = c.m_nodeA;
+    bodyA._contactList = c._nodeA;
 
     // Connect to body B
-    c.m_nodeB.contact = c;
-    c.m_nodeB.other = bodyA;
+    c._nodeB.contact = c;
+    c._nodeB.other = bodyA;
 
-    c.m_nodeB.prev = null;
-    c.m_nodeB.next = bodyB.contactList;
-    if (bodyB.contactList != null) {
-      bodyB.contactList.prev = c.m_nodeB;
+    c._nodeB.prev = null;
+    c._nodeB.next = bodyB._contactList;
+    if (bodyB._contactList != null) {
+      bodyB._contactList.prev = c._nodeB;
     }
-    bodyB.contactList = c.m_nodeB;
+    bodyB._contactList = c._nodeB;
 
     // wake up the bodies
     if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
@@ -176,42 +176,42 @@ class ContactManager implements PairCallback {
     }
 
     // Remove from the world.
-    if (c.m_prev != null) {
-      c.m_prev.m_next = c.m_next;
+    if (c._prev != null) {
+      c._prev._next = c._next;
     }
 
-    if (c.m_next != null) {
-      c.m_next.m_prev = c.m_prev;
+    if (c._next != null) {
+      c._next._prev = c._prev;
     }
 
     if (c == contactList) {
-      contactList = c.m_next;
+      contactList = c._next;
     }
 
     // Remove from body 1
-    if (c.m_nodeA.prev != null) {
-      c.m_nodeA.prev.next = c.m_nodeA.next;
+    if (c._nodeA.prev != null) {
+      c._nodeA.prev.next = c._nodeA.next;
     }
 
-    if (c.m_nodeA.next != null) {
-      c.m_nodeA.next.prev = c.m_nodeA.prev;
+    if (c._nodeA.next != null) {
+      c._nodeA.next.prev = c._nodeA.prev;
     }
 
-    if (c.m_nodeA == bodyA.contactList) {
-      bodyA.contactList = c.m_nodeA.next;
+    if (c._nodeA == bodyA._contactList) {
+      bodyA._contactList = c._nodeA.next;
     }
 
     // Remove from body 2
-    if (c.m_nodeB.prev != null) {
-      c.m_nodeB.prev.next = c.m_nodeB.next;
+    if (c._nodeB.prev != null) {
+      c._nodeB.prev.next = c._nodeB.next;
     }
 
-    if (c.m_nodeB.next != null) {
-      c.m_nodeB.next.prev = c.m_nodeB.prev;
+    if (c._nodeB.next != null) {
+      c._nodeB.next.prev = c._nodeB.prev;
     }
 
-    if (c.m_nodeB == bodyB.contactList) {
-      bodyB.contactList = c.m_nodeB.next;
+    if (c._nodeB == bodyB._contactList) {
+      bodyB._contactList = c._nodeB.next;
     }
 
     // Call the factory.
@@ -235,7 +235,7 @@ class ContactManager implements PairCallback {
       Body bodyB = fixtureB.getBody();
 
       // is this contact flagged for filtering?
-      if ((c.m_flags & Contact.FILTER_FLAG) == Contact.FILTER_FLAG) {
+      if ((c._flags & Contact.FILTER_FLAG) == Contact.FILTER_FLAG) {
         // Should these bodies collide?
         if (bodyB.shouldCollide(bodyA) == false) {
           Contact cNuke = c;
@@ -254,7 +254,7 @@ class ContactManager implements PairCallback {
         }
 
         // Clear the filtering flag.
-        c.m_flags &= ~Contact.FILTER_FLAG;
+        c._flags &= ~Contact.FILTER_FLAG;
       }
 
       bool activeA = bodyA.isAwake() && bodyA._bodyType != BodyType.STATIC;
@@ -266,8 +266,8 @@ class ContactManager implements PairCallback {
         continue;
       }
 
-      int proxyIdA = fixtureA.m_proxies[indexA].proxyId;
-      int proxyIdB = fixtureB.m_proxies[indexB].proxyId;
+      int proxyIdA = fixtureA._proxies[indexA].proxyId;
+      int proxyIdB = fixtureB._proxies[indexB].proxyId;
       bool overlap = broadPhase.testOverlap(proxyIdA, proxyIdB);
 
       // Here we destroy contacts that cease to overlap in the broad-phase.

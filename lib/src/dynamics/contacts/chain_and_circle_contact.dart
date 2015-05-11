@@ -37,8 +37,8 @@ class ChainAndCircleContact extends Contact {
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     ChainShape chain = _fixtureA.getShape();
-    chain.getChildEdge(_edge, m_indexA);
-    pool.getCollision().collideEdgeAndCircle(
+    chain.getChildEdge(_edge, _indexA);
+    _pool.getCollision().collideEdgeAndCircle(
         manifold, _edge, xfA, _fixtureB.getShape(), xfB);
   }
 }

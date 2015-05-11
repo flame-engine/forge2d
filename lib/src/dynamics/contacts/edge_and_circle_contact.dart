@@ -34,7 +34,7 @@ class EdgeAndCircleContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    pool.getCollision().collideEdgeAndCircle(
+    _pool.getCollision().collideEdgeAndCircle(
         manifold, _fixtureA.getShape(), xfA, _fixtureB.getShape(), xfB);
   }
 }

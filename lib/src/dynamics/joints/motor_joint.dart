@@ -45,74 +45,66 @@ part of box2d;
 class MotorJoint extends Joint {
 
   // Solver shared
-  final Vector2 _m_linearOffset = new Vector2.zero();
-  double _m_angularOffset = 0.0;
-  final Vector2 _m_linearImpulse = new Vector2.zero();
-  double _m_angularImpulse = 0.0;
-  double _m_maxForce = 0.0;
-  double _m_maxTorque = 0.0;
-  double _m_correctionFactor = 0.0;
+  final Vector2 _linearOffset = new Vector2.zero();
+  double _angularOffset = 0.0;
+  final Vector2 _linearImpulse = new Vector2.zero();
+  double _angularImpulse = 0.0;
+  double _maxForce = 0.0;
+  double _maxTorque = 0.0;
+  double _correctionFactor = 0.0;
 
   // Solver temp
-  int _m_indexA = 0;
-  int _m_indexB = 0;
-  final Vector2 _m_rA = new Vector2.zero();
-  final Vector2 _m_rB = new Vector2.zero();
-  final Vector2 _m_localCenterA = new Vector2.zero();
-  final Vector2 _m_localCenterB = new Vector2.zero();
-  final Vector2 _m_linearError = new Vector2.zero();
-  double _m_angularError = 0.0;
-  double _m_invMassA = 0.0;
-  double _m_invMassB = 0.0;
-  double _m_invIA = 0.0;
-  double _m_invIB = 0.0;
-  final Matrix2 _m_linearMass = new Matrix2.zero();
-  double _m_angularMass = 0.0;
+  int _indexA = 0;
+  int _indexB = 0;
+  final Vector2 _rA = new Vector2.zero();
+  final Vector2 _rB = new Vector2.zero();
+  final Vector2 _localCenterA = new Vector2.zero();
+  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _linearError = new Vector2.zero();
+  double _angularError = 0.0;
+  double _invMassA = 0.0;
+  double _invMassB = 0.0;
+  double _invIA = 0.0;
+  double _invIB = 0.0;
+  final Matrix2 _linearMass = new Matrix2.zero();
+  double _angularMass = 0.0;
 
   MotorJoint(IWorldPool pool, MotorJointDef def) : super(pool, def) {
-    _m_linearOffset.setFrom(def.linearOffset);
-    _m_angularOffset = def.angularOffset;
+    _linearOffset.setFrom(def.linearOffset);
+    _angularOffset = def.angularOffset;
 
-    _m_angularImpulse = 0.0;
+    _angularImpulse = 0.0;
 
-    _m_maxForce = def.maxForce;
-    _m_maxTorque = def.maxTorque;
-    _m_correctionFactor = def.correctionFactor;
+    _maxForce = def.maxForce;
+    _maxTorque = def.maxTorque;
+    _correctionFactor = def.correctionFactor;
   }
 
   void getAnchorA(Vector2 out) {
-    out.setFrom(m_bodyA.position);
+    out.setFrom(_bodyA.position);
   }
 
   void getAnchorB(Vector2 out) {
-    out.setFrom(m_bodyB.position);
+    out.setFrom(_bodyB.position);
   }
 
   void getReactionForce(double inv_dt, Vector2 out) {
-    out.setFrom(_m_linearImpulse).scale(inv_dt);
+    out.setFrom(_linearImpulse).scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
-    return _m_angularImpulse * inv_dt;
-  }
-
-  double getCorrectionFactor() {
-    return _m_correctionFactor;
-  }
-
-  void setCorrectionFactor(double correctionFactor) {
-    this._m_correctionFactor = correctionFactor;
+    return _angularImpulse * inv_dt;
   }
 
   /**
    * Set the target linear offset, in frame A, in meters.
    */
   void setLinearOffset(Vector2 linearOffset) {
-    if (linearOffset.x != _m_linearOffset.x ||
-        linearOffset.y != _m_linearOffset.y) {
-      m_bodyA.setAwake(true);
-      m_bodyB.setAwake(true);
-      _m_linearOffset.setFrom(linearOffset);
+    if (linearOffset.x != _linearOffset.x ||
+        linearOffset.y != _linearOffset.y) {
+      _bodyA.setAwake(true);
+      _bodyB.setAwake(true);
+      _linearOffset.setFrom(linearOffset);
     }
   }
 
@@ -120,14 +112,14 @@ class MotorJoint extends Joint {
    * Get the target linear offset, in frame A, in meters.
    */
   void getLinearOffsetOut(Vector2 out) {
-    out.setFrom(_m_linearOffset);
+    out.setFrom(_linearOffset);
   }
 
   /**
    * Get the target linear offset, in frame A, in meters. Do not modify.
    */
   Vector2 getLinearOffset() {
-    return _m_linearOffset;
+    return _linearOffset;
   }
 
   /**
@@ -136,15 +128,15 @@ class MotorJoint extends Joint {
    * @param angularOffset
    */
   void setAngularOffset(double angularOffset) {
-    if (angularOffset != _m_angularOffset) {
-      m_bodyA.setAwake(true);
-      m_bodyB.setAwake(true);
-      _m_angularOffset = angularOffset;
+    if (angularOffset != _angularOffset) {
+      _bodyA.setAwake(true);
+      _bodyB.setAwake(true);
+      _angularOffset = angularOffset;
     }
   }
 
   double getAngularOffset() {
-    return _m_angularOffset;
+    return _angularOffset;
   }
 
   /**
@@ -154,14 +146,14 @@ class MotorJoint extends Joint {
    */
   void setMaxForce(double force) {
     assert(force >= 0.0);
-    _m_maxForce = force;
+    _maxForce = force;
   }
 
   /**
    * Get the maximum friction force in N.
    */
   double getMaxForce() {
-    return _m_maxForce;
+    return _maxForce;
   }
 
   /**
@@ -169,35 +161,35 @@ class MotorJoint extends Joint {
    */
   void setMaxTorque(double torque) {
     assert(torque >= 0.0);
-    _m_maxTorque = torque;
+    _maxTorque = torque;
   }
 
   /**
    * Get the maximum friction torque in N*m.
    */
   double getMaxTorque() {
-    return _m_maxTorque;
+    return _maxTorque;
   }
 
   void initVelocityConstraints(SolverData data) {
-    _m_indexA = m_bodyA.islandIndex;
-    _m_indexB = m_bodyB.islandIndex;
-    _m_localCenterA.setFrom(m_bodyA.sweep.localCenter);
-    _m_localCenterB.setFrom(m_bodyB.sweep.localCenter);
-    _m_invMassA = m_bodyA.invMass;
-    _m_invMassB = m_bodyB.invMass;
-    _m_invIA = m_bodyA.invI;
-    _m_invIB = m_bodyB.invI;
+    _indexA = _bodyA._islandIndex;
+    _indexB = _bodyB._islandIndex;
+    _localCenterA.setFrom(_bodyA._sweep.localCenter);
+    _localCenterB.setFrom(_bodyB._sweep.localCenter);
+    _invMassA = _bodyA._invMass;
+    _invMassB = _bodyB._invMass;
+    _invIA = _bodyA._invI;
+    _invIB = _bodyB._invI;
 
-    final Vector2 cA = data.positions[_m_indexA].c;
-    double aA = data.positions[_m_indexA].a;
-    final Vector2 vA = data.velocities[_m_indexA].v;
-    double wA = data.velocities[_m_indexA].w;
+    final Vector2 cA = data.positions[_indexA].c;
+    double aA = data.positions[_indexA].a;
+    final Vector2 vA = data.velocities[_indexA].v;
+    double wA = data.velocities[_indexA].w;
 
-    final Vector2 cB = data.positions[_m_indexB].c;
-    double aB = data.positions[_m_indexB].a;
-    final Vector2 vB = data.velocities[_m_indexB].v;
-    double wB = data.velocities[_m_indexB].w;
+    final Vector2 cB = data.positions[_indexB].c;
+    double aB = data.positions[_indexB].a;
+    final Vector2 vB = data.velocities[_indexB].v;
+    double wB = data.velocities[_indexB].w;
 
     final Rot qA = pool.popRot();
     final Rot qB = pool.popRot();
@@ -208,12 +200,12 @@ class MotorJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective mass matrix.
-    // m_rA = b2Mul(qA, -m_localCenterA);
-    // m_rB = b2Mul(qB, -m_localCenterB);
-    _m_rA.x = qA.c * -_m_localCenterA.x - qA.s * -_m_localCenterA.y;
-    _m_rA.y = qA.s * -_m_localCenterA.x + qA.c * -_m_localCenterA.y;
-    _m_rB.x = qB.c * -_m_localCenterB.x - qB.s * -_m_localCenterB.y;
-    _m_rB.y = qB.s * -_m_localCenterB.x + qB.c * -_m_localCenterB.y;
+    // _rA = b2Mul(qA, -_localCenterA);
+    // _rB = b2Mul(qB, -_localCenterB);
+    _rA.x = qA.c * -_localCenterA.x - qA.s * -_localCenterA.y;
+    _rA.y = qA.s * -_localCenterA.x + qA.c * -_localCenterA.y;
+    _rB.x = qB.c * -_localCenterB.x - qB.s * -_localCenterB.y;
+    _rB.y = qB.s * -_localCenterB.x + qB.c * -_localCenterB.y;
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -223,69 +215,69 @@ class MotorJoint extends Joint {
     // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
-    double mA = _m_invMassA,
-        mB = _m_invMassB;
-    double iA = _m_invIA,
-        iB = _m_invIB;
+    double mA = _invMassA,
+        mB = _invMassB;
+    double iA = _invIA,
+        iB = _invIB;
 
-    double a11 = mA + mB + iA * _m_rA.y * _m_rA.y + iB * _m_rB.y * _m_rB.y;
-    double a21 = -iA * _m_rA.x * _m_rA.y - iB * _m_rB.x * _m_rB.y;
+    double a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
+    double a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
     double a12 = a21;
-    double a22 = mA + mB + iA * _m_rA.x * _m_rA.x + iB * _m_rB.x * _m_rB.x;
+    double a22 = mA + mB + iA * _rA.x * _rA.x + iB * _rB.x * _rB.x;
 
     K.setValues(a11, a21, a12, a22);
-    _m_linearMass.setFrom(K);
-    _m_linearMass.invert();
+    _linearMass.setFrom(K);
+    _linearMass.invert();
 
-    _m_angularMass = iA + iB;
-    if (_m_angularMass > 0.0) {
-      _m_angularMass = 1.0 / _m_angularMass;
+    _angularMass = iA + iB;
+    if (_angularMass > 0.0) {
+      _angularMass = 1.0 / _angularMass;
     }
 
-    // m_linearError = cB + m_rB - cA - m_rA - b2Mul(qA, m_linearOffset);
-    Rot.mulToOutUnsafe(qA, _m_linearOffset, temp);
-    _m_linearError.x = cB.x + _m_rB.x - cA.x - _m_rA.x - temp.x;
-    _m_linearError.y = cB.y + _m_rB.y - cA.y - _m_rA.y - temp.y;
-    _m_angularError = aB - aA - _m_angularOffset;
+    // _linearError = cB + _rB - cA - _rA - b2Mul(qA, _linearOffset);
+    Rot.mulToOutUnsafe(qA, _linearOffset, temp);
+    _linearError.x = cB.x + _rB.x - cA.x - _rA.x - temp.x;
+    _linearError.y = cB.y + _rB.y - cA.y - _rA.y - temp.y;
+    _angularError = aB - aA - _angularOffset;
 
     if (data.step.warmStarting) {
       // Scale impulses to support a variable time step.
-      _m_linearImpulse.x *= data.step.dtRatio;
-      _m_linearImpulse.y *= data.step.dtRatio;
-      _m_angularImpulse *= data.step.dtRatio;
+      _linearImpulse.x *= data.step.dtRatio;
+      _linearImpulse.y *= data.step.dtRatio;
+      _angularImpulse *= data.step.dtRatio;
 
-      final Vector2 P = _m_linearImpulse;
+      final Vector2 P = _linearImpulse;
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
-      wA -= iA * (_m_rA.x * P.y - _m_rA.y * P.x + _m_angularImpulse);
+      wA -= iA * (_rA.x * P.y - _rA.y * P.x + _angularImpulse);
       vB.x += mB * P.x;
       vB.y += mB * P.y;
-      wB += iB * (_m_rB.x * P.y - _m_rB.y * P.x + _m_angularImpulse);
+      wB += iB * (_rB.x * P.y - _rB.y * P.x + _angularImpulse);
     } else {
-      _m_linearImpulse.setZero();
-      _m_angularImpulse = 0.0;
+      _linearImpulse.setZero();
+      _angularImpulse = 0.0;
     }
 
     pool.pushVec2(1);
     pool.pushMat22(1);
     pool.pushRot(2);
 
-    // data.velocities[m_indexA].v = vA;
-    data.velocities[_m_indexA].w = wA;
-    // data.velocities[m_indexB].v = vB;
-    data.velocities[_m_indexB].w = wB;
+    // data.velocities[_indexA].v = vA;
+    data.velocities[_indexA].w = wA;
+    // data.velocities[_indexB].v = vB;
+    data.velocities[_indexB].w = wB;
   }
 
   void solveVelocityConstraints(SolverData data) {
-    final Vector2 vA = data.velocities[_m_indexA].v;
-    double wA = data.velocities[_m_indexA].w;
-    final Vector2 vB = data.velocities[_m_indexB].v;
-    double wB = data.velocities[_m_indexB].w;
+    final Vector2 vA = data.velocities[_indexA].v;
+    double wA = data.velocities[_indexA].w;
+    final Vector2 vB = data.velocities[_indexB].v;
+    double wB = data.velocities[_indexB].w;
 
-    double mA = _m_invMassA,
-        mB = _m_invMassB;
-    double iA = _m_invIA,
-        iB = _m_invIB;
+    double mA = _invMassA,
+        mB = _invMassB;
+    double iA = _invIA,
+        iB = _invIB;
 
     double h = data.step.dt;
     double inv_h = data.step.inv_dt;
@@ -294,14 +286,14 @@ class MotorJoint extends Joint {
 
     // Solve angular friction
     {
-      double Cdot = wB - wA + inv_h * _m_correctionFactor * _m_angularError;
-      double impulse = -_m_angularMass * Cdot;
+      double Cdot = wB - wA + inv_h * _correctionFactor * _angularError;
+      double impulse = -_angularMass * Cdot;
 
-      double oldImpulse = _m_angularImpulse;
-      double maxImpulse = h * _m_maxTorque;
-      _m_angularImpulse = MathUtils.clampDouble(
-          _m_angularImpulse + impulse, -maxImpulse, maxImpulse);
-      impulse = _m_angularImpulse - oldImpulse;
+      double oldImpulse = _angularImpulse;
+      double maxImpulse = h * _maxTorque;
+      _angularImpulse = MathUtils.clampDouble(
+          _angularImpulse + impulse, -maxImpulse, maxImpulse);
+      impulse = _angularImpulse - oldImpulse;
 
       wA -= iA * impulse;
       wB += iB * impulse;
@@ -311,51 +303,51 @@ class MotorJoint extends Joint {
 
     // Solve linear friction
     {
-      // Cdot = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA) + inv_h * m_correctionFactor *
-      // m_linearError;
+      // Cdot = vB + b2Cross(wB, _rB) - vA - b2Cross(wA, _rA) + inv_h * _correctionFactor *
+      // _linearError;
       Cdot.x = vB.x +
-          -wB * _m_rB.y -
+          -wB * _rB.y -
           vA.x -
-          -wA * _m_rA.y +
-          inv_h * _m_correctionFactor * _m_linearError.x;
+          -wA * _rA.y +
+          inv_h * _correctionFactor * _linearError.x;
       Cdot.y = vB.y +
-          wB * _m_rB.x -
+          wB * _rB.x -
           vA.y -
-          wA * _m_rA.x +
-          inv_h * _m_correctionFactor * _m_linearError.y;
+          wA * _rA.x +
+          inv_h * _correctionFactor * _linearError.y;
 
       final Vector2 impulse = temp;
-      _m_linearMass.transformed(Cdot, impulse);
+      _linearMass.transformed(Cdot, impulse);
       impulse.negate();
       final Vector2 oldImpulse = pool.popVec2();
-      oldImpulse.setFrom(_m_linearImpulse);
-      _m_linearImpulse.add(impulse);
+      oldImpulse.setFrom(_linearImpulse);
+      _linearImpulse.add(impulse);
 
-      double maxImpulse = h * _m_maxForce;
+      double maxImpulse = h * _maxForce;
 
-      if (_m_linearImpulse.length2 > maxImpulse * maxImpulse) {
-        _m_linearImpulse.normalize();
-        _m_linearImpulse.scale(maxImpulse);
+      if (_linearImpulse.length2 > maxImpulse * maxImpulse) {
+        _linearImpulse.normalize();
+        _linearImpulse.scale(maxImpulse);
       }
 
-      impulse.x = _m_linearImpulse.x - oldImpulse.x;
-      impulse.y = _m_linearImpulse.y - oldImpulse.y;
+      impulse.x = _linearImpulse.x - oldImpulse.x;
+      impulse.y = _linearImpulse.y - oldImpulse.y;
 
       vA.x -= mA * impulse.x;
       vA.y -= mA * impulse.y;
-      wA -= iA * (_m_rA.x * impulse.y - _m_rA.y * impulse.x);
+      wA -= iA * (_rA.x * impulse.y - _rA.y * impulse.x);
 
       vB.x += mB * impulse.x;
       vB.y += mB * impulse.y;
-      wB += iB * (_m_rB.x * impulse.y - _m_rB.y * impulse.x);
+      wB += iB * (_rB.x * impulse.y - _rB.y * impulse.x);
     }
 
     pool.pushVec2(3);
 
-    // data.velocities[m_indexA].v.set(vA);
-    data.velocities[_m_indexA].w = wA;
-    // data.velocities[m_indexB].v.set(vB);
-    data.velocities[_m_indexB].w = wB;
+    // data.velocities[_indexA].v.set(vA);
+    data.velocities[_indexA].w = wA;
+    // data.velocities[_indexB].v.set(vB);
+    data.velocities[_indexB].w = wB;
   }
 
   bool solvePositionConstraints(SolverData data) {

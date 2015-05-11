@@ -482,10 +482,10 @@ class DistanceProxy {
         break;
       case ShapeType.CHAIN:
         final ChainShape chain = shape;
-        assert(0 <= index && index < chain.m_count);
+        assert(0 <= index && index < chain._count);
 
         buffer[0] = chain._vertices[index];
-        if (index + 1 < chain.m_count) {
+        if (index + 1 < chain._count) {
           buffer[1] = chain._vertices[index + 1];
         } else {
           buffer[1] = chain._vertices[0];

@@ -65,32 +65,32 @@ class VoronoiDiagramTaskMutableStack extends MutableStack<VoronoiDiagramTask> {
 }
 
 class VoronoiDiagram {
-  List<VoronoiGenerator> _m_generatorBuffer;
-  int _m_generatorCount = 0;
-  int _m_countX = 0,
-      _m_countY = 0;
+  List<VoronoiGenerator> _generatorBuffer;
+  int _generatorCount = 0;
+  int _countX = 0,
+      _countY = 0;
   // The diagram is an array of "pointers".
-  List<VoronoiGenerator> _m_diagram;
+  List<VoronoiGenerator> _diagram;
 
   VoronoiDiagram(int generatorCapacity) {
-    _m_generatorBuffer = new List<VoronoiGenerator>(generatorCapacity);
+    _generatorBuffer = new List<VoronoiGenerator>(generatorCapacity);
     for (int i = 0; i < generatorCapacity; i++) {
-      _m_generatorBuffer[i] = new VoronoiGenerator();
+      _generatorBuffer[i] = new VoronoiGenerator();
     }
-    _m_generatorCount = 0;
-    _m_countX = 0;
-    _m_countY = 0;
-    _m_diagram = null;
+    _generatorCount = 0;
+    _countX = 0;
+    _countY = 0;
+    _diagram = null;
   }
 
   void getNodes(VoronoiDiagramCallback callback) {
-    for (int y = 0; y < _m_countY - 1; y++) {
-      for (int x = 0; x < _m_countX - 1; x++) {
-        int i = x + y * _m_countX;
-        VoronoiGenerator a = _m_diagram[i];
-        VoronoiGenerator b = _m_diagram[i + 1];
-        VoronoiGenerator c = _m_diagram[i + _m_countX];
-        VoronoiGenerator d = _m_diagram[i + 1 + _m_countX];
+    for (int y = 0; y < _countY - 1; y++) {
+      for (int x = 0; x < _countX - 1; x++) {
+        int i = x + y * _countX;
+        VoronoiGenerator a = _diagram[i];
+        VoronoiGenerator b = _diagram[i + 1];
+        VoronoiGenerator c = _diagram[i + _countX];
+        VoronoiGenerator d = _diagram[i + 1 + _countX];
         if (b != c) {
           if (a != b && a != c) {
             callback.callback(a.tag, b.tag, c.tag);
@@ -104,7 +104,7 @@ class VoronoiDiagram {
   }
 
   void addGenerator(Vector2 center, int tag) {
-    VoronoiGenerator g = _m_generatorBuffer[_m_generatorCount++];
+    VoronoiGenerator g = _generatorBuffer[_generatorCount++];
     g.center.x = center.x;
     g.center.y = center.y;
     g.tag = tag;
@@ -119,28 +119,28 @@ class VoronoiDiagram {
       new StackQueue<VoronoiDiagramTask>();
 
   void generate(double radius) {
-    assert(_m_diagram == null);
+    assert(_diagram == null);
     double inverseRadius = 1 / radius;
     _lower.x = double.MAX_FINITE;
     _lower.y = double.MAX_FINITE;
     _upper.x = -double.MAX_FINITE;
     _upper.y = -double.MAX_FINITE;
-    for (int k = 0; k < _m_generatorCount; k++) {
-      VoronoiGenerator g = _m_generatorBuffer[k];
+    for (int k = 0; k < _generatorCount; k++) {
+      VoronoiGenerator g = _generatorBuffer[k];
       Vector2.min(_lower, g.center, _lower);
       Vector2.max(_upper, g.center, _upper);
     }
-    _m_countX = 1 + (inverseRadius * (_upper.x - _lower.x)).toInt();
-    _m_countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
-    _m_diagram = new List<VoronoiGenerator>(_m_countX * _m_countY);
-    _queue.reset(new List<VoronoiDiagramTask>(4 * _m_countX * _m_countX));
-    for (int k = 0; k < _m_generatorCount; k++) {
-      VoronoiGenerator g = _m_generatorBuffer[k];
+    _countX = 1 + (inverseRadius * (_upper.x - _lower.x)).toInt();
+    _countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
+    _diagram = new List<VoronoiGenerator>(_countX * _countY);
+    _queue.reset(new List<VoronoiDiagramTask>(4 * _countX * _countX));
+    for (int k = 0; k < _generatorCount; k++) {
+      VoronoiGenerator g = _generatorBuffer[k];
       g.center.x = inverseRadius * (g.center.x - _lower.x);
       g.center.y = inverseRadius * (g.center.y - _lower.y);
-      int x = Math.max(0, Math.min(g.center.x.toInt(), _m_countX - 1));
-      int y = Math.max(0, Math.min(g.center.y.toInt(), _m_countY - 1));
-      _queue.push(_taskPool.pop().set(x, y, x + y * _m_countX, g));
+      int x = Math.max(0, Math.min(g.center.x.toInt(), _countX - 1));
+      int y = Math.max(0, Math.min(g.center.y.toInt(), _countY - 1));
+      _queue.push(_taskPool.pop().set(x, y, x + y * _countX, g));
     }
     while (!_queue.empty()) {
       VoronoiDiagramTask front = _queue.pop();
@@ -148,44 +148,44 @@ class VoronoiDiagram {
       int y = front._y;
       int i = front._i;
       VoronoiGenerator g = front._generator;
-      if (_m_diagram[i] == null) {
-        _m_diagram[i] = g;
+      if (_diagram[i] == null) {
+        _diagram[i] = g;
         if (x > 0) {
           _queue.push(_taskPool.pop().set(x - 1, y, i - 1, g));
         }
         if (y > 0) {
-          _queue.push(_taskPool.pop().set(x, y - 1, i - _m_countX, g));
+          _queue.push(_taskPool.pop().set(x, y - 1, i - _countX, g));
         }
-        if (x < _m_countX - 1) {
+        if (x < _countX - 1) {
           _queue.push(_taskPool.pop().set(x + 1, y, i + 1, g));
         }
-        if (y < _m_countY - 1) {
-          _queue.push(_taskPool.pop().set(x, y + 1, i + _m_countX, g));
+        if (y < _countY - 1) {
+          _queue.push(_taskPool.pop().set(x, y + 1, i + _countX, g));
         }
       }
       _taskPool.push(front);
     }
-    int maxIteration = _m_countX + _m_countY;
+    int maxIteration = _countX + _countY;
     for (int iteration = 0; iteration < maxIteration; iteration++) {
-      for (int y = 0; y < _m_countY; y++) {
-        for (int x = 0; x < _m_countX - 1; x++) {
-          int i = x + y * _m_countX;
-          VoronoiGenerator a = _m_diagram[i];
-          VoronoiGenerator b = _m_diagram[i + 1];
+      for (int y = 0; y < _countY; y++) {
+        for (int x = 0; x < _countX - 1; x++) {
+          int i = x + y * _countX;
+          VoronoiGenerator a = _diagram[i];
+          VoronoiGenerator b = _diagram[i + 1];
           if (a != b) {
             _queue.push(_taskPool.pop().set(x, y, i, b));
             _queue.push(_taskPool.pop().set(x + 1, y, i + 1, a));
           }
         }
       }
-      for (int y = 0; y < _m_countY - 1; y++) {
-        for (int x = 0; x < _m_countX; x++) {
-          int i = x + y * _m_countX;
-          VoronoiGenerator a = _m_diagram[i];
-          VoronoiGenerator b = _m_diagram[i + _m_countX];
+      for (int y = 0; y < _countY - 1; y++) {
+        for (int x = 0; x < _countX; x++) {
+          int i = x + y * _countX;
+          VoronoiGenerator a = _diagram[i];
+          VoronoiGenerator b = _diagram[i + _countX];
           if (a != b) {
             _queue.push(_taskPool.pop().set(x, y, i, b));
-            _queue.push(_taskPool.pop().set(x, y + 1, i + _m_countX, a));
+            _queue.push(_taskPool.pop().set(x, y + 1, i + _countX, a));
           }
         }
       }
@@ -196,7 +196,7 @@ class VoronoiDiagram {
         int y = front._y;
         int i = front._i;
         VoronoiGenerator k = front._generator;
-        VoronoiGenerator a = _m_diagram[i];
+        VoronoiGenerator a = _diagram[i];
         VoronoiGenerator b = k;
         if (a != b) {
           double ax = a.center.x - x;
@@ -206,18 +206,18 @@ class VoronoiDiagram {
           double a2 = ax * ax + ay * ay;
           double b2 = bx * bx + by * by;
           if (a2 > b2) {
-            _m_diagram[i] = b;
+            _diagram[i] = b;
             if (x > 0) {
               _queue.push(_taskPool.pop().set(x - 1, y, i - 1, b));
             }
             if (y > 0) {
-              _queue.push(_taskPool.pop().set(x, y - 1, i - _m_countX, b));
+              _queue.push(_taskPool.pop().set(x, y - 1, i - _countX, b));
             }
-            if (x < _m_countX - 1) {
+            if (x < _countX - 1) {
               _queue.push(_taskPool.pop().set(x + 1, y, i + 1, b));
             }
-            if (y < _m_countY - 1) {
-              _queue.push(_taskPool.pop().set(x, y + 1, i + _m_countX, b));
+            if (y < _countY - 1) {
+              _queue.push(_taskPool.pop().set(x, y + 1, i + _countX, b));
             }
             updated = true;
           }

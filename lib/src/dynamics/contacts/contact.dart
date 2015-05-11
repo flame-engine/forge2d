@@ -31,7 +31,7 @@ part of box2d;
  */
 abstract class Contact {
 
-  // Flags stored in m_flags
+  // Flags stored in _flags
   // Used when crawling contact graph when forming islands.
   static final int ISLAND_FLAG = 0x0001;
   // Set when the shapes are touching.
@@ -45,73 +45,66 @@ abstract class Contact {
 
   static final int TOI_FLAG = 0x0020;
 
-  int m_flags = 0;
+  int _flags = 0;
 
   // World pool and list pointers.
-  Contact m_prev;
-  Contact m_next;
+  Contact _prev;
+  Contact _next;
 
   // Nodes for connecting bodies.
-  ContactEdge m_nodeA = new ContactEdge();
-  ContactEdge m_nodeB = new ContactEdge();
+  ContactEdge _nodeA = new ContactEdge();
+  ContactEdge _nodeB = new ContactEdge();
 
   Fixture _fixtureA;
   Fixture _fixtureB;
 
-  int m_indexA = 0;
-  int m_indexB = 0;
+  int _indexA = 0;
+  int _indexB = 0;
 
-  final Manifold m_manifold = new Manifold();
+  final Manifold _manifold = new Manifold();
 
-  int m_toiCount = 0;
-  double m_toi = 0.0;
+  int _toiCount = 0;
+  double _toi = 0.0;
 
-  double m_friction = 0.0;
-  double m_restitution = 0.0;
+  double _friction = 0.0;
+  double _restitution = 0.0;
 
-  double m_tangentSpeed = 0.0;
+  double _tangentSpeed = 0.0;
 
-  final IWorldPool pool;
+  final IWorldPool _pool;
 
-  Contact(this.pool);
+  Contact(this._pool);
 
   /** initialization for pooling */
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
-    m_flags = ENABLED_FLAG;
+    _flags = ENABLED_FLAG;
 
     _fixtureA = fA;
     _fixtureB = fB;
 
-    m_indexA = indexA;
-    m_indexB = indexB;
+    _indexA = indexA;
+    _indexB = indexB;
 
-    m_manifold.pointCount = 0;
+    _manifold.pointCount = 0;
 
-    m_prev = null;
-    m_next = null;
+    _prev = null;
+    _next = null;
 
-    m_nodeA.contact = null;
-    m_nodeA.prev = null;
-    m_nodeA.next = null;
-    m_nodeA.other = null;
+    _nodeA.contact = null;
+    _nodeA.prev = null;
+    _nodeA.next = null;
+    _nodeA.other = null;
 
-    m_nodeB.contact = null;
-    m_nodeB.prev = null;
-    m_nodeB.next = null;
-    m_nodeB.other = null;
+    _nodeB.contact = null;
+    _nodeB.prev = null;
+    _nodeB.next = null;
+    _nodeB.other = null;
 
-    m_toiCount = 0;
-    m_friction = Contact.mixFriction(fA.m_friction, fB.m_friction);
-    m_restitution = Contact.mixRestitution(fA.m_restitution, fB.m_restitution);
+    _toiCount = 0;
+    _friction = Contact.mixFriction(fA._friction, fB._friction);
+    _restitution = Contact.mixRestitution(fA._restitution, fB._restitution);
 
-    m_tangentSpeed = 0.0;
-  }
-
-  /**
-   * Get the contact manifold. Do not set the point count to zero. Instead call Disable.
-   */
-  Manifold getManifold() {
-    return m_manifold;
+    _tangentSpeed = 0.0;
   }
 
   /**
@@ -123,8 +116,8 @@ abstract class Contact {
     final Shape shapeA = _fixtureA.getShape();
     final Shape shapeB = _fixtureB.getShape();
 
-    worldManifold.initialize(m_manifold, bodyA.transform, shapeA.radius,
-        bodyB.transform, shapeB.radius);
+    worldManifold.initialize(_manifold, bodyA._transform, shapeA.radius,
+        bodyB._transform, shapeB.radius);
   }
 
   /**
@@ -133,7 +126,7 @@ abstract class Contact {
    * @return
    */
   bool isTouching() {
-    return (m_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+    return (_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
   }
 
   /**
@@ -144,9 +137,9 @@ abstract class Contact {
    */
   void setEnabled(bool flag) {
     if (flag) {
-      m_flags |= ENABLED_FLAG;
+      _flags |= ENABLED_FLAG;
     } else {
-      m_flags &= ~ENABLED_FLAG;
+      _flags &= ~ENABLED_FLAG;
     }
   }
 
@@ -156,7 +149,7 @@ abstract class Contact {
    * @return
    */
   bool isEnabled() {
-    return (m_flags & ENABLED_FLAG) == ENABLED_FLAG;
+    return (_flags & ENABLED_FLAG) == ENABLED_FLAG;
   }
 
   /**
@@ -165,7 +158,7 @@ abstract class Contact {
    * @return
    */
   Contact getNext() {
-    return m_next;
+    return _next;
   }
 
   /**
@@ -176,7 +169,7 @@ abstract class Contact {
   Fixture get fixtureA => _fixtureA;
 
   int getChildIndexA() {
-    return m_indexA;
+    return _indexA;
   }
 
   /**
@@ -187,41 +180,17 @@ abstract class Contact {
   Fixture get fixtureB => _fixtureB;
 
   int getChildIndexB() {
-    return m_indexB;
-  }
-
-  void setFriction(double friction) {
-    m_friction = friction;
-  }
-
-  double getFriction() {
-    return m_friction;
+    return _indexB;
   }
 
   void resetFriction() {
-    m_friction =
-        Contact.mixFriction(_fixtureA.m_friction, _fixtureB.m_friction);
-  }
-
-  void setRestitution(double restitution) {
-    m_restitution = restitution;
-  }
-
-  double getRestitution() {
-    return m_restitution;
+    _friction =
+        Contact.mixFriction(_fixtureA._friction, _fixtureB._friction);
   }
 
   void resetRestitution() {
-    m_restitution = Contact.mixRestitution(
-        _fixtureA.m_restitution, _fixtureB.m_restitution);
-  }
-
-  void setTangentSpeed(double speed) {
-    m_tangentSpeed = speed;
-  }
-
-  double getTangentSpeed() {
-    return m_tangentSpeed;
+    _restitution = Contact.mixRestitution(
+        _fixtureA._restitution, _fixtureB._restitution);
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB);
@@ -230,20 +199,20 @@ abstract class Contact {
    * Flag this contact for filtering. Filtering will occur the next time step.
    */
   void flagForFiltering() {
-    m_flags |= FILTER_FLAG;
+    _flags |= FILTER_FLAG;
   }
 
   // djm pooling
   final Manifold _oldManifold = new Manifold();
 
   void update(ContactListener listener) {
-    _oldManifold.set(m_manifold);
+    _oldManifold.set(_manifold);
 
     // Re-enable this contact.
-    m_flags |= ENABLED_FLAG;
+    _flags |= ENABLED_FLAG;
 
     bool touching = false;
-    bool wasTouching = (m_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+    bool wasTouching = (_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
     bool sensorA = _fixtureA.isSensor();
     bool sensorB = _fixtureB.isSensor();
@@ -251,28 +220,28 @@ abstract class Contact {
 
     Body bodyA = _fixtureA.getBody();
     Body bodyB = _fixtureB.getBody();
-    Transform xfA = bodyA.transform;
-    Transform xfB = bodyB.transform;
+    Transform xfA = bodyA._transform;
+    Transform xfB = bodyB._transform;
     // log.debug("TransformA: "+xfA);
     // log.debug("TransformB: "+xfB);
 
     if (sensor) {
       Shape shapeA = _fixtureA.getShape();
       Shape shapeB = _fixtureB.getShape();
-      touching = pool
+      touching = _pool
           .getCollision()
-          .testOverlap(shapeA, m_indexA, shapeB, m_indexB, xfA, xfB);
+          .testOverlap(shapeA, _indexA, shapeB, _indexB, xfA, xfB);
 
       // Sensors don't generate manifolds.
-      m_manifold.pointCount = 0;
+      _manifold.pointCount = 0;
     } else {
-      evaluate(m_manifold, xfA, xfB);
-      touching = m_manifold.pointCount > 0;
+      evaluate(_manifold, xfA, xfB);
+      touching = _manifold.pointCount > 0;
 
       // Match old contact ids to new contact ids and copy the
       // stored impulses to warm start the solver.
-      for (int i = 0; i < m_manifold.pointCount; ++i) {
-        ManifoldPoint mp2 = m_manifold.points[i];
+      for (int i = 0; i < _manifold.pointCount; ++i) {
+        ManifoldPoint mp2 = _manifold.points[i];
         mp2.normalImpulse = 0.0;
         mp2.tangentImpulse = 0.0;
         ContactID id2 = mp2.id;
@@ -295,9 +264,9 @@ abstract class Contact {
     }
 
     if (touching) {
-      m_flags |= TOUCHING_FLAG;
+      _flags |= TOUCHING_FLAG;
     } else {
-      m_flags &= ~TOUCHING_FLAG;
+      _flags &= ~TOUCHING_FLAG;
     }
 
     if (listener == null) {

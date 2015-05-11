@@ -119,8 +119,8 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   }
 
   bool reportParticle(int index) {
-    assert(index >= 0 && index < system.m_count);
-    if (shape.testPoint(xf, system.m_positionBuffer.data[index])) {
+    assert(index >= 0 && index < system.count);
+    if (shape.testPoint(xf, system.positionBuffer.data[index])) {
       system.destroyParticle(index, callDestructionListener);
       destroyed++;
     }
@@ -151,25 +151,25 @@ class UpdateBodyContactsCallback implements QueryCallback {
     for (int childIndex = 0; childIndex < childCount; childIndex++) {
       AABB aabb = fixture.getAABB(childIndex);
       final double aabblowerBoundx =
-          aabb.lowerBound.x - system.m_particleDiameter;
+          aabb.lowerBound.x - system.particleDiameter;
       final double aabblowerBoundy =
-          aabb.lowerBound.y - system.m_particleDiameter;
+          aabb.lowerBound.y - system.particleDiameter;
       final double aabbupperBoundx =
-          aabb.upperBound.x + system.m_particleDiameter;
+          aabb.upperBound.x + system.particleDiameter;
       final double aabbupperBoundy =
-          aabb.upperBound.y + system.m_particleDiameter;
-      int firstProxy = ParticleSystem._lowerBound(system.m_proxyBuffer,
-          system.m_proxyCount, ParticleSystem.computeTag(
-              system.m_inverseDiameter * aabblowerBoundx,
-              system.m_inverseDiameter * aabblowerBoundy));
-      int lastProxy = ParticleSystem._upperBound(system.m_proxyBuffer,
-          system.m_proxyCount, ParticleSystem.computeTag(
-              system.m_inverseDiameter * aabbupperBoundx,
-              system.m_inverseDiameter * aabbupperBoundy));
+          aabb.upperBound.y + system.particleDiameter;
+      int firstProxy = ParticleSystem._lowerBound(system.proxyBuffer,
+          system.proxyCount, ParticleSystem.computeTag(
+              system.inverseDiameter * aabblowerBoundx,
+              system.inverseDiameter * aabblowerBoundy));
+      int lastProxy = ParticleSystem._upperBound(system.proxyBuffer,
+          system.proxyCount, ParticleSystem.computeTag(
+              system.inverseDiameter * aabbupperBoundx,
+              system.inverseDiameter * aabbupperBoundy));
 
       for (int proxy = firstProxy; proxy != lastProxy; ++proxy) {
-        int a = system.m_proxyBuffer[proxy].index;
-        Vector2 ap = system.m_positionBuffer.data[a];
+        int a = system.proxyBuffer[proxy].index;
+        Vector2 ap = system.positionBuffer.data[a];
         if (aabblowerBoundx <= ap.x &&
             ap.x <= aabbupperBoundx &&
             aabblowerBoundy <= ap.y &&
@@ -177,32 +177,32 @@ class UpdateBodyContactsCallback implements QueryCallback {
           double d;
           final Vector2 n = _tempVec;
           d = fixture.computeDistance(ap, childIndex, n);
-          if (d < system.m_particleDiameter) {
-            double invAm = (system.m_flagsBuffer.data[a] &
+          if (d < system.particleDiameter) {
+            double invAm = (system.flagsBuffer.data[a] &
                     ParticleType.b2_wallParticle) !=
                 0 ? 0 : system.getParticleInvMass();
             final double rpx = ap.x - bp.x;
             final double rpy = ap.y - bp.y;
             double rpn = rpx * n.y - rpy * n.x;
-            if (system.m_bodyContactCount >= system.m_bodyContactCapacity) {
-              int oldCapacity = system.m_bodyContactCapacity;
-              int newCapacity = system.m_bodyContactCount != 0
-                  ? 2 * system.m_bodyContactCount
+            if (system.bodyContactCount >= system.bodyContactCapacity) {
+              int oldCapacity = system.bodyContactCapacity;
+              int newCapacity = system.bodyContactCount != 0
+                  ? 2 * system.bodyContactCount
                   : Settings.minParticleBufferCapacity;
-              system.m_bodyContactBuffer = BufferUtils
-                  .reallocateBufferWithAlloc(system.m_bodyContactBuffer,
+              system.bodyContactBuffer = BufferUtils
+                  .reallocateBufferWithAlloc(system.bodyContactBuffer,
                       oldCapacity, newCapacity, allocParticleBodyContact);
-              system.m_bodyContactCapacity = newCapacity;
+              system.bodyContactCapacity = newCapacity;
             }
             ParticleBodyContact contact =
-                system.m_bodyContactBuffer[system.m_bodyContactCount];
+                system.bodyContactBuffer[system.bodyContactCount];
             contact.index = a;
             contact.body = b;
-            contact.weight = 1 - d * system.m_inverseDiameter;
+            contact.weight = 1 - d * system.inverseDiameter;
             contact.normal.x = -n.x;
             contact.normal.y = -n.y;
             contact.mass = 1 / (invAm + invBm + invBI * rpn * rpn);
-            system.m_bodyContactCount++;
+            system.bodyContactCount++;
           }
         }
       }
@@ -216,9 +216,9 @@ PsTriad allocPsTriad() => new PsTriad();
 // Callback used with VoronoiDiagram.
 class CreateParticleGroupCallback implements VoronoiDiagramCallback {
   void callback(int a, int b, int c) {
-    final Vector2 pa = system.m_positionBuffer.data[a];
-    final Vector2 pb = system.m_positionBuffer.data[b];
-    final Vector2 pc = system.m_positionBuffer.data[c];
+    final Vector2 pa = system.positionBuffer.data[a];
+    final Vector2 pb = system.positionBuffer.data[b];
+    final Vector2 pc = system.positionBuffer.data[c];
     final double dabx = pa.x - pb.x;
     final double daby = pa.y - pb.y;
     final double dbcx = pb.x - pc.x;
@@ -226,26 +226,26 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
     final double dcax = pc.x - pa.x;
     final double dcay = pc.y - pa.y;
     double maxDistanceSquared =
-        Settings.maxTriadDistanceSquared * system.m_squaredDiameter;
+        Settings.maxTriadDistanceSquared * system.squaredDiameter;
     if (dabx * dabx + daby * daby < maxDistanceSquared &&
         dbcx * dbcx + dbcy * dbcy < maxDistanceSquared &&
         dcax * dcax + dcay * dcay < maxDistanceSquared) {
-      if (system.m_triadCount >= system.m_triadCapacity) {
-        int oldCapacity = system.m_triadCapacity;
-        int newCapacity = system.m_triadCount != 0
-            ? 2 * system.m_triadCount
+      if (system.triadCount >= system.triadCapacity) {
+        int oldCapacity = system.triadCapacity;
+        int newCapacity = system.triadCount != 0
+            ? 2 * system.triadCount
             : Settings.minParticleBufferCapacity;
-        system.m_triadBuffer = BufferUtils.reallocateBufferWithAlloc(
-            system.m_triadBuffer, oldCapacity, newCapacity, allocPsTriad);
-        system.m_triadCapacity = newCapacity;
+        system.triadBuffer = BufferUtils.reallocateBufferWithAlloc(
+            system.triadBuffer, oldCapacity, newCapacity, allocPsTriad);
+        system.triadCapacity = newCapacity;
       }
-      PsTriad triad = system.m_triadBuffer[system.m_triadCount];
+      PsTriad triad = system.triadBuffer[system.triadCount];
       triad.indexA = a;
       triad.indexB = b;
       triad.indexC = c;
-      triad.flags = system.m_flagsBuffer.data[a] |
-          system.m_flagsBuffer.data[b] |
-          system.m_flagsBuffer.data[c];
+      triad.flags = system.flagsBuffer.data[a] |
+          system.flagsBuffer.data[b] |
+          system.flagsBuffer.data[c];
       triad.strength = def.strength;
       final double midPointx = 1.0 / 3.0 * (pa.x + pb.x + pc.x);
       final double midPointy = 1.0 / 3.0 * (pa.y + pb.y + pc.y);
@@ -259,7 +259,7 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
       triad.kb = -(dabx * dbcx + daby * dbcy);
       triad.kc = -(dbcx * dcax + dbcy * dcay);
       triad.s = pa.cross(pb) + pb.cross(pc) + pc.cross(pa);
-      system.m_triadCount++;
+      system.triadCount++;
     }
   }
 
@@ -272,17 +272,17 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
 class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
   void callback(int a, int b, int c) {
     // Create a triad if it will contain particles from both groups.
-    int countA = ((a < groupB.m_firstIndex) ? 1 : 0) +
-        ((b < groupB.m_firstIndex) ? 1 : 0) +
-        ((c < groupB.m_firstIndex) ? 1 : 0);
+    int countA = ((a < groupB._firstIndex) ? 1 : 0) +
+        ((b < groupB._firstIndex) ? 1 : 0) +
+        ((c < groupB._firstIndex) ? 1 : 0);
     if (countA > 0 && countA < 3) {
-      int af = system.m_flagsBuffer.data[a];
-      int bf = system.m_flagsBuffer.data[b];
-      int cf = system.m_flagsBuffer.data[c];
+      int af = system.flagsBuffer.data[a];
+      int bf = system.flagsBuffer.data[b];
+      int cf = system.flagsBuffer.data[c];
       if ((af & bf & cf & ParticleSystem.k_triadFlags) != 0) {
-        final Vector2 pa = system.m_positionBuffer.data[a];
-        final Vector2 pb = system.m_positionBuffer.data[b];
-        final Vector2 pc = system.m_positionBuffer.data[c];
+        final Vector2 pa = system.positionBuffer.data[a];
+        final Vector2 pb = system.positionBuffer.data[b];
+        final Vector2 pc = system.positionBuffer.data[c];
         final double dabx = pa.x - pb.x;
         final double daby = pa.y - pb.y;
         final double dbcx = pb.x - pc.x;
@@ -290,25 +290,25 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
         final double dcax = pc.x - pa.x;
         final double dcay = pc.y - pa.y;
         double maxDistanceSquared =
-            Settings.maxTriadDistanceSquared * system.m_squaredDiameter;
+            Settings.maxTriadDistanceSquared * system.squaredDiameter;
         if (dabx * dabx + daby * daby < maxDistanceSquared &&
             dbcx * dbcx + dbcy * dbcy < maxDistanceSquared &&
             dcax * dcax + dcay * dcay < maxDistanceSquared) {
-          if (system.m_triadCount >= system.m_triadCapacity) {
-            int oldCapacity = system.m_triadCapacity;
-            int newCapacity = system.m_triadCount != 0
-                ? 2 * system.m_triadCount
+          if (system.triadCount >= system.triadCapacity) {
+            int oldCapacity = system.triadCapacity;
+            int newCapacity = system.triadCount != 0
+                ? 2 * system.triadCount
                 : Settings.minParticleBufferCapacity;
-            system.m_triadBuffer = BufferUtils.reallocateBufferWithAlloc(
-                system.m_triadBuffer, oldCapacity, newCapacity, allocPsTriad);
-            system.m_triadCapacity = newCapacity;
+            system.triadBuffer = BufferUtils.reallocateBufferWithAlloc(
+                system.triadBuffer, oldCapacity, newCapacity, allocPsTriad);
+            system.triadCapacity = newCapacity;
           }
-          PsTriad triad = system.m_triadBuffer[system.m_triadCount];
+          PsTriad triad = system.triadBuffer[system.triadCount];
           triad.indexA = a;
           triad.indexB = b;
           triad.indexC = c;
           triad.flags = af | bf | cf;
-          triad.strength = Math.min(groupA.m_strength, groupB.m_strength);
+          triad.strength = Math.min(groupA._strength, groupB._strength);
           final double midPointx = 1.0 / 3.0 * (pa.x + pb.x + pc.x);
           final double midPointy = 1.0 / 3.0 * (pa.y + pb.y + pc.y);
           triad.pa.x = pa.x - midPointx;
@@ -321,7 +321,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
           triad.kb = -(dabx * dbcx + daby * dbcy);
           triad.kc = -(dbcx * dcax + dbcy * dcay);
           triad.s = pa.cross(pb) + pb.cross(pc) + pc.cross(pa);
-          system.m_triadCount++;
+          system.triadCount++;
         }
       }
     }
@@ -351,33 +351,33 @@ class SolveCollisionCallback implements QueryCallback {
     for (int childIndex = 0; childIndex < childCount; childIndex++) {
       AABB aabb = fixture.getAABB(childIndex);
       final double aabblowerBoundx =
-          aabb.lowerBound.x - system.m_particleDiameter;
+          aabb.lowerBound.x - system.particleDiameter;
       final double aabblowerBoundy =
-          aabb.lowerBound.y - system.m_particleDiameter;
+          aabb.lowerBound.y - system.particleDiameter;
       final double aabbupperBoundx =
-          aabb.upperBound.x + system.m_particleDiameter;
+          aabb.upperBound.x + system.particleDiameter;
       final double aabbupperBoundy =
-          aabb.upperBound.y + system.m_particleDiameter;
-      int firstProxy = ParticleSystem._lowerBound(system.m_proxyBuffer,
-          system.m_proxyCount, ParticleSystem.computeTag(
-              system.m_inverseDiameter * aabblowerBoundx,
-              system.m_inverseDiameter * aabblowerBoundy));
-      int lastProxy = ParticleSystem._upperBound(system.m_proxyBuffer,
-          system.m_proxyCount, ParticleSystem.computeTag(
-              system.m_inverseDiameter * aabbupperBoundx,
-              system.m_inverseDiameter * aabbupperBoundy));
+          aabb.upperBound.y + system.particleDiameter;
+      int firstProxy = ParticleSystem._lowerBound(system.proxyBuffer,
+          system.proxyCount, ParticleSystem.computeTag(
+              system.inverseDiameter * aabblowerBoundx,
+              system.inverseDiameter * aabblowerBoundy));
+      int lastProxy = ParticleSystem._upperBound(system.proxyBuffer,
+          system.proxyCount, ParticleSystem.computeTag(
+              system.inverseDiameter * aabbupperBoundx,
+              system.inverseDiameter * aabbupperBoundy));
 
       for (int proxy = firstProxy; proxy != lastProxy; ++proxy) {
-        int a = system.m_proxyBuffer[proxy].index;
-        Vector2 ap = system.m_positionBuffer.data[a];
+        int a = system.proxyBuffer[proxy].index;
+        Vector2 ap = system.positionBuffer.data[a];
         if (aabblowerBoundx <= ap.x &&
             ap.x <= aabbupperBoundx &&
             aabblowerBoundy <= ap.y &&
             ap.y <= aabbupperBoundy) {
-          Vector2 av = system.m_velocityBuffer.data[a];
+          Vector2 av = system.velocityBuffer.data[a];
           final Vector2 temp = tempVec;
-          Transform.mulTransToOutUnsafeVec2(body.xf0, ap, temp);
-          Transform.mulToOutUnsafeVec2(body.transform, temp, input.p1);
+          Transform.mulTransToOutUnsafeVec2(body._xf0, ap, temp);
+          Transform.mulToOutUnsafeVec2(body._transform, temp, input.p1);
           input.p2.x = ap.x + step.dt * av.x;
           input.p2.y = ap.y + step.dt * av.y;
           input.maxFraction = 1.0;
@@ -464,66 +464,66 @@ class ParticleSystem {
     return maxCount != 0 && capacity > maxCount ? maxCount : capacity;
   }
 
-  int m_timestamp = 0;
-  int m_allParticleFlags = 0;
-  int m_allGroupFlags = 0;
-  double m_density = 1.0;
-  double m_inverseDensity = 1.0;
-  double m_gravityScale = 1.0;
-  double m_particleDiameter = 1.0;
-  double m_inverseDiameter = 1.0;
-  double m_squaredDiameter = 1.0;
+  int timestamp = 0;
+  int allParticleFlags = 0;
+  int allGroupFlags = 0;
+  double density = 1.0;
+  double inverseDensity = 1.0;
+  double gravityScale = 1.0;
+  double particleDiameter = 1.0;
+  double inverseDiameter = 1.0;
+  double squaredDiameter = 1.0;
 
-  int m_count = 0;
-  int m_internalAllocatedCapacity = 0;
-  int m_maxCount = 0;
-  ParticleBufferInt m_flagsBuffer;
-  ParticleBuffer<Vector2> m_positionBuffer;
-  ParticleBuffer<Vector2> m_velocityBuffer;
+  int count = 0;
+  int internalAllocatedCapacity = 0;
+  int maxCount = 0;
+  ParticleBufferInt flagsBuffer;
+  ParticleBuffer<Vector2> positionBuffer;
+  ParticleBuffer<Vector2> velocityBuffer;
 
-  Float64List m_accumulationBuffer; // temporary values
-  List<Vector2> m_accumulation2Buffer; // temporary vector values
-  Float64List m_depthBuffer; // distance from the surface
+  Float64List accumulationBuffer; // temporary values
+  List<Vector2> accumulation2Buffer; // temporary vector values
+  Float64List depthBuffer; // distance from the surface
 
-  ParticleBuffer<ParticleColor> m_colorBuffer;
-  List<ParticleGroup> m_groupBuffer;
-  ParticleBuffer<Object> m_userDataBuffer;
+  ParticleBuffer<ParticleColor> colorBuffer;
+  List<ParticleGroup> groupBuffer;
+  ParticleBuffer<Object> userDataBuffer;
 
-  int m_proxyCount = 0;
-  int m_proxyCapacity = 0;
-  List<PsProxy> m_proxyBuffer;
+  int proxyCount = 0;
+  int proxyCapacity = 0;
+  List<PsProxy> proxyBuffer;
 
-  int m_contactCount = 0;
-  int m_contactCapacity = 0;
-  List<ParticleContact> m_contactBuffer;
+  int contactCount = 0;
+  int contactCapacity = 0;
+  List<ParticleContact> contactBuffer;
 
-  int m_bodyContactCount = 0;
-  int m_bodyContactCapacity = 0;
-  List<ParticleBodyContact> m_bodyContactBuffer;
+  int bodyContactCount = 0;
+  int bodyContactCapacity = 0;
+  List<ParticleBodyContact> bodyContactBuffer;
 
-  int m_pairCount = 0;
-  int m_pairCapacity = 0;
-  List<PsPair> m_pairBuffer;
+  int pairCount = 0;
+  int pairCapacity = 0;
+  List<PsPair> pairBuffer;
 
-  int m_triadCount = 0;
-  int m_triadCapacity = 0;
-  List<PsTriad> m_triadBuffer;
+  int triadCount = 0;
+  int triadCapacity = 0;
+  List<PsTriad> triadBuffer;
 
-  int m_groupCount = 0;
-  ParticleGroup m_groupList;
+  int groupCount = 0;
+  ParticleGroup groupList;
 
-  double m_pressureStrength;
-  double m_dampingStrength;
-  double m_elasticStrength;
-  double m_springStrength;
-  double m_viscousStrength;
-  double m_surfaceTensionStrengthA;
-  double m_surfaceTensionStrengthB;
-  double m_powderStrength;
-  double m_ejectionStrength;
-  double m_colorMixingStrength;
+  double pressureStrength;
+  double dampingStrength;
+  double elasticStrength;
+  double springStrength;
+  double viscousStrength;
+  double surfaceTensionStrengthA;
+  double surfaceTensionStrengthB;
+  double powderStrength;
+  double ejectionStrength;
+  double colorMixingStrength;
 
-  World m_world;
+  World world;
 
   static Vector2 allocVec2() => new Vector2.zero();
   static Vector2 allocObject() => new Object();
@@ -532,93 +532,93 @@ class ParticleSystem {
   static PsProxy allocPsProxy() => new PsProxy();
 
   ParticleSystem(World world) {
-    m_world = world;
+    world = world;
 
-    m_pressureStrength = 0.05;
-    m_dampingStrength = 1.0;
-    m_elasticStrength = 0.25;
-    m_springStrength = 0.25;
-    m_viscousStrength = 0.25;
-    m_surfaceTensionStrengthA = 0.1;
-    m_surfaceTensionStrengthB = 0.2;
-    m_powderStrength = 0.5;
-    m_ejectionStrength = 0.5;
-    m_colorMixingStrength = 0.5;
+    pressureStrength = 0.05;
+    dampingStrength = 1.0;
+    elasticStrength = 0.25;
+    springStrength = 0.25;
+    viscousStrength = 0.25;
+    surfaceTensionStrengthA = 0.1;
+    surfaceTensionStrengthB = 0.2;
+    powderStrength = 0.5;
+    ejectionStrength = 0.5;
+    colorMixingStrength = 0.5;
 
-    m_flagsBuffer = new ParticleBufferInt();
-    m_positionBuffer = new ParticleBuffer<Vector2>(allocVec2);
-    m_velocityBuffer = new ParticleBuffer<Vector2>(allocVec2);
-    m_colorBuffer = new ParticleBuffer<ParticleColor>(allocParticleColor);
-    m_userDataBuffer = new ParticleBuffer<Object>(allocObject);
+    flagsBuffer = new ParticleBufferInt();
+    positionBuffer = new ParticleBuffer<Vector2>(allocVec2);
+    velocityBuffer = new ParticleBuffer<Vector2>(allocVec2);
+    colorBuffer = new ParticleBuffer<ParticleColor>(allocParticleColor);
+    userDataBuffer = new ParticleBuffer<Object>(allocObject);
   }
 
   int createParticle(ParticleDef def) {
-    if (m_count >= m_internalAllocatedCapacity) {
+    if (count >= internalAllocatedCapacity) {
       int capacity =
-          m_count != 0 ? 2 * m_count : Settings.minParticleBufferCapacity;
-      capacity = limitCapacity(capacity, m_maxCount);
-      capacity = limitCapacity(capacity, m_flagsBuffer.userSuppliedCapacity);
-      capacity = limitCapacity(capacity, m_positionBuffer.userSuppliedCapacity);
-      capacity = limitCapacity(capacity, m_velocityBuffer.userSuppliedCapacity);
-      capacity = limitCapacity(capacity, m_colorBuffer.userSuppliedCapacity);
-      capacity = limitCapacity(capacity, m_userDataBuffer.userSuppliedCapacity);
-      if (m_internalAllocatedCapacity < capacity) {
-        m_flagsBuffer.data = reallocateBufferInt(
-            m_flagsBuffer, m_internalAllocatedCapacity, capacity, false);
-        m_positionBuffer.data = reallocateBuffer(
-            m_positionBuffer, m_internalAllocatedCapacity, capacity, false);
-        m_velocityBuffer.data = reallocateBuffer(
-            m_velocityBuffer, m_internalAllocatedCapacity, capacity, false);
-        m_accumulationBuffer = BufferUtils.reallocateBufferFloat64Deferred(
-            m_accumulationBuffer, 0, m_internalAllocatedCapacity, capacity,
+          count != 0 ? 2 * count : Settings.minParticleBufferCapacity;
+      capacity = limitCapacity(capacity, maxCount);
+      capacity = limitCapacity(capacity, flagsBuffer.userSuppliedCapacity);
+      capacity = limitCapacity(capacity, positionBuffer.userSuppliedCapacity);
+      capacity = limitCapacity(capacity, velocityBuffer.userSuppliedCapacity);
+      capacity = limitCapacity(capacity, colorBuffer.userSuppliedCapacity);
+      capacity = limitCapacity(capacity, userDataBuffer.userSuppliedCapacity);
+      if (internalAllocatedCapacity < capacity) {
+        flagsBuffer.data = reallocateBufferInt(
+            flagsBuffer, internalAllocatedCapacity, capacity, false);
+        positionBuffer.data = reallocateBuffer(
+            positionBuffer, internalAllocatedCapacity, capacity, false);
+        velocityBuffer.data = reallocateBuffer(
+            velocityBuffer, internalAllocatedCapacity, capacity, false);
+        accumulationBuffer = BufferUtils.reallocateBufferFloat64Deferred(
+            accumulationBuffer, 0, internalAllocatedCapacity, capacity,
             false);
-        m_accumulation2Buffer = BufferUtils.reallocateBufferWithAllocDeferred(
-            m_accumulation2Buffer, 0, m_internalAllocatedCapacity, capacity,
+        accumulation2Buffer = BufferUtils.reallocateBufferWithAllocDeferred(
+            accumulation2Buffer, 0, internalAllocatedCapacity, capacity,
             true, allocVec2);
-        m_depthBuffer = BufferUtils.reallocateBufferFloat64Deferred(
-            m_depthBuffer, 0, m_internalAllocatedCapacity, capacity, true);
-        m_colorBuffer.data = reallocateBuffer(
-            m_colorBuffer, m_internalAllocatedCapacity, capacity, true);
-        m_groupBuffer = BufferUtils.reallocateBufferWithAllocDeferred(
-            m_groupBuffer, 0, m_internalAllocatedCapacity, capacity, false,
+        depthBuffer = BufferUtils.reallocateBufferFloat64Deferred(
+            depthBuffer, 0, internalAllocatedCapacity, capacity, true);
+        colorBuffer.data = reallocateBuffer(
+            colorBuffer, internalAllocatedCapacity, capacity, true);
+        groupBuffer = BufferUtils.reallocateBufferWithAllocDeferred(
+            groupBuffer, 0, internalAllocatedCapacity, capacity, false,
             allocParticleGroup);
-        m_userDataBuffer.data = reallocateBuffer(
-            m_userDataBuffer, m_internalAllocatedCapacity, capacity, true);
-        m_internalAllocatedCapacity = capacity;
+        userDataBuffer.data = reallocateBuffer(
+            userDataBuffer, internalAllocatedCapacity, capacity, true);
+        internalAllocatedCapacity = capacity;
       }
     }
-    if (m_count >= m_internalAllocatedCapacity) {
+    if (count >= internalAllocatedCapacity) {
       return Settings.invalidParticleIndex;
     }
-    int index = m_count++;
-    m_flagsBuffer.data[index] = def.flags;
-    m_positionBuffer.data[index].setFrom(def.position);
+    int index = count++;
+    flagsBuffer.data[index] = def.flags;
+    positionBuffer.data[index].setFrom(def.position);
 //    assertNotSamePosition();
-    m_velocityBuffer.data[index].setFrom(def.velocity);
-    m_groupBuffer[index] = null;
-    if (m_depthBuffer != null) {
-      m_depthBuffer[index] = 0.0;
+    velocityBuffer.data[index].setFrom(def.velocity);
+    groupBuffer[index] = null;
+    if (depthBuffer != null) {
+      depthBuffer[index] = 0.0;
     }
-    if (m_colorBuffer.data != null || def.color != null) {
-      m_colorBuffer.data =
-          requestParticleBuffer(m_colorBuffer.data, m_colorBuffer.allocClosure);
-      m_colorBuffer.data[index].setParticleColor(def.color);
+    if (colorBuffer.data != null || def.color != null) {
+      colorBuffer.data =
+          requestParticleBuffer(colorBuffer.data, colorBuffer.allocClosure);
+      colorBuffer.data[index].setParticleColor(def.color);
     }
-    if (m_userDataBuffer.data != null || def.userData != null) {
-      m_userDataBuffer.data = requestParticleBuffer(
-          m_userDataBuffer.data, m_userDataBuffer.allocClosure);
-      m_userDataBuffer.data[index] = def.userData;
+    if (userDataBuffer.data != null || def.userData != null) {
+      userDataBuffer.data = requestParticleBuffer(
+          userDataBuffer.data, userDataBuffer.allocClosure);
+      userDataBuffer.data[index] = def.userData;
     }
-    if (m_proxyCount >= m_proxyCapacity) {
-      int oldCapacity = m_proxyCapacity;
-      int newCapacity = m_proxyCount != 0
-          ? 2 * m_proxyCount
+    if (proxyCount >= proxyCapacity) {
+      int oldCapacity = proxyCapacity;
+      int newCapacity = proxyCount != 0
+          ? 2 * proxyCount
           : Settings.minParticleBufferCapacity;
-      m_proxyBuffer = BufferUtils.reallocateBufferWithAlloc(
-          m_proxyBuffer, oldCapacity, newCapacity, allocPsProxy);
-      m_proxyCapacity = newCapacity;
+      proxyBuffer = BufferUtils.reallocateBufferWithAlloc(
+          proxyBuffer, oldCapacity, newCapacity, allocPsProxy);
+      proxyCapacity = newCapacity;
     }
-    m_proxyBuffer[m_proxyCount++].index = index;
+    proxyBuffer[proxyCount++].index = index;
     return index;
   }
 
@@ -640,8 +640,8 @@ class ParticleSystem {
 
   List requestParticleBuffer(List buffer, allocClosure) {
     if (buffer == null) {
-      buffer = new List(m_internalAllocatedCapacity);
-      for (int i = 0; i < m_internalAllocatedCapacity; i++) {
+      buffer = new List(internalAllocatedCapacity);
+      for (int i = 0; i < internalAllocatedCapacity; i++) {
         try {
           buffer[i] = allocClosure();
         } catch (e) {
@@ -654,7 +654,7 @@ class ParticleSystem {
 
   Float64List requestParticleBufferFloat64(Float64List buffer) {
     if (buffer == null) {
-      buffer = new Float64List(m_internalAllocatedCapacity);
+      buffer = new Float64List(internalAllocatedCapacity);
     }
     return buffer;
   }
@@ -664,7 +664,7 @@ class ParticleSystem {
     if (callDestructionListener) {
       flags |= ParticleType.b2_destructionListener;
     }
-    m_flagsBuffer.data[index] |= flags;
+    flagsBuffer.data[index] |= flags;
   }
 
   final AABB _temp = new AABB();
@@ -675,13 +675,13 @@ class ParticleSystem {
       Shape shape, Transform xf, bool callDestructionListener) {
     _dpcallback.init(this, shape, xf, callDestructionListener);
     shape.computeAABB(_temp, xf, 0);
-    m_world.queryAABBParticle(_dpcallback, _temp);
+    world.queryAABBParticle(_dpcallback, _temp);
     return _dpcallback.destroyed;
   }
 
   void destroyParticlesInGroup(
       ParticleGroup group, bool callDestructionListener) {
-    for (int i = group.m_firstIndex; i < group.m_lastIndex; i++) {
+    for (int i = group._firstIndex; i < group._lastIndex; i++) {
       destroyParticle(i, callDestructionListener);
     }
   }
@@ -700,7 +700,7 @@ class ParticleSystem {
     identity.setIdentity();
     Transform transform = _tempTransform2;
     transform.setIdentity();
-    int firstIndex = m_count;
+    int firstIndex = count;
     if (groupDef.shape != null) {
       final ParticleDef particleDef = _tempParticleDef;
       particleDef.flags = groupDef.flags;
@@ -743,32 +743,32 @@ class ParticleSystem {
         }
       }
     }
-    int lastIndex = m_count;
+    int lastIndex = count;
 
     ParticleGroup group = new ParticleGroup();
-    group.m_system = this;
-    group.m_firstIndex = firstIndex;
-    group.m_lastIndex = lastIndex;
-    group.m_groupFlags = groupDef.groupFlags;
-    group.m_strength = groupDef.strength;
-    group.m_userData = groupDef.userData;
-    group.m_transform.set(transform);
-    group.m_destroyAutomatically = groupDef.destroyAutomatically;
-    group.m_prev = null;
-    group.m_next = m_groupList;
-    if (m_groupList != null) {
-      m_groupList.m_prev = group;
+    group._system = this;
+    group._firstIndex = firstIndex;
+    group._lastIndex = lastIndex;
+    group._groupFlags = groupDef.groupFlags;
+    group._strength = groupDef.strength;
+    group._userData = groupDef.userData;
+    group._transform.set(transform);
+    group._destroyAutomatically = groupDef.destroyAutomatically;
+    group._prev = null;
+    group._next = groupList;
+    if (groupList != null) {
+      groupList._prev = group;
     }
-    m_groupList = group;
-    ++m_groupCount;
+    groupList = group;
+    ++groupCount;
     for (int i = firstIndex; i < lastIndex; i++) {
-      m_groupBuffer[i] = group;
+      groupBuffer[i] = group;
     }
 
     updateContacts(true);
     if ((groupDef.flags & k_pairFlags) != 0) {
-      for (int k = 0; k < m_contactCount; k++) {
-        ParticleContact contact = m_contactBuffer[k];
+      for (int k = 0; k < contactCount; k++) {
+        ParticleContact contact = contactBuffer[k];
         int a = contact.indexA;
         int b = contact.indexB;
         if (a > b) {
@@ -777,30 +777,30 @@ class ParticleSystem {
           b = temp;
         }
         if (firstIndex <= a && b < lastIndex) {
-          if (m_pairCount >= m_pairCapacity) {
-            int oldCapacity = m_pairCapacity;
-            int newCapacity = m_pairCount != 0
-                ? 2 * m_pairCount
+          if (pairCount >= pairCapacity) {
+            int oldCapacity = pairCapacity;
+            int newCapacity = pairCount != 0
+                ? 2 * pairCount
                 : Settings.minParticleBufferCapacity;
-            m_pairBuffer = BufferUtils.reallocateBufferWithAlloc(
-                m_pairBuffer, oldCapacity, newCapacity, allocPsPair);
-            m_pairCapacity = newCapacity;
+            pairBuffer = BufferUtils.reallocateBufferWithAlloc(
+                pairBuffer, oldCapacity, newCapacity, allocPsPair);
+            pairCapacity = newCapacity;
           }
-          PsPair pair = m_pairBuffer[m_pairCount];
+          PsPair pair = pairBuffer[pairCount];
           pair.indexA = a;
           pair.indexB = b;
           pair.flags = contact.flags;
           pair.strength = groupDef.strength;
           pair.distance = MathUtils.distance(
-              m_positionBuffer.data[a], m_positionBuffer.data[b]);
-          m_pairCount++;
+              positionBuffer.data[a], positionBuffer.data[b]);
+          pairCount++;
         }
       }
     }
     if ((groupDef.flags & k_triadFlags) != 0) {
       VoronoiDiagram diagram = new VoronoiDiagram(lastIndex - firstIndex);
       for (int i = firstIndex; i < lastIndex; i++) {
-        diagram.addGenerator(m_positionBuffer.data[i], i);
+        diagram.addGenerator(positionBuffer.data[i], i);
       }
       diagram.generate(stride / 2);
       _createParticleGroupCallback.system = this;
@@ -819,20 +819,20 @@ class ParticleSystem {
 
   void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
     assert(groupA != groupB);
-    RotateBuffer(groupB.m_firstIndex, groupB.m_lastIndex, m_count);
-    assert(groupB.m_lastIndex == m_count);
-    RotateBuffer(groupA.m_firstIndex, groupA.m_lastIndex, groupB.m_firstIndex);
-    assert(groupA.m_lastIndex == groupB.m_firstIndex);
+    RotateBuffer(groupB._firstIndex, groupB._lastIndex, count);
+    assert(groupB._lastIndex == count);
+    RotateBuffer(groupA._firstIndex, groupA._lastIndex, groupB._firstIndex);
+    assert(groupA._lastIndex == groupB._firstIndex);
 
     int particleFlags = 0;
-    for (int i = groupA.m_firstIndex; i < groupB.m_lastIndex; i++) {
-      particleFlags |= m_flagsBuffer.data[i];
+    for (int i = groupA._firstIndex; i < groupB._lastIndex; i++) {
+      particleFlags |= flagsBuffer.data[i];
     }
 
     updateContacts(true);
     if ((particleFlags & k_pairFlags) != 0) {
-      for (int k = 0; k < m_contactCount; k++) {
-        final ParticleContact contact = m_contactBuffer[k];
+      for (int k = 0; k < contactCount; k++) {
+        final ParticleContact contact = contactBuffer[k];
         int a = contact.indexA;
         int b = contact.indexB;
         if (a > b) {
@@ -840,36 +840,36 @@ class ParticleSystem {
           a = b;
           b = temp;
         }
-        if (groupA.m_firstIndex <= a &&
-            a < groupA.m_lastIndex &&
-            groupB.m_firstIndex <= b &&
-            b < groupB.m_lastIndex) {
-          if (m_pairCount >= m_pairCapacity) {
-            int oldCapacity = m_pairCapacity;
-            int newCapacity = m_pairCount != 0
-                ? 2 * m_pairCount
+        if (groupA._firstIndex <= a &&
+            a < groupA._lastIndex &&
+            groupB._firstIndex <= b &&
+            b < groupB._lastIndex) {
+          if (pairCount >= pairCapacity) {
+            int oldCapacity = pairCapacity;
+            int newCapacity = pairCount != 0
+                ? 2 * pairCount
                 : Settings.minParticleBufferCapacity;
-            m_pairBuffer = BufferUtils.reallocateBufferWithAlloc(
-                m_pairBuffer, oldCapacity, newCapacity, allocPsPair);
-            m_pairCapacity = newCapacity;
+            pairBuffer = BufferUtils.reallocateBufferWithAlloc(
+                pairBuffer, oldCapacity, newCapacity, allocPsPair);
+            pairCapacity = newCapacity;
           }
-          PsPair pair = m_pairBuffer[m_pairCount];
+          PsPair pair = pairBuffer[pairCount];
           pair.indexA = a;
           pair.indexB = b;
           pair.flags = contact.flags;
-          pair.strength = Math.min(groupA.m_strength, groupB.m_strength);
+          pair.strength = Math.min(groupA._strength, groupB._strength);
           pair.distance = MathUtils.distance(
-              m_positionBuffer.data[a], m_positionBuffer.data[b]);
-          m_pairCount++;
+              positionBuffer.data[a], positionBuffer.data[b]);
+          pairCount++;
         }
       }
     }
     if ((particleFlags & k_triadFlags) != 0) {
       VoronoiDiagram diagram =
-          new VoronoiDiagram(groupB.m_lastIndex - groupA.m_firstIndex);
-      for (int i = groupA.m_firstIndex; i < groupB.m_lastIndex; i++) {
-        if ((m_flagsBuffer.data[i] & ParticleType.b2_zombieParticle) == 0) {
-          diagram.addGenerator(m_positionBuffer.data[i], i);
+          new VoronoiDiagram(groupB._lastIndex - groupA._firstIndex);
+      for (int i = groupA._firstIndex; i < groupB._lastIndex; i++) {
+        if ((flagsBuffer.data[i] & ParticleType.b2_zombieParticle) == 0) {
+          diagram.addGenerator(positionBuffer.data[i], i);
         }
       }
       diagram.generate(getParticleStride() / 2);
@@ -880,13 +880,13 @@ class ParticleSystem {
       diagram.getNodes(callback);
     }
 
-    for (int i = groupB.m_firstIndex; i < groupB.m_lastIndex; i++) {
-      m_groupBuffer[i] = groupA;
+    for (int i = groupB._firstIndex; i < groupB._lastIndex; i++) {
+      groupBuffer[i] = groupA;
     }
-    int groupFlags = groupA.m_groupFlags | groupB.m_groupFlags;
-    groupA.m_groupFlags = groupFlags;
-    groupA.m_lastIndex = groupB.m_lastIndex;
-    groupB.m_firstIndex = groupB.m_lastIndex;
+    int groupFlags = groupA._groupFlags | groupB._groupFlags;
+    groupA._groupFlags = groupFlags;
+    groupA._lastIndex = groupB._lastIndex;
+    groupB._firstIndex = groupB._lastIndex;
     destroyParticleGroup(groupB);
 
     if ((groupFlags & ParticleGroupType.b2_solidParticleGroup) != 0) {
@@ -896,74 +896,74 @@ class ParticleSystem {
 
   // Only called from solveZombie() or joinParticleGroups().
   void destroyParticleGroup(ParticleGroup group) {
-    assert(m_groupCount > 0);
+    assert(groupCount > 0);
     assert(group != null);
 
-    if (m_world.getParticleDestructionListener() != null) {
-      m_world.getParticleDestructionListener().sayGoodbyeParticleGroup(group);
+    if (world.getParticleDestructionListener() != null) {
+      world.getParticleDestructionListener().sayGoodbyeParticleGroup(group);
     }
 
-    for (int i = group.m_firstIndex; i < group.m_lastIndex; i++) {
-      m_groupBuffer[i] = null;
+    for (int i = group._firstIndex; i < group._lastIndex; i++) {
+      groupBuffer[i] = null;
     }
 
-    if (group.m_prev != null) {
-      group.m_prev.m_next = group.m_next;
+    if (group._prev != null) {
+      group._prev._next = group._next;
     }
-    if (group.m_next != null) {
-      group.m_next.m_prev = group.m_prev;
+    if (group._next != null) {
+      group._next._prev = group._prev;
     }
-    if (group == m_groupList) {
-      m_groupList = group.m_next;
+    if (group == groupList) {
+      groupList = group._next;
     }
 
-    --m_groupCount;
+    --groupCount;
   }
 
   void computeDepthForGroup(ParticleGroup group) {
-    for (int i = group.m_firstIndex; i < group.m_lastIndex; i++) {
-      m_accumulationBuffer[i] = 0.0;
+    for (int i = group._firstIndex; i < group._lastIndex; i++) {
+      accumulationBuffer[i] = 0.0;
     }
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
       int b = contact.indexB;
-      if (a >= group.m_firstIndex &&
-          a < group.m_lastIndex &&
-          b >= group.m_firstIndex &&
-          b < group.m_lastIndex) {
+      if (a >= group._firstIndex &&
+          a < group._lastIndex &&
+          b >= group._firstIndex &&
+          b < group._lastIndex) {
         double w = contact.weight;
-        m_accumulationBuffer[a] += w;
-        m_accumulationBuffer[b] += w;
+        accumulationBuffer[a] += w;
+        accumulationBuffer[b] += w;
       }
     }
-    m_depthBuffer = requestParticleBufferFloat64(m_depthBuffer);
-    for (int i = group.m_firstIndex; i < group.m_lastIndex; i++) {
-      double w = m_accumulationBuffer[i];
-      m_depthBuffer[i] = w < 0.8 ? 0 : double.MAX_FINITE;
+    depthBuffer = requestParticleBufferFloat64(depthBuffer);
+    for (int i = group._firstIndex; i < group._lastIndex; i++) {
+      double w = accumulationBuffer[i];
+      depthBuffer[i] = w < 0.8 ? 0 : double.MAX_FINITE;
     }
     int interationCount = group.getParticleCount();
     for (int t = 0; t < interationCount; t++) {
       bool updated = false;
-      for (int k = 0; k < m_contactCount; k++) {
-        final ParticleContact contact = m_contactBuffer[k];
+      for (int k = 0; k < contactCount; k++) {
+        final ParticleContact contact = contactBuffer[k];
         int a = contact.indexA;
         int b = contact.indexB;
-        if (a >= group.m_firstIndex &&
-            a < group.m_lastIndex &&
-            b >= group.m_firstIndex &&
-            b < group.m_lastIndex) {
+        if (a >= group._firstIndex &&
+            a < group._lastIndex &&
+            b >= group._firstIndex &&
+            b < group._lastIndex) {
           double r = 1 - contact.weight;
-          double ap0 = m_depthBuffer[a];
-          double bp0 = m_depthBuffer[b];
+          double ap0 = depthBuffer[a];
+          double bp0 = depthBuffer[b];
           double ap1 = bp0 + r;
           double bp1 = ap0 + r;
           if (ap0 > ap1) {
-            m_depthBuffer[a] = ap1;
+            depthBuffer[a] = ap1;
             updated = true;
           }
           if (bp0 > bp1) {
-            m_depthBuffer[b] = bp1;
+            depthBuffer[b] = bp1;
             updated = true;
           }
         }
@@ -972,12 +972,12 @@ class ParticleSystem {
         break;
       }
     }
-    for (int i = group.m_firstIndex; i < group.m_lastIndex; i++) {
-      double p = m_depthBuffer[i];
+    for (int i = group._firstIndex; i < group._lastIndex; i++) {
+      double p = depthBuffer[i];
       if (p < double.MAX_FINITE) {
-        m_depthBuffer[i] *= m_particleDiameter;
+        depthBuffer[i] *= particleDiameter;
       } else {
-        m_depthBuffer[i] = 0.0;
+        depthBuffer[i] = 0.0;
       }
     }
   }
@@ -986,66 +986,66 @@ class ParticleSystem {
 
   void addContact(int a, int b) {
     assert(a != b);
-    Vector2 pa = m_positionBuffer.data[a];
-    Vector2 pb = m_positionBuffer.data[b];
+    Vector2 pa = positionBuffer.data[a];
+    Vector2 pb = positionBuffer.data[b];
     double dx = pb.x - pa.x;
     double dy = pb.y - pa.y;
     double d2 = dx * dx + dy * dy;
 //    assert(d2 != 0);
-    if (d2 < m_squaredDiameter) {
-      if (m_contactCount >= m_contactCapacity) {
-        int oldCapacity = m_contactCapacity;
-        int newCapacity = m_contactCount != 0
-            ? 2 * m_contactCount
+    if (d2 < squaredDiameter) {
+      if (contactCount >= contactCapacity) {
+        int oldCapacity = contactCapacity;
+        int newCapacity = contactCount != 0
+            ? 2 * contactCount
             : Settings.minParticleBufferCapacity;
-        m_contactBuffer = BufferUtils.reallocateBufferWithAlloc(
-            m_contactBuffer, oldCapacity, newCapacity, allocParticleContact);
-        m_contactCapacity = newCapacity;
+        contactBuffer = BufferUtils.reallocateBufferWithAlloc(
+            contactBuffer, oldCapacity, newCapacity, allocParticleContact);
+        contactCapacity = newCapacity;
       }
       double invD = d2 != 0 ? Math.sqrt(1 / d2) : double.MAX_FINITE;
-      ParticleContact contact = m_contactBuffer[m_contactCount];
+      ParticleContact contact = contactBuffer[contactCount];
       contact.indexA = a;
       contact.indexB = b;
-      contact.flags = m_flagsBuffer.data[a] | m_flagsBuffer.data[b];
-      contact.weight = 1 - d2 * invD * m_inverseDiameter;
+      contact.flags = flagsBuffer.data[a] | flagsBuffer.data[b];
+      contact.weight = 1 - d2 * invD * inverseDiameter;
       contact.normal.x = invD * dx;
       contact.normal.y = invD * dy;
-      m_contactCount++;
+      contactCount++;
     }
   }
 
   void updateContacts(bool exceptZombie) {
-    for (int p = 0; p < m_proxyCount; p++) {
-      PsProxy proxy = m_proxyBuffer[p];
+    for (int p = 0; p < proxyCount; p++) {
+      PsProxy proxy = proxyBuffer[p];
       int i = proxy.index;
-      Vector2 pos = m_positionBuffer.data[i];
+      Vector2 pos = positionBuffer.data[i];
       proxy.tag =
-          computeTag(m_inverseDiameter * pos.x, m_inverseDiameter * pos.y);
+          computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
     }
-    BufferUtils.sort(m_proxyBuffer, 0, m_proxyCount);
-    m_contactCount = 0;
+    BufferUtils.sort(proxyBuffer, 0, proxyCount);
+    contactCount = 0;
     int c_index = 0;
-    for (int i = 0; i < m_proxyCount; i++) {
-      PsProxy a = m_proxyBuffer[i];
+    for (int i = 0; i < proxyCount; i++) {
+      PsProxy a = proxyBuffer[i];
       int rightTag = computeRelativeTag(a.tag, 1, 0);
-      for (int j = i + 1; j < m_proxyCount; j++) {
-        PsProxy b = m_proxyBuffer[j];
+      for (int j = i + 1; j < proxyCount; j++) {
+        PsProxy b = proxyBuffer[j];
         if (rightTag < b.tag) {
           break;
         }
         addContact(a.index, b.index);
       }
       int bottomLeftTag = computeRelativeTag(a.tag, -1, 1);
-      for (; c_index < m_proxyCount; c_index++) {
-        PsProxy c = m_proxyBuffer[c_index];
+      for (; c_index < proxyCount; c_index++) {
+        PsProxy c = proxyBuffer[c_index];
         if (bottomLeftTag <= c.tag) {
           break;
         }
       }
       int bottomRightTag = computeRelativeTag(a.tag, 1, 1);
 
-      for (int b_index = c_index; b_index < m_proxyCount; b_index++) {
-        PsProxy b = m_proxyBuffer[b_index];
+      for (int b_index = c_index; b_index < proxyCount; b_index++) {
+        PsProxy b = proxyBuffer[b_index];
         if (bottomRightTag < b.tag) {
           break;
         }
@@ -1053,17 +1053,17 @@ class ParticleSystem {
       }
     }
     if (exceptZombie) {
-      int j = m_contactCount;
+      int j = contactCount;
       for (int i = 0; i < j; i++) {
-        if ((m_contactBuffer[i].flags & ParticleType.b2_zombieParticle) != 0) {
+        if ((contactBuffer[i].flags & ParticleType.b2_zombieParticle) != 0) {
           --j;
-          ParticleContact temp = m_contactBuffer[j];
-          m_contactBuffer[j] = m_contactBuffer[i];
-          m_contactBuffer[i] = temp;
+          ParticleContact temp = contactBuffer[j];
+          contactBuffer[j] = contactBuffer[i];
+          contactBuffer[i] = temp;
           --i;
         }
       }
-      m_contactCount = j;
+      contactCount = j;
     }
   }
 
@@ -1076,19 +1076,19 @@ class ParticleSystem {
     aabb.lowerBound.y = double.MAX_FINITE;
     aabb.upperBound.x = -double.MAX_FINITE;
     aabb.upperBound.y = -double.MAX_FINITE;
-    for (int i = 0; i < m_count; i++) {
-      Vector2 p = m_positionBuffer.data[i];
+    for (int i = 0; i < count; i++) {
+      Vector2 p = positionBuffer.data[i];
       Vector2.min(aabb.lowerBound, p, aabb.lowerBound);
       Vector2.max(aabb.upperBound, p, aabb.upperBound);
     }
-    aabb.lowerBound.x -= m_particleDiameter;
-    aabb.lowerBound.y -= m_particleDiameter;
-    aabb.upperBound.x += m_particleDiameter;
-    aabb.upperBound.y += m_particleDiameter;
-    m_bodyContactCount = 0;
+    aabb.lowerBound.x -= particleDiameter;
+    aabb.lowerBound.y -= particleDiameter;
+    aabb.upperBound.x += particleDiameter;
+    aabb.upperBound.y += particleDiameter;
+    bodyContactCount = 0;
 
     _ubccallback.system = this;
-    m_world.queryAABB(_ubccallback, aabb);
+    world.queryAABB(_ubccallback, aabb);
   }
 
   SolveCollisionCallback _sccallback = new SolveCollisionCallback();
@@ -1101,9 +1101,9 @@ class ParticleSystem {
     lowerBound.y = double.MAX_FINITE;
     upperBound.x = -double.MAX_FINITE;
     upperBound.y = -double.MAX_FINITE;
-    for (int i = 0; i < m_count; i++) {
-      final Vector2 v = m_velocityBuffer.data[i];
-      final Vector2 p1 = m_positionBuffer.data[i];
+    for (int i = 0; i < count; i++) {
+      final Vector2 v = velocityBuffer.data[i];
+      final Vector2 p1 = positionBuffer.data[i];
       final double p1x = p1.x;
       final double p1y = p1.y;
       final double p2x = p1x + step.dt * v.x;
@@ -1119,35 +1119,35 @@ class ParticleSystem {
     }
     _sccallback.step = step;
     _sccallback.system = this;
-    m_world.queryAABB(_sccallback, aabb);
+    world.queryAABB(_sccallback, aabb);
   }
 
   void solve(TimeStep step) {
-    ++m_timestamp;
-    if (m_count == 0) {
+    ++timestamp;
+    if (count == 0) {
       return;
     }
-    m_allParticleFlags = 0;
-    for (int i = 0; i < m_count; i++) {
-      m_allParticleFlags |= m_flagsBuffer.data[i];
+    allParticleFlags = 0;
+    for (int i = 0; i < count; i++) {
+      allParticleFlags |= flagsBuffer.data[i];
     }
-    if ((m_allParticleFlags & ParticleType.b2_zombieParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_zombieParticle) != 0) {
       solveZombie();
     }
-    if (m_count == 0) {
+    if (count == 0) {
       return;
     }
-    m_allGroupFlags = 0;
-    for (ParticleGroup group = m_groupList;
+    allGroupFlags = 0;
+    for (ParticleGroup group = groupList;
         group != null;
         group = group.getNext()) {
-      m_allGroupFlags |= group.m_groupFlags;
+      allGroupFlags |= group._groupFlags;
     }
-    final double gravityx = step.dt * m_gravityScale * m_world.getGravity().x;
-    final double gravityy = step.dt * m_gravityScale * m_world.getGravity().y;
+    final double gravityx = step.dt * gravityScale * world.getGravity().x;
+    final double gravityy = step.dt * gravityScale * world.getGravity().y;
     double criticalVelocytySquared = getCriticalVelocitySquared(step);
-    for (int i = 0; i < m_count; i++) {
-      Vector2 v = m_velocityBuffer.data[i];
+    for (int i = 0; i < count; i++) {
+      Vector2 v = velocityBuffer.data[i];
       v.x += gravityx;
       v.y += gravityy;
       double v2 = v.x * v.x + v.y * v.y;
@@ -1160,39 +1160,39 @@ class ParticleSystem {
       }
     }
     solveCollision(step);
-    if ((m_allGroupFlags & ParticleGroupType.b2_rigidParticleGroup) != 0) {
+    if ((allGroupFlags & ParticleGroupType.b2_rigidParticleGroup) != 0) {
       solveRigid(step);
     }
-    if ((m_allParticleFlags & ParticleType.b2_wallParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_wallParticle) != 0) {
       solveWall(step);
     }
-    for (int i = 0; i < m_count; i++) {
-      Vector2 pos = m_positionBuffer.data[i];
-      Vector2 vel = m_velocityBuffer.data[i];
+    for (int i = 0; i < count; i++) {
+      Vector2 pos = positionBuffer.data[i];
+      Vector2 vel = velocityBuffer.data[i];
       pos.x += step.dt * vel.x;
       pos.y += step.dt * vel.y;
     }
     updateBodyContacts();
     updateContacts(false);
-    if ((m_allParticleFlags & ParticleType.b2_viscousParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_viscousParticle) != 0) {
       solveViscous(step);
     }
-    if ((m_allParticleFlags & ParticleType.b2_powderParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_powderParticle) != 0) {
       solvePowder(step);
     }
-    if ((m_allParticleFlags & ParticleType.b2_tensileParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_tensileParticle) != 0) {
       solveTensile(step);
     }
-    if ((m_allParticleFlags & ParticleType.b2_elasticParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_elasticParticle) != 0) {
       solveElastic(step);
     }
-    if ((m_allParticleFlags & ParticleType.b2_springParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_springParticle) != 0) {
       solveSpring(step);
     }
-    if ((m_allGroupFlags & ParticleGroupType.b2_solidParticleGroup) != 0) {
+    if ((allGroupFlags & ParticleGroupType.b2_solidParticleGroup) != 0) {
       solveSolid(step);
     }
-    if ((m_allParticleFlags & ParticleType.b2_colorMixingParticle) != 0) {
+    if ((allParticleFlags & ParticleType.b2_colorMixingParticle) != 0) {
       solveColorMixing(step);
     }
     solvePressure(step);
@@ -1202,72 +1202,72 @@ class ParticleSystem {
   void solvePressure(TimeStep step) {
     // calculates the sum of contact-weights for each particle
     // that means dimensionless density
-    for (int i = 0; i < m_count; i++) {
-      m_accumulationBuffer[i] = 0.0;
+    for (int i = 0; i < count; i++) {
+      accumulationBuffer[i] = 0.0;
     }
-    for (int k = 0; k < m_bodyContactCount; k++) {
-      ParticleBodyContact contact = m_bodyContactBuffer[k];
+    for (int k = 0; k < bodyContactCount; k++) {
+      ParticleBodyContact contact = bodyContactBuffer[k];
       int a = contact.index;
       double w = contact.weight;
-      m_accumulationBuffer[a] += w;
+      accumulationBuffer[a] += w;
     }
-    for (int k = 0; k < m_contactCount; k++) {
-      ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
       int b = contact.indexB;
       double w = contact.weight;
-      m_accumulationBuffer[a] += w;
-      m_accumulationBuffer[b] += w;
+      accumulationBuffer[a] += w;
+      accumulationBuffer[b] += w;
     }
     // ignores powder particles
-    if ((m_allParticleFlags & k_noPressureFlags) != 0) {
-      for (int i = 0; i < m_count; i++) {
-        if ((m_flagsBuffer.data[i] & k_noPressureFlags) != 0) {
-          m_accumulationBuffer[i] = 0.0;
+    if ((allParticleFlags & k_noPressureFlags) != 0) {
+      for (int i = 0; i < count; i++) {
+        if ((flagsBuffer.data[i] & k_noPressureFlags) != 0) {
+          accumulationBuffer[i] = 0.0;
         }
       }
     }
     // calculates pressure as a linear function of density
-    double pressurePerWeight = m_pressureStrength * getCriticalPressure(step);
-    for (int i = 0; i < m_count; i++) {
-      double w = m_accumulationBuffer[i];
+    double pressurePerWeight = pressureStrength * getCriticalPressure(step);
+    for (int i = 0; i < count; i++) {
+      double w = accumulationBuffer[i];
       double h = pressurePerWeight *
           Math.max(0.0, Math.min(w, Settings.maxParticleWeight) -
               Settings.minParticleWeight);
-      m_accumulationBuffer[i] = h;
+      accumulationBuffer[i] = h;
     }
     // applies pressure between each particles in contact
-    double velocityPerPressure = step.dt / (m_density * m_particleDiameter);
-    for (int k = 0; k < m_bodyContactCount; k++) {
-      ParticleBodyContact contact = m_bodyContactBuffer[k];
+    double velocityPerPressure = step.dt / (density * particleDiameter);
+    for (int k = 0; k < bodyContactCount; k++) {
+      ParticleBodyContact contact = bodyContactBuffer[k];
       int a = contact.index;
       Body b = contact.body;
       double w = contact.weight;
       double m = contact.mass;
       Vector2 n = contact.normal;
-      Vector2 p = m_positionBuffer.data[a];
-      double h = m_accumulationBuffer[a] + pressurePerWeight * w;
+      Vector2 p = positionBuffer.data[a];
+      double h = accumulationBuffer[a] + pressurePerWeight * w;
       final Vector2 f = _tempVec;
       final double coef = velocityPerPressure * w * m * h;
       f.x = coef * n.x;
       f.y = coef * n.y;
-      final Vector2 velData = m_velocityBuffer.data[a];
+      final Vector2 velData = velocityBuffer.data[a];
       final double particleInvMass = getParticleInvMass();
       velData.x -= particleInvMass * f.x;
       velData.y -= particleInvMass * f.y;
       b.applyLinearImpulse(f, p, true);
     }
-    for (int k = 0; k < m_contactCount; k++) {
-      ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
       int b = contact.indexB;
       double w = contact.weight;
       Vector2 n = contact.normal;
-      double h = m_accumulationBuffer[a] + m_accumulationBuffer[b];
+      double h = accumulationBuffer[a] + accumulationBuffer[b];
       final double fx = velocityPerPressure * w * h * n.x;
       final double fy = velocityPerPressure * w * h * n.y;
-      final Vector2 velDataA = m_velocityBuffer.data[a];
-      final Vector2 velDataB = m_velocityBuffer.data[b];
+      final Vector2 velDataA = velocityBuffer.data[a];
+      final Vector2 velDataB = velocityBuffer.data[b];
       velDataA.x -= fx;
       velDataA.y -= fy;
       velDataB.x += fx;
@@ -1277,18 +1277,18 @@ class ParticleSystem {
 
   void solveDamping(TimeStep step) {
     // reduces normal velocity of each contact
-    double damping = m_dampingStrength;
-    for (int k = 0; k < m_bodyContactCount; k++) {
-      final ParticleBodyContact contact = m_bodyContactBuffer[k];
+    double damping = dampingStrength;
+    for (int k = 0; k < bodyContactCount; k++) {
+      final ParticleBodyContact contact = bodyContactBuffer[k];
       int a = contact.index;
       Body b = contact.body;
       double w = contact.weight;
       double m = contact.mass;
       Vector2 n = contact.normal;
-      Vector2 p = m_positionBuffer.data[a];
-      final double tempX = p.x - b.sweep.c.x;
-      final double tempY = p.y - b.sweep.c.y;
-      final Vector2 velA = m_velocityBuffer.data[a];
+      Vector2 p = positionBuffer.data[a];
+      final double tempX = p.x - b._sweep.c.x;
+      final double tempY = p.y - b._sweep.c.y;
+      final Vector2 velA = velocityBuffer.data[a];
       // getLinearVelocityFromWorldPointToOut, with -= velA
       double vx = -b._angularVelocity * tempY + b._linearVelocity.x - velA.x;
       double vy = b._angularVelocity * tempX + b._linearVelocity.y - velA.y;
@@ -1306,14 +1306,14 @@ class ParticleSystem {
         b.applyLinearImpulse(f, p, true);
       }
     }
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
       int b = contact.indexB;
       double w = contact.weight;
       Vector2 n = contact.normal;
-      final Vector2 velA = m_velocityBuffer.data[a];
-      final Vector2 velB = m_velocityBuffer.data[b];
+      final Vector2 velA = velocityBuffer.data[a];
+      final Vector2 velB = velocityBuffer.data[b];
       final double vx = velB.x - velA.x;
       final double vy = velB.y - velA.y;
       double vn = vx * n.x + vy * n.y;
@@ -1329,9 +1329,9 @@ class ParticleSystem {
   }
 
   void solveWall(TimeStep step) {
-    for (int i = 0; i < m_count; i++) {
-      if ((m_flagsBuffer.data[i] & ParticleType.b2_wallParticle) != 0) {
-        final Vector2 r = m_velocityBuffer.data[i];
+    for (int i = 0; i < count; i++) {
+      if ((flagsBuffer.data[i] & ParticleType.b2_wallParticle) != 0) {
+        final Vector2 r = velocityBuffer.data[i];
         r.x = 0.0;
         r.y = 0.0;
       }
@@ -1344,41 +1344,41 @@ class ParticleSystem {
   final Transform _tempXf2 = new Transform.zero();
 
   void solveRigid(final TimeStep step) {
-    for (ParticleGroup group = m_groupList;
+    for (ParticleGroup group = groupList;
         group != null;
         group = group.getNext()) {
-      if ((group.m_groupFlags & ParticleGroupType.b2_rigidParticleGroup) != 0) {
+      if ((group._groupFlags & ParticleGroupType.b2_rigidParticleGroup) != 0) {
         group.updateStatistics();
         Vector2 temp = _tempVec;
         Vector2 cross = _tempVec2;
         Rot rotation = _tempRot;
-        rotation.setAngle(step.dt * group.m_angularVelocity);
-        Rot.mulToOutUnsafe(rotation, group.m_center, cross);
+        rotation.setAngle(step.dt * group._angularVelocity);
+        Rot.mulToOutUnsafe(rotation, group._center, cross);
         temp
-            .setFrom(group.m_linearVelocity)
+            .setFrom(group._linearVelocity)
             .scale(step.dt)
-            .add(group.m_center)
+            .add(group._center)
             .sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.set(rotation);
-        Transform.mulToOut(_tempXf, group.m_transform, group.m_transform);
+        Transform.mulToOut(_tempXf, group._transform, group._transform);
         final Transform velocityTransform = _tempXf2;
         velocityTransform.p.x = step.inv_dt * _tempXf.p.x;
         velocityTransform.p.y = step.inv_dt * _tempXf.p.y;
         velocityTransform.q.s = step.inv_dt * _tempXf.q.s;
         velocityTransform.q.c = step.inv_dt * (_tempXf.q.c - 1);
-        for (int i = group.m_firstIndex; i < group.m_lastIndex; i++) {
+        for (int i = group._firstIndex; i < group._lastIndex; i++) {
           Transform.mulToOutUnsafeVec2(velocityTransform,
-              m_positionBuffer.data[i], m_velocityBuffer.data[i]);
+              positionBuffer.data[i], velocityBuffer.data[i]);
         }
       }
     }
   }
 
   void solveElastic(final TimeStep step) {
-    double elasticStrength = step.inv_dt * m_elasticStrength;
-    for (int k = 0; k < m_triadCount; k++) {
-      final PsTriad triad = m_triadBuffer[k];
+    double elasticStrength_ = step.inv_dt * elasticStrength;
+    for (int k = 0; k < triadCount; k++) {
+      final PsTriad triad = triadBuffer[k];
       if ((triad.flags & ParticleType.b2_elasticParticle) != 0) {
         int a = triad.indexA;
         int b = triad.indexB;
@@ -1386,9 +1386,9 @@ class ParticleSystem {
         final Vector2 oa = triad.pa;
         final Vector2 ob = triad.pb;
         final Vector2 oc = triad.pc;
-        final Vector2 pa = m_positionBuffer.data[a];
-        final Vector2 pb = m_positionBuffer.data[b];
-        final Vector2 pc = m_positionBuffer.data[c];
+        final Vector2 pa = positionBuffer.data[a];
+        final Vector2 pb = positionBuffer.data[b];
+        final Vector2 pc = positionBuffer.data[c];
         final double px = 1.0 / 3 * (pa.x + pb.x + pc.x);
         final double py = 1.0 / 3 * (pa.y + pb.y + pc.y);
         double rs = oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
@@ -1397,16 +1397,16 @@ class ParticleSystem {
         double invR = r2 == 0 ? double.MAX_FINITE : Math.sqrt(1.0 / r2);
         rs *= invR;
         rc *= invR;
-        final double strength = elasticStrength * triad.strength;
+        final double strength = elasticStrength_ * triad.strength;
         final double roax = rc * oa.x - rs * oa.y;
         final double roay = rs * oa.x + rc * oa.y;
         final double robx = rc * ob.x - rs * ob.y;
         final double roby = rs * ob.x + rc * ob.y;
         final double rocx = rc * oc.x - rs * oc.y;
         final double rocy = rs * oc.x + rc * oc.y;
-        final Vector2 va = m_velocityBuffer.data[a];
-        final Vector2 vb = m_velocityBuffer.data[b];
-        final Vector2 vc = m_velocityBuffer.data[c];
+        final Vector2 va = velocityBuffer.data[a];
+        final Vector2 vb = velocityBuffer.data[b];
+        final Vector2 vc = velocityBuffer.data[c];
         va.x += strength * (roax - (pa.x - px));
         va.y += strength * (roay - (pa.y - py));
         vb.x += strength * (robx - (pb.x - px));
@@ -1418,24 +1418,24 @@ class ParticleSystem {
   }
 
   void solveSpring(final TimeStep step) {
-    double springStrength = step.inv_dt * m_springStrength;
-    for (int k = 0; k < m_pairCount; k++) {
-      final PsPair pair = m_pairBuffer[k];
+    double springStrength_ = step.inv_dt * springStrength;
+    for (int k = 0; k < pairCount; k++) {
+      final PsPair pair = pairBuffer[k];
       if ((pair.flags & ParticleType.b2_springParticle) != 0) {
         int a = pair.indexA;
         int b = pair.indexB;
-        final Vector2 pa = m_positionBuffer.data[a];
-        final Vector2 pb = m_positionBuffer.data[b];
+        final Vector2 pa = positionBuffer.data[a];
+        final Vector2 pb = positionBuffer.data[b];
         final double dx = pb.x - pa.x;
         final double dy = pb.y - pa.y;
         double r0 = pair.distance;
         double r1 = Math.sqrt(dx * dx + dy * dy);
         if (r1 == 0) r1 = double.MAX_FINITE;
-        double strength = springStrength * pair.strength;
+        double strength = springStrength_ * pair.strength;
         final double fx = strength * (r0 - r1) / r1 * dx;
         final double fy = strength * (r0 - r1) / r1 * dy;
-        final Vector2 va = m_velocityBuffer.data[a];
-        final Vector2 vb = m_velocityBuffer.data[b];
+        final Vector2 va = velocityBuffer.data[a];
+        final Vector2 vb = velocityBuffer.data[b];
         va.x -= fx;
         va.y -= fy;
         vb.x += fx;
@@ -1445,23 +1445,23 @@ class ParticleSystem {
   }
 
   void solveTensile(final TimeStep step) {
-    m_accumulation2Buffer =
-        requestParticleBuffer(m_accumulation2Buffer, allocVec2);
-    for (int i = 0; i < m_count; i++) {
-      m_accumulationBuffer[i] = 0.0;
-      m_accumulation2Buffer[i].setZero();
+    accumulation2Buffer =
+        requestParticleBuffer(accumulation2Buffer, allocVec2);
+    for (int i = 0; i < count; i++) {
+      accumulationBuffer[i] = 0.0;
+      accumulation2Buffer[i].setZero();
     }
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       if ((contact.flags & ParticleType.b2_tensileParticle) != 0) {
         int a = contact.indexA;
         int b = contact.indexB;
         double w = contact.weight;
         Vector2 n = contact.normal;
-        m_accumulationBuffer[a] += w;
-        m_accumulationBuffer[b] += w;
-        final Vector2 a2A = m_accumulation2Buffer[a];
-        final Vector2 a2B = m_accumulation2Buffer[b];
+        accumulationBuffer[a] += w;
+        accumulationBuffer[b] += w;
+        final Vector2 a2A = accumulation2Buffer[a];
+        final Vector2 a2B = accumulation2Buffer[b];
         final double inter = (1 - w) * w;
         a2A.x -= inter * n.x;
         a2A.y -= inter * n.y;
@@ -1469,26 +1469,26 @@ class ParticleSystem {
         a2B.y += inter * n.y;
       }
     }
-    double strengthA = m_surfaceTensionStrengthA * getCriticalVelocity(step);
-    double strengthB = m_surfaceTensionStrengthB * getCriticalVelocity(step);
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    double strengthA = surfaceTensionStrengthA * getCriticalVelocity(step);
+    double strengthB = surfaceTensionStrengthB * getCriticalVelocity(step);
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       if ((contact.flags & ParticleType.b2_tensileParticle) != 0) {
         int a = contact.indexA;
         int b = contact.indexB;
         double w = contact.weight;
         Vector2 n = contact.normal;
-        final Vector2 a2A = m_accumulation2Buffer[a];
-        final Vector2 a2B = m_accumulation2Buffer[b];
-        double h = m_accumulationBuffer[a] + m_accumulationBuffer[b];
+        final Vector2 a2A = accumulation2Buffer[a];
+        final Vector2 a2B = accumulation2Buffer[b];
+        double h = accumulationBuffer[a] + accumulationBuffer[b];
         final double sx = a2B.x - a2A.x;
         final double sy = a2B.y - a2A.y;
         double fn =
             (strengthA * (h - 2) + strengthB * (sx * n.x + sy * n.y)) * w;
         final double fx = fn * n.x;
         final double fy = fn * n.y;
-        final Vector2 va = m_velocityBuffer.data[a];
-        final Vector2 vb = m_velocityBuffer.data[b];
+        final Vector2 va = velocityBuffer.data[a];
+        final Vector2 vb = velocityBuffer.data[b];
         va.x -= fx;
         va.y -= fy;
         vb.x += fx;
@@ -1498,26 +1498,26 @@ class ParticleSystem {
   }
 
   void solveViscous(final TimeStep step) {
-    double viscousStrength = m_viscousStrength;
-    for (int k = 0; k < m_bodyContactCount; k++) {
-      final ParticleBodyContact contact = m_bodyContactBuffer[k];
+    double viscousStrength_ = viscousStrength;
+    for (int k = 0; k < bodyContactCount; k++) {
+      final ParticleBodyContact contact = bodyContactBuffer[k];
       int a = contact.index;
-      if ((m_flagsBuffer.data[a] & ParticleType.b2_viscousParticle) != 0) {
+      if ((flagsBuffer.data[a] & ParticleType.b2_viscousParticle) != 0) {
         Body b = contact.body;
         double w = contact.weight;
         double m = contact.mass;
-        Vector2 p = m_positionBuffer.data[a];
-        final Vector2 va = m_velocityBuffer.data[a];
-        final double tempX = p.x - b.sweep.c.x;
-        final double tempY = p.y - b.sweep.c.y;
+        Vector2 p = positionBuffer.data[a];
+        final Vector2 va = velocityBuffer.data[a];
+        final double tempX = p.x - b._sweep.c.x;
+        final double tempY = p.y - b._sweep.c.y;
         final double vx =
             -b._angularVelocity * tempY + b._linearVelocity.x - va.x;
         final double vy =
             b._angularVelocity * tempX + b._linearVelocity.y - va.y;
         final Vector2 f = _tempVec;
         final double pInvMass = getParticleInvMass();
-        f.x = viscousStrength * m * w * vx;
-        f.y = viscousStrength * m * w * vy;
+        f.x = viscousStrength_ * m * w * vx;
+        f.y = viscousStrength_ * m * w * vy;
         va.x += pInvMass * f.x;
         va.y += pInvMass * f.y;
         f.x = -f.x;
@@ -1525,18 +1525,18 @@ class ParticleSystem {
         b.applyLinearImpulse(f, p, true);
       }
     }
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       if ((contact.flags & ParticleType.b2_viscousParticle) != 0) {
         int a = contact.indexA;
         int b = contact.indexB;
         double w = contact.weight;
-        final Vector2 va = m_velocityBuffer.data[a];
-        final Vector2 vb = m_velocityBuffer.data[b];
+        final Vector2 va = velocityBuffer.data[a];
+        final Vector2 vb = velocityBuffer.data[b];
         final double vx = vb.x - va.x;
         final double vy = vb.y - va.y;
-        final double fx = viscousStrength * w * vx;
-        final double fy = viscousStrength * w * vy;
+        final double fx = viscousStrength_ * w * vx;
+        final double fy = viscousStrength_ * w * vy;
         va.x += fx;
         va.y += fy;
         vb.x -= fx;
@@ -1546,21 +1546,21 @@ class ParticleSystem {
   }
 
   void solvePowder(final TimeStep step) {
-    double powderStrength = m_powderStrength * getCriticalVelocity(step);
+    double powderStrength_ = powderStrength * getCriticalVelocity(step);
     double minWeight = 1.0 - Settings.particleStride;
-    for (int k = 0; k < m_bodyContactCount; k++) {
-      final ParticleBodyContact contact = m_bodyContactBuffer[k];
+    for (int k = 0; k < bodyContactCount; k++) {
+      final ParticleBodyContact contact = bodyContactBuffer[k];
       int a = contact.index;
-      if ((m_flagsBuffer.data[a] & ParticleType.b2_powderParticle) != 0) {
+      if ((flagsBuffer.data[a] & ParticleType.b2_powderParticle) != 0) {
         double w = contact.weight;
         if (w > minWeight) {
           Body b = contact.body;
           double m = contact.mass;
-          Vector2 p = m_positionBuffer.data[a];
+          Vector2 p = positionBuffer.data[a];
           Vector2 n = contact.normal;
           final Vector2 f = _tempVec;
-          final Vector2 va = m_velocityBuffer.data[a];
-          final double inter = powderStrength * m * (w - minWeight);
+          final Vector2 va = velocityBuffer.data[a];
+          final double inter = powderStrength_ * m * (w - minWeight);
           final double pInvMass = getParticleInvMass();
           f.x = inter * n.x;
           f.y = inter * n.y;
@@ -1570,16 +1570,16 @@ class ParticleSystem {
         }
       }
     }
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       if ((contact.flags & ParticleType.b2_powderParticle) != 0) {
         double w = contact.weight;
         if (w > minWeight) {
           int a = contact.indexA;
           int b = contact.indexB;
           Vector2 n = contact.normal;
-          final Vector2 va = m_velocityBuffer.data[a];
-          final Vector2 vb = m_velocityBuffer.data[b];
+          final Vector2 va = velocityBuffer.data[a];
+          final Vector2 vb = velocityBuffer.data[b];
           final double inter = powderStrength * (w - minWeight);
           final double fx = inter * n.x;
           final double fy = inter * n.y;
@@ -1594,19 +1594,19 @@ class ParticleSystem {
 
   void solveSolid(final TimeStep step) {
     // applies extra repulsive force from solid particle groups
-    m_depthBuffer = requestParticleBufferFloat64(m_depthBuffer);
-    double ejectionStrength = step.inv_dt * m_ejectionStrength;
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    depthBuffer = requestParticleBufferFloat64(depthBuffer);
+    double ejectionStrength_ = step.inv_dt * ejectionStrength;
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
       int b = contact.indexB;
-      if (m_groupBuffer[a] != m_groupBuffer[b]) {
+      if (groupBuffer[a] != groupBuffer[b]) {
         double w = contact.weight;
         Vector2 n = contact.normal;
-        double h = m_depthBuffer[a] + m_depthBuffer[b];
-        final Vector2 va = m_velocityBuffer.data[a];
-        final Vector2 vb = m_velocityBuffer.data[b];
-        final double inter = ejectionStrength * h * w;
+        double h = depthBuffer[a] + depthBuffer[b];
+        final Vector2 va = velocityBuffer.data[a];
+        final Vector2 vb = velocityBuffer.data[b];
+        final double inter = ejectionStrength_ * h * w;
         final double fx = inter * n.x;
         final double fy = inter * n.y;
         va.x -= fx;
@@ -1619,19 +1619,19 @@ class ParticleSystem {
 
   void solveColorMixing(final TimeStep step) {
     // mixes color between contacting particles
-    m_colorBuffer.data =
-        requestParticleBuffer(m_colorBuffer.data, allocParticleColor);
-    int colorMixing256 = (256 * m_colorMixingStrength).toInt();
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    colorBuffer.data =
+        requestParticleBuffer(colorBuffer.data, allocParticleColor);
+    int colorMixing256 = (256 * colorMixingStrength).toInt();
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
       int b = contact.indexB;
-      if ((m_flagsBuffer.data[a] &
-              m_flagsBuffer.data[b] &
+      if ((flagsBuffer.data[a] &
+              flagsBuffer.data[b] &
               ParticleType.b2_colorMixingParticle) !=
           0) {
-        ParticleColor colorA = m_colorBuffer.data[a];
-        ParticleColor colorB = m_colorBuffer.data[b];
+        ParticleColor colorA = colorBuffer.data[a];
+        ParticleColor colorB = colorBuffer.data[b];
         int dr = (colorMixing256 * (colorB.r - colorA.r)).toInt() >> 8;
         int dg = (colorMixing256 * (colorB.g - colorA.g)).toInt() >> 8;
         int db = (colorMixing256 * (colorB.b - colorA.b)).toInt() >> 8;
@@ -1651,12 +1651,12 @@ class ParticleSystem {
   void solveZombie() {
     // removes particles with zombie flag
     int newCount = 0;
-    List<int> newIndices = BufferUtils.allocClearIntList(m_count);
-    for (int i = 0; i < m_count; i++) {
-      int flags = m_flagsBuffer.data[i];
+    List<int> newIndices = BufferUtils.allocClearIntList(count);
+    for (int i = 0; i < count; i++) {
+      int flags = flagsBuffer.data[i];
       if ((flags & ParticleType.b2_zombieParticle) != 0) {
         ParticleDestructionListener destructionListener =
-            m_world.getParticleDestructionListener();
+            world.getParticleDestructionListener();
         if ((flags & ParticleType.b2_destructionListener) != 0 &&
             destructionListener != null) {
           destructionListener.sayGoodbyeIndex(i);
@@ -1665,19 +1665,19 @@ class ParticleSystem {
       } else {
         newIndices[i] = newCount;
         if (i != newCount) {
-          m_flagsBuffer.data[newCount] = m_flagsBuffer.data[i];
-          m_positionBuffer.data[newCount].setFrom(m_positionBuffer.data[i]);
-          m_velocityBuffer.data[newCount].setFrom(m_velocityBuffer.data[i]);
-          m_groupBuffer[newCount] = m_groupBuffer[i];
-          if (m_depthBuffer != null) {
-            m_depthBuffer[newCount] = m_depthBuffer[i];
+          flagsBuffer.data[newCount] = flagsBuffer.data[i];
+          positionBuffer.data[newCount].setFrom(positionBuffer.data[i]);
+          velocityBuffer.data[newCount].setFrom(velocityBuffer.data[i]);
+          groupBuffer[newCount] = groupBuffer[i];
+          if (depthBuffer != null) {
+            depthBuffer[newCount] = depthBuffer[i];
           }
-          if (m_colorBuffer.data != null) {
-            m_colorBuffer.data[newCount]
-                .setParticleColor(m_colorBuffer.data[i]);
+          if (colorBuffer.data != null) {
+            colorBuffer.data[newCount]
+                .setParticleColor(colorBuffer.data[i]);
           }
-          if (m_userDataBuffer.data != null) {
-            m_userDataBuffer.data[newCount] = m_userDataBuffer.data[i];
+          if (userDataBuffer.data != null) {
+            userDataBuffer.data[newCount] = userDataBuffer.data[i];
           }
         }
         newCount++;
@@ -1685,120 +1685,120 @@ class ParticleSystem {
     }
 
     // update proxies
-    for (int k = 0; k < m_proxyCount; k++) {
-      PsProxy proxy = m_proxyBuffer[k];
+    for (int k = 0; k < proxyCount; k++) {
+      PsProxy proxy = proxyBuffer[k];
       proxy.index = newIndices[proxy.index];
     }
 
     // Proxy lastProxy = std.remove_if(
-    // m_proxyBuffer, m_proxyBuffer + m_proxyCount,
+    // _proxyBuffer, _proxyBuffer + _proxyCount,
     // Test.IsProxyInvalid);
-    // m_proxyCount = (int) (lastProxy - m_proxyBuffer);
-    int j = m_proxyCount;
+    // _proxyCount = (int) (lastProxy - _proxyBuffer);
+    int j = proxyCount;
     for (int i = 0; i < j; i++) {
-      if (ParticleSystemTest.IsProxyInvalid(m_proxyBuffer[i])) {
+      if (ParticleSystemTest.IsProxyInvalid(proxyBuffer[i])) {
         --j;
-        PsProxy temp = m_proxyBuffer[j];
-        m_proxyBuffer[j] = m_proxyBuffer[i];
-        m_proxyBuffer[i] = temp;
+        PsProxy temp = proxyBuffer[j];
+        proxyBuffer[j] = proxyBuffer[i];
+        proxyBuffer[i] = temp;
         --i;
       }
     }
-    m_proxyCount = j;
+    proxyCount = j;
 
     // update contacts
-    for (int k = 0; k < m_contactCount; k++) {
-      ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      ParticleContact contact = contactBuffer[k];
       contact.indexA = newIndices[contact.indexA];
       contact.indexB = newIndices[contact.indexB];
     }
     // ParticleContact lastContact = std.remove_if(
-    // m_contactBuffer, m_contactBuffer + m_contactCount,
+    // _contactBuffer, _contactBuffer + _contactCount,
     // Test.IsContactInvalid);
-    // m_contactCount = (int) (lastContact - m_contactBuffer);
-    j = m_contactCount;
+    // _contactCount = (int) (lastContact - _contactBuffer);
+    j = contactCount;
     for (int i = 0; i < j; i++) {
-      if (ParticleSystemTest.IsContactInvalid(m_contactBuffer[i])) {
+      if (ParticleSystemTest.IsContactInvalid(contactBuffer[i])) {
         --j;
-        ParticleContact temp = m_contactBuffer[j];
-        m_contactBuffer[j] = m_contactBuffer[i];
-        m_contactBuffer[i] = temp;
+        ParticleContact temp = contactBuffer[j];
+        contactBuffer[j] = contactBuffer[i];
+        contactBuffer[i] = temp;
         --i;
       }
     }
-    m_contactCount = j;
+    contactCount = j;
 
     // update particle-body contacts
-    for (int k = 0; k < m_bodyContactCount; k++) {
-      ParticleBodyContact contact = m_bodyContactBuffer[k];
+    for (int k = 0; k < bodyContactCount; k++) {
+      ParticleBodyContact contact = bodyContactBuffer[k];
       contact.index = newIndices[contact.index];
     }
     // ParticleBodyContact lastBodyContact = std.remove_if(
-    // m_bodyContactBuffer, m_bodyContactBuffer + m_bodyContactCount,
+    // _bodyContactBuffer, _bodyContactBuffer + _bodyContactCount,
     // Test.IsBodyContactInvalid);
-    // m_bodyContactCount = (int) (lastBodyContact - m_bodyContactBuffer);
-    j = m_bodyContactCount;
+    // _bodyContactCount = (int) (lastBodyContact - _bodyContactBuffer);
+    j = bodyContactCount;
     for (int i = 0; i < j; i++) {
-      if (ParticleSystemTest.IsBodyContactInvalid(m_bodyContactBuffer[i])) {
+      if (ParticleSystemTest.IsBodyContactInvalid(bodyContactBuffer[i])) {
         --j;
-        ParticleBodyContact temp = m_bodyContactBuffer[j];
-        m_bodyContactBuffer[j] = m_bodyContactBuffer[i];
-        m_bodyContactBuffer[i] = temp;
+        ParticleBodyContact temp = bodyContactBuffer[j];
+        bodyContactBuffer[j] = bodyContactBuffer[i];
+        bodyContactBuffer[i] = temp;
         --i;
       }
     }
-    m_bodyContactCount = j;
+    bodyContactCount = j;
 
     // update pairs
-    for (int k = 0; k < m_pairCount; k++) {
-      PsPair pair = m_pairBuffer[k];
+    for (int k = 0; k < pairCount; k++) {
+      PsPair pair = pairBuffer[k];
       pair.indexA = newIndices[pair.indexA];
       pair.indexB = newIndices[pair.indexB];
     }
-    // Pair lastPair = std.remove_if(m_pairBuffer, m_pairBuffer + m_pairCount, Test.IsPairInvalid);
-    // m_pairCount = (int) (lastPair - m_pairBuffer);
-    j = m_pairCount;
+    // Pair lastPair = std.remove_if(_pairBuffer, _pairBuffer + _pairCount, Test.IsPairInvalid);
+    // _pairCount = (int) (lastPair - _pairBuffer);
+    j = pairCount;
     for (int i = 0; i < j; i++) {
-      if (ParticleSystemTest.IsPairInvalid(m_pairBuffer[i])) {
+      if (ParticleSystemTest.IsPairInvalid(pairBuffer[i])) {
         --j;
-        PsPair temp = m_pairBuffer[j];
-        m_pairBuffer[j] = m_pairBuffer[i];
-        m_pairBuffer[i] = temp;
+        PsPair temp = pairBuffer[j];
+        pairBuffer[j] = pairBuffer[i];
+        pairBuffer[i] = temp;
         --i;
       }
     }
-    m_pairCount = j;
+    pairCount = j;
 
     // update triads
-    for (int k = 0; k < m_triadCount; k++) {
-      PsTriad triad = m_triadBuffer[k];
+    for (int k = 0; k < triadCount; k++) {
+      PsTriad triad = triadBuffer[k];
       triad.indexA = newIndices[triad.indexA];
       triad.indexB = newIndices[triad.indexB];
       triad.indexC = newIndices[triad.indexC];
     }
     // Triad lastTriad =
-    // std.remove_if(m_triadBuffer, m_triadBuffer + m_triadCount, Test.isTriadInvalid);
-    // m_triadCount = (int) (lastTriad - m_triadBuffer);
-    j = m_triadCount;
+    // std.remove_if(_triadBuffer, _triadBuffer + _triadCount, Test.isTriadInvalid);
+    // _triadCount = (int) (lastTriad - _triadBuffer);
+    j = triadCount;
     for (int i = 0; i < j; i++) {
-      if (ParticleSystemTest.IsTriadInvalid(m_triadBuffer[i])) {
+      if (ParticleSystemTest.IsTriadInvalid(triadBuffer[i])) {
         --j;
-        PsTriad temp = m_triadBuffer[j];
-        m_triadBuffer[j] = m_triadBuffer[i];
-        m_triadBuffer[i] = temp;
+        PsTriad temp = triadBuffer[j];
+        triadBuffer[j] = triadBuffer[i];
+        triadBuffer[i] = temp;
         --i;
       }
     }
-    m_triadCount = j;
+    triadCount = j;
 
     // update groups
-    for (ParticleGroup group = m_groupList;
+    for (ParticleGroup group = groupList;
         group != null;
         group = group.getNext()) {
       int firstIndex = newCount;
       int lastIndex = 0;
       bool modified = false;
-      for (int i = group.m_firstIndex; i < group.m_lastIndex; i++) {
+      for (int i = group._firstIndex; i < group._lastIndex; i++) {
         j = newIndices[i];
         if (j >= 0) {
           firstIndex = Math.min(firstIndex, j);
@@ -1808,33 +1808,33 @@ class ParticleSystem {
         }
       }
       if (firstIndex < lastIndex) {
-        group.m_firstIndex = firstIndex;
-        group.m_lastIndex = lastIndex;
+        group._firstIndex = firstIndex;
+        group._lastIndex = lastIndex;
         if (modified) {
-          if ((group.m_groupFlags & ParticleGroupType.b2_rigidParticleGroup) !=
+          if ((group._groupFlags & ParticleGroupType.b2_rigidParticleGroup) !=
               0) {
-            group.m_toBeSplit = true;
+            group._toBeSplit = true;
           }
         }
       } else {
-        group.m_firstIndex = 0;
-        group.m_lastIndex = 0;
-        if (group.m_destroyAutomatically) {
-          group.m_toBeDestroyed = true;
+        group._firstIndex = 0;
+        group._lastIndex = 0;
+        if (group._destroyAutomatically) {
+          group._toBeDestroyed = true;
         }
       }
     }
 
     // update particle count
-    m_count = newCount;
-    // m_world.m_stackAllocator.Free(newIndices);
+    count = newCount;
+    // _world._stackAllocator.Free(newIndices);
 
     // destroy bodies with no particles
-    for (ParticleGroup group = m_groupList; group != null;) {
+    for (ParticleGroup group = groupList; group != null;) {
       ParticleGroup next = group.getNext();
-      if (group.m_toBeDestroyed) {
+      if (group._toBeDestroyed) {
         destroyParticleGroup(group);
-      } else if (group.m_toBeSplit) {
+      } else if (group._toBeSplit) {
         // TODO: split the group
       }
       group = next;
@@ -1852,100 +1852,100 @@ class ParticleSystem {
     _newIndices.mid = mid;
     _newIndices.end = end;
 
-    BufferUtils.rotate(m_flagsBuffer.data, start, mid, end);
-    BufferUtils.rotate(m_positionBuffer.data, start, mid, end);
-    BufferUtils.rotate(m_velocityBuffer.data, start, mid, end);
-    BufferUtils.rotate(m_groupBuffer, start, mid, end);
-    if (m_depthBuffer != null) {
-      BufferUtils.rotate(m_depthBuffer, start, mid, end);
+    BufferUtils.rotate(flagsBuffer.data, start, mid, end);
+    BufferUtils.rotate(positionBuffer.data, start, mid, end);
+    BufferUtils.rotate(velocityBuffer.data, start, mid, end);
+    BufferUtils.rotate(groupBuffer, start, mid, end);
+    if (depthBuffer != null) {
+      BufferUtils.rotate(depthBuffer, start, mid, end);
     }
-    if (m_colorBuffer.data != null) {
-      BufferUtils.rotate(m_colorBuffer.data, start, mid, end);
+    if (colorBuffer.data != null) {
+      BufferUtils.rotate(colorBuffer.data, start, mid, end);
     }
-    if (m_userDataBuffer.data != null) {
-      BufferUtils.rotate(m_userDataBuffer.data, start, mid, end);
+    if (userDataBuffer.data != null) {
+      BufferUtils.rotate(userDataBuffer.data, start, mid, end);
     }
 
     // update proxies
-    for (int k = 0; k < m_proxyCount; k++) {
-      PsProxy proxy = m_proxyBuffer[k];
+    for (int k = 0; k < proxyCount; k++) {
+      PsProxy proxy = proxyBuffer[k];
       proxy.index = _newIndices.getIndex(proxy.index);
     }
 
     // update contacts
-    for (int k = 0; k < m_contactCount; k++) {
-      ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      ParticleContact contact = contactBuffer[k];
       contact.indexA = _newIndices.getIndex(contact.indexA);
       contact.indexB = _newIndices.getIndex(contact.indexB);
     }
 
     // update particle-body contacts
-    for (int k = 0; k < m_bodyContactCount; k++) {
-      ParticleBodyContact contact = m_bodyContactBuffer[k];
+    for (int k = 0; k < bodyContactCount; k++) {
+      ParticleBodyContact contact = bodyContactBuffer[k];
       contact.index = _newIndices.getIndex(contact.index);
     }
 
     // update pairs
-    for (int k = 0; k < m_pairCount; k++) {
-      PsPair pair = m_pairBuffer[k];
+    for (int k = 0; k < pairCount; k++) {
+      PsPair pair = pairBuffer[k];
       pair.indexA = _newIndices.getIndex(pair.indexA);
       pair.indexB = _newIndices.getIndex(pair.indexB);
     }
 
     // update triads
-    for (int k = 0; k < m_triadCount; k++) {
-      PsTriad triad = m_triadBuffer[k];
+    for (int k = 0; k < triadCount; k++) {
+      PsTriad triad = triadBuffer[k];
       triad.indexA = _newIndices.getIndex(triad.indexA);
       triad.indexB = _newIndices.getIndex(triad.indexB);
       triad.indexC = _newIndices.getIndex(triad.indexC);
     }
 
     // update groups
-    for (ParticleGroup group = m_groupList;
+    for (ParticleGroup group = groupList;
         group != null;
         group = group.getNext()) {
-      group.m_firstIndex = _newIndices.getIndex(group.m_firstIndex);
-      group.m_lastIndex = _newIndices.getIndex(group.m_lastIndex - 1) + 1;
+      group._firstIndex = _newIndices.getIndex(group._firstIndex);
+      group._lastIndex = _newIndices.getIndex(group._lastIndex - 1) + 1;
     }
   }
 
   void setParticleRadius(double radius) {
-    m_particleDiameter = 2 * radius;
-    m_squaredDiameter = m_particleDiameter * m_particleDiameter;
-    m_inverseDiameter = 1 / m_particleDiameter;
+    particleDiameter = 2 * radius;
+    squaredDiameter = particleDiameter * particleDiameter;
+    inverseDiameter = 1 / particleDiameter;
   }
 
   void setParticleDensity(double density) {
-    m_density = density;
-    m_inverseDensity = 1 / m_density;
+    density = density;
+    inverseDensity = 1 / density;
   }
 
   double getParticleDensity() {
-    return m_density;
+    return density;
   }
 
   void setParticleGravityScale(double gravityScale) {
-    m_gravityScale = gravityScale;
+    gravityScale = gravityScale;
   }
 
   double getParticleGravityScale() {
-    return m_gravityScale;
+    return gravityScale;
   }
 
   void setParticleDamping(double damping) {
-    m_dampingStrength = damping;
+    dampingStrength = damping;
   }
 
   double getParticleDamping() {
-    return m_dampingStrength;
+    return dampingStrength;
   }
 
   double getParticleRadius() {
-    return m_particleDiameter / 2;
+    return particleDiameter / 2;
   }
 
   double getCriticalVelocity(final TimeStep step) {
-    return m_particleDiameter * step.inv_dt;
+    return particleDiameter * step.inv_dt;
   }
 
   double getCriticalVelocitySquared(final TimeStep step) {
@@ -1954,53 +1954,53 @@ class ParticleSystem {
   }
 
   double getCriticalPressure(final TimeStep step) {
-    return m_density * getCriticalVelocitySquared(step);
+    return density * getCriticalVelocitySquared(step);
   }
 
   double getParticleStride() {
-    return Settings.particleStride * m_particleDiameter;
+    return Settings.particleStride * particleDiameter;
   }
 
   double getParticleMass() {
     double stride = getParticleStride();
-    return m_density * stride * stride;
+    return density * stride * stride;
   }
 
   double getParticleInvMass() {
-    return 1.777777 * m_inverseDensity * m_inverseDiameter * m_inverseDiameter;
+    return 1.777777 * inverseDensity * inverseDiameter * inverseDiameter;
   }
 
   List<int> getParticleFlagsBuffer() {
-    return m_flagsBuffer.data;
+    return flagsBuffer.data;
   }
 
   List<Vector2> getParticlePositionBuffer() {
-    return m_positionBuffer.data;
+    return positionBuffer.data;
   }
 
   List<Vector2> getParticleVelocityBuffer() {
-    return m_velocityBuffer.data;
+    return velocityBuffer.data;
   }
 
   List<ParticleColor> getParticleColorBuffer() {
-    m_colorBuffer.data =
-        requestParticleBuffer(m_colorBuffer.data, m_colorBuffer.allocClosure);
-    return m_colorBuffer.data;
+    colorBuffer.data =
+        requestParticleBuffer(colorBuffer.data, colorBuffer.allocClosure);
+    return colorBuffer.data;
   }
 
   List<Object> getParticleUserDataBuffer() {
-    m_userDataBuffer.data = requestParticleBuffer(
-        m_userDataBuffer.data, m_userDataBuffer.allocClosure);
-    return m_userDataBuffer.data;
+    userDataBuffer.data = requestParticleBuffer(
+        userDataBuffer.data, userDataBuffer.allocClosure);
+    return userDataBuffer.data;
   }
 
   int getParticleMaxCount() {
-    return m_maxCount;
+    return maxCount;
   }
 
   void setParticleMaxCount(int count) {
-    assert(m_count <= count);
-    m_maxCount = count;
+    assert(count <= count);
+    maxCount = count;
   }
 
   void setParticleBufferInt(
@@ -2008,7 +2008,7 @@ class ParticleSystem {
     assert((newData != null && newCapacity != 0) ||
         (newData == null && newCapacity == 0));
     if (buffer.userSuppliedCapacity != 0) {
-      // m_world.m_blockAllocator.Free(buffer.data, sizeof(T) * m_internalAllocatedCapacity);
+      // _world._blockAllocator.Free(buffer.data, sizeof(T) * _internalAllocatedCapacity);
     }
     buffer.data = newData;
     buffer.userSuppliedCapacity = newCapacity;
@@ -2018,46 +2018,46 @@ class ParticleSystem {
     assert((newData != null && newCapacity != 0) ||
         (newData == null && newCapacity == 0));
     if (buffer.userSuppliedCapacity != 0) {
-      // m_world.m_blockAllocator.Free(buffer.data, sizeof(T) * m_internalAllocatedCapacity);
+      // _world._blockAllocator.Free(buffer.data, sizeof(T) * _internalAllocatedCapacity);
     }
     buffer.data = newData;
     buffer.userSuppliedCapacity = newCapacity;
   }
 
   void setParticleFlagsBuffer(List<int> buffer, int capacity) {
-    setParticleBufferInt(m_flagsBuffer, buffer, capacity);
+    setParticleBufferInt(flagsBuffer, buffer, capacity);
   }
 
   void setParticlePositionBuffer(List<Vector2> buffer, int capacity) {
-    setParticleBuffer(m_positionBuffer, buffer, capacity);
+    setParticleBuffer(positionBuffer, buffer, capacity);
   }
 
   void setParticleVelocityBuffer(List<Vector2> buffer, int capacity) {
-    setParticleBuffer(m_velocityBuffer, buffer, capacity);
+    setParticleBuffer(velocityBuffer, buffer, capacity);
   }
 
   void setParticleColorBuffer(List<ParticleColor> buffer, int capacity) {
-    setParticleBuffer(m_colorBuffer, buffer, capacity);
+    setParticleBuffer(colorBuffer, buffer, capacity);
   }
 
   List<ParticleGroup> getParticleGroupBuffer() {
-    return m_groupBuffer;
+    return groupBuffer;
   }
 
   int getParticleGroupCount() {
-    return m_groupCount;
+    return groupCount;
   }
 
   List<ParticleGroup> getParticleGroupList() {
-    return m_groupBuffer;
+    return groupBuffer;
   }
 
   int getParticleCount() {
-    return m_count;
+    return count;
   }
 
   void setParticleUserDataBuffer(List<Object> buffer, int capacity) {
-    setParticleBuffer(m_userDataBuffer, buffer, capacity);
+    setParticleBuffer(userDataBuffer, buffer, capacity);
   }
 
   static int _lowerBound(List<PsProxy> ray, int length, int tag) {
@@ -2093,7 +2093,7 @@ class ParticleSystem {
   }
 
   void queryAABB(ParticleQueryCallback callback, final AABB aabb) {
-    if (m_proxyCount == 0) {
+    if (proxyCount == 0) {
       return;
     }
 
@@ -2101,13 +2101,13 @@ class ParticleSystem {
     final double lowerBoundY = aabb.lowerBound.y;
     final double upperBoundX = aabb.upperBound.x;
     final double upperBoundY = aabb.upperBound.y;
-    int firstProxy = _lowerBound(m_proxyBuffer, m_proxyCount, computeTag(
-        m_inverseDiameter * lowerBoundX, m_inverseDiameter * lowerBoundY));
-    int lastProxy = _upperBound(m_proxyBuffer, m_proxyCount, computeTag(
-        m_inverseDiameter * upperBoundX, m_inverseDiameter * upperBoundY));
+    int firstProxy = _lowerBound(proxyBuffer, proxyCount, computeTag(
+        inverseDiameter * lowerBoundX, inverseDiameter * lowerBoundY));
+    int lastProxy = _upperBound(proxyBuffer, proxyCount, computeTag(
+        inverseDiameter * upperBoundX, inverseDiameter * upperBoundY));
     for (int proxy = firstProxy; proxy < lastProxy; ++proxy) {
-      int i = m_proxyBuffer[proxy].index;
-      final Vector2 p = m_positionBuffer.data[i];
+      int i = proxyBuffer[proxy].index;
+      final Vector2 p = positionBuffer.data[i];
       if (lowerBoundX < p.x &&
           p.x < upperBoundX &&
           lowerBoundY < p.y &&
@@ -2126,15 +2126,15 @@ class ParticleSystem {
    */
   void raycast(ParticleRaycastCallback callback, final Vector2 point1,
       final Vector2 point2) {
-    if (m_proxyCount == 0) {
+    if (proxyCount == 0) {
       return;
     }
-    int firstProxy = _lowerBound(m_proxyBuffer, m_proxyCount, computeTag(
-        m_inverseDiameter * Math.min(point1.x, point2.x) - 1,
-        m_inverseDiameter * Math.min(point1.y, point2.y) - 1));
-    int lastProxy = _upperBound(m_proxyBuffer, m_proxyCount, computeTag(
-        m_inverseDiameter * Math.max(point1.x, point2.x) + 1,
-        m_inverseDiameter * Math.max(point1.y, point2.y) + 1));
+    int firstProxy = _lowerBound(proxyBuffer, proxyCount, computeTag(
+        inverseDiameter * Math.min(point1.x, point2.x) - 1,
+        inverseDiameter * Math.min(point1.y, point2.y) - 1));
+    int lastProxy = _upperBound(proxyBuffer, proxyCount, computeTag(
+        inverseDiameter * Math.max(point1.x, point2.x) + 1,
+        inverseDiameter * Math.max(point1.y, point2.y) + 1));
     double fraction = 1.0;
     // solving the following equation:
     // ((1-t)*point1+t*point2-position)^2=diameter^2
@@ -2144,13 +2144,13 @@ class ParticleSystem {
     double v2 = vx * vx + vy * vy;
     if (v2 == 0) v2 = double.MAX_FINITE;
     for (int proxy = firstProxy; proxy < lastProxy; ++proxy) {
-      int i = m_proxyBuffer[proxy].index;
-      final Vector2 posI = m_positionBuffer.data[i];
+      int i = proxyBuffer[proxy].index;
+      final Vector2 posI = positionBuffer.data[i];
       final double px = point1.x - posI.x;
       final double py = point1.y - posI.y;
       double pv = px * vx + py * vy;
       double p2 = px * px + py * py;
-      double determinant = pv * pv - v2 * (p2 - m_squaredDiameter);
+      double determinant = pv * pv - v2 * (p2 - squaredDiameter);
       if (determinant >= 0) {
         double sqrtDeterminant = Math.sqrt(determinant);
         // find a solution between 0 and fraction
@@ -2182,13 +2182,13 @@ class ParticleSystem {
 
   double computeParticleCollisionEnergy() {
     double sum_v2 = 0.0;
-    for (int k = 0; k < m_contactCount; k++) {
-      final ParticleContact contact = m_contactBuffer[k];
+    for (int k = 0; k < contactCount; k++) {
+      final ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
       int b = contact.indexB;
       Vector2 n = contact.normal;
-      final Vector2 va = m_velocityBuffer.data[a];
-      final Vector2 vb = m_velocityBuffer.data[b];
+      final Vector2 va = velocityBuffer.data[a];
+      final Vector2 vb = velocityBuffer.data[b];
       final double vx = vb.x - va.x;
       final double vy = vb.y - va.y;
       double vn = vx * n.x + vy * n.y;

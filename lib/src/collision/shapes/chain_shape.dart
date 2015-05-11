@@ -33,7 +33,7 @@ part of box2d;
 
 class ChainShape extends Shape {
   List<Vector2> _vertices;
-  int m_count = 0;
+  int _count = 0;
   final Vector2 _prevVertex = new Vector2.zero(),
       _nextVertex = new Vector2.zero();
   bool _hasPrevVertex = false,
@@ -47,18 +47,18 @@ class ChainShape extends Shape {
 
   void clear() {
     _vertices = null;
-    m_count = 0;
+    _count = 0;
   }
 
   int getChildCount() {
-    return m_count - 1;
+    return _count - 1;
   }
 
   /**
    * Get a child edge.
    */
   void getChildEdge(EdgeShape edge, int index) {
-    assert(0 <= index && index < m_count - 1);
+    assert(0 <= index && index < _count - 1);
     edge.radius = radius;
 
     final Vector2 v0 = _vertices[index + 0];
@@ -79,7 +79,7 @@ class ChainShape extends Shape {
       edge.hasVertex0 = _hasPrevVertex;
     }
 
-    if (index < m_count - 2) {
+    if (index < _count - 2) {
       Vector2 v = _vertices[index + 2];
       edge.vertex3.x = v.x;
       edge.vertex3.y = v.y;
@@ -104,13 +104,13 @@ class ChainShape extends Shape {
 
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
-    assert(childIndex < m_count);
+    assert(childIndex < _count);
 
     final EdgeShape edgeShape = _pool0;
 
     int i1 = childIndex;
     int i2 = childIndex + 1;
-    if (i2 == m_count) {
+    if (i2 == _count) {
       i2 = 0;
     }
     Vector2 v = _vertices[i1];
@@ -124,13 +124,13 @@ class ChainShape extends Shape {
   }
 
   void computeAABB(AABB aabb, Transform xf, int childIndex) {
-    assert(childIndex < m_count);
+    assert(childIndex < _count);
     final Vector2 lower = aabb.lowerBound;
     final Vector2 upper = aabb.upperBound;
 
     int i1 = childIndex;
     int i2 = childIndex + 1;
-    if (i2 == m_count) {
+    if (i2 == _count) {
       i2 = 0;
     }
 
@@ -157,7 +157,7 @@ class ChainShape extends Shape {
 
   Shape clone() {
     ChainShape clone = new ChainShape();
-    clone.createChain(_vertices, m_count);
+    clone.createChain(_vertices, _count);
     clone._prevVertex.setFrom(_prevVertex);
     clone._nextVertex.setFrom(_nextVertex);
     clone._hasPrevVertex = _hasPrevVertex;
@@ -172,10 +172,10 @@ class ChainShape extends Shape {
    * @param count the vertex count
    */
   void createLoop(final List<Vector2> vertices, int count) {
-    assert(_vertices == null && m_count == 0);
+    assert(_vertices == null && _count == 0);
     assert(count >= 3);
-    m_count = count + 1;
-    _vertices = new List<Vector2>(m_count);
+    _count = count + 1;
+    _vertices = new List<Vector2>(_count);
     for (int i = 1; i < count; i++) {
       Vector2 v1 = vertices[i - 1];
       Vector2 v2 = vertices[i];
@@ -189,7 +189,7 @@ class ChainShape extends Shape {
       _vertices[i] = new Vector2.copy(vertices[i]);
     }
     _vertices[count] = new Vector2.copy(_vertices[0]);
-    _prevVertex.setFrom(_vertices[m_count - 2]);
+    _prevVertex.setFrom(_vertices[_count - 2]);
     _nextVertex.setFrom(_vertices[1]);
     _hasPrevVertex = true;
     _hasNextVertex = true;
@@ -202,11 +202,11 @@ class ChainShape extends Shape {
    * @param count the vertex count
    */
   void createChain(final List<Vector2> vertices, int count) {
-    assert(_vertices == null && m_count == 0);
+    assert(_vertices == null && _count == 0);
     assert(count >= 2);
-    m_count = count;
-    _vertices = new List<Vector2>(m_count);
-    for (int i = 1; i < m_count; i++) {
+    _count = count;
+    _vertices = new List<Vector2>(_count);
+    for (int i = 1; i < _count; i++) {
       Vector2 v1 = vertices[i - 1];
       Vector2 v2 = vertices[i];
       // If the code crashes here, it means your vertices are too close together.
@@ -215,7 +215,7 @@ class ChainShape extends Shape {
         throw "Vertices of chain shape are too close together";
       }
     }
-    for (int i = 0; i < m_count; i++) {
+    for (int i = 0; i < _count; i++) {
       _vertices[i] = new Vector2.copy(vertices[i]);
     }
     _hasPrevVertex = false;

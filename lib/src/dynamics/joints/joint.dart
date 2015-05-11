@@ -68,52 +68,52 @@ abstract class Joint {
     joint.destructor();
   }
 
-  final JointType _m_type;
-  Joint m_prev;
-  Joint m_next;
-  JointEdge m_edgeA;
-  JointEdge m_edgeB;
-  Body m_bodyA;
-  Body m_bodyB;
+  final JointType _type;
+  Joint _prev;
+  Joint _next;
+  JointEdge _edgeA;
+  JointEdge _edgeB;
+  Body _bodyA;
+  Body _bodyB;
 
-  bool m_islandFlag = false;
-  bool _m_collideConnected = false;
+  bool _islandFlag = false;
+  bool _collideConnected = false;
 
-  Object m_userData;
+  Object _userData;
 
   IWorldPool pool;
 
   // Cache here per time step to reduce cache misses.
-  // final Vec2 m_localCenterA, m_localCenterB;
-  // double m_invMassA, m_invIA;
-  // double m_invMassB, m_invIB;
+  // final Vec2 _localCenterA, _localCenterB;
+  // double _invMassA, _invIA;
+  // double _invMassB, _invIB;
 
-  Joint(IWorldPool worldPool, JointDef def) : _m_type = def.type {
+  Joint(IWorldPool worldPool, JointDef def) : _type = def.type {
     assert(def.bodyA != def.bodyB);
 
     pool = worldPool;
-    m_prev = null;
-    m_next = null;
-    m_bodyA = def.bodyA;
-    m_bodyB = def.bodyB;
-    _m_collideConnected = def.collideConnected;
-    m_islandFlag = false;
-    m_userData = def.userData;
+    _prev = null;
+    _next = null;
+    _bodyA = def.bodyA;
+    _bodyB = def.bodyB;
+    _collideConnected = def.collideConnected;
+    _islandFlag = false;
+    _userData = def.userData;
 
-    m_edgeA = new JointEdge();
-    m_edgeA.joint = null;
-    m_edgeA.other = null;
-    m_edgeA.prev = null;
-    m_edgeA.next = null;
+    _edgeA = new JointEdge();
+    _edgeA.joint = null;
+    _edgeA.other = null;
+    _edgeA.prev = null;
+    _edgeA.next = null;
 
-    m_edgeB = new JointEdge();
-    m_edgeB.joint = null;
-    m_edgeB.other = null;
-    m_edgeB.prev = null;
-    m_edgeB.next = null;
+    _edgeB = new JointEdge();
+    _edgeB.joint = null;
+    _edgeB.other = null;
+    _edgeB.prev = null;
+    _edgeB.next = null;
 
-    // m_localCenterA = new Vec2();
-    // m_localCenterB = new Vec2();
+    // _localCenterA = new Vec2();
+    // _localCenterB = new Vec2();
   }
 
   /**
@@ -122,14 +122,14 @@ abstract class Joint {
    * @return
    */
   JointType getType() {
-    return _m_type;
+    return _type;
   }
 
   /**
    * get the first body attached to this joint.
    */
   Body getBodyA() {
-    return m_bodyA;
+    return _bodyA;
   }
 
   /**
@@ -138,7 +138,7 @@ abstract class Joint {
    * @return
    */
   Body getBodyB() {
-    return m_bodyB;
+    return _bodyB;
   }
 
   /**
@@ -175,21 +175,7 @@ abstract class Joint {
    * get the next joint the world joint list.
    */
   Joint getNext() {
-    return m_next;
-  }
-
-  /**
-   * get the user data pointer.
-   */
-  Object getUserData() {
-    return m_userData;
-  }
-
-  /**
-   * Set the user data pointer.
-   */
-  void setUserData(Object data) {
-    m_userData = data;
+    return _next;
   }
 
   /**
@@ -197,7 +183,7 @@ abstract class Joint {
    * the flag is only checked when fixture AABBs begin to overlap.
    */
   bool getCollideConnected() {
-    return _m_collideConnected;
+    return _collideConnected;
   }
 
   /**
@@ -206,7 +192,7 @@ abstract class Joint {
    * @return
    */
   bool isActive() {
-    return m_bodyA.isActive() && m_bodyB.isActive();
+    return _bodyA.isActive() && _bodyB.isActive();
   }
 
   /** Internal */

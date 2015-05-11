@@ -57,210 +57,209 @@ part of box2d;
 
 class GearJoint extends Joint {
 
-  // TODO(srdjan): Mark all fields m_xxx as private.
-  final Joint m_joint1;
-  final Joint m_joint2;
+  final Joint _joint1;
+  final Joint _joint2;
 
-  final JointType m_typeA;
-  final JointType m_typeB;
+  final JointType _typeA;
+  final JointType _typeB;
 
   // Body A is connected to body C
   // Body B is connected to body D
-  final Body m_bodyC;
-  final Body m_bodyD;
+  final Body _bodyC;
+  final Body _bodyD;
 
   // Solver shared
-  final Vector2 m_localAnchorA = new Vector2.zero();
-  final Vector2 m_localAnchorB = new Vector2.zero();
-  final Vector2 m_localAnchorC = new Vector2.zero();
-  final Vector2 m_localAnchorD = new Vector2.zero();
+  final Vector2 _localAnchorA = new Vector2.zero();
+  final Vector2 _localAnchorB = new Vector2.zero();
+  final Vector2 _localAnchorC = new Vector2.zero();
+  final Vector2 _localAnchorD = new Vector2.zero();
 
-  final Vector2 m_localAxisC = new Vector2.zero();
-  final Vector2 m_localAxisD = new Vector2.zero();
+  final Vector2 _localAxisC = new Vector2.zero();
+  final Vector2 _localAxisD = new Vector2.zero();
 
-  double m_referenceAngleA = 0.0;
-  double m_referenceAngleB = 0.0;
+  double _referenceAngleA = 0.0;
+  double _referenceAngleB = 0.0;
 
-  double m_constant = 0.0;
-  double m_ratio = 0.0;
+  double _constant = 0.0;
+  double _ratio = 0.0;
 
-  double m_impulse = 0.0;
+  double _impulse = 0.0;
 
   // Solver temp
-  int m_indexA = 0,
-      m_indexB = 0,
-      m_indexC = 0,
-      m_indexD = 0;
-  final Vector2 m_lcA = new Vector2.zero(),
-      m_lcB = new Vector2.zero(),
-      m_lcC = new Vector2.zero(),
-      m_lcD = new Vector2.zero();
-  double m_mA = 0.0,
-      m_mB = 0.0,
-      m_mC = 0.0,
-      m_mD = 0.0;
-  double m_iA = 0.0,
-      m_iB = 0.0,
-      m_iC = 0.0,
-      m_iD = 0.0;
-  final Vector2 m_JvAC = new Vector2.zero(),
-      m_JvBD = new Vector2.zero();
-  double m_JwA = 0.0,
-      m_JwB = 0.0,
-      m_JwC = 0.0,
-      m_JwD = 0.0;
-  double m_mass = 0.0;
+  int _indexA = 0,
+      _indexB = 0,
+      _indexC = 0,
+      _indexD = 0;
+  final Vector2 _lcA = new Vector2.zero(),
+      _lcB = new Vector2.zero(),
+      _lcC = new Vector2.zero(),
+      _lcD = new Vector2.zero();
+  double _mA = 0.0,
+      _mB = 0.0,
+      _mC = 0.0,
+      _mD = 0.0;
+  double _iA = 0.0,
+      _iB = 0.0,
+      _iC = 0.0,
+      _iD = 0.0;
+  final Vector2 _JvAC = new Vector2.zero(),
+      _JvBD = new Vector2.zero();
+  double _JwA = 0.0,
+      _JwB = 0.0,
+      _JwC = 0.0,
+      _JwD = 0.0;
+  double _mass = 0.0;
 
   GearJoint(IWorldPool argWorldPool, GearJointDef def)
-      : m_joint1 = def.joint1,
-        m_joint2 = def.joint2,
-        m_typeA = def.joint1.getType(),
-        m_typeB = def.joint2.getType(),
-        m_bodyC = def.joint1.getBodyA(),
-        m_bodyD = def.joint2.getBodyA(),
+      : _joint1 = def.joint1,
+        _joint2 = def.joint2,
+        _typeA = def.joint1.getType(),
+        _typeB = def.joint2.getType(),
+        _bodyC = def.joint1.getBodyA(),
+        _bodyD = def.joint2.getBodyA(),
         super(argWorldPool, def) {
-    assert(m_typeA == JointType.REVOLUTE || m_typeA == JointType.PRISMATIC);
-    assert(m_typeB == JointType.REVOLUTE || m_typeB == JointType.PRISMATIC);
+    assert(_typeA == JointType.REVOLUTE || _typeA == JointType.PRISMATIC);
+    assert(_typeB == JointType.REVOLUTE || _typeB == JointType.PRISMATIC);
 
     double coordinateA, coordinateB;
 
     // TODO_ERIN there might be some problem with the joint edges in Joint.
-    m_bodyA = m_joint1.getBodyB();
+    _bodyA = _joint1.getBodyB();
 
     // Get geometry of joint1
-    Transform xfA = m_bodyA.transform;
-    double aA = m_bodyA.sweep.a;
-    Transform xfC = m_bodyC.transform;
-    double aC = m_bodyC.sweep.a;
+    Transform xfA = _bodyA._transform;
+    double aA = _bodyA._sweep.a;
+    Transform xfC = _bodyC._transform;
+    double aC = _bodyC._sweep.a;
 
-    if (m_typeA == JointType.REVOLUTE) {
+    if (_typeA == JointType.REVOLUTE) {
       RevoluteJoint revolute = def.joint1;
-      m_localAnchorC.setFrom(revolute.m_localAnchorA);
-      m_localAnchorA.setFrom(revolute.m_localAnchorB);
-      m_referenceAngleA = revolute.m_referenceAngle;
-      m_localAxisC.setZero();
+      _localAnchorC.setFrom(revolute._localAnchorA);
+      _localAnchorA.setFrom(revolute._localAnchorB);
+      _referenceAngleA = revolute._referenceAngle;
+      _localAxisC.setZero();
 
-      coordinateA = aA - aC - m_referenceAngleA;
+      coordinateA = aA - aC - _referenceAngleA;
     } else {
       Vector2 pA = pool.popVec2();
       Vector2 temp = pool.popVec2();
       PrismaticJoint prismatic = def.joint1;
-      m_localAnchorC.setFrom(prismatic.m_localAnchorA);
-      m_localAnchorA.setFrom(prismatic.m_localAnchorB);
-      m_referenceAngleA = prismatic.m_referenceAngle;
-      m_localAxisC.setFrom(prismatic.m_localXAxisA);
+      _localAnchorC.setFrom(prismatic._localAnchorA);
+      _localAnchorA.setFrom(prismatic._localAnchorB);
+      _referenceAngleA = prismatic._referenceAngle;
+      _localAxisC.setFrom(prismatic._localXAxisA);
 
-      Vector2 pC = m_localAnchorC;
-      Rot.mulToOutUnsafe(xfA.q, m_localAnchorA, temp);
+      Vector2 pC = _localAnchorC;
+      Rot.mulToOutUnsafe(xfA.q, _localAnchorA, temp);
       temp.add(xfA.p).sub(xfC.p);
       Rot.mulTransUnsafeVec2(xfC.q, temp, pA);
-      coordinateA = pA.sub(pC).dot(m_localAxisC);
+      coordinateA = pA.sub(pC).dot(_localAxisC);
       pool.pushVec2(2);
     }
 
-    m_bodyB = m_joint2.getBodyB();
+    _bodyB = _joint2.getBodyB();
 
     // Get geometry of joint2
-    Transform xfB = m_bodyB.transform;
-    double aB = m_bodyB.sweep.a;
-    Transform xfD = m_bodyD.transform;
-    double aD = m_bodyD.sweep.a;
+    Transform xfB = _bodyB._transform;
+    double aB = _bodyB._sweep.a;
+    Transform xfD = _bodyD._transform;
+    double aD = _bodyD._sweep.a;
 
-    if (m_typeB == JointType.REVOLUTE) {
+    if (_typeB == JointType.REVOLUTE) {
       RevoluteJoint revolute = def.joint2;
-      m_localAnchorD.setFrom(revolute.m_localAnchorA);
-      m_localAnchorB.setFrom(revolute.m_localAnchorB);
-      m_referenceAngleB = revolute.m_referenceAngle;
-      m_localAxisD.setZero();
+      _localAnchorD.setFrom(revolute._localAnchorA);
+      _localAnchorB.setFrom(revolute._localAnchorB);
+      _referenceAngleB = revolute._referenceAngle;
+      _localAxisD.setZero();
 
-      coordinateB = aB - aD - m_referenceAngleB;
+      coordinateB = aB - aD - _referenceAngleB;
     } else {
       Vector2 pB = pool.popVec2();
       Vector2 temp = pool.popVec2();
       PrismaticJoint prismatic = def.joint2;
-      m_localAnchorD.setFrom(prismatic.m_localAnchorA);
-      m_localAnchorB.setFrom(prismatic.m_localAnchorB);
-      m_referenceAngleB = prismatic.m_referenceAngle;
-      m_localAxisD.setFrom(prismatic.m_localXAxisA);
+      _localAnchorD.setFrom(prismatic._localAnchorA);
+      _localAnchorB.setFrom(prismatic._localAnchorB);
+      _referenceAngleB = prismatic._referenceAngle;
+      _localAxisD.setFrom(prismatic._localXAxisA);
 
-      Vector2 pD = m_localAnchorD;
-      Rot.mulToOutUnsafe(xfB.q, m_localAnchorB, temp);
+      Vector2 pD = _localAnchorD;
+      Rot.mulToOutUnsafe(xfB.q, _localAnchorB, temp);
       temp.add(xfB.p).sub(xfD.p);
       Rot.mulTransUnsafeVec2(xfD.q, temp, pB);
-      coordinateB = pB.sub(pD).dot(m_localAxisD);
+      coordinateB = pB.sub(pD).dot(_localAxisD);
       pool.pushVec2(2);
     }
 
-    m_ratio = def.ratio;
+    _ratio = def.ratio;
 
-    m_constant = coordinateA + m_ratio * coordinateB;
+    _constant = coordinateA + _ratio * coordinateB;
 
-    m_impulse = 0.0;
+    _impulse = 0.0;
   }
 
   void getAnchorA(Vector2 argOut) {
-    m_bodyA.getWorldPointToOut(m_localAnchorA, argOut);
+    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
   }
 
   void getAnchorB(Vector2 argOut) {
-    m_bodyB.getWorldPointToOut(m_localAnchorB, argOut);
+    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.setFrom(m_JvAC).scale(m_impulse);
+    argOut.setFrom(_JvAC).scale(_impulse);
     argOut.scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
-    double L = m_impulse * m_JwA;
+    double L = _impulse * _JwA;
     return inv_dt * L;
   }
 
   void setRatio(double argRatio) {
-    m_ratio = argRatio;
+    _ratio = argRatio;
   }
 
   double getRatio() {
-    return m_ratio;
+    return _ratio;
   }
 
   void initVelocityConstraints(SolverData data) {
-    m_indexA = m_bodyA.islandIndex;
-    m_indexB = m_bodyB.islandIndex;
-    m_indexC = m_bodyC.islandIndex;
-    m_indexD = m_bodyD.islandIndex;
-    m_lcA.setFrom(m_bodyA.sweep.localCenter);
-    m_lcB.setFrom(m_bodyB.sweep.localCenter);
-    m_lcC.setFrom(m_bodyC.sweep.localCenter);
-    m_lcD.setFrom(m_bodyD.sweep.localCenter);
-    m_mA = m_bodyA.invMass;
-    m_mB = m_bodyB.invMass;
-    m_mC = m_bodyC.invMass;
-    m_mD = m_bodyD.invMass;
-    m_iA = m_bodyA.invI;
-    m_iB = m_bodyB.invI;
-    m_iC = m_bodyC.invI;
-    m_iD = m_bodyD.invI;
+    _indexA = _bodyA._islandIndex;
+    _indexB = _bodyB._islandIndex;
+    _indexC = _bodyC._islandIndex;
+    _indexD = _bodyD._islandIndex;
+    _lcA.setFrom(_bodyA._sweep.localCenter);
+    _lcB.setFrom(_bodyB._sweep.localCenter);
+    _lcC.setFrom(_bodyC._sweep.localCenter);
+    _lcD.setFrom(_bodyD._sweep.localCenter);
+    _mA = _bodyA._invMass;
+    _mB = _bodyB._invMass;
+    _mC = _bodyC._invMass;
+    _mD = _bodyD._invMass;
+    _iA = _bodyA._invI;
+    _iB = _bodyB._invI;
+    _iC = _bodyC._invI;
+    _iD = _bodyD._invI;
 
-    // Vec2 cA = data.positions[m_indexA].c;
-    double aA = data.positions[m_indexA].a;
-    Vector2 vA = data.velocities[m_indexA].v;
-    double wA = data.velocities[m_indexA].w;
+    // Vec2 cA = data.positions[_indexA].c;
+    double aA = data.positions[_indexA].a;
+    Vector2 vA = data.velocities[_indexA].v;
+    double wA = data.velocities[_indexA].w;
 
-    // Vec2 cB = data.positions[m_indexB].c;
-    double aB = data.positions[m_indexB].a;
-    Vector2 vB = data.velocities[m_indexB].v;
-    double wB = data.velocities[m_indexB].w;
+    // Vec2 cB = data.positions[_indexB].c;
+    double aB = data.positions[_indexB].a;
+    Vector2 vB = data.velocities[_indexB].v;
+    double wB = data.velocities[_indexB].w;
 
-    // Vec2 cC = data.positions[m_indexC].c;
-    double aC = data.positions[m_indexC].a;
-    Vector2 vC = data.velocities[m_indexC].v;
-    double wC = data.velocities[m_indexC].w;
+    // Vec2 cC = data.positions[_indexC].c;
+    double aC = data.positions[_indexC].a;
+    Vector2 vC = data.velocities[_indexC].v;
+    double wC = data.velocities[_indexC].w;
 
-    // Vec2 cD = data.positions[m_indexD].c;
-    double aD = data.positions[m_indexD].a;
-    Vector2 vD = data.velocities[m_indexD].v;
-    double wD = data.velocities[m_indexD].w;
+    // Vec2 cD = data.positions[_indexD].c;
+    double aD = data.positions[_indexD].a;
+    Vector2 vD = data.velocities[_indexD].v;
+    double wD = data.velocities[_indexD].w;
 
     Rot qA = pool.popRot(),
         qB = pool.popRot(),
@@ -271,146 +270,146 @@ class GearJoint extends Joint {
     qC.setAngle(aC);
     qD.setAngle(aD);
 
-    m_mass = 0.0;
+    _mass = 0.0;
 
     Vector2 temp = pool.popVec2();
 
-    if (m_typeA == JointType.REVOLUTE) {
-      m_JvAC.setZero();
-      m_JwA = 1.0;
-      m_JwC = 1.0;
-      m_mass += m_iA + m_iC;
+    if (_typeA == JointType.REVOLUTE) {
+      _JvAC.setZero();
+      _JwA = 1.0;
+      _JwC = 1.0;
+      _mass += _iA + _iC;
     } else {
       Vector2 rC = pool.popVec2();
       Vector2 rA = pool.popVec2();
-      Rot.mulToOutUnsafe(qC, m_localAxisC, m_JvAC);
-      Rot.mulToOutUnsafe(qC, temp.setFrom(m_localAnchorC).sub(m_lcC), rC);
-      Rot.mulToOutUnsafe(qA, temp.setFrom(m_localAnchorA).sub(m_lcA), rA);
-      m_JwC = rC.cross(m_JvAC);
-      m_JwA = rA.cross(m_JvAC);
-      m_mass += m_mC + m_mA + m_iC * m_JwC * m_JwC + m_iA * m_JwA * m_JwA;
+      Rot.mulToOutUnsafe(qC, _localAxisC, _JvAC);
+      Rot.mulToOutUnsafe(qC, temp.setFrom(_localAnchorC).sub(_lcC), rC);
+      Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_lcA), rA);
+      _JwC = rC.cross(_JvAC);
+      _JwA = rA.cross(_JvAC);
+      _mass += _mC + _mA + _iC * _JwC * _JwC + _iA * _JwA * _JwA;
       pool.pushVec2(2);
     }
 
-    if (m_typeB == JointType.REVOLUTE) {
-      m_JvBD.setZero();
-      m_JwB = m_ratio;
-      m_JwD = m_ratio;
-      m_mass += m_ratio * m_ratio * (m_iB + m_iD);
+    if (_typeB == JointType.REVOLUTE) {
+      _JvBD.setZero();
+      _JwB = _ratio;
+      _JwD = _ratio;
+      _mass += _ratio * _ratio * (_iB + _iD);
     } else {
       Vector2 u = pool.popVec2();
       Vector2 rD = pool.popVec2();
       Vector2 rB = pool.popVec2();
-      Rot.mulToOutUnsafe(qD, m_localAxisD, u);
-      Rot.mulToOutUnsafe(qD, temp.setFrom(m_localAnchorD).sub(m_lcD), rD);
-      Rot.mulToOutUnsafe(qB, temp.setFrom(m_localAnchorB).sub(m_lcB), rB);
-      m_JvBD.setFrom(u).scale(m_ratio);
-      m_JwD = m_ratio * rD.cross(u);
-      m_JwB = m_ratio * rB.cross(u);
-      m_mass += m_ratio * m_ratio * (m_mD + m_mB) +
-          m_iD * m_JwD * m_JwD +
-          m_iB * m_JwB * m_JwB;
+      Rot.mulToOutUnsafe(qD, _localAxisD, u);
+      Rot.mulToOutUnsafe(qD, temp.setFrom(_localAnchorD).sub(_lcD), rD);
+      Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_lcB), rB);
+      _JvBD.setFrom(u).scale(_ratio);
+      _JwD = _ratio * rD.cross(u);
+      _JwB = _ratio * rB.cross(u);
+      _mass += _ratio * _ratio * (_mD + _mB) +
+          _iD * _JwD * _JwD +
+          _iB * _JwB * _JwB;
       pool.pushVec2(3);
     }
 
     // Compute effective mass.
-    m_mass = m_mass > 0.0 ? 1.0 / m_mass : 0.0;
+    _mass = _mass > 0.0 ? 1.0 / _mass : 0.0;
 
     if (data.step.warmStarting) {
-      vA.x += (m_mA * m_impulse) * m_JvAC.x;
-      vA.y += (m_mA * m_impulse) * m_JvAC.y;
-      wA += m_iA * m_impulse * m_JwA;
+      vA.x += (_mA * _impulse) * _JvAC.x;
+      vA.y += (_mA * _impulse) * _JvAC.y;
+      wA += _iA * _impulse * _JwA;
 
-      vB.x += (m_mB * m_impulse) * m_JvBD.x;
-      vB.y += (m_mB * m_impulse) * m_JvBD.y;
-      wB += m_iB * m_impulse * m_JwB;
+      vB.x += (_mB * _impulse) * _JvBD.x;
+      vB.y += (_mB * _impulse) * _JvBD.y;
+      wB += _iB * _impulse * _JwB;
 
-      vC.x -= (m_mC * m_impulse) * m_JvAC.x;
-      vC.y -= (m_mC * m_impulse) * m_JvAC.y;
-      wC -= m_iC * m_impulse * m_JwC;
+      vC.x -= (_mC * _impulse) * _JvAC.x;
+      vC.y -= (_mC * _impulse) * _JvAC.y;
+      wC -= _iC * _impulse * _JwC;
 
-      vD.x -= (m_mD * m_impulse) * m_JvBD.x;
-      vD.y -= (m_mD * m_impulse) * m_JvBD.y;
-      wD -= m_iD * m_impulse * m_JwD;
+      vD.x -= (_mD * _impulse) * _JvBD.x;
+      vD.y -= (_mD * _impulse) * _JvBD.y;
+      wD -= _iD * _impulse * _JwD;
     } else {
-      m_impulse = 0.0;
+      _impulse = 0.0;
     }
     pool.pushVec2(1);
     pool.pushRot(4);
 
-    // data.velocities[m_indexA].v = vA;
-    data.velocities[m_indexA].w = wA;
-    // data.velocities[m_indexB].v = vB;
-    data.velocities[m_indexB].w = wB;
-    // data.velocities[m_indexC].v = vC;
-    data.velocities[m_indexC].w = wC;
-    // data.velocities[m_indexD].v = vD;
-    data.velocities[m_indexD].w = wD;
+    // data.velocities[_indexA].v = vA;
+    data.velocities[_indexA].w = wA;
+    // data.velocities[_indexB].v = vB;
+    data.velocities[_indexB].w = wB;
+    // data.velocities[_indexC].v = vC;
+    data.velocities[_indexC].w = wC;
+    // data.velocities[_indexD].v = vD;
+    data.velocities[_indexD].w = wD;
   }
 
   void solveVelocityConstraints(SolverData data) {
-    Vector2 vA = data.velocities[m_indexA].v;
-    double wA = data.velocities[m_indexA].w;
-    Vector2 vB = data.velocities[m_indexB].v;
-    double wB = data.velocities[m_indexB].w;
-    Vector2 vC = data.velocities[m_indexC].v;
-    double wC = data.velocities[m_indexC].w;
-    Vector2 vD = data.velocities[m_indexD].v;
-    double wD = data.velocities[m_indexD].w;
+    Vector2 vA = data.velocities[_indexA].v;
+    double wA = data.velocities[_indexA].w;
+    Vector2 vB = data.velocities[_indexB].v;
+    double wB = data.velocities[_indexB].w;
+    Vector2 vC = data.velocities[_indexC].v;
+    double wC = data.velocities[_indexC].w;
+    Vector2 vD = data.velocities[_indexD].v;
+    double wD = data.velocities[_indexD].w;
 
     Vector2 temp1 = pool.popVec2();
     Vector2 temp2 = pool.popVec2();
-    double Cdot = m_JvAC.dot(temp1.setFrom(vA).sub(vC)) +
-        m_JvBD.dot(temp2.setFrom(vB).sub(vD));
-    Cdot += (m_JwA * wA - m_JwC * wC) + (m_JwB * wB - m_JwD * wD);
+    double Cdot = _JvAC.dot(temp1.setFrom(vA).sub(vC)) +
+        _JvBD.dot(temp2.setFrom(vB).sub(vD));
+    Cdot += (_JwA * wA - _JwC * wC) + (_JwB * wB - _JwD * wD);
     pool.pushVec2(2);
 
-    double impulse = -m_mass * Cdot;
-    m_impulse += impulse;
+    double impulse = -_mass * Cdot;
+    _impulse += impulse;
 
-    vA.x += (m_mA * impulse) * m_JvAC.x;
-    vA.y += (m_mA * impulse) * m_JvAC.y;
-    wA += m_iA * impulse * m_JwA;
+    vA.x += (_mA * impulse) * _JvAC.x;
+    vA.y += (_mA * impulse) * _JvAC.y;
+    wA += _iA * impulse * _JwA;
 
-    vB.x += (m_mB * impulse) * m_JvBD.x;
-    vB.y += (m_mB * impulse) * m_JvBD.y;
-    wB += m_iB * impulse * m_JwB;
+    vB.x += (_mB * impulse) * _JvBD.x;
+    vB.y += (_mB * impulse) * _JvBD.y;
+    wB += _iB * impulse * _JwB;
 
-    vC.x -= (m_mC * impulse) * m_JvAC.x;
-    vC.y -= (m_mC * impulse) * m_JvAC.y;
-    wC -= m_iC * impulse * m_JwC;
+    vC.x -= (_mC * impulse) * _JvAC.x;
+    vC.y -= (_mC * impulse) * _JvAC.y;
+    wC -= _iC * impulse * _JwC;
 
-    vD.x -= (m_mD * impulse) * m_JvBD.x;
-    vD.y -= (m_mD * impulse) * m_JvBD.y;
-    wD -= m_iD * impulse * m_JwD;
+    vD.x -= (_mD * impulse) * _JvBD.x;
+    vD.y -= (_mD * impulse) * _JvBD.y;
+    wD -= _iD * impulse * _JwD;
 
-    // data.velocities[m_indexA].v = vA;
-    data.velocities[m_indexA].w = wA;
-    // data.velocities[m_indexB].v = vB;
-    data.velocities[m_indexB].w = wB;
-    // data.velocities[m_indexC].v = vC;
-    data.velocities[m_indexC].w = wC;
-    // data.velocities[m_indexD].v = vD;
-    data.velocities[m_indexD].w = wD;
+    // data.velocities[_indexA].v = vA;
+    data.velocities[_indexA].w = wA;
+    // data.velocities[_indexB].v = vB;
+    data.velocities[_indexB].w = wB;
+    // data.velocities[_indexC].v = vC;
+    data.velocities[_indexC].w = wC;
+    // data.velocities[_indexD].v = vD;
+    data.velocities[_indexD].w = wD;
   }
 
   Joint getJoint1() {
-    return m_joint1;
+    return _joint1;
   }
 
   Joint getJoint2() {
-    return m_joint2;
+    return _joint2;
   }
 
   bool solvePositionConstraints(SolverData data) {
-    Vector2 cA = data.positions[m_indexA].c;
-    double aA = data.positions[m_indexA].a;
-    Vector2 cB = data.positions[m_indexB].c;
-    double aB = data.positions[m_indexB].a;
-    Vector2 cC = data.positions[m_indexC].c;
-    double aC = data.positions[m_indexC].a;
-    Vector2 cD = data.positions[m_indexD].c;
-    double aD = data.positions[m_indexD].a;
+    Vector2 cA = data.positions[_indexA].c;
+    double aA = data.positions[_indexA].a;
+    Vector2 cB = data.positions[_indexB].c;
+    double aB = data.positions[_indexB].a;
+    Vector2 cC = data.positions[_indexC].c;
+    double aC = data.positions[_indexC].a;
+    Vector2 cD = data.positions[_indexD].c;
+    double aD = data.positions[_indexD].a;
 
     Rot qA = pool.popRot(),
         qB = pool.popRot(),
@@ -431,61 +430,61 @@ class GearJoint extends Joint {
     double JwA, JwB, JwC, JwD;
     double mass = 0.0;
 
-    if (m_typeA == JointType.REVOLUTE) {
+    if (_typeA == JointType.REVOLUTE) {
       JvAC.setZero();
       JwA = 1.0;
       JwC = 1.0;
-      mass += m_iA + m_iC;
+      mass += _iA + _iC;
 
-      coordinateA = aA - aC - m_referenceAngleA;
+      coordinateA = aA - aC - _referenceAngleA;
     } else {
       Vector2 rC = pool.popVec2();
       Vector2 rA = pool.popVec2();
       Vector2 pC = pool.popVec2();
       Vector2 pA = pool.popVec2();
-      Rot.mulToOutUnsafe(qC, m_localAxisC, JvAC);
-      Rot.mulToOutUnsafe(qC, temp.setFrom(m_localAnchorC).sub(m_lcC), rC);
-      Rot.mulToOutUnsafe(qA, temp.setFrom(m_localAnchorA).sub(m_lcA), rA);
+      Rot.mulToOutUnsafe(qC, _localAxisC, JvAC);
+      Rot.mulToOutUnsafe(qC, temp.setFrom(_localAnchorC).sub(_lcC), rC);
+      Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_lcA), rA);
       JwC = rC.cross(JvAC);
       JwA = rA.cross(JvAC);
-      mass += m_mC + m_mA + m_iC * JwC * JwC + m_iA * JwA * JwA;
+      mass += _mC + _mA + _iC * JwC * JwC + _iA * JwA * JwA;
 
-      pC.setFrom(m_localAnchorC).sub(m_lcC);
+      pC.setFrom(_localAnchorC).sub(_lcC);
       Rot.mulTransUnsafeVec2(qC, temp.setFrom(rA).add(cA).sub(cC), pA);
-      coordinateA = pA.sub(pC).dot(m_localAxisC);
+      coordinateA = pA.sub(pC).dot(_localAxisC);
       pool.pushVec2(4);
     }
 
-    if (m_typeB == JointType.REVOLUTE) {
+    if (_typeB == JointType.REVOLUTE) {
       JvBD.setZero();
-      JwB = m_ratio;
-      JwD = m_ratio;
-      mass += m_ratio * m_ratio * (m_iB + m_iD);
+      JwB = _ratio;
+      JwD = _ratio;
+      mass += _ratio * _ratio * (_iB + _iD);
 
-      coordinateB = aB - aD - m_referenceAngleB;
+      coordinateB = aB - aD - _referenceAngleB;
     } else {
       Vector2 u = pool.popVec2();
       Vector2 rD = pool.popVec2();
       Vector2 rB = pool.popVec2();
       Vector2 pD = pool.popVec2();
       Vector2 pB = pool.popVec2();
-      Rot.mulToOutUnsafe(qD, m_localAxisD, u);
-      Rot.mulToOutUnsafe(qD, temp.setFrom(m_localAnchorD).sub(m_lcD), rD);
-      Rot.mulToOutUnsafe(qB, temp.setFrom(m_localAnchorB).sub(m_lcB), rB);
-      JvBD.setFrom(u).scale(m_ratio);
+      Rot.mulToOutUnsafe(qD, _localAxisD, u);
+      Rot.mulToOutUnsafe(qD, temp.setFrom(_localAnchorD).sub(_lcD), rD);
+      Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_lcB), rB);
+      JvBD.setFrom(u).scale(_ratio);
       JwD = rD.cross(u);
       JwB = rB.cross(u);
-      mass += m_ratio * m_ratio * (m_mD + m_mB) +
-          m_iD * JwD * JwD +
-          m_iB * JwB * JwB;
+      mass += _ratio * _ratio * (_mD + _mB) +
+          _iD * JwD * JwD +
+          _iB * JwB * JwB;
 
-      pD.setFrom(m_localAnchorD).sub(m_lcD);
+      pD.setFrom(_localAnchorD).sub(_lcD);
       Rot.mulTransUnsafeVec2(qD, temp.setFrom(rB).add(cB).sub(cD), pB);
-      coordinateB = pB.sub(pD).dot(m_localAxisD);
+      coordinateB = pB.sub(pD).dot(_localAxisD);
       pool.pushVec2(5);
     }
 
-    double C = (coordinateA + m_ratio * coordinateB) - m_constant;
+    double C = (coordinateA + _ratio * coordinateB) - _constant;
 
     double impulse = 0.0;
     if (mass > 0.0) {
@@ -494,30 +493,30 @@ class GearJoint extends Joint {
     pool.pushVec2(3);
     pool.pushRot(4);
 
-    cA.x += (m_mA * impulse) * JvAC.x;
-    cA.y += (m_mA * impulse) * JvAC.y;
-    aA += m_iA * impulse * JwA;
+    cA.x += (_mA * impulse) * JvAC.x;
+    cA.y += (_mA * impulse) * JvAC.y;
+    aA += _iA * impulse * JwA;
 
-    cB.x += (m_mB * impulse) * JvBD.x;
-    cB.y += (m_mB * impulse) * JvBD.y;
-    aB += m_iB * impulse * JwB;
+    cB.x += (_mB * impulse) * JvBD.x;
+    cB.y += (_mB * impulse) * JvBD.y;
+    aB += _iB * impulse * JwB;
 
-    cC.x -= (m_mC * impulse) * JvAC.x;
-    cC.y -= (m_mC * impulse) * JvAC.y;
-    aC -= m_iC * impulse * JwC;
+    cC.x -= (_mC * impulse) * JvAC.x;
+    cC.y -= (_mC * impulse) * JvAC.y;
+    aC -= _iC * impulse * JwC;
 
-    cD.x -= (m_mD * impulse) * JvBD.x;
-    cD.y -= (m_mD * impulse) * JvBD.y;
-    aD -= m_iD * impulse * JwD;
+    cD.x -= (_mD * impulse) * JvBD.x;
+    cD.y -= (_mD * impulse) * JvBD.y;
+    aD -= _iD * impulse * JwD;
 
-    // data.positions[m_indexA].c = cA;
-    data.positions[m_indexA].a = aA;
-    // data.positions[m_indexB].c = cB;
-    data.positions[m_indexB].a = aB;
-    // data.positions[m_indexC].c = cC;
-    data.positions[m_indexC].a = aC;
-    // data.positions[m_indexD].c = cD;
-    data.positions[m_indexD].a = aD;
+    // data.positions[_indexA].c = cA;
+    data.positions[_indexA].a = aA;
+    // data.positions[_indexB].c = cB;
+    data.positions[_indexB].a = aB;
+    // data.positions[_indexC].c = cC;
+    data.positions[_indexC].a = aC;
+    // data.positions[_indexD].c = cD;
+    data.positions[_indexD].a = aD;
 
     // TODO_ERIN not implemented
     return linearError < Settings.linearSlop;

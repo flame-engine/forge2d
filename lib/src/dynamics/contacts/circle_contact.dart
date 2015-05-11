@@ -34,7 +34,7 @@ class CircleContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    pool.getCollision().collideCircles(
+    _pool.getCollision().collideCircles(
         manifold, _fixtureA.getShape(), xfA, _fixtureB.getShape(), xfB);
   }
 }

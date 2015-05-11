@@ -38,14 +38,14 @@ class PolygonShape extends Shape {
   final Vector2 centroid = new Vector2.zero();
 
   /**
-   * The vertices of the shape. Note: use getVertexCount(), not m_vertices.length, to get number of
+   * The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
    * active vertices.
    */
   final List<Vector2> vertices =
       new List<Vector2>(Settings.maxPolygonVertices);
 
   /**
-   * The normals of the shape. Note: use getVertexCount(), not m_normals.length, to get number of
+   * The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
    * active normals.
    */
   final List<Vector2> normals =
@@ -336,7 +336,7 @@ class PolygonShape extends Shape {
 
     for (int i = 1; i < count; ++i) {
       Vector2 v2 = vertices[i];
-      // Vec2 v = Mul(xf, m_vertices[i]);
+      // Vec2 v = Mul(xf, _vertices[i]);
       double vx = (xfqc * v2.x - xfqs * v2.y) + xfpx;
       double vy = (xfqs * v2.x + xfqc * v2.y) + xfpy;
       lower.x = lower.x < vx ? lower.x : vx;
@@ -495,7 +495,7 @@ class PolygonShape extends Shape {
 
     if (index >= 0) {
       output.fraction = lower;
-      // normal = Mul(xf.R, m_normals[index]);
+      // normal = Mul(xf.R, _normals[index]);
       Vector2 normal = normals[index];
       Vector2 out = output.normal;
       out.x = xfqc * normal.x - xfqs * normal.y;

@@ -25,43 +25,43 @@
 part of box2d;
 
 class StackQueue<T> {
-  List<T> _m_buffer;
-  int _m_front = 0;
-  int _m_back = 0;
-  int _m_end = 0;
+  List<T> _buffer;
+  int _front = 0;
+  int _back = 0;
+  int _end = 0;
 
   StackQueue() {}
 
   void reset(List<T> buffer) {
-    _m_buffer = buffer;
-    _m_front = 0;
-    _m_back = 0;
-    _m_end = buffer.length;
+    _buffer = buffer;
+    _front = 0;
+    _back = 0;
+    _end = buffer.length;
   }
 
   void push(T task) {
-    if (_m_back >= _m_end) {
+    if (_back >= _end) {
       BufferUtils.arraycopy(
-          _m_buffer, _m_front, _m_buffer, 0, _m_back - _m_front);
-      _m_back -= _m_front;
-      _m_front = 0;
-      if (_m_back >= _m_end) {
+          _buffer, _front, _buffer, 0, _back - _front);
+      _back -= _front;
+      _front = 0;
+      if (_back >= _end) {
         return;
       }
     }
-    _m_buffer[_m_back++] = task;
+    _buffer[_back++] = task;
   }
 
   T pop() {
-    assert(_m_front < _m_back);
-    return _m_buffer[_m_front++];
+    assert(_front < _back);
+    return _buffer[_front++];
   }
 
   bool empty() {
-    return _m_front >= _m_back;
+    return _front >= _back;
   }
 
   T front() {
-    return _m_buffer[_m_front];
+    return _buffer[_front];
   }
 }

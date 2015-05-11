@@ -37,78 +37,46 @@ part of box2d;
  */
 
 class DistanceJoint extends Joint {
-  double _m_frequencyHz = 0.0;
-  double _m_dampingRatio = 0.0;
-  double _m_bias = 0.0;
+  double _frequencyHz = 0.0;
+  double _dampingRatio = 0.0;
+  double _bias = 0.0;
 
   // Solver shared
-  final Vector2 _m_localAnchorA;
-  final Vector2 _m_localAnchorB;
-  double _m_gamma = 0.0;
-  double _m_impulse = 0.0;
-  double _m_length = 0.0;
+  final Vector2 _localAnchorA;
+  final Vector2 _localAnchorB;
+  double _gamma = 0.0;
+  double _impulse = 0.0;
+  double _length = 0.0;
 
   // Solver temp
-  int _m_indexA = 0;
-  int _m_indexB = 0;
-  final Vector2 _m_u = new Vector2.zero();
-  final Vector2 _m_rA = new Vector2.zero();
-  final Vector2 _m_rB = new Vector2.zero();
-  final Vector2 _m_localCenterA = new Vector2.zero();
-  final Vector2 _m_localCenterB = new Vector2.zero();
-  double _m_invMassA = 0.0;
-  double _m_invMassB = 0.0;
-  double _m_invIA = 0.0;
-  double _m_invIB = 0.0;
-  double _m_mass = 0.0;
+  int _indexA = 0;
+  int _indexB = 0;
+  final Vector2 _u = new Vector2.zero();
+  final Vector2 _rA = new Vector2.zero();
+  final Vector2 _rB = new Vector2.zero();
+  final Vector2 _localCenterA = new Vector2.zero();
+  final Vector2 _localCenterB = new Vector2.zero();
+  double _invMassA = 0.0;
+  double _invMassB = 0.0;
+  double _invIA = 0.0;
+  double _invIB = 0.0;
+  double _mass = 0.0;
 
   DistanceJoint(IWorldPool argWorld, final DistanceJointDef def)
-      : _m_localAnchorA = def.localAnchorA.clone(),
-        _m_localAnchorB = def.localAnchorB.clone(),
+      : _localAnchorA = def.localAnchorA.clone(),
+        _localAnchorB = def.localAnchorB.clone(),
         super(argWorld, def) {
-    _m_length = def.length;
-    _m_frequencyHz = def.frequencyHz;
-    _m_dampingRatio = def.dampingRatio;
-  }
-
-  void setFrequency(double hz) {
-    _m_frequencyHz = hz;
-  }
-
-  double getFrequency() {
-    return _m_frequencyHz;
-  }
-
-  double getLength() {
-    return _m_length;
-  }
-
-  void setLength(double argLength) {
-    _m_length = argLength;
-  }
-
-  void setDampingRatio(double damp) {
-    _m_dampingRatio = damp;
-  }
-
-  double getDampingRatio() {
-    return _m_dampingRatio;
+    _length = def.length;
+    _frequencyHz = def.frequencyHz;
+    _dampingRatio = def.dampingRatio;
   }
 
   void getAnchorA(Vector2 argOut) {
-    m_bodyA.getWorldPointToOut(_m_localAnchorA, argOut);
+    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
   }
 
   void getAnchorB(Vector2 argOut) {
-    m_bodyB.getWorldPointToOut(_m_localAnchorB, argOut);
-  }
-
-  Vector2 getLocalAnchorA() {
-    return _m_localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return _m_localAnchorB;
+    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
   }
 
   /**
@@ -116,8 +84,8 @@ class DistanceJoint extends Joint {
    */
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.x = _m_impulse * _m_u.x * inv_dt;
-    argOut.y = _m_impulse * _m_u.y * inv_dt;
+    argOut.x = _impulse * _u.x * inv_dt;
+    argOut.y = _impulse * _u.y * inv_dt;
   }
 
   /**
@@ -130,24 +98,24 @@ class DistanceJoint extends Joint {
   }
 
   void initVelocityConstraints(final SolverData data) {
-    _m_indexA = m_bodyA.islandIndex;
-    _m_indexB = m_bodyB.islandIndex;
-    _m_localCenterA.setFrom(m_bodyA.sweep.localCenter);
-    _m_localCenterB.setFrom(m_bodyB.sweep.localCenter);
-    _m_invMassA = m_bodyA.invMass;
-    _m_invMassB = m_bodyB.invMass;
-    _m_invIA = m_bodyA.invI;
-    _m_invIB = m_bodyB.invI;
+    _indexA = _bodyA._islandIndex;
+    _indexB = _bodyB._islandIndex;
+    _localCenterA.setFrom(_bodyA._sweep.localCenter);
+    _localCenterB.setFrom(_bodyB._sweep.localCenter);
+    _invMassA = _bodyA._invMass;
+    _invMassB = _bodyB._invMass;
+    _invIA = _bodyA._invI;
+    _invIB = _bodyB._invI;
 
-    Vector2 cA = data.positions[_m_indexA].c;
-    double aA = data.positions[_m_indexA].a;
-    Vector2 vA = data.velocities[_m_indexA].v;
-    double wA = data.velocities[_m_indexA].w;
+    Vector2 cA = data.positions[_indexA].c;
+    double aA = data.positions[_indexA].a;
+    Vector2 vA = data.velocities[_indexA].v;
+    double wA = data.velocities[_indexA].w;
 
-    Vector2 cB = data.positions[_m_indexB].c;
-    double aB = data.positions[_m_indexB].a;
-    Vector2 vB = data.velocities[_m_indexB].v;
-    double wB = data.velocities[_m_indexB].w;
+    Vector2 cB = data.positions[_indexB].c;
+    double aB = data.positions[_indexB].a;
+    Vector2 vB = data.velocities[_indexB].v;
+    double wB = data.velocities[_indexB].w;
 
     final Rot qA = pool.popRot();
     final Rot qB = pool.popRot();
@@ -155,123 +123,123 @@ class DistanceJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    // use _m_u as temporary variable
+    // use _u as temporary variable
     Rot.mulToOutUnsafe(
-        qA, _m_u.setFrom(_m_localAnchorA).sub(_m_localCenterA), _m_rA);
+        qA, _u.setFrom(_localAnchorA).sub(_localCenterA), _rA);
     Rot.mulToOutUnsafe(
-        qB, _m_u.setFrom(_m_localAnchorB).sub(_m_localCenterB), _m_rB);
-    _m_u.setFrom(cB).add(_m_rB).sub(cA).sub(_m_rA);
+        qB, _u.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    _u.setFrom(cB).add(_rB).sub(cA).sub(_rA);
 
     pool.pushRot(2);
 
     // Handle singularity.
-    double length = _m_u.length;
+    double length = _u.length;
     if (length > Settings.linearSlop) {
-      _m_u.x *= 1.0 / length;
-      _m_u.y *= 1.0 / length;
+      _u.x *= 1.0 / length;
+      _u.y *= 1.0 / length;
     } else {
-      _m_u.setValues(0.0, 0.0);
+      _u.setValues(0.0, 0.0);
     }
 
-    double crAu = _m_rA.cross(_m_u);
-    double crBu = _m_rB.cross(_m_u);
-    double invMass = _m_invMassA +
-        _m_invIA * crAu * crAu +
-        _m_invMassB +
-        _m_invIB * crBu * crBu;
+    double crAu = _rA.cross(_u);
+    double crBu = _rB.cross(_u);
+    double invMass = _invMassA +
+        _invIA * crAu * crAu +
+        _invMassB +
+        _invIB * crBu * crBu;
 
     // Compute the effective mass matrix.
-    _m_mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
+    _mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
 
-    if (_m_frequencyHz > 0.0) {
-      double C = length - _m_length;
+    if (_frequencyHz > 0.0) {
+      double C = length - _length;
 
       // Frequency
-      double omega = 2.0 * Math.PI * _m_frequencyHz;
+      double omega = 2.0 * Math.PI * _frequencyHz;
 
       // Damping coefficient
-      double d = 2.0 * _m_mass * _m_dampingRatio * omega;
+      double d = 2.0 * _mass * _dampingRatio * omega;
 
       // Spring stiffness
-      double k = _m_mass * omega * omega;
+      double k = _mass * omega * omega;
 
       // magic formulas
       double h = data.step.dt;
-      _m_gamma = h * (d + h * k);
-      _m_gamma = _m_gamma != 0.0 ? 1.0 / _m_gamma : 0.0;
-      _m_bias = C * h * k * _m_gamma;
+      _gamma = h * (d + h * k);
+      _gamma = _gamma != 0.0 ? 1.0 / _gamma : 0.0;
+      _bias = C * h * k * _gamma;
 
-      invMass += _m_gamma;
-      _m_mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
+      invMass += _gamma;
+      _mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
     } else {
-      _m_gamma = 0.0;
-      _m_bias = 0.0;
+      _gamma = 0.0;
+      _bias = 0.0;
     }
     if (data.step.warmStarting) {
 
       // Scale the impulse to support a variable time step.
-      _m_impulse *= data.step.dtRatio;
+      _impulse *= data.step.dtRatio;
 
       Vector2 P = pool.popVec2();
-      P.setFrom(_m_u).scale(_m_impulse);
+      P.setFrom(_u).scale(_impulse);
 
-      vA.x -= _m_invMassA * P.x;
-      vA.y -= _m_invMassA * P.y;
-      wA -= _m_invIA * _m_rA.cross(P);
+      vA.x -= _invMassA * P.x;
+      vA.y -= _invMassA * P.y;
+      wA -= _invIA * _rA.cross(P);
 
-      vB.x += _m_invMassB * P.x;
-      vB.y += _m_invMassB * P.y;
-      wB += _m_invIB * _m_rB.cross(P);
+      vB.x += _invMassB * P.x;
+      vB.y += _invMassB * P.y;
+      wB += _invIB * _rB.cross(P);
 
       pool.pushVec2(1);
     } else {
-      _m_impulse = 0.0;
+      _impulse = 0.0;
     }
-//    data.velocities[_m_indexA].v.set(vA);
-    data.velocities[_m_indexA].w = wA;
-//    data.velocities[_m_indexB].v.set(vB);
-    data.velocities[_m_indexB].w = wB;
+//    data.velocities[_indexA].v.set(vA);
+    data.velocities[_indexA].w = wA;
+//    data.velocities[_indexB].v.set(vB);
+    data.velocities[_indexB].w = wB;
   }
 
   void solveVelocityConstraints(final SolverData data) {
-    Vector2 vA = data.velocities[_m_indexA].v;
-    double wA = data.velocities[_m_indexA].w;
-    Vector2 vB = data.velocities[_m_indexB].v;
-    double wB = data.velocities[_m_indexB].w;
+    Vector2 vA = data.velocities[_indexA].v;
+    double wA = data.velocities[_indexA].w;
+    Vector2 vB = data.velocities[_indexB].v;
+    double wB = data.velocities[_indexB].w;
 
     final Vector2 vpA = pool.popVec2();
     final Vector2 vpB = pool.popVec2();
 
     // Cdot = dot(u, v + cross(w, r))
-    _m_rA.scaleOrthogonalInto(wA, vpA);
+    _rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
-    _m_rB.scaleOrthogonalInto(wB, vpB);
+    _rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
-    double Cdot = _m_u.dot(vpB.sub(vpA));
+    double Cdot = _u.dot(vpB.sub(vpA));
 
-    double impulse = -_m_mass * (Cdot + _m_bias + _m_gamma * _m_impulse);
-    _m_impulse += impulse;
+    double impulse = -_mass * (Cdot + _bias + _gamma * _impulse);
+    _impulse += impulse;
 
-    double Px = impulse * _m_u.x;
-    double Py = impulse * _m_u.y;
+    double Px = impulse * _u.x;
+    double Py = impulse * _u.y;
 
-    vA.x -= _m_invMassA * Px;
-    vA.y -= _m_invMassA * Py;
-    wA -= _m_invIA * (_m_rA.x * Py - _m_rA.y * Px);
-    vB.x += _m_invMassB * Px;
-    vB.y += _m_invMassB * Py;
-    wB += _m_invIB * (_m_rB.x * Py - _m_rB.y * Px);
+    vA.x -= _invMassA * Px;
+    vA.y -= _invMassA * Py;
+    wA -= _invIA * (_rA.x * Py - _rA.y * Px);
+    vB.x += _invMassB * Px;
+    vB.y += _invMassB * Py;
+    wB += _invIB * (_rB.x * Py - _rB.y * Px);
 
-//    data.velocities[_m_indexA].v.set(vA);
-    data.velocities[_m_indexA].w = wA;
-//    data.velocities[_m_indexB].v.set(vB);
-    data.velocities[_m_indexB].w = wB;
+//    data.velocities[_indexA].v.set(vA);
+    data.velocities[_indexA].w = wA;
+//    data.velocities[_indexB].v.set(vB);
+    data.velocities[_indexB].w = wB;
 
     pool.pushVec2(2);
   }
 
   bool solvePositionConstraints(final SolverData data) {
-    if (_m_frequencyHz > 0.0) {
+    if (_frequencyHz > 0.0) {
       return true;
     }
     final Rot qA = pool.popRot();
@@ -280,38 +248,38 @@ class DistanceJoint extends Joint {
     final Vector2 rB = pool.popVec2();
     final Vector2 u = pool.popVec2();
 
-    Vector2 cA = data.positions[_m_indexA].c;
-    double aA = data.positions[_m_indexA].a;
-    Vector2 cB = data.positions[_m_indexB].c;
-    double aB = data.positions[_m_indexB].a;
+    Vector2 cA = data.positions[_indexA].c;
+    double aA = data.positions[_indexA].a;
+    Vector2 cB = data.positions[_indexB].c;
+    double aB = data.positions[_indexB].a;
 
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOutUnsafe(qA, u.setFrom(_m_localAnchorA).sub(_m_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB, u.setFrom(_m_localAnchorB).sub(_m_localCenterB), rB);
+    Rot.mulToOutUnsafe(qA, u.setFrom(_localAnchorA).sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB, u.setFrom(_localAnchorB).sub(_localCenterB), rB);
     u.setFrom(cB).add(rB).sub(cA).sub(rA);
 
     double length = u.normalizeLength();
-    double C = length - _m_length;
+    double C = length - _length;
     C = MathUtils.clampDouble(
         C, -Settings.maxLinearCorrection, Settings.maxLinearCorrection);
 
-    double impulse = -_m_mass * C;
+    double impulse = -_mass * C;
     double Px = impulse * u.x;
     double Py = impulse * u.y;
 
-    cA.x -= _m_invMassA * Px;
-    cA.y -= _m_invMassA * Py;
-    aA -= _m_invIA * (rA.x * Py - rA.y * Px);
-    cB.x += _m_invMassB * Px;
-    cB.y += _m_invMassB * Py;
-    aB += _m_invIB * (rB.x * Py - rB.y * Px);
+    cA.x -= _invMassA * Px;
+    cA.y -= _invMassA * Py;
+    aA -= _invIA * (rA.x * Py - rA.y * Px);
+    cB.x += _invMassB * Px;
+    cB.y += _invMassB * Py;
+    aB += _invIB * (rB.x * Py - rB.y * Px);
 
-//    data.positions[_m_indexA].c.set(cA);
-    data.positions[_m_indexA].a = aA;
-//    data.positions[_m_indexB].c.set(cB);
-    data.positions[_m_indexB].a = aB;
+//    data.positions[_indexA].c.set(cA);
+    data.positions[_indexA].a = aA;
+//    data.positions[_indexB].c.set(cB);
+    data.positions[_indexB].a = aB;
 
     pool.pushVec2(3);
     pool.pushRot(2);

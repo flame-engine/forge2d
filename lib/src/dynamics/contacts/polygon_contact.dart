@@ -26,7 +26,7 @@ part of box2d;
 
 class PolygonContact extends Contact {
   PolygonContact(IWorldPool argPool) : super(argPool) {
-    assert(pool != null);
+    assert(_pool != null);
   }
 
   void init0(Fixture fixtureA, Fixture fixtureB) {
@@ -36,7 +36,7 @@ class PolygonContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    pool.getCollision().collidePolygons(
+    _pool.getCollision().collidePolygons(
         manifold, _fixtureA.getShape(), xfA, _fixtureB.getShape(), xfB);
   }
 }

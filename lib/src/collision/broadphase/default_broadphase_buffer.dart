@@ -88,7 +88,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
   bool testOverlap(int proxyIdA, int proxyIdB) {
     // return AABB.testOverlap(proxyA.aabb, proxyB.aabb);
-    // return _m_tree.overlap(proxyIdA, proxyIdB);
+    // return _tree.overlap(proxyIdA, proxyIdB);
     final AABB a = _tree.getFatAABB(proxyIdA);
     final AABB b = _tree.getFatAABB(proxyIdB);
     if (b.lowerBound.x - a.upperBound.x > 0.0 ||
@@ -128,10 +128,10 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
       final AABB fatAABB = _tree.getFatAABB(_queryProxyId);
 
       // Query tree, create pairs and add them pair buffer.
-      // log.debug("quering aabb: "+_m_queryProxy.aabb);
+      // log.debug("quering aabb: "+_queryProxy.aabb);
       _tree.query(this, fatAABB);
     }
-    // log.debug("Number of pairs found: "+_m_pairCount);
+    // log.debug("Number of pairs found: "+_pairCount);
 
     // Reset move buffer
     _moveCount = 0;
