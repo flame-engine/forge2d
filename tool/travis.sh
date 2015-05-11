@@ -3,6 +3,11 @@
 # Fast fail the script on failures.   
 set -e
 
+# Only check formatting on stable branch
+if [ "$TRAVIS_DART_VERSION" = "stable" ]; then
+  $(dirname -- "$0")/ensure_dartfmt.sh
+fi
+
 dartanalyzer lib/box2d.dart
 
 # Run the benchmark script as a simple sanity check
