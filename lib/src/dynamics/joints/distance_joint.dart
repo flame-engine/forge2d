@@ -124,10 +124,8 @@ class DistanceJoint extends Joint {
     qB.setAngle(aB);
 
     // use _u as temporary variable
-    Rot.mulToOutUnsafe(
-        qA, _u.setFrom(_localAnchorA).sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(
-        qB, _u.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(qA, _u.setFrom(_localAnchorA).sub(_localCenterA), _rA);
+    Rot.mulToOutUnsafe(qB, _u.setFrom(_localAnchorB).sub(_localCenterB), _rB);
     _u.setFrom(cB).add(_rB).sub(cA).sub(_rA);
 
     pool.pushRot(2);
@@ -143,10 +141,8 @@ class DistanceJoint extends Joint {
 
     double crAu = _rA.cross(_u);
     double crBu = _rB.cross(_u);
-    double invMass = _invMassA +
-        _invIA * crAu * crAu +
-        _invMassB +
-        _invIB * crBu * crBu;
+    double invMass =
+        _invMassA + _invIA * crAu * crAu + _invMassB + _invIB * crBu * crBu;
 
     // Compute the effective mass matrix.
     _mass = invMass != 0.0 ? 1.0 / invMass : 0.0;

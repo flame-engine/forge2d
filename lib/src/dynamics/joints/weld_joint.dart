@@ -136,10 +136,8 @@ class WeldJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(
-        qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
+    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -326,10 +324,8 @@ class WeldJoint extends Joint {
     double iA = _invIA,
         iB = _invIB;
 
-    Rot.mulToOutUnsafe(
-        qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(
-        qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
+    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
     double positionError, angularError;
 
     final Matrix3 K = pool.popMat33();

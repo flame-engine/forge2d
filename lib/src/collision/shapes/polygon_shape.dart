@@ -41,15 +41,13 @@ class PolygonShape extends Shape {
    * The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
    * active vertices.
    */
-  final List<Vector2> vertices =
-      new List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> vertices = new List<Vector2>(Settings.maxPolygonVertices);
 
   /**
    * The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
    * active normals.
    */
-  final List<Vector2> normals =
-      new List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> normals = new List<Vector2>(Settings.maxPolygonVertices);
 
   /**
    * Number of active vertices in the shape.
@@ -596,10 +594,7 @@ class PolygonShape extends Shape {
     for (int i = 0; i < count; ++i) {
       // Triangle vertices.
       e1.setFrom(vertices[i]).sub(s);
-      e2
-          .setFrom(s)
-          .negate()
-          .add(i + 1 < count ? vertices[i + 1] : vertices[0]);
+      e2.setFrom(s).negate().add(i + 1 < count ? vertices[i + 1] : vertices[0]);
 
       final double D = e1.cross(e2);
 

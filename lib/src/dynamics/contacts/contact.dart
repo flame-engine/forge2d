@@ -184,13 +184,12 @@ abstract class Contact {
   }
 
   void resetFriction() {
-    _friction =
-        Contact.mixFriction(_fixtureA._friction, _fixtureB._friction);
+    _friction = Contact.mixFriction(_fixtureA._friction, _fixtureB._friction);
   }
 
   void resetRestitution() {
-    _restitution = Contact.mixRestitution(
-        _fixtureA._restitution, _fixtureB._restitution);
+    _restitution =
+        Contact.mixRestitution(_fixtureA._restitution, _fixtureB._restitution);
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB);

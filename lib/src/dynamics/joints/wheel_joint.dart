@@ -234,10 +234,8 @@ class WheelJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(
-        qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
+    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
     d.setFrom(cB).add(rB).sub(cA).sub(rA);
 
     // Point to line constraint
@@ -357,10 +355,8 @@ class WheelJoint extends Joint {
 
     // Solve spring constraint
     {
-      double Cdot =
-          _ax.dot(temp.setFrom(vB).sub(vA)) + _sBx * wB - _sAx * wA;
-      double impulse =
-          -_springMass * (Cdot + _bias + _gamma * _springImpulse);
+      double Cdot = _ax.dot(temp.setFrom(vB).sub(vA)) + _sBx * wB - _sAx * wA;
+      double impulse = -_springMass * (Cdot + _bias + _gamma * _springImpulse);
       _springImpulse += impulse;
 
       P.x = impulse * _ax.x;
@@ -394,8 +390,7 @@ class WheelJoint extends Joint {
 
     // Solve point to line constraint
     {
-      double Cdot =
-          _ay.dot(temp.setFrom(vB).sub(vA)) + _sBy * wB - _sAy * wA;
+      double Cdot = _ay.dot(temp.setFrom(vB).sub(vA)) + _sBy * wB - _sAy * wA;
       double impulse = -_mass * Cdot;
       _impulse += impulse;
 
@@ -445,10 +440,8 @@ class WheelJoint extends Joint {
 
     double C = d.dot(ay);
 
-    double k = _invMassA +
-        _invMassB +
-        _invIA * _sAy * _sAy +
-        _invIB * _sBy * _sBy;
+    double k =
+        _invMassA + _invMassB + _invIA * _sAy * _sAy + _invIB * _sBy * _sBy;
 
     double impulse;
     if (k != 0.0) {

@@ -175,7 +175,7 @@ class CircleShape extends Shape {
 
     // inertia about the local origin
     // massData.I = massData.mass * (0.5f * _radius * _radius + Vec2.dot(_p, _p));
-    massData.I = massData.mass *
-        (0.5 * radius * radius + (p.x * p.x + p.y * p.y));
+    massData.I =
+        massData.mass * (0.5 * radius * radius + (p.x * p.x + p.y * p.y));
   }
 }

@@ -190,10 +190,8 @@ class PulleyJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(
-        qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
+    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
 
     _uA.setFrom(cA).add(_rA).sub(_groundAnchorA);
     _uB.setFrom(cB).add(_rB).sub(_groundAnchorB);
@@ -314,10 +312,8 @@ class PulleyJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOutUnsafe(
-        qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(
-        qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
+    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
 
     uA.setFrom(cA).add(rA).sub(_groundAnchorA);
     uB.setFrom(cB).add(rB).sub(_groundAnchorB);

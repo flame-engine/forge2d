@@ -456,8 +456,7 @@ class DynamicTree implements BroadPhaseStrategy {
       // Build a linked list for the free list.
       for (int i = _nodeCapacity - 1; i >= _nodeCount; i--) {
         _nodes[i] = new DynamicTreeNode(i);
-        _nodes[i].parent =
-            (i == _nodeCapacity - 1) ? null : _nodes[i + 1];
+        _nodes[i].parent = (i == _nodeCapacity - 1) ? null : _nodes[i + 1];
         _nodes[i].height = -1;
       }
       _freeList = _nodeCount;

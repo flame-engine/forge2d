@@ -484,12 +484,10 @@ class PrismaticJoint extends Joint {
       temp.setFrom(_axis).scale(_motorImpulse + _impulse.z);
       P.setFrom(_perp).scale(_impulse.x).add(temp);
 
-      double LA = _impulse.x * _s1 +
-          _impulse.y +
-          (_motorImpulse + _impulse.z) * _a1;
-      double LB = _impulse.x * _s2 +
-          _impulse.y +
-          (_motorImpulse + _impulse.z) * _a2;
+      double LA =
+          _impulse.x * _s1 + _impulse.y + (_motorImpulse + _impulse.z) * _a1;
+      double LB =
+          _impulse.x * _s2 + _impulse.y + (_motorImpulse + _impulse.z) * _a2;
 
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
@@ -589,9 +587,7 @@ class PrismaticJoint extends Joint {
       final Vector2 b = pool.popVec2();
       final Vector2 f2r = pool.popVec2();
 
-      temp
-          .setValues(_K.entry(0, 2), _K.entry(1, 2))
-          .scale(_impulse.z - f1.z);
+      temp.setValues(_K.entry(0, 2), _K.entry(1, 2)).scale(_impulse.z - f1.z);
       b.setFrom(Cdot1).negate().sub(temp);
 
       Matrix3.solve2(_K, f2r, b);
@@ -678,10 +674,8 @@ class PrismaticJoint extends Joint {
         iB = _invIB;
 
     // Compute fresh Jacobians
-    Rot.mulToOutUnsafe(
-        qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(
-        qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
+    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
     d.setFrom(cB).add(rB).sub(cA).sub(rA);
 
     Rot.mulToOutUnsafe(qA, _localXAxisA, axis);

@@ -178,9 +178,10 @@ class UpdateBodyContactsCallback implements QueryCallback {
           final Vector2 n = _tempVec;
           d = fixture.computeDistance(ap, childIndex, n);
           if (d < system.particleDiameter) {
-            double invAm = (system.flagsBuffer.data[a] &
-                    ParticleType.b2_wallParticle) !=
-                0 ? 0 : system.getParticleInvMass();
+            double invAm =
+                (system.flagsBuffer.data[a] & ParticleType.b2_wallParticle) != 0
+                    ? 0
+                    : system.getParticleInvMass();
             final double rpx = ap.x - bp.x;
             final double rpy = ap.y - bp.y;
             double rpn = rpx * n.y - rpy * n.x;
@@ -189,9 +190,9 @@ class UpdateBodyContactsCallback implements QueryCallback {
               int newCapacity = system.bodyContactCount != 0
                   ? 2 * system.bodyContactCount
                   : Settings.minParticleBufferCapacity;
-              system.bodyContactBuffer = BufferUtils
-                  .reallocateBufferWithAlloc(system.bodyContactBuffer,
-                      oldCapacity, newCapacity, allocParticleBodyContact);
+              system.bodyContactBuffer = BufferUtils.reallocateBufferWithAlloc(
+                  system.bodyContactBuffer, oldCapacity, newCapacity,
+                  allocParticleBodyContact);
               system.bodyContactCapacity = newCapacity;
             }
             ParticleBodyContact contact =
@@ -570,18 +571,16 @@ class ParticleSystem {
         velocityBuffer.data = reallocateBuffer(
             velocityBuffer, internalAllocatedCapacity, capacity, false);
         accumulationBuffer = BufferUtils.reallocateBufferFloat64Deferred(
-            accumulationBuffer, 0, internalAllocatedCapacity, capacity,
-            false);
+            accumulationBuffer, 0, internalAllocatedCapacity, capacity, false);
         accumulation2Buffer = BufferUtils.reallocateBufferWithAllocDeferred(
-            accumulation2Buffer, 0, internalAllocatedCapacity, capacity,
-            true, allocVec2);
+            accumulation2Buffer, 0, internalAllocatedCapacity, capacity, true,
+            allocVec2);
         depthBuffer = BufferUtils.reallocateBufferFloat64Deferred(
             depthBuffer, 0, internalAllocatedCapacity, capacity, true);
         colorBuffer.data = reallocateBuffer(
             colorBuffer, internalAllocatedCapacity, capacity, true);
-        groupBuffer = BufferUtils.reallocateBufferWithAllocDeferred(
-            groupBuffer, 0, internalAllocatedCapacity, capacity, false,
-            allocParticleGroup);
+        groupBuffer = BufferUtils.reallocateBufferWithAllocDeferred(groupBuffer,
+            0, internalAllocatedCapacity, capacity, false, allocParticleGroup);
         userDataBuffer.data = reallocateBuffer(
             userDataBuffer, internalAllocatedCapacity, capacity, true);
         internalAllocatedCapacity = capacity;
@@ -611,9 +610,8 @@ class ParticleSystem {
     }
     if (proxyCount >= proxyCapacity) {
       int oldCapacity = proxyCapacity;
-      int newCapacity = proxyCount != 0
-          ? 2 * proxyCount
-          : Settings.minParticleBufferCapacity;
+      int newCapacity =
+          proxyCount != 0 ? 2 * proxyCount : Settings.minParticleBufferCapacity;
       proxyBuffer = BufferUtils.reallocateBufferWithAlloc(
           proxyBuffer, oldCapacity, newCapacity, allocPsProxy);
       proxyCapacity = newCapacity;
@@ -1019,8 +1017,7 @@ class ParticleSystem {
       PsProxy proxy = proxyBuffer[p];
       int i = proxy.index;
       Vector2 pos = positionBuffer.data[i];
-      proxy.tag =
-          computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
+      proxy.tag = computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
     }
     BufferUtils.sort(proxyBuffer, 0, proxyCount);
     contactCount = 0;
@@ -1445,8 +1442,7 @@ class ParticleSystem {
   }
 
   void solveTensile(final TimeStep step) {
-    accumulation2Buffer =
-        requestParticleBuffer(accumulation2Buffer, allocVec2);
+    accumulation2Buffer = requestParticleBuffer(accumulation2Buffer, allocVec2);
     for (int i = 0; i < count; i++) {
       accumulationBuffer[i] = 0.0;
       accumulation2Buffer[i].setZero();
@@ -1673,8 +1669,7 @@ class ParticleSystem {
             depthBuffer[newCount] = depthBuffer[i];
           }
           if (colorBuffer.data != null) {
-            colorBuffer.data[newCount]
-                .setParticleColor(colorBuffer.data[i]);
+            colorBuffer.data[newCount].setParticleColor(colorBuffer.data[i]);
           }
           if (userDataBuffer.data != null) {
             userDataBuffer.data[newCount] = userDataBuffer.data[i];
@@ -1989,8 +1984,8 @@ class ParticleSystem {
   }
 
   List<Object> getParticleUserDataBuffer() {
-    userDataBuffer.data = requestParticleBuffer(
-        userDataBuffer.data, userDataBuffer.allocClosure);
+    userDataBuffer.data =
+        requestParticleBuffer(userDataBuffer.data, userDataBuffer.allocClosure);
     return userDataBuffer.data;
   }
 

@@ -56,7 +56,6 @@ part of box2d;
  */
 
 class GearJoint extends Joint {
-
   final Joint _joint1;
   final Joint _joint2;
 
@@ -306,9 +305,8 @@ class GearJoint extends Joint {
       _JvBD.setFrom(u).scale(_ratio);
       _JwD = _ratio * rD.cross(u);
       _JwB = _ratio * rB.cross(u);
-      _mass += _ratio * _ratio * (_mD + _mB) +
-          _iD * _JwD * _JwD +
-          _iB * _JwB * _JwB;
+      _mass +=
+          _ratio * _ratio * (_mD + _mB) + _iD * _JwD * _JwD + _iB * _JwB * _JwB;
       pool.pushVec2(3);
     }
 
@@ -474,9 +472,7 @@ class GearJoint extends Joint {
       JvBD.setFrom(u).scale(_ratio);
       JwD = rD.cross(u);
       JwB = rB.cross(u);
-      mass += _ratio * _ratio * (_mD + _mB) +
-          _iD * JwD * JwD +
-          _iB * JwB * JwB;
+      mass += _ratio * _ratio * (_mD + _mB) + _iD * JwD * JwD + _iB * JwB * JwB;
 
       pD.setFrom(_localAnchorD).sub(_lcD);
       Rot.mulTransUnsafeVec2(qD, temp.setFrom(rB).add(cB).sub(cD), pB);

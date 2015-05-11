@@ -187,7 +187,8 @@ class World {
     _addType(_pool.getPolyContactStack(), ShapeType.POLYGON, ShapeType.POLYGON);
     _addType(
         _pool.getEdgeCircleContactStack(), ShapeType.EDGE, ShapeType.CIRCLE);
-    _addType(_pool.getEdgePolyContactStack(), ShapeType.EDGE, ShapeType.POLYGON);
+    _addType(
+        _pool.getEdgePolyContactStack(), ShapeType.EDGE, ShapeType.POLYGON);
     _addType(
         _pool.getChainCircleContactStack(), ShapeType.CHAIN, ShapeType.CIRCLE);
     _addType(
@@ -1121,9 +1122,7 @@ class World {
         b._sweep.alpha0 = 0.0;
       }
 
-      for (Contact c = _contactManager.contactList;
-          c != null;
-          c = c._next) {
+      for (Contact c = _contactManager.contactList; c != null; c = c._next) {
         // Invalidate TOI
         c._flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
         c._toiCount = 0;
@@ -1137,9 +1136,7 @@ class World {
       Contact minContact = null;
       double minAlpha = 1.0;
 
-      for (Contact c = _contactManager.contactList;
-          c != null;
-          c = c._next) {
+      for (Contact c = _contactManager.contactList; c != null; c = c._next) {
         // Is this contact disabled?
         if (c.isEnabled() == false) {
           continue;

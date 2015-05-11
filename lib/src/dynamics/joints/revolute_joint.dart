@@ -75,8 +75,7 @@ class RevoluteJoint extends Joint {
   double _invIB = 0.0;
   final Matrix3 _mass =
       new Matrix3.zero(); // effective mass for point-to-point constraint.
-  double _motorMass =
-      0.0; // effective mass for motor/limit angular constraint.
+  double _motorMass = 0.0; // effective mass for motor/limit angular constraint.
   LimitState _limitState = LimitState.INACTIVE;
 
   RevoluteJoint(IWorldPool argWorld, RevoluteJointDef def)
@@ -120,10 +119,8 @@ class RevoluteJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(
-        qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
+    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
