@@ -215,7 +215,6 @@ class Island {
   }
 
   final ContactSolver _contactSolver = new ContactSolver();
-  final Timer _timer = new Timer();
   final SolverData _solverData = new SolverData();
   final ContactSolverDef _solverDef = new ContactSolverDef();
 
@@ -265,7 +264,6 @@ class Island {
       _velocities[i].w = w;
     }
 
-    _timer.reset();
 
     // Solver data
     _solverData.step = step;
@@ -292,10 +290,6 @@ class Island {
       _joints[i].initVelocityConstraints(_solverData);
     }
 
-    profile.solveInit.accum(_timer.getMilliseconds());
-
-    // Solve velocity constraints
-    _timer.reset();
     // System.out.println("island solving velocities");
     for (int i = 0; i < step.velocityIterations; ++i) {
       for (int j = 0; j < _jointCount; ++j) {
@@ -307,7 +301,6 @@ class Island {
 
     // Store impulses for warm starting
     _contactSolver.storeImpulses();
-    profile.solveVelocity.accum(_timer.getMilliseconds());
 
     // Integrate positions
     for (int i = 0; i < _bodyCount; ++i) {
@@ -345,7 +338,6 @@ class Island {
     }
 
     // Solve position constraints
-    _timer.reset();
     bool positionSolved = false;
     for (int i = 0; i < step.positionIterations; ++i) {
       bool contactsOkay = _contactSolver.solvePositionConstraints();
@@ -374,8 +366,6 @@ class Island {
       body._angularVelocity = _velocities[i].w;
       body.synchronizeTransform();
     }
-
-    profile.solvePosition.accum(_timer.getMilliseconds());
 
     report(_contactSolver._velocityConstraints);
 
