@@ -89,7 +89,7 @@ class MotorJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 out) {
-    out.setFrom(_linearImpulse).scale(inv_dt);
+    out..setFrom(_linearImpulse)..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {

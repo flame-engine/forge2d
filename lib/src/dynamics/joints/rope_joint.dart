@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -30,7 +30,7 @@ part of box2d;
  * some non-physical behavior. A model that would allow you to dynamically modify the length would
  * have some sponginess, so I chose not to implement it that way. See DistanceJoint if you want to
  * dynamically control length.
- * 
+ *
  * @author Daniel Murphy
  */
 class RopeJoint extends Joint {
@@ -91,10 +91,12 @@ class RopeJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(qA,
+        temp..setFrom(_localAnchorA)..sub(_localCenterA), _rA);
+    Rot.mulToOutUnsafe(qB,
+        temp..setFrom(_localAnchorB)..sub(_localCenterB), _rB);
 
-    _u.setFrom(cB).add(_rB).sub(cA).sub(_rA);
+    _u..setFrom(cB)..add(_rB)..sub(cA)..sub(_rA);
 
     _length = _u.length;
 
@@ -165,7 +167,7 @@ class RopeJoint extends Joint {
     vpB.add(vB);
 
     double C = _length - _maxLength;
-    double Cdot = _u.dot(temp.setFrom(vpB).sub(vpA));
+    double Cdot = _u.dot(temp..setFrom(vpB)..sub(vpA));
 
     // Predictive constraint.
     if (C < 0.0) {
@@ -211,11 +213,13 @@ class RopeJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
-    u.setFrom(cB).add(rB).sub(cA).sub(rA);
+    Rot.mulToOutUnsafe(qA,
+      temp..setFrom(_localAnchorA)..sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB,
+      temp..setFrom(_localAnchorB)..sub(_localCenterB), rB);
+    u..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
 
-    double length = u.normalizeLength();
+    double length = u.normalize();
     double C = length - _maxLength;
 
     C = MathUtils.clampDouble(C, 0.0, Settings.maxLinearCorrection);
@@ -251,7 +255,7 @@ class RopeJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.setFrom(_u).scale(inv_dt).scale(_impulse);
+    argOut..setFrom(_u)..scale(inv_dt)..scale(_impulse);
   }
 
   double getReactionTorque(double inv_dt) {

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -45,7 +45,7 @@ part of box2d;
  * bodyA and rotation in the plane. You can use a joint limit to restrict the range of motion and a
  * joint motor to drive the rotation or to model rotational friction. This joint is designed for
  * vehicle suspensions.
- * 
+ *
  * @author Daniel Murphy
  */
 class WheelJoint extends Joint {
@@ -126,8 +126,8 @@ class WheelJoint extends Joint {
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
     final Vector2 temp = pool.popVec2();
-    temp.setFrom(_ay).scale(_impulse);
-    argOut.setFrom(_ax).scale(_springImpulse).add(temp).scale(inv_dt);
+    temp..setFrom(_ay)..scale(_impulse);
+    argOut..setFrom(_ax)..scale(_springImpulse)..add(temp)..scale(inv_dt);
     pool.pushVec2(1);
   }
 
@@ -234,14 +234,16 @@ class WheelJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
-    d.setFrom(cB).add(rB).sub(cA).sub(rA);
+    Rot.mulToOutUnsafe(qA,
+      temp..setFrom(_localAnchorA)..sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB,
+      temp..setFrom(_localAnchorB)..sub(_localCenterB), rB);
+    d..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
 
     // Point to line constraint
     {
       Rot.mulToOut(qA, _localYAxisA, _ay);
-      _sAy = temp.setFrom(d).add(rA).cross(_ay);
+      _sAy = (temp..setFrom(d)..add(rA)).cross(_ay);
       _sBy = rB.cross(_ay);
 
       _mass = mA + mB + iA * _sAy * _sAy + iB * _sBy * _sBy;
@@ -257,7 +259,7 @@ class WheelJoint extends Joint {
     _gamma = 0.0;
     if (_frequencyHz > 0.0) {
       Rot.mulToOut(qA, _localXAxisA, _ax);
-      _sAx = temp.setFrom(d).add(rA).cross(_ax);
+      _sAx = (temp..setFrom(d)..add(rA)).cross(_ax);
       _sBx = rB.cross(_ax);
 
       double invMass = mA + mB + iA * _sAx * _sAx + iB * _sBx * _sBx;
@@ -355,7 +357,7 @@ class WheelJoint extends Joint {
 
     // Solve spring constraint
     {
-      double Cdot = _ax.dot(temp.setFrom(vB).sub(vA)) + _sBx * wB - _sAx * wA;
+      double Cdot = _ax.dot(temp..setFrom(vB)..sub(vA)) + _sBx * wB - _sAx * wA;
       double impulse = -_springMass * (Cdot + _bias + _gamma * _springImpulse);
       _springImpulse += impulse;
 
@@ -390,7 +392,7 @@ class WheelJoint extends Joint {
 
     // Solve point to line constraint
     {
-      double Cdot = _ay.dot(temp.setFrom(vB).sub(vA)) + _sBy * wB - _sAy * wA;
+      double Cdot = _ay.dot(temp..setFrom(vB)..sub(vA)) + _sBy * wB - _sAy * wA;
       double impulse = -_mass * Cdot;
       _impulse += impulse;
 
@@ -428,14 +430,14 @@ class WheelJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOut(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOut(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
-    d.setFrom(cB).sub(cA).add(rB).sub(rA);
+    Rot.mulToOut(qA, temp..setFrom(_localAnchorA)..sub(_localCenterA), rA);
+    Rot.mulToOut(qB, temp..setFrom(_localAnchorB)..sub(_localCenterB), rB);
+    d..setFrom(cB)..sub(cA)..add(rB)..sub(rA);
 
     Vector2 ay = pool.popVec2();
     Rot.mulToOut(qA, _localYAxisA, ay);
 
-    double sAy = temp.setFrom(d).add(rA).cross(ay);
+    double sAy = (temp..setFrom(d)..add(rA)).cross(ay);
     double sBy = rB.cross(ay);
 
     double C = d.dot(ay);

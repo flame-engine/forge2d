@@ -1352,10 +1352,10 @@ class ParticleSystem {
         rotation.setAngle(step.dt * group._angularVelocity);
         Rot.mulToOutUnsafe(rotation, group._center, cross);
         temp
-            .setFrom(group._linearVelocity)
-            .scale(step.dt)
-            .add(group._center)
-            .sub(cross);
+            ..setFrom(group._linearVelocity)
+            ..scale(step.dt)
+            ..add(group._center)
+            ..sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.set(rotation);
         Transform.mulToOut(_tempXf, group._transform, group._transform);

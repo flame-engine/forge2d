@@ -172,8 +172,8 @@ class PrismaticJoint extends Joint {
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
     Vector2 temp = pool.popVec2();
-    temp.setFrom(_axis).scale(_motorImpulse + _impulse.z);
-    argOut.setFrom(_perp).scale(_impulse.x).add(temp).scale(inv_dt);
+    temp..setFrom(_axis)..scale(_motorImpulse + _impulse.z);
+    argOut..setFrom(_perp)..scale(_impulse.x)..add(temp)..scale(inv_dt);
     pool.pushVec2(1);
   }
 
@@ -198,16 +198,16 @@ class PrismaticJoint extends Joint {
     Vector2 temp2 = pool.popVec2();
     Vector2 temp3 = pool.popVec2();
 
-    temp.setFrom(_localAnchorA).sub(bA._sweep.localCenter);
+    temp..setFrom(_localAnchorA)..sub(bA._sweep.localCenter);
     Rot.mulToOutUnsafe(bA._transform.q, temp, rA);
 
-    temp.setFrom(_localAnchorB).sub(bB._sweep.localCenter);
+    temp..setFrom(_localAnchorB)..sub(bB._sweep.localCenter);
     Rot.mulToOutUnsafe(bB._transform.q, temp, rB);
 
-    p1.setFrom(bA._sweep.c).add(rA);
-    p2.setFrom(bB._sweep.c).add(rB);
+    p1..setFrom(bA._sweep.c)..add(rA);
+    p2..setFrom(bB._sweep.c)..add(rB);
 
-    d.setFrom(p2).sub(p1);
+    d..setFrom(p2)..sub(p1);
     Rot.mulToOutUnsafe(bA._transform.q, _localXAxisA, axis);
 
     Vector2 vA = bA._linearVelocity;
@@ -219,7 +219,7 @@ class PrismaticJoint extends Joint {
     rB.scaleOrthogonalInto(wB, temp2);
     rA.scaleOrthogonalInto(wA, temp3);
 
-    temp2.add(vB).sub(vA).sub(temp3);
+    temp2..add(vB)..sub(vA)..sub(temp3);
     double speed = d.dot(temp) + axis.dot(temp2);
 
     pool.pushVec2(9);
@@ -402,9 +402,9 @@ class PrismaticJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA, d.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB, d.setFrom(_localAnchorB).sub(_localCenterB), rB);
-    d.setFrom(cB).sub(cA).add(rB).sub(rA);
+    Rot.mulToOutUnsafe(qA, d..setFrom(_localAnchorA)..sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB, d..setFrom(_localAnchorB)..sub(_localCenterB), rB);
+    d..setFrom(cB)..sub(cA)..add(rB)..sub(rA);
 
     double mA = _invMassA,
         mB = _invMassB;
@@ -414,7 +414,7 @@ class PrismaticJoint extends Joint {
     // Compute motor Jacobian and effective mass.
     {
       Rot.mulToOutUnsafe(qA, _localXAxisA, _axis);
-      temp.setFrom(d).add(rA);
+      temp..setFrom(d)..add(rA);
       _a1 = temp.cross(_axis);
       _a2 = rB.cross(_axis);
 
@@ -428,7 +428,7 @@ class PrismaticJoint extends Joint {
     {
       Rot.mulToOutUnsafe(qA, _localYAxisA, _perp);
 
-      temp.setFrom(d).add(rA);
+      temp..setFrom(d)..add(rA);
       _s1 = temp.cross(_perp);
       _s2 = rB.cross(_perp);
 
@@ -481,8 +481,8 @@ class PrismaticJoint extends Joint {
       _motorImpulse *= data.step.dtRatio;
 
       final Vector2 P = pool.popVec2();
-      temp.setFrom(_axis).scale(_motorImpulse + _impulse.z);
-      P.setFrom(_perp).scale(_impulse.x).add(temp);
+      temp..setFrom(_axis)..scale(_motorImpulse + _impulse.z);
+      P..setFrom(_perp)..scale(_impulse.x)..add(temp);
 
       double LA =
           _impulse.x * _s1 + _impulse.y + (_motorImpulse + _impulse.z) * _a1;
@@ -527,7 +527,7 @@ class PrismaticJoint extends Joint {
 
     // Solve linear motor constraint.
     if (_enableMotor && _limitState != LimitState.EQUAL) {
-      temp.setFrom(vB).sub(vA);
+      temp..setFrom(vB)..sub(vA);
       double Cdot = _axis.dot(temp) + _a2 * wB - _a1 * wA;
       double impulse = _motorMass * (_motorSpeed - Cdot);
       double oldImpulse = _motorImpulse;
@@ -537,7 +537,7 @@ class PrismaticJoint extends Joint {
       impulse = _motorImpulse - oldImpulse;
 
       final Vector2 P = pool.popVec2();
-      P.setFrom(_axis).scale(impulse);
+      P..setFrom(_axis)..scale(impulse);
       double LA = impulse * _a1;
       double LB = impulse * _a2;
 
@@ -553,7 +553,7 @@ class PrismaticJoint extends Joint {
     }
 
     final Vector2 Cdot1 = pool.popVec2();
-    temp.setFrom(vB).sub(vA);
+    temp..setFrom(vB)..sub(vA);
     Cdot1.x = _perp.dot(temp) + _s2 * wB - _s1 * wA;
     Cdot1.y = wB - wA;
     // System.out.println(Cdot1);
@@ -561,7 +561,7 @@ class PrismaticJoint extends Joint {
     if (_enableLimit && _limitState != LimitState.INACTIVE) {
       // Solve prismatic and limit constraint in block form.
       double Cdot2;
-      temp.setFrom(vB).sub(vA);
+      temp..setFrom(vB)..sub(vA);
       Cdot2 = _axis.dot(temp) + _a2 * wB - _a1 * wA;
 
       final Vector3 Cdot = pool.popVec3();
@@ -571,7 +571,7 @@ class PrismaticJoint extends Joint {
       final Vector3 df = pool.popVec3();
 
       f1.setFrom(_impulse);
-      Matrix3.solve(_K, df, Cdot.negate());
+      Matrix3.solve(_K, df, Cdot..negate());
 
       // Cdot.negateLocal(); not used anymore
       _impulse.add(df);
@@ -587,19 +587,19 @@ class PrismaticJoint extends Joint {
       final Vector2 b = pool.popVec2();
       final Vector2 f2r = pool.popVec2();
 
-      temp.setValues(_K.entry(0, 2), _K.entry(1, 2)).scale(_impulse.z - f1.z);
-      b.setFrom(Cdot1).negate().sub(temp);
+      temp..setValues(_K.entry(0, 2), _K.entry(1, 2))..scale(_impulse.z - f1.z);
+      b..setFrom(Cdot1)..negate()..sub(temp);
 
       Matrix3.solve2(_K, f2r, b);
       f2r.add(new Vector2(f1.x, f1.y));
       _impulse.x = f2r.x;
       _impulse.y = f2r.y;
 
-      df.setFrom(_impulse).sub(f1);
+      df..setFrom(_impulse)..sub(f1);
 
       final Vector2 P = pool.popVec2();
-      temp.setFrom(_axis).scale(df.z);
-      P.setFrom(_perp).scale(df.x).add(temp);
+      temp..setFrom(_axis)..scale(df.z);
+      P..setFrom(_perp)..scale(df.x)..add(temp);
 
       double LA = df.x * _s1 + df.y + df.z * _a1;
       double LB = df.x * _s2 + df.y + df.z * _a2;
@@ -617,14 +617,14 @@ class PrismaticJoint extends Joint {
     } else {
       // Limit is inactive, just solve the prismatic constraint in block form.
       final Vector2 df = pool.popVec2();
-      Matrix3.solve2(_K, df, Cdot1.negate());
+      Matrix3.solve2(_K, df, Cdot1..negate());
       Cdot1.negate();
 
       _impulse.x += df.x;
       _impulse.y += df.y;
 
       final Vector2 P = pool.popVec2();
-      P.setFrom(_perp).scale(df.x);
+      P..setFrom(_perp)..scale(df.x);
       double LA = df.x * _s1 + df.y;
       double LB = df.x * _s2 + df.y;
 
@@ -674,16 +674,18 @@ class PrismaticJoint extends Joint {
         iB = _invIB;
 
     // Compute fresh Jacobians
-    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), rB);
-    d.setFrom(cB).add(rB).sub(cA).sub(rA);
+    Rot.mulToOutUnsafe(qA,
+        temp..setFrom(_localAnchorA)..sub(_localCenterA), rA);
+    Rot.mulToOutUnsafe(qB,
+        temp..setFrom(_localAnchorB)..sub(_localCenterB), rB);
+    d..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
 
     Rot.mulToOutUnsafe(qA, _localXAxisA, axis);
-    double a1 = temp.setFrom(d).add(rA).cross(axis);
+    double a1 = (temp..setFrom(d)..add(rA)).cross(axis);
     double a2 = rB.cross(axis);
     Rot.mulToOutUnsafe(qA, _localYAxisA, perp);
 
-    double s1 = temp.setFrom(d).add(rA).cross(perp);
+    double s1 = (temp..setFrom(d)..add(rA)).cross(perp);
     double s2 = rB.cross(perp);
 
     C1.x = perp.dot(d);
@@ -740,7 +742,7 @@ class PrismaticJoint extends Joint {
       C.y = C1.y;
       C.z = C2;
 
-      Matrix3.solve(K, impulse, C.negate());
+      Matrix3.solve(K, impulse, C..negate());
       pool.pushVec3(1);
       pool.pushMat33(1);
     } else {
@@ -755,7 +757,7 @@ class PrismaticJoint extends Joint {
 
       K.setValues(k11, k12, k12, k22);
       // temp is impulse1
-      Matrix2.solve(K, temp, C1.negate());
+      Matrix2.solve(K, temp, C1..negate());
       C1.negate();
 
       impulse.x = temp.x;

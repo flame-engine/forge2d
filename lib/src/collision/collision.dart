@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2015, Daniel Murphy, Google
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *  * Redistributions of source code must retain the above copyright notice,
@@ -9,7 +9,7 @@
  *  * Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -53,7 +53,7 @@ class ClipVertex {
 
 /**
  * This is used for determining the state of contact points.
- * 
+ *
  * @author Daniel Murphy
  */
 enum PointState {
@@ -145,7 +145,7 @@ class Collision {
 
   /**
    * Determine if two generic shapes overlap.
-   * 
+   *
    * @param shapeA
    * @param shapeB
    * @param xfA
@@ -171,7 +171,7 @@ class Collision {
    * Compute the point states given two manifolds. The states pertain to the transition from
    * manifold1 to manifold2. So state1 is either persist or remove while state2 is either add or
    * persist.
-   * 
+   *
    * @param state1
    * @param state2
    * @param manifold1
@@ -216,7 +216,7 @@ class Collision {
 
   /**
    * Clipping for contact manifolds. Sutherland-Hodgman clipping.
-   * 
+   *
    * @param vOut
    * @param vIn
    * @param normal
@@ -274,7 +274,7 @@ class Collision {
 
   /**
    * Compute the collision manifold between two circles.
-   * 
+   *
    * @param manifold
    * @param circle1
    * @param xfA
@@ -320,7 +320,7 @@ class Collision {
 
   /**
    * Compute the collision manifold between a polygon and a circle.
-   * 
+   *
    * @param manifold
    * @param polygon
    * @param xfA
@@ -514,7 +514,7 @@ class Collision {
 
   /**
    * Find the max separation between poly1 and poly2 using edge normals from poly1.
-   * 
+   *
    * @param edgeIndex
    * @param poly1
    * @param xf1
@@ -642,7 +642,7 @@ class Collision {
 
   /**
    * Compute the collision manifold between two polygons.
-   * 
+   *
    * @param manifold
    * @param polygon1
    * @param xf1
@@ -818,11 +818,11 @@ class Collision {
 
     final Vector2 A = edgeA.vertex1;
     final Vector2 B = edgeA.vertex2;
-    _e.setFrom(B).sub(A);
+    _e..setFrom(B)..sub(A);
 
     // Barycentric coordinates
-    double u = _e.dot(_temp.setFrom(B).sub(_Q));
-    double v = _e.dot(_temp.setFrom(_Q).sub(A));
+    double u = _e.dot(_temp..setFrom(B)..sub(_Q));
+    double v = _e.dot(_temp..setFrom(_Q)..sub(A));
 
     double radius = edgeA.radius + circleB.radius;
 
@@ -833,7 +833,7 @@ class Collision {
     // Region A
     if (v <= 0.0) {
       final Vector2 P = A;
-      _d.setFrom(_Q).sub(P);
+      _d..setFrom(_Q)..sub(P);
       double dd = _d.dot(_d);
       if (dd > radius * radius) {
         return;
@@ -843,8 +843,8 @@ class Collision {
       if (edgeA.hasVertex0) {
         final Vector2 A1 = edgeA.vertex0;
         final Vector2 B1 = A;
-        _e1.setFrom(B1).sub(A1);
-        double u1 = _e1.dot(_temp.setFrom(B1).sub(_Q));
+        _e1..setFrom(B1)..sub(A1);
+        double u1 = _e1.dot(_temp..setFrom(B1)..sub(_Q));
 
         // Is the circle in Region AB of the previous edge?
         if (u1 > 0.0) {
@@ -867,7 +867,7 @@ class Collision {
     // Region B
     if (u <= 0.0) {
       Vector2 P = B;
-      _d.setFrom(_Q).sub(P);
+      _d..setFrom(_Q)..sub(P);
       double dd = _d.dot(_d);
       if (dd > radius * radius) {
         return;
@@ -878,8 +878,8 @@ class Collision {
         final Vector2 B2 = edgeA.vertex3;
         final Vector2 A2 = B;
         final Vector2 e2 = _e1;
-        e2.setFrom(B2).sub(A2);
-        double v2 = e2.dot(_temp.setFrom(_Q).sub(A2));
+        e2..setFrom(B2)..sub(A2);
+        double v2 = e2.dot(_temp..setFrom(_Q)..sub(A2));
 
         // Is the circle in Region AB of the next edge?
         if (v2 > 0.0) {
@@ -904,9 +904,9 @@ class Collision {
     assert(den > 0.0);
 
     // Vec2 P = (1.0f / den) * (u * A + v * B);
-    _P.setFrom(A).scale(u).add(_temp.setFrom(B).scale(v));
+    _P..setFrom(A)..scale(u)..add(_temp..setFrom(B)..scale(v));
     _P.scale(1.0 / den);
-    _d.setFrom(_Q).sub(_P);
+    _d..setFrom(_Q)..sub(_P);
     double dd = _d.dot(_d);
     if (dd > radius * radius) {
       return;
@@ -914,7 +914,7 @@ class Collision {
 
     _n.x = -_e.y;
     _n.y = _e.x;
-    if (_n.dot(_temp.setFrom(_Q).sub(A)) < 0.0) {
+    if (_n.dot(_temp..setFrom(_Q)..sub(A)) < 0.0) {
       _n.setValues(-_n.x, -_n.y);
     }
     _n.normalize();
@@ -998,10 +998,10 @@ class EPCollider {
     bool hasVertex0 = edgeA.hasVertex0;
     bool hasVertex3 = edgeA.hasVertex3;
 
-    _edge1.setFrom(v2).sub(v1);
+    _edge1..setFrom(v2)..sub(v1);
     _edge1.normalize();
     normal1.setValues(_edge1.y, -_edge1.x);
-    double offset1 = normal1.dot(_temp.setFrom(centroidB).sub(v1));
+    double offset1 = normal1.dot(_temp..setFrom(centroidB)..sub(v1));
     double offset0 = 0.0,
         offset2 = 0.0;
     bool convex1 = false,
@@ -1009,20 +1009,20 @@ class EPCollider {
 
     // Is there a preceding edge?
     if (hasVertex0) {
-      _edge0.setFrom(v1).sub(v0);
+      _edge0..setFrom(v1)..sub(v0);
       _edge0.normalize();
       normal0.setValues(_edge0.y, -_edge0.x);
       convex1 = _edge0.cross(_edge1) >= 0.0;
-      offset0 = normal0.dot(_temp.setFrom(centroidB).sub(v0));
+      offset0 = normal0.dot(_temp..setFrom(centroidB)..sub(v0));
     }
 
     // Is there a following edge?
     if (hasVertex3) {
-      _edge2.setFrom(v3).sub(v2);
+      _edge2..setFrom(v3)..sub(v2);
       _edge2.normalize();
       normal2.setValues(_edge2.y, -_edge2.x);
       convex2 = _edge1.cross(_edge2) > 0.0;
-      offset2 = normal2.dot(_temp.setFrom(centroidB).sub(v2));
+      offset2 = normal2.dot(_temp..setFrom(centroidB)..sub(v2));
     }
 
     // Determine front or back collision. Determine collision normal limits.
@@ -1273,7 +1273,7 @@ class EPCollider {
         _rf.i2 = 0;
         _rf.v1.setFrom(v2);
         _rf.v2.setFrom(v1);
-        _rf.normal.setFrom(normal1).negate();
+        _rf.normal..setFrom(normal1)..negate();
       }
     } else {
       manifold.type = ManifoldType.FACE_B;
@@ -1298,7 +1298,7 @@ class EPCollider {
     }
 
     _rf.sideNormal1.setValues(_rf.normal.y, -_rf.normal.x);
-    _rf.sideNormal2.setFrom(_rf.sideNormal1).negate();
+    _rf.sideNormal2..setFrom(_rf.sideNormal1)..negate();
     _rf.sideOffset1 = _rf.sideNormal1.dot(_rf.v1);
     _rf.sideOffset2 = _rf.sideNormal2.dot(_rf.v2);
 
@@ -1334,7 +1334,8 @@ class EPCollider {
     for (int i = 0; i < Settings.maxManifoldPoints; ++i) {
       double separation;
 
-      separation = _rf.normal.dot(_temp.setFrom(_clipPoints2[i].v).sub(_rf.v1));
+      separation =
+          _rf.normal.dot(_temp..setFrom(_clipPoints2[i].v)..sub(_rf.v1));
 
       if (separation <= radius) {
         ManifoldPoint cp = manifold.points[pointCount];
@@ -1414,12 +1415,12 @@ class EPCollider {
 
       // Adjacency
       if (_n.x * _perp.x + _n.y * _perp.y >= 0.0) {
-        if (_temp.setFrom(_n).sub(upperLimit).dot(normal) <
+        if ((_temp..setFrom(_n)..sub(upperLimit)).dot(normal) <
             -Settings.angularSlop) {
           continue;
         }
       } else {
-        if (_temp.setFrom(_n).sub(lowerLimit).dot(normal) <
+        if ((_temp..setFrom(_n)..sub(lowerLimit)).dot(normal) <
             -Settings.angularSlop) {
           continue;
         }

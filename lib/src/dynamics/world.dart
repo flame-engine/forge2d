@@ -1476,7 +1476,7 @@ class World {
               averageLinearVel = .98 * averageLinearVel + .02 * linVelLength;
             }
             liquidOffset.scale(liquidLength / averageLinearVel / 2);
-            circCenterMoved.setFrom(center).add(liquidOffset);
+            circCenterMoved..setFrom(center)..add(liquidOffset);
             center.sub(liquidOffset);
             debugDraw.drawSegment(center, circCenterMoved, liquidColor);
             return;
@@ -1932,8 +1932,8 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
     if (hit) {
       double fraction = _output.fraction;
       // Vec2 point = (1.0 - fraction) * input.p1 + fraction * input.p2;
-      _temp.setFrom(input.p2).scale(fraction);
-      _point.setFrom(input.p1).scale(1 - fraction).add(_temp);
+      _temp..setFrom(input.p2)..scale(fraction);
+      _point..setFrom(input.p1)..scale(1 - fraction)..add(_temp);
       return callback.reportFixture(fixture, _point, _output.normal, fraction);
     }
 

@@ -599,7 +599,7 @@ class Body {
     // Update center of mass velocity.
     // _linearVelocity += Cross(_angularVelocity, _sweep.c - oldCenter);
     final Vector2 temp = world.getPool().popVec2();
-    temp.setFrom(_sweep.c).sub(oldCenter);
+    (temp..setFrom(_sweep.c)).sub(oldCenter);
     temp.scaleOrthogonalInto(_angularVelocity, temp);
     _linearVelocity.add(temp);
 
@@ -644,7 +644,7 @@ class Body {
       f.getMassData(massData);
       _mass += massData.mass;
       // center += massData.mass * massData.center;
-      temp.setFrom(massData.center).scale(massData.mass);
+      (temp..setFrom(massData.center)).scale(massData.mass);
       localCenter.add(temp);
       _I += massData.I;
     }
@@ -679,7 +679,7 @@ class Body {
 
     // Update center of mass velocity.
     // _linearVelocity += Cross(_angularVelocity, _sweep.c - oldCenter);
-    temp.setFrom(_sweep.c).sub(oldCenter);
+    (temp..setFrom(_sweep.c)).sub(oldCenter);
 
     final Vector2 temp2 = oldCenter;
     temp.scaleOrthogonalInto(_angularVelocity, temp2);
@@ -1100,7 +1100,7 @@ class Body {
     _transform.q.setAngle(_sweep.a);
     // _xf.position = _sweep.c - Mul(_xf.R, _sweep.localCenter);
     Rot.mulToOutUnsafe(_transform.q, _sweep.localCenter, _transform.p);
-    _transform.p.scale(-1.0).add(_sweep.c);
+    (_transform.p..scale(-1.0)).add(_sweep.c);
   }
 
   String toString() {

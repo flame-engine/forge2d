@@ -147,7 +147,7 @@ class Transform {
   static Transform mulTrans(final Transform A, final Transform B) {
     Transform C = new Transform.zero();
     Rot.mulTransUnsafe(A.q, B.q, C.q);
-    _pool.setFrom(B.p).sub(A.p);
+    (_pool..setFrom(B.p)).sub(A.p);
     Rot.mulTransUnsafeVec2(A.q, _pool, C.p);
     return C;
   }
@@ -156,7 +156,7 @@ class Transform {
       final Transform A, final Transform B, final Transform out) {
     assert(out != A);
     Rot.mulTrans(A.q, B.q, out.q);
-    _pool.setFrom(B.p).sub(A.p);
+    (_pool..setFrom(B.p)).sub(A.p);
     Rot.mulTransVec2(A.q, _pool, out.p);
   }
 
@@ -165,7 +165,7 @@ class Transform {
     assert(out != A);
     assert(out != B);
     Rot.mulTransUnsafe(A.q, B.q, out.q);
-    _pool.setFrom(B.p).sub(A.p);
+    (_pool..setFrom(B.p)).sub(A.p);
     Rot.mulTransUnsafeVec2(A.q, _pool, out.p);
   }
 

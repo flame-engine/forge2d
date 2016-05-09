@@ -74,7 +74,7 @@ class FrictionJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.setFrom(_linearImpulse).scale(inv_dt);
+    argOut..setFrom(_linearImpulse)..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -129,8 +129,10 @@ class FrictionJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective mass matrix.
-    Rot.mulToOutUnsafe(qA, temp.setFrom(_localAnchorA).sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(qA,
+        temp..setFrom(_localAnchorA)..sub(_localCenterA), _rA);
+    Rot.mulToOutUnsafe(qB,
+        temp..setFrom(_localAnchorB)..sub(_localCenterB), _rB);
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -169,11 +171,11 @@ class FrictionJoint extends Joint {
       final Vector2 P = pool.popVec2();
       P.setFrom(_linearImpulse);
 
-      temp.setFrom(P).scale(mA);
+      temp..setFrom(P)..scale(mA);
       vA.sub(temp);
       wA -= iA * (_rA.cross(P) + _angularImpulse);
 
-      temp.setFrom(P).scale(mB);
+      temp..setFrom(P)..scale(mB);
       vB.add(temp);
       wB += iB * (_rB.cross(P) + _angularImpulse);
 
@@ -230,7 +232,7 @@ class FrictionJoint extends Joint {
 
       _rA.scaleOrthogonalInto(wA, temp);
       _rB.scaleOrthogonalInto(wB, Cdot);
-      Cdot.add(vB).sub(vA).sub(temp);
+      Cdot..add(vB)..sub(vA)..sub(temp);
 
       final Vector2 impulse = pool.popVec2();
       _linearMass.transformed(Cdot, impulse);
@@ -247,13 +249,13 @@ class FrictionJoint extends Joint {
         _linearImpulse.scale(maxImpulse);
       }
 
-      impulse.setFrom(_linearImpulse).sub(oldImpulse);
+      impulse..setFrom(_linearImpulse)..sub(oldImpulse);
 
-      temp.setFrom(impulse).scale(mA);
+      temp..setFrom(impulse)..scale(mA);
       vA.sub(temp);
       wA -= iA * _rA.cross(impulse);
 
-      temp.setFrom(impulse).scale(mB);
+      temp..setFrom(impulse)..scale(mB);
       vB.add(temp);
       wB += iB * _rB.cross(impulse);
     }

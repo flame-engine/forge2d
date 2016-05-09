@@ -44,12 +44,12 @@ class Tire {
   }
 
   void updateFriction() {
-    final Vector2 impulse = _lateralVelocity.scale(-_body.mass);
+    final Vector2 impulse = _lateralVelocity..scale(-_body.mass);
     if (impulse.length > _maxLateralImpulse) {
       impulse.scale(_maxLateralImpulse / impulse.length);
     }
     _body.applyLinearImpulse(
-        impulse.scale(_currentTraction), _body.worldCenter, true);
+        impulse..scale(_currentTraction), _body.worldCenter, true);
     _body.applyAngularImpulse(
         0.1 * _currentTraction * _body.getInertia() * (-_body.angularVelocity));
 
@@ -58,7 +58,7 @@ class Tire {
     currentForwardNormal.normalize();
     final double dragForceMagnitude = -2 * currentForwardSpeed;
     _body.applyForce(
-        currentForwardNormal.scale(_currentTraction * dragForceMagnitude),
+        currentForwardNormal..scale(_currentTraction * dragForceMagnitude),
         _body.worldCenter);
   }
 
@@ -85,7 +85,7 @@ class Tire {
     }
 
     if (force.abs() > 0) {
-      _body.applyForce(currentForwardNormal.scale(_currentTraction * force),
+      _body.applyForce(currentForwardNormal..scale(_currentTraction * force),
           _body.worldCenter);
     }
   }
@@ -117,13 +117,13 @@ class Tire {
   Vector2 get _lateralVelocity {
     final Vector2 currentRightNormal = _body.getWorldVector(_worldLeft);
     return currentRightNormal
-        .scale(currentRightNormal.dot(_body.linearVelocity));
+        ..scale(currentRightNormal.dot(_body.linearVelocity));
   }
 
   Vector2 get _forwardVelocity {
     final Vector2 currentForwardNormal = _body.getWorldVector(_worldUp);
     return currentForwardNormal
-        .scale(currentForwardNormal.dot(_body.linearVelocity));
+        ..scale(currentForwardNormal.dot(_body.linearVelocity));
   }
 
   Body _body;

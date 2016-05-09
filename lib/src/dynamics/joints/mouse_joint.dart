@@ -79,7 +79,7 @@ class MouseJoint extends Joint {
   }
 
   void getReactionForce(double invDt, Vector2 argOut) {
-    argOut.setFrom(_impulse).scale(invDt);
+    argOut..setFrom(_impulse)..scale(invDt);
   }
 
   double getReactionTorque(double invDt) {
@@ -137,7 +137,8 @@ class MouseJoint extends Joint {
     Vector2 temp = pool.popVec2();
 
     // Compute the effective mass matrix.
-    Rot.mulToOutUnsafe(qB, temp.setFrom(_localAnchorB).sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(qB,
+          temp..setFrom(_localAnchorB)..sub(_localCenterB), _rB);
 
     // K = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
     // = [1/m1+1/m2 0 ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]
@@ -152,7 +153,7 @@ class MouseJoint extends Joint {
     _mass.setFrom(K);
     _mass.invert();
 
-    _C.setFrom(cB).add(_rB).sub(_targetA);
+    _C..setFrom(cB)..add(_rB)..sub(_targetA);
     _C.scale(_beta);
 
     // Cheat with some damping
@@ -191,7 +192,7 @@ class MouseJoint extends Joint {
     final Vector2 impulse = pool.popVec2();
     final Vector2 temp = pool.popVec2();
 
-    temp.setFrom(_impulse).scale(_gamma).add(_C).add(Cdot).negate();
+    temp..setFrom(_impulse)..scale(_gamma)..add(_C)..add(Cdot)..negate();
     _mass.transformed(temp, impulse);
 
     Vector2 oldImpulse = temp;
@@ -201,7 +202,7 @@ class MouseJoint extends Joint {
     if (_impulse.length2 > maxImpulse * maxImpulse) {
       _impulse.scale(maxImpulse / _impulse.length);
     }
-    impulse.setFrom(_impulse).sub(oldImpulse);
+    impulse..setFrom(_impulse)..sub(oldImpulse);
 
     vB.x += _invMassB * impulse.x;
     vB.y += _invMassB * impulse.y;
