@@ -25,7 +25,6 @@
 part of box2d;
 
 abstract class IOrderedStack<E> {
-
   /**
    * Returns the next object in the pool
    * @return

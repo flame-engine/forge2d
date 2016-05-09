@@ -30,15 +30,12 @@ class ContactPositionConstraint {
   final Vector2 localPoint = new Vector2.zero();
   int indexA = 0;
   int indexB = 0;
-  double invMassA = 0.0,
-      invMassB = 0.0;
+  double invMassA = 0.0, invMassB = 0.0;
   final Vector2 localCenterA = new Vector2.zero();
   final Vector2 localCenterB = new Vector2.zero();
-  double invIA = 0.0,
-      invIB = 0.0;
+  double invIA = 0.0, invIB = 0.0;
   ManifoldType type;
-  double radiusA = 0.0,
-      radiusB = 0.0;
+  double radiusA = 0.0, radiusB = 0.0;
   int pointCount = 0;
 
   ContactPositionConstraint() {

@@ -117,13 +117,13 @@ class Tire {
   Vector2 get _lateralVelocity {
     final Vector2 currentRightNormal = _body.getWorldVector(_worldLeft);
     return currentRightNormal
-        ..scale(currentRightNormal.dot(_body.linearVelocity));
+      ..scale(currentRightNormal.dot(_body.linearVelocity));
   }
 
   Vector2 get _forwardVelocity {
     final Vector2 currentForwardNormal = _body.getWorldVector(_worldUp);
     return currentForwardNormal
-        ..scale(currentForwardNormal.dot(_body.linearVelocity));
+      ..scale(currentForwardNormal.dot(_body.linearVelocity));
   }
 
   Body _body;

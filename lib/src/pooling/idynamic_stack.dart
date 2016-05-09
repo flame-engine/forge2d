@@ -25,7 +25,6 @@
 part of box2d;
 
 abstract class IDynamicStack<E> {
-
   /**
    * Pops an item off the stack
    * @return

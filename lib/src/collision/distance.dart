@@ -99,7 +99,9 @@ class _Simplex {
       Vector2 wBLocal = proxyB.getVertex(v.indexB);
       Transform.mulToOutUnsafeVec2(transformA, wALocal, v.wA);
       Transform.mulToOutUnsafeVec2(transformB, wBLocal, v.wB);
-      v.w..setFrom(v.wB)..sub(v.wA);
+      v.w
+        ..setFrom(v.wB)
+        ..sub(v.wA);
       v.a = 0.0;
     }
 
@@ -125,7 +127,9 @@ class _Simplex {
       Vector2 wBLocal = proxyB.getVertex(0);
       Transform.mulToOutUnsafeVec2(transformA, wALocal, v.wA);
       Transform.mulToOutUnsafeVec2(transformB, wBLocal, v.wB);
-      v.w..setFrom(v.wB)..sub(v.wA);
+      v.w
+        ..setFrom(v.wB)
+        ..sub(v.wA);
       count = 1;
     }
   }
@@ -145,12 +149,18 @@ class _Simplex {
   void getSearchDirection(final Vector2 out) {
     switch (count) {
       case 1:
-        out..setFrom(v1.w)..negate();
+        out
+          ..setFrom(v1.w)
+          ..negate();
         return;
       case 2:
-        _e12..setFrom(v2.w)..sub(v1.w);
+        _e12
+          ..setFrom(v2.w)
+          ..sub(v1.w);
         // use out for a temp variable real quick
-        out..setFrom(v1.w)..negate();
+        out
+          ..setFrom(v1.w)
+          ..negate();
         double sgn = _e12.cross(out);
 
         if (sgn > 0.0) {
@@ -187,8 +197,13 @@ class _Simplex {
         out.setFrom(v1.w);
         return;
       case 2:
-        _case22..setFrom(v2.w)..scale(v2.a);
-        _case2..setFrom(v1.w)..scale(v1.a)..add(_case22);
+        _case22
+          ..setFrom(v2.w)
+          ..scale(v2.a);
+        _case2
+          ..setFrom(v1.w)
+          ..scale(v1.a)
+          ..add(_case22);
         out.setFrom(_case2);
         return;
       case 3:
@@ -217,19 +232,35 @@ class _Simplex {
         break;
 
       case 2:
-        _case2..setFrom(v1.wA)..scale(v1.a);
-        pA..setFrom(v2.wA)..scale(v2.a)..add(_case2);
+        _case2
+          ..setFrom(v1.wA)
+          ..scale(v1.a);
+        pA
+          ..setFrom(v2.wA)
+          ..scale(v2.a)
+          ..add(_case2);
         // v1.a * v1.wA + v2.a * v2.wA;
         // *pB = v1.a * v1.wB + v2.a * v2.wB;
-        _case2..setFrom(v1.wB)..scale(v1.a);
-        pB..setFrom(v2.wB)..scale(v2.a)..add(_case2);
+        _case2
+          ..setFrom(v1.wB)
+          ..scale(v1.a);
+        pB
+          ..setFrom(v2.wB)
+          ..scale(v2.a)
+          ..add(_case2);
 
         break;
 
       case 3:
-        pA..setFrom(v1.wA)..scale(v1.a);
-        _case3..setFrom(v2.wA)..scale(v2.a);
-        _case33..setFrom(v3.wA)..scale(v3.a);
+        pA
+          ..setFrom(v1.wA)
+          ..scale(v1.a);
+        _case3
+          ..setFrom(v2.wA)
+          ..scale(v2.a);
+        _case33
+          ..setFrom(v3.wA)
+          ..scale(v3.a);
         pA..add(_case3)..add(_case33);
         pB.setFrom(pA);
         // *pA = v1.a * v1.wA + v2.a * v2.wA + v3.a * v3.wA;
@@ -256,8 +287,12 @@ class _Simplex {
         return MathUtils.distance(v1.w, v2.w);
 
       case 3:
-        _case3..setFrom(v2.w)..sub(v1.w);
-        _case33..setFrom(v3.w)..sub(v1.w);
+        _case3
+          ..setFrom(v2.w)
+          ..sub(v1.w);
+        _case33
+          ..setFrom(v3.w)
+          ..sub(v1.w);
         // return Vec2.cross(v2.w - v1.w, v3.w - v1.w);
         return _case3.cross(_case33);
 
@@ -297,7 +332,9 @@ class _Simplex {
     // a2 = d12_2 / d12
     final Vector2 w1 = v1.w;
     final Vector2 w2 = v2.w;
-    _e12..setFrom(w2)..sub(w1);
+    _e12
+      ..setFrom(w2)
+      ..sub(w1);
 
     // w1 region
     double d12_2 = -w1.dot(_e12);
@@ -349,7 +386,9 @@ class _Simplex {
     // [1 1 ][a1] = [1]
     // [w1.e12 w2.e12][a2] = [0]
     // a3 = 0
-    _e12..setFrom(_w2)..sub(_w1);
+    _e12
+      ..setFrom(_w2)
+      ..sub(_w1);
     double w1e12 = _w1.dot(_e12);
     double w2e12 = _w2.dot(_e12);
     double d12_1 = w2e12;
@@ -359,7 +398,9 @@ class _Simplex {
     // [1 1 ][a1] = [1]
     // [w1.e13 w3.e13][a3] = [0]
     // a2 = 0
-    _e13..setFrom(_w3)..sub(_w1);
+    _e13
+      ..setFrom(_w3)
+      ..sub(_w1);
     double w1e13 = _w1.dot(_e13);
     double w3e13 = _w3.dot(_e13);
     double d13_1 = w3e13;
@@ -369,7 +410,9 @@ class _Simplex {
     // [1 1 ][a2] = [1]
     // [w2.e23 w3.e23][a3] = [0]
     // a1 = 0
-    _e23..setFrom(_w3)..sub(_w2);
+    _e23
+      ..setFrom(_w3)
+      ..sub(_w2);
     double w2e23 = _w2.dot(_e23);
     double w3e23 = _w3.dot(_e23);
     double d23_1 = w3e23;
@@ -621,7 +664,6 @@ class Distance {
     // Main iteration loop
     int iter = 0;
     while (iter < MAX_ITERS) {
-
       // Copy simplex so we can identify duplicates.
       saveCount = _simplex.count;
       for (int i = 0; i < saveCount; i++) {
@@ -733,17 +775,25 @@ class Distance {
         // Shapes are still no overlapped.
         // Move the witness points to the outer surface.
         output.distance -= rA + rB;
-        _normal..setFrom(output.pointB)..sub(output.pointA);
+        _normal
+          ..setFrom(output.pointB)
+          ..sub(output.pointA);
         _normal.normalize();
-        _temp..setFrom(_normal)..scale(rA);
+        _temp
+          ..setFrom(_normal)
+          ..scale(rA);
         output.pointA.add(_temp);
-        _temp..setFrom(_normal)..scale(rB);
+        _temp
+          ..setFrom(_normal)
+          ..scale(rB);
         output.pointB.sub(_temp);
       } else {
         // Shapes are overlapped when radii are considered.
         // Move the witness points to the middle.
         // Vec2 p = 0.5f * (output.pointA + output.pointB);
-        output.pointA..add(output.pointB)..scale(.5);
+        output.pointA
+          ..add(output.pointB)
+          ..scale(.5);
         output.pointB.setFrom(output.pointA);
         output.distance = 0.0;
       }

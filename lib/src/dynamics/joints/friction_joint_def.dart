@@ -30,7 +30,6 @@ part of box2d;
  * @author Daniel Murphy
  */
 class FrictionJointDef extends JointDef {
-
   /**
    * The local anchor point relative to bodyA's origin.
    */

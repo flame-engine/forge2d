@@ -36,8 +36,7 @@ class ChainShape extends Shape {
   int _count = 0;
   final Vector2 _prevVertex = new Vector2.zero(),
       _nextVertex = new Vector2.zero();
-  bool _hasPrevVertex = false,
-      _hasNextVertex = false;
+  bool _hasPrevVertex = false, _hasNextVertex = false;
 
   final EdgeShape _pool0 = new EdgeShape();
 

@@ -33,7 +33,6 @@ part of box2d;
  * @author Daniel
  */
 class JointEdge {
-
   /**
    * Provides quick access to the other body attached
    */

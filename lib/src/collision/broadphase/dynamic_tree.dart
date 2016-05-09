@@ -178,10 +178,7 @@ class DynamicTree implements BroadPhaseStrategy {
   void raycast(TreeRayCastCallback callback, RayCastInput input) {
     final Vector2 p1 = input.p1;
     final Vector2 p2 = input.p2;
-    double p1x = p1.x,
-        p2x = p2.x,
-        p1y = p1.y,
-        p2y = p2.y;
+    double p1x = p1.x, p2x = p2.x, p1y = p1.y, p2y = p2.y;
     double vx, vy;
     double rx, ry;
     double absVx, absVy;
@@ -402,8 +399,7 @@ class DynamicTree implements BroadPhaseStrategy {
     AABB b = new AABB();
     while (count > 1) {
       double minCost = double.MAX_FINITE;
-      int iMin = -1,
-          jMin = -1;
+      int iMin = -1, jMin = -1;
       for (int i = 0; i < count; ++i) {
         AABB aabbi = _nodes[nodes[i]].aabb;
 
@@ -855,8 +851,9 @@ class DynamicTree implements BroadPhaseStrategy {
         1.0, (height - spot) * 1.0 / height, (height - spot) * 1.0 / height);
     argDraw.drawPolygon(drawVecs, 4, _color);
 
-    argDraw.getViewportTranform().getWorldToScreen(
-        node.aabb.upperBound, _textVec);
+    argDraw
+        .getViewportTranform()
+        .getWorldToScreen(node.aabb.upperBound, _textVec);
     argDraw.drawStringXY(
         _textVec.x, _textVec.y, "$node.id-${(spot + 1)}/$height", _color);
 

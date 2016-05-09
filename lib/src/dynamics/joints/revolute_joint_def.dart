@@ -36,7 +36,6 @@ part of box2d;
  * </ul>
  */
 class RevoluteJointDef extends JointDef {
-
   /**
    * The local anchor point relative to body1's origin.
    */

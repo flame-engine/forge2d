@@ -60,6 +60,7 @@ class ViewportTransform {
     center.setValues(x, y);
     scale = s;
   }
+
   /**
    * The current translation is the difference in canvas units between the
    * actual center of the canvas and the currently specified center. For

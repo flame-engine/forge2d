@@ -30,7 +30,6 @@ part of box2d;
  * may nullify references to these joints and shapes.
  */
 abstract class DestructionListener {
-
   /**
    * Called when any joint is about to be destroyed due
    * to the destruction of one of its attached bodies.

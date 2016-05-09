@@ -221,8 +221,12 @@ class AABB {
     final Vector2 normal = argPool.popVec2();
 
     p.setFrom(input.p1);
-    d..setFrom(input.p2)..sub(input.p1);
-    absD..setFrom(d)..absolute();
+    d
+      ..setFrom(input.p2)
+      ..sub(input.p1);
+    absD
+      ..setFrom(d)
+      ..absolute();
 
     // x then y
     if (absD.x < Settings.EPSILON) {

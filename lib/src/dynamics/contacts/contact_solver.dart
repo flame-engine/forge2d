@@ -216,7 +216,6 @@ class ContactSolver {
   final WorldManifold worldManifold = new WorldManifold();
 
   void initializeVelocityConstraints() {
-
     // Warm start.
     for (int i = 0; i < _count; ++i) {
       ContactVelocityConstraint vc = _velocityConstraints[i];
@@ -561,16 +560,12 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              Vector2 dv1 = vB +
-                  MathUtils
-                      .crossDblVec2(wB, cp1rB)
-                      ..sub(vA)
-                      ..sub(MathUtils.crossDblVec2(wA, cp1rA));
-              Vector2 dv2 = vB +
-                  MathUtils
-                      .crossDblVec2(wB, cp2rB)
-                      ..sub(vA)
-                      ..sub(MathUtils.crossDblVec2(wA, cp2rA));
+              Vector2 dv1 = vB + MathUtils.crossDblVec2(wB, cp1rB)
+                ..sub(vA)
+                ..sub(MathUtils.crossDblVec2(wA, cp1rA));
+              Vector2 dv2 = vB + MathUtils.crossDblVec2(wB, cp2rB)
+                ..sub(vA)
+                ..sub(MathUtils.crossDblVec2(wA, cp2rA));
               // Compute normal velocity
               vn1 = dv1.dot(normal);
               vn2 = dv2.dot(normal);
@@ -640,11 +635,9 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              Vector2 dv1 = vB +
-                  MathUtils
-                      .crossDblVec2(wB, cp1rB)
-                      ..sub(vA)
-                      ..sub(MathUtils.crossDblVec2(wA, cp1rA));
+              Vector2 dv1 = vB + MathUtils.crossDblVec2(wB, cp1rB)
+                ..sub(vA)
+                ..sub(MathUtils.crossDblVec2(wA, cp1rA));
               // Compute normal velocity
               vn1 = dv1.dot(normal);
 
@@ -710,11 +703,9 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              Vector2 dv2 = vB +
-                  MathUtils
-                      .crossDblVec2(wB, cp2rB)
-                      ..sub(vA)
-                      ..sub(MathUtils.crossDblVec2(wA, cp2rA));
+              Vector2 dv2 = vB + MathUtils.crossDblVec2(wB, cp2rB)
+                ..sub(vA)
+                ..sub(MathUtils.crossDblVec2(wA, cp2rA));
               // Compute normal velocity
               vn2 = dv2.dot(normal);
 
@@ -895,7 +886,8 @@ class ContactSolver {
         // Prevent large corrections and allow slop.
         final double C = MathUtils.clampDouble(
             Settings.baumgarte * (separation + Settings.linearSlop),
-            -Settings.maxLinearCorrection, 0.0);
+            -Settings.maxLinearCorrection,
+            0.0);
 
         // Compute the effective mass.
         final double rnA = rAx * normal.y - rAy * normal.x;
@@ -995,7 +987,8 @@ class ContactSolver {
         // Prevent large corrections and allow slop.
         double C = MathUtils.clampDouble(
             Settings.toiBaugarte * (separation + Settings.linearSlop),
-            -Settings.maxLinearCorrection, 0.0);
+            -Settings.maxLinearCorrection,
+            0.0);
 
         // Compute the effective mass.
         double rnA = rAx * normal.y - rAy * normal.x;

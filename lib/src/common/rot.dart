@@ -25,8 +25,7 @@
 part of box2d.common;
 
 class Rot {
-  double s = 0.0,
-      c = 1.0; // sin and cos
+  double s = 0.0, c = 1.0; // sin and cos
 
   Rot();
 

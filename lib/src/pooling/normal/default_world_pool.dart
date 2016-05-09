@@ -34,26 +34,31 @@ class OrderedStackVec2 extends OrderedStack<Vector2> {
       : super(argStackSize, argContainerSize);
   Vector2 newInstance() => new Vector2.zero();
 }
+
 class OrderedStackVec3 extends OrderedStack<Vector3> {
   OrderedStackVec3(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
   Vector3 newInstance() => new Vector3.zero();
 }
+
 class OrderedStackMat22 extends OrderedStack<Matrix2> {
   OrderedStackMat22(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
   Matrix2 newInstance() => new Matrix2.zero();
 }
+
 class OrderedStackMat33 extends OrderedStack<Matrix3> {
   OrderedStackMat33(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
   Matrix3 newInstance() => new Matrix3.zero();
 }
+
 class OrderedStackAABB extends OrderedStack<AABB> {
   OrderedStackAABB(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
   AABB newInstance() => new AABB();
 }
+
 class OrderedStackRot extends OrderedStack<Rot> {
   OrderedStackRot(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
@@ -70,35 +75,41 @@ class MutableStackPolygonContact extends MutableStackWithPool<PolygonContact> {
       : super(pool, argInitSize);
   PolygonContact newInstance() => new PolygonContact(_pool);
 }
+
 class MutableStackCircleContact extends MutableStackWithPool<CircleContact> {
   MutableStackCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
   CircleContact newInstance() => new CircleContact(_pool);
 }
+
 class MutableStackPolygonAndCircleContact
     extends MutableStackWithPool<PolygonAndCircleContact> {
   MutableStackPolygonAndCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
   PolygonAndCircleContact newInstance() => new PolygonAndCircleContact(_pool);
 }
+
 class MutableStackEdgeAndCircleContact
     extends MutableStackWithPool<EdgeAndCircleContact> {
   MutableStackEdgeAndCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
   EdgeAndCircleContact newInstance() => new EdgeAndCircleContact(_pool);
 }
+
 class MutableStackEdgeAndPolygonContact
     extends MutableStackWithPool<EdgeAndPolygonContact> {
   MutableStackEdgeAndPolygonContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
   EdgeAndPolygonContact newInstance() => new EdgeAndPolygonContact(_pool);
 }
+
 class MutableStackChainAndCircleContact
     extends MutableStackWithPool<ChainAndCircleContact> {
   MutableStackChainAndCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
   ChainAndCircleContact newInstance() => new ChainAndCircleContact(_pool);
 }
+
 class MutableStackChainAndPolygonContact
     extends MutableStackWithPool<ChainAndPolygonContact> {
   MutableStackChainAndPolygonContact(IWorldPool pool, int argInitSize)

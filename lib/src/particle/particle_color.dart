@@ -35,12 +35,15 @@ class ParticleColor {
   void set r(int v) {
     _data[0] = v;
   }
+
   void set g(int v) {
     _data[1] = v;
   }
+
   void set b(int v) {
     _data[2] = v;
   }
+
   void set a(int v) {
     _data[3] = v;
   }

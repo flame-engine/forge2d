@@ -219,7 +219,6 @@ class Island {
   final ContactSolverDef _solverDef = new ContactSolverDef();
 
   void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
-
     // System.out.println("Solving Island");
     double h = step.dt;
 
@@ -263,7 +262,6 @@ class Island {
       _velocities[i].v.y = v.y;
       _velocities[i].w = w;
     }
-
 
     // Solver data
     _solverData.step = step;

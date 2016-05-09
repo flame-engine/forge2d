@@ -31,7 +31,6 @@ part of box2d;
  * 
  */
 class ContactEdge {
-
   /**
    * provides quick access to the other body attached.
    */

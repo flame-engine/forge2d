@@ -46,7 +46,6 @@ part of box2d;
  * @author Daniel Murphy
  */
 class RevoluteJoint extends Joint {
-
   // Solver shared
   final Vector2 _localAnchorA = new Vector2.zero();
   final Vector2 _localAnchorB = new Vector2.zero();
@@ -119,10 +118,18 @@ class RevoluteJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA,
-      temp..setFrom(_localAnchorA)..sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(qB,
-      temp..setFrom(_localAnchorB)..sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(
+        qA,
+        temp
+          ..setFrom(_localAnchorA)
+          ..sub(_localCenterA),
+        _rA);
+    Rot.mulToOutUnsafe(
+        qB,
+        temp
+          ..setFrom(_localAnchorB)
+          ..sub(_localCenterB),
+        _rB);
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -133,10 +140,8 @@ class RevoluteJoint extends Joint {
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
 
-    double mA = _invMassA,
-        mB = _invMassB;
-    double iA = _invIA,
-        iB = _invIB;
+    double mA = _invMassA, mB = _invMassB;
+    double iA = _invIA, iB = _invIB;
 
     bool fixedRotation = (iA + iB == 0.0);
 
@@ -220,10 +225,8 @@ class RevoluteJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    double mA = _invMassA,
-        mB = _invMassB;
-    double iA = _invIA,
-        iB = _invIB;
+    double mA = _invMassA, mB = _invMassB;
+    double iA = _invIA, iB = _invIB;
 
     bool fixedRotation = (iA + iB == 0.0);
 
@@ -254,7 +257,10 @@ class RevoluteJoint extends Joint {
       // Solve point-to-point constraint
       _rA.scaleOrthogonalInto(wA, temp);
       _rB.scaleOrthogonalInto(wB, Cdot1);
-      Cdot1..add(vB)..sub(vA)..sub(temp);
+      Cdot1
+        ..add(vB)
+        ..sub(vA)
+        ..sub(temp);
       double Cdot2 = wB - wA;
       Cdot.setValues(Cdot1.x, Cdot1.y, Cdot2);
 
@@ -268,9 +274,10 @@ class RevoluteJoint extends Joint {
         double newImpulse = _impulse.z + impulse.z;
         if (newImpulse < 0.0) {
           final Vector2 rhs = pool.popVec2();
-          rhs..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
-             ..scale(_impulse.z)
-             ..sub(Cdot1);
+          rhs
+            ..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
+            ..scale(_impulse.z)
+            ..sub(Cdot1);
           Matrix3.solve2(_mass, temp, rhs);
           impulse.x = temp.x;
           impulse.y = temp.y;
@@ -286,9 +293,10 @@ class RevoluteJoint extends Joint {
         double newImpulse = _impulse.z + impulse.z;
         if (newImpulse > 0.0) {
           final Vector2 rhs = pool.popVec2();
-          rhs..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
-             ..scale(_impulse.z)
-             ..sub(Cdot1);
+          rhs
+            ..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
+            ..scale(_impulse.z)
+            ..sub(Cdot1);
           Matrix3.solve2(_mass, temp, rhs);
           impulse.x = temp.x;
           impulse.y = temp.y;
@@ -316,14 +324,16 @@ class RevoluteJoint extends Joint {
       pool.pushVec2(2);
       pool.pushVec3(2);
     } else {
-
       // Solve point-to-point constraint
       Vector2 Cdot = pool.popVec2();
       Vector2 impulse = pool.popVec2();
 
       _rA.scaleOrthogonalInto(wA, temp);
       _rB.scaleOrthogonalInto(wB, Cdot);
-      Cdot..add(vB)..sub(vA)..sub(temp);
+      Cdot
+        ..add(vB)
+        ..sub(vA)
+        ..sub(temp);
       Matrix3.solve2(_mass, impulse, Cdot..negate());
 
       _impulse.x += impulse.x;
@@ -408,15 +418,27 @@ class RevoluteJoint extends Joint {
       final Vector2 C = pool.popVec2();
       final Vector2 impulse = pool.popVec2();
 
-      Rot.mulToOutUnsafe(qA, C..setFrom(_localAnchorA)..sub(_localCenterA), rA);
-      Rot.mulToOutUnsafe(qB, C..setFrom(_localAnchorB)..sub(_localCenterB), rB);
-      C..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
+      Rot.mulToOutUnsafe(
+          qA,
+          C
+            ..setFrom(_localAnchorA)
+            ..sub(_localCenterA),
+          rA);
+      Rot.mulToOutUnsafe(
+          qB,
+          C
+            ..setFrom(_localAnchorB)
+            ..sub(_localCenterB),
+          rB);
+      C
+        ..setFrom(cB)
+        ..add(rB)
+        ..sub(cA)
+        ..sub(rA);
       positionError = C.length;
 
-      double mA = _invMassA,
-          mB = _invMassB;
-      double iA = _invIA,
-          iB = _invIB;
+      double mA = _invMassA, mB = _invMassB;
+      double iA = _invIA, iB = _invIB;
 
       final Matrix2 K = pool.popMat22();
       double a11 = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
@@ -471,7 +493,9 @@ class RevoluteJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut..setValues(_impulse.x, _impulse.y)..scale(inv_dt);
+    argOut
+      ..setValues(_impulse.x, _impulse.y)
+      ..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {

@@ -32,12 +32,15 @@ class ContactID implements Comparable<ContactID> {
   void set indexA(v) {
     _data[0] = v;
   }
+
   void set indexB(v) {
     _data[1] = v;
   }
+
   void set typeA(v) {
     _data[2] = v;
   }
+
   void set typeB(v) {
     _data[3] = v;
     ;

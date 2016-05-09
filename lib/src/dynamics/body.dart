@@ -75,12 +75,10 @@ class Body {
   JointEdge _jointList;
   ContactEdge _contactList;
 
-  double _mass = 0.0,
-      _invMass = 0.0;
+  double _mass = 0.0, _invMass = 0.0;
 
   // Rotational inertia about the center of mass.
-  double _I = 0.0,
-      _invI = 0.0;
+  double _I = 0.0, _invI = 0.0;
 
   double _linearDamping = 0.0;
   double angularDamping = 0.0;

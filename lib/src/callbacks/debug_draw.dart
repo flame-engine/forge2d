@@ -31,7 +31,6 @@ part of box2d;
  * @author Daniel Murphy
  */
 abstract class DebugDraw {
-
   /** Draw shapes */
   static const int SHAPE_BIT = 1 << 1;
   /** Draw joint connections */

@@ -25,7 +25,6 @@
 part of box2d;
 
 abstract class BroadPhaseStrategy {
-
   /**
    * Create a proxy. Provide a tight fitting AABB and a userData pointer.
    * 

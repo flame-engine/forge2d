@@ -172,7 +172,6 @@ class TimeOfImpact {
       double t2 = tMax;
       int pushBackIter = 0;
       for (;;) {
-
         // Find the deepest point at t2. Store the witness point indices.
         double s2 = _fcn.findMinSeparation(_indexes, t2);
         // System.out.printf("s2: %f\n", s2);
@@ -216,8 +215,7 @@ class TimeOfImpact {
 
         // Compute 1D root of: f(x) - target = 0
         int rootIterCount = 0;
-        double a1 = t1,
-            a2 = t2;
+        double a1 = t1, a2 = t2;
         for (;;) {
           // Use a mix of the secant rule and bisection.
           double t;
@@ -313,8 +311,12 @@ class SeparationFunction {
 
   // TODO_ERIN might not need to return the separation
 
-  double initialize(final SimplexCache cache, final DistanceProxy proxyA_,
-      final Sweep sweepA_, final DistanceProxy proxyB_, final Sweep sweepB_,
+  double initialize(
+      final SimplexCache cache,
+      final DistanceProxy proxyA_,
+      final Sweep sweepA_,
+      final DistanceProxy proxyB_,
+      final Sweep sweepB_,
       double t1) {
     proxyA = proxyA_;
     proxyB = proxyB_;
@@ -342,7 +344,9 @@ class SeparationFunction {
       _localPointB.setFrom(proxyB.getVertex(cache.indexB[0]));
       Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
       Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
-      axis..setFrom(_pointB)..sub(_pointA);
+      axis
+        ..setFrom(_pointB)
+        ..sub(_pointA);
       double s = axis.normalize();
       return s;
     } else if (cache.indexA[0] == cache.indexA[1]) {
@@ -352,19 +356,26 @@ class SeparationFunction {
       _localPointB1.setFrom(proxyB.getVertex(cache.indexB[0]));
       _localPointB2.setFrom(proxyB.getVertex(cache.indexB[1]));
 
-      _temp..setFrom(_localPointB2)..sub(_localPointB1);
+      _temp
+        ..setFrom(_localPointB2)
+        ..sub(_localPointB1);
       _temp.scaleOrthogonalInto(-1.0, axis);
       axis.normalize();
 
       Rot.mulToOutUnsafe(_xfb.q, axis, _normal);
 
-      localPoint..setFrom(_localPointB1)..add(_localPointB2)..scale(.5);
+      localPoint
+        ..setFrom(_localPointB1)
+        ..add(_localPointB2)
+        ..scale(.5);
       Transform.mulToOutUnsafeVec2(_xfb, localPoint, _pointB);
 
       _localPointA.setFrom(proxyA.getVertex(cache.indexA[0]));
       Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
 
-      _temp..setFrom(_pointA)..sub(_pointB);
+      _temp
+        ..setFrom(_pointA)
+        ..sub(_pointB);
       double s = _temp.dot(_normal);
       if (s < 0.0) {
         axis.negate();
@@ -378,19 +389,26 @@ class SeparationFunction {
       _localPointA1.setFrom(proxyA.getVertex(cache.indexA[0]));
       _localPointA2.setFrom(proxyA.getVertex(cache.indexA[1]));
 
-      _temp..setFrom(_localPointA2)..sub(_localPointA1);
+      _temp
+        ..setFrom(_localPointA2)
+        ..sub(_localPointA1);
       _temp.scaleOrthogonalInto(-1.0, axis);
       axis.normalize();
 
       Rot.mulToOutUnsafe(_xfa.q, axis, _normal);
 
-      localPoint..setFrom(_localPointA1)..add(_localPointA2)..scale(.5);
+      localPoint
+        ..setFrom(_localPointA1)
+        ..add(_localPointA2)
+        ..scale(.5);
       Transform.mulToOutUnsafeVec2(_xfa, localPoint, _pointA);
 
       _localPointB.setFrom(proxyB.getVertex(cache.indexB[0]));
       Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
 
-      _temp..setFrom(_pointB)..sub(_pointA);
+      _temp
+        ..setFrom(_pointB)
+        ..sub(_pointA);
       double s = _temp.dot(_normal);
       if (s < 0.0) {
         axis.negate();

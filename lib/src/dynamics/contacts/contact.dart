@@ -30,7 +30,6 @@ part of box2d;
  *
  */
 abstract class Contact {
-
   // Flags stored in _flags
   // Used when crawling contact graph when forming islands.
   static final int ISLAND_FLAG = 0x0001;

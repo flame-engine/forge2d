@@ -127,11 +127,8 @@ void matrix3GetSymInverse33(Matrix3 m, Matrix3 M) {
     det = 1.0 / det;
   }
 
-  double a11 = m.entry(0, 0),
-      a12 = m.entry(0, 1),
-      a13 = m.entry(0, 2);
-  double a22 = m.entry(1, 1),
-      a23 = m.entry(1, 2);
+  double a11 = m.entry(0, 0), a12 = m.entry(0, 1), a13 = m.entry(0, 2);
+  double a22 = m.entry(1, 1), a23 = m.entry(1, 2);
   double a33 = m.entry(2, 2);
 
   double ex_x = det * (a22 * a33 - a23 * a23);

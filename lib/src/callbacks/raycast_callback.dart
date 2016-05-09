@@ -29,7 +29,6 @@ part of box2d;
  * See {@link World#raycast(RayCastCallback, Vec2, Vec2)}
  */
 abstract class RayCastCallback {
-
   /**
    * Called for each fixture found in the query. You control how the ray cast
    * proceeds by returning a float:

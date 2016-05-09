@@ -123,7 +123,10 @@ class PulleyJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut..setFrom(_uB)..scale(_impulse)..scale(inv_dt);
+    argOut
+      ..setFrom(_uB)
+      ..scale(_impulse)
+      ..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -190,13 +193,27 @@ class PulleyJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA,
-        temp..setFrom(_localAnchorA)..sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(qB,
-        temp..setFrom(_localAnchorB)..sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(
+        qA,
+        temp
+          ..setFrom(_localAnchorA)
+          ..sub(_localCenterA),
+        _rA);
+    Rot.mulToOutUnsafe(
+        qB,
+        temp
+          ..setFrom(_localAnchorB)
+          ..sub(_localCenterB),
+        _rB);
 
-    _uA..setFrom(cA)..add(_rA)..sub(_groundAnchorA);
-    _uB..setFrom(cB)..add(_rB)..sub(_groundAnchorB);
+    _uA
+      ..setFrom(cA)
+      ..add(_rA)
+      ..sub(_groundAnchorA);
+    _uB
+      ..setFrom(cB)
+      ..add(_rB)
+      ..sub(_groundAnchorB);
 
     double lengthA = _uA.length;
     double lengthB = _uB.length;
@@ -227,7 +244,6 @@ class PulleyJoint extends Joint {
     }
 
     if (data.step.warmStarting) {
-
       // Scale impulses to support variable time steps.
       _impulse *= data.step.dtRatio;
 
@@ -235,8 +251,12 @@ class PulleyJoint extends Joint {
       final Vector2 PA = pool.popVec2();
       final Vector2 PB = pool.popVec2();
 
-      PA..setFrom(_uA)..scale(-_impulse);
-      PB..setFrom(_uB)..scale(-_ratio * _impulse);
+      PA
+        ..setFrom(_uA)
+        ..scale(-_impulse);
+      PB
+        ..setFrom(_uB)
+        ..scale(-_ratio * _impulse);
 
       vA.x += _invMassA * PA.x;
       vA.y += _invMassA * PA.y;
@@ -278,8 +298,12 @@ class PulleyJoint extends Joint {
     double impulse = -_mass * Cdot;
     _impulse += impulse;
 
-    PA..setFrom(_uA)..scale(-impulse);
-    PB..setFrom(_uB)..scale(-_ratio * impulse);
+    PA
+      ..setFrom(_uA)
+      ..scale(-impulse);
+    PB
+      ..setFrom(_uB)
+      ..scale(-_ratio * impulse);
     vA.x += _invMassA * PA.x;
     vA.y += _invMassA * PA.y;
     wA += _invIA * _rA.cross(PA);
@@ -314,11 +338,27 @@ class PulleyJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOutUnsafe(qA, temp..setFrom(_localAnchorA)..sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB, temp..setFrom(_localAnchorB)..sub(_localCenterB), rB);
+    Rot.mulToOutUnsafe(
+        qA,
+        temp
+          ..setFrom(_localAnchorA)
+          ..sub(_localCenterA),
+        rA);
+    Rot.mulToOutUnsafe(
+        qB,
+        temp
+          ..setFrom(_localAnchorB)
+          ..sub(_localCenterB),
+        rB);
 
-    uA..setFrom(cA)..add(rA)..sub(_groundAnchorA);
-    uB..setFrom(cB)..add(rB)..sub(_groundAnchorB);
+    uA
+      ..setFrom(cA)
+      ..add(rA)
+      ..sub(_groundAnchorA);
+    uB
+      ..setFrom(cB)
+      ..add(rB)
+      ..sub(_groundAnchorB);
 
     double lengthA = uA.length;
     double lengthB = uB.length;
@@ -353,8 +393,12 @@ class PulleyJoint extends Joint {
 
     double impulse = -mass * C;
 
-    PA..setFrom(uA)..scale(-impulse);
-    PB..setFrom(uB)..scale(-_ratio * impulse);
+    PA
+      ..setFrom(uA)
+      ..scale(-impulse);
+    PB
+      ..setFrom(uB)
+      ..scale(-_ratio * impulse);
 
     cA.x += _invMassA * PA.x;
     cA.y += _invMassA * PA.y;

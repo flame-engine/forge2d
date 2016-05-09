@@ -38,7 +38,8 @@ class ChainAndPolygonContact extends Contact {
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     ChainShape chain = _fixtureA.getShape();
     chain.getChildEdge(_edge, _indexA);
-    _pool.getCollision().collideEdgeAndPolygon(
-        manifold, _edge, xfA, _fixtureB.getShape(), xfB);
+    _pool
+        .getCollision()
+        .collideEdgeAndPolygon(manifold, _edge, xfA, _fixtureB.getShape(), xfB);
   }
 }

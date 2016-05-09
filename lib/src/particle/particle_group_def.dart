@@ -29,7 +29,6 @@ part of box2d;
  * safely re-use these definitions.
  */
 class ParticleGroupDef {
-
   /** The particle-behavior flags. */
   int flags = 0;
 

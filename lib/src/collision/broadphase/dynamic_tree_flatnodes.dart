@@ -191,10 +191,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   void raycast(TreeRayCastCallback callback, RayCastInput input) {
     final Vector2 p1 = input.p1;
     final Vector2 p2 = input.p2;
-    double p1x = p1.x,
-        p2x = p2.x,
-        p1y = p1.y,
-        p2y = p2.y;
+    double p1x = p1.x, p2x = p2.x, p1y = p1.y, p2y = p2.y;
     double vx, vy;
     double rx, ry;
     double absVx, absVy;

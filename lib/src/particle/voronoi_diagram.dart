@@ -34,9 +34,7 @@ class VoronoiGenerator {
 }
 
 class VoronoiDiagramTask {
-  int _x = 0,
-      _y = 0,
-      _i = 0;
+  int _x = 0, _y = 0, _i = 0;
   VoronoiGenerator _generator;
 
   VoronoiDiagramTask.zero() {}
@@ -67,8 +65,7 @@ class VoronoiDiagramTaskMutableStack extends MutableStack<VoronoiDiagramTask> {
 class VoronoiDiagram {
   List<VoronoiGenerator> _generatorBuffer;
   int _generatorCount = 0;
-  int _countX = 0,
-      _countY = 0;
+  int _countX = 0, _countY = 0;
   // The diagram is an array of "pointers".
   List<VoronoiGenerator> _diagram;
 

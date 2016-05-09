@@ -42,10 +42,8 @@ class ContactVelocityConstraint {
   final Matrix2 K = new Matrix2.zero();
   int indexA = 0;
   int indexB = 0;
-  double invMassA = 0.0,
-      invMassB = 0.0;
-  double invIA = 0.0,
-      invIB = 0.0;
+  double invMassA = 0.0, invMassB = 0.0;
+  double invIA = 0.0, invIB = 0.0;
   double friction = 0.0;
   double restitution = 0.0;
   double tangentSpeed = 0.0;

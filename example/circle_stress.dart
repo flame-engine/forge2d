@@ -32,7 +32,6 @@ import 'demo.dart';
 const double _MY_VIEWPORT_SCALE = 4.0;
 
 class CircleStress extends Demo {
-
   /** The number of columns of balls in the pen. */
   static const int COLUMNS = 8;
 

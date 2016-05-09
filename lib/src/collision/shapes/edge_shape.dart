@@ -31,7 +31,6 @@ part of box2d;
  * @author Daniel
  */
 class EdgeShape extends Shape {
-
   /**
    * edge vertex 1
    */
@@ -49,8 +48,7 @@ class EdgeShape extends Shape {
    * optional adjacent vertex 2. Used for smooth collision
    */
   final Vector2 vertex3 = new Vector2.zero();
-  bool hasVertex0 = false,
-      hasVertex3 = false;
+  bool hasVertex0 = false, hasVertex3 = false;
 
   EdgeShape() : super(ShapeType.EDGE) {
     radius = Settings.polygonRadius;
@@ -221,7 +219,10 @@ class EdgeShape extends Shape {
 
   void computeMass(MassData massData, double density) {
     massData.mass = 0.0;
-    massData.center..setFrom(vertex1)..add(vertex2)..scale(0.5);
+    massData.center
+      ..setFrom(vertex1)
+      ..add(vertex2)
+      ..scale(0.5);
     massData.I = 0.0;
   }
 

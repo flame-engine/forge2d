@@ -124,9 +124,23 @@ class DistanceJoint extends Joint {
     qB.setAngle(aB);
 
     // use _u as temporary variable
-    Rot.mulToOutUnsafe(qA, _u..setFrom(_localAnchorA)..sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(qB, _u..setFrom(_localAnchorB)..sub(_localCenterB), _rB);
-    _u..setFrom(cB)..add(_rB)..sub(cA)..sub(_rA);
+    Rot.mulToOutUnsafe(
+        qA,
+        _u
+          ..setFrom(_localAnchorA)
+          ..sub(_localCenterA),
+        _rA);
+    Rot.mulToOutUnsafe(
+        qB,
+        _u
+          ..setFrom(_localAnchorB)
+          ..sub(_localCenterB),
+        _rB);
+    _u
+      ..setFrom(cB)
+      ..add(_rB)
+      ..sub(cA)
+      ..sub(_rA);
 
     pool.pushRot(2);
 
@@ -172,12 +186,13 @@ class DistanceJoint extends Joint {
       _bias = 0.0;
     }
     if (data.step.warmStarting) {
-
       // Scale the impulse to support a variable time step.
       _impulse *= data.step.dtRatio;
 
       Vector2 P = pool.popVec2();
-      P..setFrom(_u)..scale(_impulse);
+      P
+        ..setFrom(_u)
+        ..scale(_impulse);
 
       vA.x -= _invMassA * P.x;
       vA.y -= _invMassA * P.y;
@@ -252,9 +267,23 @@ class DistanceJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOutUnsafe(qA, u..setFrom(_localAnchorA)..sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB, u..setFrom(_localAnchorB)..sub(_localCenterB), rB);
-    u..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
+    Rot.mulToOutUnsafe(
+        qA,
+        u
+          ..setFrom(_localAnchorA)
+          ..sub(_localCenterA),
+        rA);
+    Rot.mulToOutUnsafe(
+        qB,
+        u
+          ..setFrom(_localAnchorB)
+          ..sub(_localCenterB),
+        rB);
+    u
+      ..setFrom(cB)
+      ..add(rB)
+      ..sub(cA)
+      ..sub(rA);
 
     double length = u.normalize();
     double C = length - _length;

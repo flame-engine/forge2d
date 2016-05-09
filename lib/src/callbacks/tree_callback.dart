@@ -29,7 +29,6 @@ part of box2d;
  *
  */
 abstract class TreeCallback {
-
   /**
    * Callback from a query request.  
    * @param proxyId the id of the proxy

@@ -170,8 +170,12 @@ class PolygonShape extends Shape {
           continue;
         }
 
-        Vector2 r = _pool1..setFrom(ps[ie])..sub(ps[hull[m]]);
-        Vector2 v = _pool2..setFrom(ps[j])..sub(ps[hull[m]]);
+        Vector2 r = _pool1
+          ..setFrom(ps[ie])
+          ..sub(ps[hull[m]]);
+        Vector2 v = _pool2
+          ..setFrom(ps[j])
+          ..sub(ps[hull[m]]);
         double c = r.cross(v);
         if (c < 0.0) {
           ie = j;
@@ -207,7 +211,9 @@ class PolygonShape extends Shape {
     for (int i = 0; i < count; ++i) {
       final int i1 = i;
       final int i2 = i + 1 < count ? i + 1 : 0;
-      edge..setFrom(vertices[i2])..sub(vertices[i1]);
+      edge
+        ..setFrom(vertices[i2])
+        ..sub(vertices[i1]);
 
       assert(edge.length2 > Settings.EPSILON * Settings.EPSILON);
       edge.scaleOrthogonalInto(-1.0, normals[i]);
@@ -276,11 +282,18 @@ class PolygonShape extends Shape {
     count = 2;
     vertices[0].setFrom(v1);
     vertices[1].setFrom(v2);
-    centroid..setFrom(v1)..add(v2)..scale(0.5);
-    normals[0]..setFrom(v2)..sub(v1);
+    centroid
+      ..setFrom(v1)
+      ..add(v2)
+      ..scale(0.5);
+    normals[0]
+      ..setFrom(v2)
+      ..sub(v1);
     normals[0].scaleOrthogonalInto(-1.0, normals[0]);
     normals[0].normalize();
-    normals[1]..setFrom(normals[0])..negate();
+    normals[1]
+      ..setFrom(normals[0])
+      ..negate();
   }
 
   int getChildCount() {
@@ -446,8 +459,7 @@ class PolygonShape extends Shape {
     final double dx = p2x - p1x;
     final double dy = p2y - p1y;
 
-    double lower = 0.0,
-        upper = input.maxFraction;
+    double lower = 0.0, upper = input.maxFraction;
 
     int index = -1;
 
@@ -526,8 +538,12 @@ class PolygonShape extends Shape {
       final Vector2 p2 = vs[i];
       final Vector2 p3 = i + 1 < count ? vs[i + 1] : vs[0];
 
-      e1..setFrom(p2)..sub(p1);
-      e2..setFrom(p3)..sub(p1);
+      e1
+        ..setFrom(p2)
+        ..sub(p1);
+      e2
+        ..setFrom(p3)
+        ..sub(p1);
 
       final double D = e1.cross(e2);
 
@@ -535,7 +551,11 @@ class PolygonShape extends Shape {
       area += triangleArea;
 
       // Area weighted centroid
-      e1..setFrom(p1)..add(p2)..add(p3)..scale(triangleArea * inv3);
+      e1
+        ..setFrom(p1)
+        ..add(p2)
+        ..add(p3)
+        ..scale(triangleArea * inv3);
       out.add(e1);
     }
 
@@ -593,9 +613,13 @@ class PolygonShape extends Shape {
 
     for (int i = 0; i < count; ++i) {
       // Triangle vertices.
-      e1..setFrom(vertices[i])..sub(s);
-      e2..setFrom(s)..negate()..add(
-          i + 1 < count ? vertices[i + 1] : vertices[0]);
+      e1
+        ..setFrom(vertices[i])
+        ..sub(s);
+      e2
+        ..setFrom(s)
+        ..negate()
+        ..add(i + 1 < count ? vertices[i + 1] : vertices[0]);
 
       final double D = e1.cross(e2);
 
@@ -606,10 +630,8 @@ class PolygonShape extends Shape {
       center.x += triangleArea * k_inv3 * (e1.x + e2.x);
       center.y += triangleArea * k_inv3 * (e1.y + e2.y);
 
-      final double ex1 = e1.x,
-          ey1 = e1.y;
-      final double ex2 = e2.x,
-          ey2 = e2.y;
+      final double ex1 = e1.x, ey1 = e1.y;
+      final double ex2 = e2.x, ey2 = e2.y;
 
       double intx2 = ex1 * ex1 + ex2 * ex1 + ex2 * ex2;
       double inty2 = ey1 * ey1 + ey2 * ey1 + ey2 * ey2;
@@ -623,7 +645,9 @@ class PolygonShape extends Shape {
     // Center of mass
     assert(area > Settings.EPSILON);
     center.scale(1.0 / area);
-    massData.center..setFrom(center)..add(s);
+    massData.center
+      ..setFrom(center)
+      ..add(s);
 
     // Inertia tensor relative to the local origin (point s)
     massData.I = I * density;
@@ -642,14 +666,18 @@ class PolygonShape extends Shape {
       int i1 = i;
       int i2 = i < count - 1 ? i1 + 1 : 0;
       Vector2 p = vertices[i1];
-      Vector2 e = _pool1..setFrom(vertices[i2])..sub(p);
+      Vector2 e = _pool1
+        ..setFrom(vertices[i2])
+        ..sub(p);
 
       for (int j = 0; j < count; ++j) {
         if (j == i1 || j == i2) {
           continue;
         }
 
-        Vector2 v = _pool2..setFrom(vertices[j])..sub(p);
+        Vector2 v = _pool2
+          ..setFrom(vertices[j])
+          ..sub(p);
         double c = e.cross(v);
         if (c < 0.0) {
           return false;

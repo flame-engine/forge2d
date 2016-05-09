@@ -30,15 +30,12 @@ part of box2d.common;
  * must interpolate the center of mass position.
  */
 class Sweep {
-
   /** Local center of mass position */
   final Vector2 localCenter = new Vector2.zero();
   /** Center world positions */
-  final Vector2 c0 = new Vector2.zero(),
-      c = new Vector2.zero();
+  final Vector2 c0 = new Vector2.zero(), c = new Vector2.zero();
   /** World angles */
-  double a0 = 0.0,
-      a = 0.0;
+  double a0 = 0.0, a = 0.0;
 
   /** Fraction of the current time step in the range [0,1] c0 and a0 are the positions at alpha0. */
   double alpha0 = 0.0;

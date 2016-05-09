@@ -30,7 +30,6 @@ part of box2d;
 
  */
 class BodyDef {
-
   /**
    * The body type: static, kinematic, or dynamic. Note: if a dynamic body would have zero mass, the
    * mass is set to one.

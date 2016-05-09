@@ -43,7 +43,6 @@ part of box2d;
  * @author dmurph
  */
 class MotorJoint extends Joint {
-
   // Solver shared
   final Vector2 _linearOffset = new Vector2.zero();
   double _angularOffset = 0.0;
@@ -89,7 +88,9 @@ class MotorJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 out) {
-    out..setFrom(_linearImpulse)..scale(inv_dt);
+    out
+      ..setFrom(_linearImpulse)
+      ..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -215,10 +216,8 @@ class MotorJoint extends Joint {
     // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
-    double mA = _invMassA,
-        mB = _invMassB;
-    double iA = _invIA,
-        iB = _invIB;
+    double mA = _invMassA, mB = _invMassB;
+    double iA = _invIA, iB = _invIB;
 
     double a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
     double a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
@@ -274,10 +273,8 @@ class MotorJoint extends Joint {
     final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    double mA = _invMassA,
-        mB = _invMassB;
-    double iA = _invIA,
-        iB = _invIB;
+    double mA = _invMassA, mB = _invMassB;
+    double iA = _invIA, iB = _invIB;
 
     double h = data.step.dt;
     double inv_h = data.step.inv_dt;

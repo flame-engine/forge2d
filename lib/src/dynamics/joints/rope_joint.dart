@@ -91,12 +91,24 @@ class RopeJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA,
-        temp..setFrom(_localAnchorA)..sub(_localCenterA), _rA);
-    Rot.mulToOutUnsafe(qB,
-        temp..setFrom(_localAnchorB)..sub(_localCenterB), _rB);
+    Rot.mulToOutUnsafe(
+        qA,
+        temp
+          ..setFrom(_localAnchorA)
+          ..sub(_localCenterA),
+        _rA);
+    Rot.mulToOutUnsafe(
+        qB,
+        temp
+          ..setFrom(_localAnchorB)
+          ..sub(_localCenterB),
+        _rB);
 
-    _u..setFrom(cB)..add(_rB)..sub(cA)..sub(_rA);
+    _u
+      ..setFrom(cB)
+      ..add(_rB)
+      ..sub(cA)
+      ..sub(_rA);
 
     _length = _u.length;
 
@@ -167,7 +179,9 @@ class RopeJoint extends Joint {
     vpB.add(vB);
 
     double C = _length - _maxLength;
-    double Cdot = _u.dot(temp..setFrom(vpB)..sub(vpA));
+    double Cdot = _u.dot(temp
+      ..setFrom(vpB)
+      ..sub(vpA));
 
     // Predictive constraint.
     if (C < 0.0) {
@@ -213,11 +227,23 @@ class RopeJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(qA,
-      temp..setFrom(_localAnchorA)..sub(_localCenterA), rA);
-    Rot.mulToOutUnsafe(qB,
-      temp..setFrom(_localAnchorB)..sub(_localCenterB), rB);
-    u..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
+    Rot.mulToOutUnsafe(
+        qA,
+        temp
+          ..setFrom(_localAnchorA)
+          ..sub(_localCenterA),
+        rA);
+    Rot.mulToOutUnsafe(
+        qB,
+        temp
+          ..setFrom(_localAnchorB)
+          ..sub(_localCenterB),
+        rB);
+    u
+      ..setFrom(cB)
+      ..add(rB)
+      ..sub(cA)
+      ..sub(rA);
 
     double length = u.normalize();
     double C = length - _maxLength;
@@ -255,7 +281,10 @@ class RopeJoint extends Joint {
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut..setFrom(_u)..scale(inv_dt)..scale(_impulse);
+    argOut
+      ..setFrom(_u)
+      ..scale(inv_dt)
+      ..scale(_impulse);
   }
 
   double getReactionTorque(double inv_dt) {

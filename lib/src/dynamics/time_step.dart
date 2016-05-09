@@ -28,7 +28,6 @@ part of box2d;
  * This is an internal structure.
  */
 class TimeStep {
-
   /** time step */
   double dt = 0.0;
 

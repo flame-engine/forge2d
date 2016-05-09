@@ -37,7 +37,6 @@ part of box2d;
  *
  */
 abstract class ContactListener {
-
   /**
    * Called when two fixtures begin to touch.
    * @param contact

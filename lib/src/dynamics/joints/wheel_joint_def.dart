@@ -34,7 +34,6 @@ part of box2d;
  * @author Daniel Murphy
  */
 class WheelJointDef extends JointDef {
-
   /**
    * The local anchor point relative to body1's origin.
    */

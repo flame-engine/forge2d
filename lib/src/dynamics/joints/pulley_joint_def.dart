@@ -31,7 +31,6 @@ part of box2d;
  * @author Daniel Murphy
  */
 class PulleyJointDef extends JointDef {
-
   /**
    * The first ground anchor in world coordinates. This point never moves.
    */

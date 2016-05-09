@@ -805,8 +805,10 @@ class World {
    * @param point1 the ray starting point
    * @param point2 the ray ending point
    */
-  void raycastTwoCallBacks(RayCastCallback callback,
-      ParticleRaycastCallback particleCallback, Vector2 point1,
+  void raycastTwoCallBacks(
+      RayCastCallback callback,
+      ParticleRaycastCallback particleCallback,
+      Vector2 point1,
       Vector2 point2) {
     wrcwrapper.broadPhase = _contactManager.broadPhase;
     wrcwrapper.callback = callback;
@@ -1476,7 +1478,9 @@ class World {
               averageLinearVel = .98 * averageLinearVel + .02 * linVelLength;
             }
             liquidOffset.scale(liquidLength / averageLinearVel / 2);
-            circCenterMoved..setFrom(center)..add(liquidOffset);
+            circCenterMoved
+              ..setFrom(center)
+              ..add(liquidOffset);
             center.sub(liquidOffset);
             debugDraw.drawSegment(center, circCenterMoved, liquidColor);
             return;
@@ -1916,7 +1920,6 @@ class WorldQueryWrapper implements TreeCallback {
 }
 
 class WorldRayCastWrapper implements TreeRayCastCallback {
-
   // djm pooling
   final RayCastOutput _output = new RayCastOutput();
   final Vector2 _temp = new Vector2.zero();
@@ -1932,8 +1935,13 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
     if (hit) {
       double fraction = _output.fraction;
       // Vec2 point = (1.0 - fraction) * input.p1 + fraction * input.p2;
-      _temp..setFrom(input.p2)..scale(fraction);
-      _point..setFrom(input.p1)..scale(1 - fraction)..add(_temp);
+      _temp
+        ..setFrom(input.p2)
+        ..scale(fraction);
+      _point
+        ..setFrom(input.p1)
+        ..scale(1 - fraction)
+        ..add(_temp);
       return callback.reportFixture(fixture, _point, _output.normal, fraction);
     }
 

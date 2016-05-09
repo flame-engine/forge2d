@@ -31,7 +31,6 @@ part of box2d;
  * @author Daniel Murphy
  */
 class RopeJointDef extends JointDef {
-
   /**
    * The local anchor point relative to bodyA's origin.
    */

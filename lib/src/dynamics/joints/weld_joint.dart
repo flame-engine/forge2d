@@ -136,9 +136,13 @@ class WeldJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    temp..setFrom(_localAnchorA)..sub(_localCenterA);
+    temp
+      ..setFrom(_localAnchorA)
+      ..sub(_localCenterA);
     Rot.mulToOutUnsafe(qA, temp, _rA);
-    temp..setFrom(_localAnchorB)..sub(_localCenterB);
+    temp
+      ..setFrom(_localAnchorB)
+      ..sub(_localCenterB);
     Rot.mulToOutUnsafe(qB, temp, _rB);
 
     // J = [-I -r1_skew I r2_skew]
@@ -150,10 +154,8 @@ class WeldJoint extends Joint {
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
 
-    double mA = _invMassA,
-        mB = _invMassB;
-    double iA = _invIA,
-        iB = _invIB;
+    double mA = _invMassA, mB = _invMassB;
+    double iA = _invIA, iB = _invIB;
 
     final Matrix3 K = pool.popMat33();
 
@@ -235,10 +237,8 @@ class WeldJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    double mA = _invMassA,
-        mB = _invMassB;
-    double iA = _invIA,
-        iB = _invIB;
+    double mA = _invMassA, mB = _invMassB;
+    double iA = _invIA, iB = _invIB;
 
     final Vector2 Cdot1 = pool.popVec2();
     final Vector2 P = pool.popVec2();
@@ -255,7 +255,10 @@ class WeldJoint extends Joint {
 
       _rB.scaleOrthogonalInto(wB, Cdot1);
       _rA.scaleOrthogonalInto(wA, temp);
-      Cdot1..add(vB)..sub(vA)..sub(temp);
+      Cdot1
+        ..add(vB)
+        ..sub(vA)
+        ..sub(temp);
 
       final Vector2 impulse1 = P;
       MathUtils.matrix3Mul22ToOutUnsafe(_mass, Cdot1, impulse1);
@@ -274,7 +277,10 @@ class WeldJoint extends Joint {
     } else {
       _rA.scaleOrthogonalInto(wA, temp);
       _rB.scaleOrthogonalInto(wB, Cdot1);
-      Cdot1..add(vB)..sub(vA)..sub(temp);
+      Cdot1
+        ..add(vB)
+        ..sub(vA)
+        ..sub(temp);
       double Cdot2 = wB - wA;
 
       final Vector3 Cdot = pool.popVec3();
@@ -321,10 +327,8 @@ class WeldJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    double mA = _invMassA,
-        mB = _invMassB;
-    double iA = _invIA,
-        iB = _invIB;
+    double mA = _invMassA, mB = _invMassB;
+    double iA = _invIA, iB = _invIB;
 
     temp.setFrom(_localAnchorA);
     temp.sub(_localCenterA);
@@ -351,7 +355,11 @@ class WeldJoint extends Joint {
     K.setValues(ex_x, ex_y, ex_z, ey_x, ey_y, ey_z, ez_x, ez_y, ez_z);
 
     if (_frequencyHz > 0.0) {
-      C1..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
+      C1
+        ..setFrom(cB)
+        ..add(rB)
+        ..sub(cA)
+        ..sub(rA);
 
       positionError = C1.length;
       angularError = 0.0;
@@ -367,7 +375,11 @@ class WeldJoint extends Joint {
       cB.y += mB * P.y;
       aB += iB * rB.cross(P);
     } else {
-      C1..setFrom(cB)..add(rB)..sub(cA)..sub(rA);
+      C1
+        ..setFrom(cB)
+        ..add(rB)
+        ..sub(cA)
+        ..sub(rA);
       double C2 = aB - aA - _referenceAngle;
 
       positionError = C1.length;

@@ -47,18 +47,13 @@ class PsPair {
 
 /** Connection between three particles */
 class PsTriad {
-  int indexA = 0,
-      indexB = 0,
-      indexC = 0;
+  int indexA = 0, indexB = 0, indexC = 0;
   int flags = 0;
   double strength = 0.0;
   final Vector2 pa = new Vector2.zero(),
       pb = new Vector2.zero(),
       pc = new Vector2.zero();
-  double ka = 0.0,
-      kb = 0.0,
-      kc = 0.0,
-      s = 0.0;
+  double ka = 0.0, kb = 0.0, kc = 0.0, s = 0.0;
 }
 
 /** Used for detecting particle contacts */
@@ -81,9 +76,7 @@ class PsProxy implements Comparable<PsProxy> {
 }
 
 class NewIndices {
-  int start = 0,
-      mid = 0,
-      end = 0;
+  int start = 0, mid = 0, end = 0;
 
   int getIndex(final int i) {
     if (i < start) {
@@ -158,13 +151,15 @@ class UpdateBodyContactsCallback implements QueryCallback {
           aabb.upperBound.x + system.particleDiameter;
       final double aabbupperBoundy =
           aabb.upperBound.y + system.particleDiameter;
-      int firstProxy = ParticleSystem._lowerBound(system.proxyBuffer,
-          system.proxyCount, ParticleSystem.computeTag(
-              system.inverseDiameter * aabblowerBoundx,
+      int firstProxy = ParticleSystem._lowerBound(
+          system.proxyBuffer,
+          system.proxyCount,
+          ParticleSystem.computeTag(system.inverseDiameter * aabblowerBoundx,
               system.inverseDiameter * aabblowerBoundy));
-      int lastProxy = ParticleSystem._upperBound(system.proxyBuffer,
-          system.proxyCount, ParticleSystem.computeTag(
-              system.inverseDiameter * aabbupperBoundx,
+      int lastProxy = ParticleSystem._upperBound(
+          system.proxyBuffer,
+          system.proxyCount,
+          ParticleSystem.computeTag(system.inverseDiameter * aabbupperBoundx,
               system.inverseDiameter * aabbupperBoundy));
 
       for (int proxy = firstProxy; proxy != lastProxy; ++proxy) {
@@ -191,7 +186,9 @@ class UpdateBodyContactsCallback implements QueryCallback {
                   ? 2 * system.bodyContactCount
                   : Settings.minParticleBufferCapacity;
               system.bodyContactBuffer = BufferUtils.reallocateBufferWithAlloc(
-                  system.bodyContactBuffer, oldCapacity, newCapacity,
+                  system.bodyContactBuffer,
+                  oldCapacity,
+                  newCapacity,
                   allocParticleBodyContact);
               system.bodyContactCapacity = newCapacity;
             }
@@ -359,13 +356,15 @@ class SolveCollisionCallback implements QueryCallback {
           aabb.upperBound.x + system.particleDiameter;
       final double aabbupperBoundy =
           aabb.upperBound.y + system.particleDiameter;
-      int firstProxy = ParticleSystem._lowerBound(system.proxyBuffer,
-          system.proxyCount, ParticleSystem.computeTag(
-              system.inverseDiameter * aabblowerBoundx,
+      int firstProxy = ParticleSystem._lowerBound(
+          system.proxyBuffer,
+          system.proxyCount,
+          ParticleSystem.computeTag(system.inverseDiameter * aabblowerBoundx,
               system.inverseDiameter * aabblowerBoundy));
-      int lastProxy = ParticleSystem._upperBound(system.proxyBuffer,
-          system.proxyCount, ParticleSystem.computeTag(
-              system.inverseDiameter * aabbupperBoundx,
+      int lastProxy = ParticleSystem._upperBound(
+          system.proxyBuffer,
+          system.proxyCount,
+          ParticleSystem.computeTag(system.inverseDiameter * aabbupperBoundx,
               system.inverseDiameter * aabbupperBoundy));
 
       for (int proxy = firstProxy; proxy != lastProxy; ++proxy) {
@@ -573,7 +572,11 @@ class ParticleSystem {
         accumulationBuffer = BufferUtils.reallocateBufferFloat64Deferred(
             accumulationBuffer, 0, internalAllocatedCapacity, capacity, false);
         accumulation2Buffer = BufferUtils.reallocateBufferWithAllocDeferred(
-            accumulation2Buffer, 0, internalAllocatedCapacity, capacity, true,
+            accumulation2Buffer,
+            0,
+            internalAllocatedCapacity,
+            capacity,
+            true,
             allocVec2);
         depthBuffer = BufferUtils.reallocateBufferFloat64Deferred(
             depthBuffer, 0, internalAllocatedCapacity, capacity, true);
@@ -624,8 +627,12 @@ class ParticleSystem {
   static List reallocateBuffer(
       ParticleBuffer buffer, int oldCapacity, int newCapacity, bool deferred) {
     assert(newCapacity > oldCapacity);
-    return BufferUtils.reallocateBufferWithAllocDeferred(buffer.data,
-        buffer.userSuppliedCapacity, oldCapacity, newCapacity, deferred,
+    return BufferUtils.reallocateBufferWithAllocDeferred(
+        buffer.data,
+        buffer.userSuppliedCapacity,
+        oldCapacity,
+        newCapacity,
+        deferred,
         buffer.allocClosure);
   }
 
@@ -1229,8 +1236,10 @@ class ParticleSystem {
     for (int i = 0; i < count; i++) {
       double w = accumulationBuffer[i];
       double h = pressurePerWeight *
-          Math.max(0.0, Math.min(w, Settings.maxParticleWeight) -
-              Settings.minParticleWeight);
+          Math.max(
+              0.0,
+              Math.min(w, Settings.maxParticleWeight) -
+                  Settings.minParticleWeight);
       accumulationBuffer[i] = h;
     }
     // applies pressure between each particles in contact
@@ -1352,10 +1361,10 @@ class ParticleSystem {
         rotation.setAngle(step.dt * group._angularVelocity);
         Rot.mulToOutUnsafe(rotation, group._center, cross);
         temp
-            ..setFrom(group._linearVelocity)
-            ..scale(step.dt)
-            ..add(group._center)
-            ..sub(cross);
+          ..setFrom(group._linearVelocity)
+          ..scale(step.dt)
+          ..add(group._center)
+          ..sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.set(rotation);
         Transform.mulToOut(_tempXf, group._transform, group._transform);
@@ -2096,10 +2105,16 @@ class ParticleSystem {
     final double lowerBoundY = aabb.lowerBound.y;
     final double upperBoundX = aabb.upperBound.x;
     final double upperBoundY = aabb.upperBound.y;
-    int firstProxy = _lowerBound(proxyBuffer, proxyCount, computeTag(
-        inverseDiameter * lowerBoundX, inverseDiameter * lowerBoundY));
-    int lastProxy = _upperBound(proxyBuffer, proxyCount, computeTag(
-        inverseDiameter * upperBoundX, inverseDiameter * upperBoundY));
+    int firstProxy = _lowerBound(
+        proxyBuffer,
+        proxyCount,
+        computeTag(
+            inverseDiameter * lowerBoundX, inverseDiameter * lowerBoundY));
+    int lastProxy = _upperBound(
+        proxyBuffer,
+        proxyCount,
+        computeTag(
+            inverseDiameter * upperBoundX, inverseDiameter * upperBoundY));
     for (int proxy = firstProxy; proxy < lastProxy; ++proxy) {
       int i = proxyBuffer[proxy].index;
       final Vector2 p = positionBuffer.data[i];
@@ -2124,12 +2139,16 @@ class ParticleSystem {
     if (proxyCount == 0) {
       return;
     }
-    int firstProxy = _lowerBound(proxyBuffer, proxyCount, computeTag(
-        inverseDiameter * Math.min(point1.x, point2.x) - 1,
-        inverseDiameter * Math.min(point1.y, point2.y) - 1));
-    int lastProxy = _upperBound(proxyBuffer, proxyCount, computeTag(
-        inverseDiameter * Math.max(point1.x, point2.x) + 1,
-        inverseDiameter * Math.max(point1.y, point2.y) + 1));
+    int firstProxy = _lowerBound(
+        proxyBuffer,
+        proxyCount,
+        computeTag(inverseDiameter * Math.min(point1.x, point2.x) - 1,
+            inverseDiameter * Math.min(point1.y, point2.y) - 1));
+    int lastProxy = _upperBound(
+        proxyBuffer,
+        proxyCount,
+        computeTag(inverseDiameter * Math.max(point1.x, point2.x) + 1,
+            inverseDiameter * Math.max(point1.y, point2.y) + 1));
     double fraction = 1.0;
     // solving the following equation:
     // ((1-t)*point1+t*point2-position)^2=diameter^2
