@@ -87,10 +87,9 @@ class Transform {
   }
 
   static void mulToOutUnsafeVec2(
-      final Transform T, final Vector2 v, final Vector2 out) {
-    assert(v != out);
-    out.x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
-    out.y = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
+      final Transform transform, final Vector2 v, final Vector2 out) {
+    out.x = (transform.q.c * v.x - transform.q.s * v.y) + transform.p.x;
+    out.y = (transform.q.s * v.x + transform.q.c * v.y) + transform.p.y;
   }
 
   static Vector2 mulTransVec2(final Transform T, final Vector2 v) {
