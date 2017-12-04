@@ -27,10 +27,10 @@ library box2d.buffer_utils;
 import 'dart:typed_data';
 
 /** Reallocate a buffer. */
-List reallocateBufferWithAlloc(
-    List oldBuffer, int oldCapacity, int newCapacity, alloc) {
+List<T> reallocateBufferWithAlloc<T>(
+    List oldBuffer, int oldCapacity, int newCapacity, T alloc()) {
   assert(newCapacity > oldCapacity);
-  List newBuffer = new List(newCapacity);
+  List<T> newBuffer = new List<T>(newCapacity);
   if (oldBuffer != null) {
     arraycopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
@@ -73,8 +73,8 @@ Float64List reallocateBuffer(
    * Reallocate a buffer. A 'deferred' buffer is reallocated only if it is not NULL. If
    * 'userSuppliedCapacity' is not zero, buffer is user supplied and must be kept.
    */
-List reallocateBufferWithAllocDeferred(List buffer, int userSuppliedCapacity,
-    int oldCapacity, int newCapacity, bool deferred, alloc) {
+List<T> reallocateBufferWithAllocDeferred<T>(List<T> buffer, int userSuppliedCapacity,
+    int oldCapacity, int newCapacity, bool deferred, T alloc()) {
   assert(newCapacity > oldCapacity);
   assert(userSuppliedCapacity == 0 || newCapacity <= userSuppliedCapacity);
   if ((!deferred || buffer != null) && userSuppliedCapacity == 0) {
@@ -112,7 +112,7 @@ Float64List reallocateBufferFloat64Deferred(Float64List buffer,
 }
 
 /** Rotate an array, see std::rotate */
-void rotate(List ray, int first, int new_first, int last) {
+void rotate<T>(List<T> ray, int first, int new_first, int last) {
   int next = new_first;
   while (next != first) {
     var temp = ray[first];

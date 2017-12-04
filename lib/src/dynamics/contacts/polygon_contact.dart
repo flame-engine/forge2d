@@ -37,6 +37,10 @@ class PolygonContact extends Contact {
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     _pool.getCollision().collidePolygons(
-        manifold, _fixtureA.getShape(), xfA, _fixtureB.getShape(), xfB);
+        manifold,
+        _fixtureA.getShape() as PolygonShape,
+        xfA,
+        _fixtureB.getShape() as PolygonShape,
+        xfB);
   }
 }

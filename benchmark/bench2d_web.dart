@@ -55,7 +55,7 @@ class Bench2dWeb extends Bench2d {
       ..width = CANVAS_WIDTH
       ..height = CANVAS_HEIGHT;
 
-    ctx = canvas.getContext("2d");
+    ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     document.body.append(canvas);
 
     // Create the viewport transform with the center at extents.

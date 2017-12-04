@@ -77,7 +77,7 @@ class ConstantVolumeJoint extends Joint {
         djd.collideConnected = def.collideConnected;
         djd.initialize(_bodies[i], _bodies[next], _bodies[i].worldCenter,
             _bodies[next].worldCenter);
-        _distanceJoints[i] = _world.createJoint(djd);
+        _distanceJoints[i] = _world.createJoint(djd) as DistanceJoint;
       }
     } else {
       _distanceJoints = def.joints.toList();

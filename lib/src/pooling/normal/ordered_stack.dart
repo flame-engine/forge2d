@@ -25,16 +25,16 @@
 part of box2d;
 
 abstract class OrderedStack<E> {
-  final List _pool;
+  final List<E> _pool;
   int _index;
   final int _size;
-  final List _container;
+  final List<E> _container;
 
   OrderedStack(int argStackSize, int argContainerSize)
-      : _pool = new List(argStackSize),
+      : _pool = new List<E>(argStackSize),
         _index = 0,
         _size = argStackSize,
-        _container = new List(argContainerSize) {
+        _container = new List<E>(argContainerSize) {
     // pool = new List(argStackSize);
     for (int i = 0; i < argStackSize; i++) {
       _pool[i] = newInstance();

@@ -34,10 +34,10 @@ class BallCage extends Demo {
   static const double START_Y = -20.0;
 
   /** The radius of the balls forming the arena. */
-  static const num WALL_BALL_RADIUS = 2.0;
+  static const double WALL_BALL_RADIUS = 2.0;
 
   /** Radius of the active ball. */
-  static const num ACTIVE_BALL_RADIUS = 1.0;
+  static const double ACTIVE_BALL_RADIUS = 1.0;
 
   /** Constructs a new BallCage. */
   BallCage() : super("Ball cage");
@@ -65,8 +65,8 @@ class BallCage extends Demo {
     final circleBodyDef = new BodyDef();
 
     int maxShapeinRow = 10;
-    final num borderLimitX = START_X + maxShapeinRow * 2 * circleShape.radius;
-    final num borderLimitY = START_Y + maxShapeinRow * 2 * circleShape.radius;
+    final double borderLimitX = START_X + maxShapeinRow * 2 * circleShape.radius;
+    final double borderLimitY = START_Y + maxShapeinRow * 2 * circleShape.radius;
 
     for (int i = 0; i < maxShapeinRow; i++) {
       final double shiftX = START_X + circleShape.radius * 2 * i;

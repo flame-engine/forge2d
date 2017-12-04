@@ -111,13 +111,15 @@ class CircleStress extends Demo {
         ..type = BodyType.DYNAMIC
         ..position = new Vector2(0.0, 10.0);
       int numPieces = 5;
-      num radius = 6;
+      double radius = 6.0;
       var body = world.createBody(bd);
       bodies.add(body);
 
       for (int i = 0; i < numPieces; i++) {
-        num xPos = radius * Math.cos(2 * Math.PI * (i / numPieces.toDouble()));
-        num yPos = radius * Math.sin(2 * Math.PI * (i / numPieces.toDouble()));
+        double xPos =
+            radius * Math.cos(2 * Math.PI * (i / numPieces.toDouble()));
+        double yPos =
+            radius * Math.sin(2 * Math.PI * (i / numPieces.toDouble()));
 
         var cd = new CircleShape()
           ..radius = 1.2

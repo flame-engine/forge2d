@@ -48,10 +48,10 @@ class ParticleColor {
     _data[3] = v;
   }
 
-  get r => _data[0];
-  get g => _data[1];
-  get b => _data[2];
-  get a => _data[3];
+  int get r => _data[0];
+  int get g => _data[1];
+  int get b => _data[2];
+  int get a => _data[3];
 
   ParticleColor() {
     _data[0] = 127;

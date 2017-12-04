@@ -74,7 +74,7 @@ class DominoTest extends Demo {
       BodyDef bd = new BodyDef();
       bd.type = BodyType.DYNAMIC;
 
-      num friction = .5;
+      double friction = .5;
       int numPerRow = 25;
 
       for (int i = 0; i < 4; ++i) {

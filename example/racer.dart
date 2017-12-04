@@ -198,6 +198,6 @@ class Racer extends Demo implements ContactListener {
   num _lastTime = 0;
 }
 
-main() {
+void main() {
   Racer.main();
 }

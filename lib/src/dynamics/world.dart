@@ -1417,7 +1417,7 @@ class World {
 
       case JointType.PULLEY:
         {
-          PulleyJoint pulley = joint;
+          final pulley = joint as PulleyJoint;
           Vector2 s1 = pulley.getGroundAnchorA();
           Vector2 s2 = pulley.getGroundAnchorB();
           debugDraw.drawSegment(s1, p1, color);
@@ -1461,7 +1461,7 @@ class World {
     switch (fixture.getType()) {
       case ShapeType.CIRCLE:
         {
-          CircleShape circle = fixture.getShape();
+          final circle = fixture.getShape() as CircleShape;
 
           // Vec2 center = Mul(xf, circle.m_p);
           Transform.mulToOutUnsafeVec2(xf, circle.p, center);
@@ -1495,7 +1495,7 @@ class World {
 
       case ShapeType.POLYGON:
         {
-          PolygonShape poly = fixture.getShape();
+          final poly = fixture.getShape() as PolygonShape;
           int vertexCount = poly.count;
           assert(vertexCount <= Settings.maxPolygonVertices);
           List<Vector2> vertices = tlvertices.get(Settings.maxPolygonVertices);
@@ -1513,7 +1513,7 @@ class World {
         break;
       case ShapeType.EDGE:
         {
-          EdgeShape edge = fixture.getShape();
+          final edge = fixture.getShape() as EdgeShape;
           Transform.mulToOutUnsafeVec2(xf, edge.vertex1, v1);
           Transform.mulToOutUnsafeVec2(xf, edge.vertex2, v2);
           debugDraw.drawSegment(v1, v2, color);
@@ -1521,7 +1521,7 @@ class World {
         break;
       case ShapeType.CHAIN:
         {
-          ChainShape chain = fixture.getShape();
+          final chain = fixture.getShape() as ChainShape;
           int count = chain._count;
           List<Vector2> vertices = chain._vertices;
 
@@ -1911,7 +1911,7 @@ class World {
 
 class WorldQueryWrapper implements TreeCallback {
   bool treeCallback(int nodeId) {
-    FixtureProxy proxy = broadPhase.getUserData(nodeId);
+    final proxy = broadPhase.getUserData(nodeId) as FixtureProxy;
     return callback.reportFixture(proxy.fixture);
   }
 
@@ -1926,7 +1926,7 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
   final Vector2 _point = new Vector2.zero();
 
   double raycastCallback(RayCastInput input, int nodeId) {
-    Object userData = broadPhase.getUserData(nodeId);
+    final userData = broadPhase.getUserData(nodeId) as FixtureProxy;
     FixtureProxy proxy = userData;
     Fixture fixture = proxy.fixture;
     int index = proxy.childIndex;

@@ -60,13 +60,13 @@ class Car {
         _frontTireMaxDriveForce, _frontTireMaxLateralImpulse);
     jointDef.bodyB = _flTire._body;
     jointDef.localAnchorA.setValues(-3.0, 8.5);
-    _flJoint = world.createJoint(jointDef);
+    _flJoint = world.createJoint(jointDef) as RevoluteJoint;
 
     _frTire = new Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
         _frontTireMaxDriveForce, _frontTireMaxLateralImpulse);
     jointDef.bodyB = _frTire._body;
     jointDef.localAnchorA.setValues(3.0, 8.5);
-    _frJoint = world.createJoint(jointDef);
+    _frJoint = world.createJoint(jointDef) as RevoluteJoint;
   }
 
   void _updateFriction() {
