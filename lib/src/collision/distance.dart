@@ -509,14 +509,14 @@ class DistanceProxy {
   void set(final Shape shape, int index) {
     switch (shape.shapeType) {
       case ShapeType.CIRCLE:
-        final CircleShape circle = shape;
+        final circle = shape as CircleShape;
         vertices[0].setFrom(circle.p);
         _count = 1;
         radius = circle.radius;
 
         break;
       case ShapeType.POLYGON:
-        final PolygonShape poly = shape;
+        final poly = shape as PolygonShape;
         _count = poly.count;
         radius = poly.radius;
         for (int i = 0; i < _count; i++) {
@@ -524,7 +524,7 @@ class DistanceProxy {
         }
         break;
       case ShapeType.CHAIN:
-        final ChainShape chain = shape;
+        final chain = shape as ChainShape;
         assert(0 <= index && index < chain._count);
 
         buffer[0] = chain._vertices[index];
@@ -540,7 +540,7 @@ class DistanceProxy {
         radius = chain.radius;
         break;
       case ShapeType.EDGE:
-        EdgeShape edge = shape;
+        final edge = shape as EdgeShape;
         vertices[0].setFrom(edge.vertex1);
         vertices[1].setFrom(edge.vertex2);
         _count = 2;

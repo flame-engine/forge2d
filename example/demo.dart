@@ -49,7 +49,7 @@ abstract class Demo {
   static const double GRAVITY = -10.0;
 
   /** The timestep and iteration numbers. */
-  static const num TIME_STEP = 1 / 60;
+  static const double TIME_STEP = 1 / 60;
   static const int VELOCITY_ITERATIONS = 10;
   static const int POSITION_ITERATIONS = 10;
 

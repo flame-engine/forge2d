@@ -30,10 +30,10 @@ import 'package:box2d/box2d.dart';
 import 'demo.dart';
 
 class DominoTower extends Demo {
-  static const num DOMINO_WIDTH = .2;
-  static const num DOMINO_FRICTION = 0.1;
-  static const num DOMINO_HEIGHT = 1.0;
-  static const num BASE_COUNT = 25;
+  static const double DOMINO_WIDTH = .2;
+  static const double DOMINO_FRICTION = 0.1;
+  static const double DOMINO_HEIGHT = 1.0;
+  static const int BASE_COUNT = 25;
 
   /**
    * The density of the dominos under construction. Varies for different parts
@@ -52,7 +52,7 @@ class DominoTower extends Demo {
     tower.runAnimation();
   }
 
-  void makeDomino(num x, num y, bool horizontal) {
+  void makeDomino(double x, double y, bool horizontal) {
     PolygonShape sd = new PolygonShape();
     sd.setAsBoxXY(.5 * DOMINO_WIDTH, .5 * DOMINO_HEIGHT);
     FixtureDef fd = new FixtureDef();
@@ -115,7 +115,7 @@ class DominoTower extends Demo {
     }
 
     {
-      num currX;
+      double currX;
       // Make base
       for (int i = 0; i < BASE_COUNT; ++i) {
         currX =
@@ -131,7 +131,7 @@ class DominoTower extends Demo {
         if (j > 3) dominoDensity *= .8;
 
         // The y at the center of the I structure.
-        num currY =
+        double currY =
             DOMINO_HEIGHT * .5 + (DOMINO_HEIGHT + 2 * DOMINO_WIDTH) * .99 * j;
 
         for (int i = 0; i < BASE_COUNT - j; ++i) {

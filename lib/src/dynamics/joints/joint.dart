@@ -35,29 +35,29 @@ abstract class Joint {
     // Joint joint = null;
     switch (def.type) {
       case JointType.MOUSE:
-        return new MouseJoint(world.getPool(), def);
+        return new MouseJoint(world.getPool(), def as MouseJointDef);
       case JointType.DISTANCE:
-        return new DistanceJoint(world.getPool(), def);
+        return new DistanceJoint(world.getPool(), def as DistanceJointDef);
       case JointType.PRISMATIC:
-        return new PrismaticJoint(world.getPool(), def);
+        return new PrismaticJoint(world.getPool(), def as PrismaticJointDef);
       case JointType.REVOLUTE:
-        return new RevoluteJoint(world.getPool(), def);
+        return new RevoluteJoint(world.getPool(), def as RevoluteJointDef);
       case JointType.WELD:
-        return new WeldJoint(world.getPool(), def);
+        return new WeldJoint(world.getPool(), def as WeldJointDef);
       case JointType.FRICTION:
-        return new FrictionJoint(world.getPool(), def);
+        return new FrictionJoint(world.getPool(), def as FrictionJointDef);
       case JointType.WHEEL:
-        return new WheelJoint(world.getPool(), def);
+        return new WheelJoint(world.getPool(), def as WheelJointDef);
       case JointType.GEAR:
-        return new GearJoint(world.getPool(), def);
+        return new GearJoint(world.getPool(), def as GearJointDef);
       case JointType.PULLEY:
-        return new PulleyJoint(world.getPool(), def);
+        return new PulleyJoint(world.getPool(), def as PulleyJointDef);
       case JointType.CONSTANT_VOLUME:
-        return new ConstantVolumeJoint(world, def);
+        return new ConstantVolumeJoint(world, def as ConstantVolumeJointDef);
       case JointType.ROPE:
-        return new RopeJoint(world.getPool(), def);
+        return new RopeJoint(world.getPool(), def as RopeJointDef);
       case JointType.MOTOR:
-        return new MotorJoint(world.getPool(), def);
+        return new MotorJoint(world.getPool(), def as MotorJointDef);
       case JointType.UNKNOWN:
       default:
         return null;

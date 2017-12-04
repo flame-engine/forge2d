@@ -29,19 +29,19 @@ enum ContactIDType { VERTEX, FACE }
 class ContactID implements Comparable<ContactID> {
   Int8List _data = new Int8List(4);
 
-  void set indexA(v) {
+  void set indexA(int v) {
     _data[0] = v;
   }
 
-  void set indexB(v) {
+  void set indexB(int v) {
     _data[1] = v;
   }
 
-  void set typeA(v) {
+  void set typeA(int v) {
     _data[2] = v;
   }
 
-  void set typeB(v) {
+  void set typeB(int v) {
     _data[3] = v;
     ;
   }

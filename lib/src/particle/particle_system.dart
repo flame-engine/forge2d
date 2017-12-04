@@ -26,10 +26,12 @@ part of box2d;
 
 class ParticleBuffer<T> {
   List<T> data;
-  final allocClosure;
+  final AllocClosure<T> allocClosure;
   int userSuppliedCapacity = 0;
   ParticleBuffer(this.allocClosure);
 }
+
+typedef T AllocClosure<T>();
 
 class ParticleBufferInt {
   List<int> data;
@@ -69,7 +71,7 @@ class PsProxy implements Comparable<PsProxy> {
     if (this == obj) return true;
     if (obj == null) return false;
     if (obj is! PsProxy) return false;
-    PsProxy other = obj;
+    final other = obj as PsProxy;
     if (tag != other.tag) return false;
     return true;
   }
@@ -138,8 +140,8 @@ class UpdateBodyContactsCallback implements QueryCallback {
     Vector2 bp = b.worldCenter;
     double bm = b.mass;
     double bI = b.getInertia() - bm * b.getLocalCenter().length2;
-    double invBm = bm > 0 ? 1 / bm : 0;
-    double invBI = bI > 0 ? 1 / bI : 0;
+    double invBm = bm > 0 ? 1 / bm : 0.0;
+    double invBI = bI > 0 ? 1 / bI : 0.0;
     int childCount = shape.getChildCount();
     for (int childIndex = 0; childIndex < childCount; childIndex++) {
       AABB aabb = fixture.getAABB(childIndex);
@@ -175,7 +177,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
           if (d < system.particleDiameter) {
             double invAm =
                 (system.flagsBuffer.data[a] & ParticleType.b2_wallParticle) != 0
-                    ? 0
+                    ? 0.0
                     : system.getParticleInvMass();
             final double rpx = ap.x - bp.x;
             final double rpy = ap.y - bp.y;
@@ -624,10 +626,10 @@ class ParticleSystem {
   }
 
   // reallocate a buffer
-  static List reallocateBuffer(
-      ParticleBuffer buffer, int oldCapacity, int newCapacity, bool deferred) {
+  static List<T> reallocateBuffer<T>(
+      ParticleBuffer<T> buffer, int oldCapacity, int newCapacity, bool deferred) {
     assert(newCapacity > oldCapacity);
-    return BufferUtils.reallocateBufferWithAllocDeferred(
+    return BufferUtils.reallocateBufferWithAllocDeferred<T>(
         buffer.data,
         buffer.userSuppliedCapacity,
         oldCapacity,
@@ -643,9 +645,9 @@ class ParticleSystem {
         buffer.userSuppliedCapacity, oldCapacity, newCapacity, deferred);
   }
 
-  List requestParticleBuffer(List buffer, allocClosure) {
+  List<T> requestParticleBuffer<T>(List<T> buffer, T allocClosure()) {
     if (buffer == null) {
-      buffer = new List(internalAllocatedCapacity);
+      buffer = new List<T>(internalAllocatedCapacity);
       for (int i = 0; i < internalAllocatedCapacity; i++) {
         try {
           buffer[i] = allocClosure();
@@ -945,7 +947,7 @@ class ParticleSystem {
     depthBuffer = requestParticleBufferFloat64(depthBuffer);
     for (int i = group._firstIndex; i < group._lastIndex; i++) {
       double w = accumulationBuffer[i];
-      depthBuffer[i] = w < 0.8 ? 0 : double.MAX_FINITE;
+      depthBuffer[i] = w < 0.8 ? 0.0 : double.MAX_FINITE;
     }
     int interationCount = group.getParticleCount();
     for (int t = 0; t < interationCount; t++) {

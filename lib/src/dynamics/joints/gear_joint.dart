@@ -119,7 +119,7 @@ class GearJoint extends Joint {
     double aC = _bodyC._sweep.a;
 
     if (_typeA == JointType.REVOLUTE) {
-      RevoluteJoint revolute = def.joint1;
+      final revolute = def.joint1 as RevoluteJoint;
       _localAnchorC.setFrom(revolute._localAnchorA);
       _localAnchorA.setFrom(revolute._localAnchorB);
       _referenceAngleA = revolute._referenceAngle;
@@ -129,7 +129,7 @@ class GearJoint extends Joint {
     } else {
       Vector2 pA = pool.popVec2();
       Vector2 temp = pool.popVec2();
-      PrismaticJoint prismatic = def.joint1;
+      final prismatic = def.joint1 as PrismaticJoint;
       _localAnchorC.setFrom(prismatic._localAnchorA);
       _localAnchorA.setFrom(prismatic._localAnchorB);
       _referenceAngleA = prismatic._referenceAngle;
@@ -154,7 +154,7 @@ class GearJoint extends Joint {
     double aD = _bodyD._sweep.a;
 
     if (_typeB == JointType.REVOLUTE) {
-      RevoluteJoint revolute = def.joint2;
+      final revolute = def.joint2 as RevoluteJoint;
       _localAnchorD.setFrom(revolute._localAnchorA);
       _localAnchorB.setFrom(revolute._localAnchorB);
       _referenceAngleB = revolute._referenceAngle;
@@ -164,7 +164,7 @@ class GearJoint extends Joint {
     } else {
       Vector2 pB = pool.popVec2();
       Vector2 temp = pool.popVec2();
-      PrismaticJoint prismatic = def.joint2;
+      final prismatic = def.joint2 as PrismaticJoint;
       _localAnchorD.setFrom(prismatic._localAnchorA);
       _localAnchorB.setFrom(prismatic._localAnchorB);
       _referenceAngleB = prismatic._referenceAngle;

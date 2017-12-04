@@ -35,6 +35,10 @@ class PolygonAndCircleContact extends Contact {
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     _pool.getCollision().collidePolygonAndCircle(
-        manifold, _fixtureA.getShape(), xfA, _fixtureB.getShape(), xfB);
+        manifold,
+        _fixtureA.getShape() as PolygonShape,
+        xfA,
+        _fixtureB.getShape() as CircleShape,
+        xfB);
   }
 }

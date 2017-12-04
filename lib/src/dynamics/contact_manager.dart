@@ -52,7 +52,7 @@ class ContactManager implements PairCallback {
    * @param proxyUserDataA
    * @param proxyUserDataB
    */
-  void addPair(Object proxyUserDataA, Object proxyUserDataB) {
+  void addPair(FixtureProxy proxyUserDataA, FixtureProxy proxyUserDataB) {
     FixtureProxy proxyA = proxyUserDataA;
     FixtureProxy proxyB = proxyUserDataB;
 
