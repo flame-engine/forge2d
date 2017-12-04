@@ -526,7 +526,7 @@ class ParticleSystem {
   World world;
 
   static Vector2 allocVec2() => new Vector2.zero();
-  static Vector2 allocObject() => new Object();
+  static Object allocObject() => new Object();
   static ParticleColor allocParticleColor() => new ParticleColor();
   static ParticleGroup allocParticleGroup() => new ParticleGroup();
   static PsProxy allocPsProxy() => new PsProxy();
