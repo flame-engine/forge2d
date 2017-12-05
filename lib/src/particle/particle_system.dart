@@ -626,8 +626,8 @@ class ParticleSystem {
   }
 
   // reallocate a buffer
-  static List<T> reallocateBuffer<T>(
-      ParticleBuffer<T> buffer, int oldCapacity, int newCapacity, bool deferred) {
+  static List<T> reallocateBuffer<T>(ParticleBuffer<T> buffer, int oldCapacity,
+      int newCapacity, bool deferred) {
     assert(newCapacity > oldCapacity);
     return BufferUtils.reallocateBufferWithAllocDeferred<T>(
         buffer.data,

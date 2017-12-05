@@ -65,8 +65,10 @@ class BallCage extends Demo {
     final circleBodyDef = new BodyDef();
 
     int maxShapeinRow = 10;
-    final double borderLimitX = START_X + maxShapeinRow * 2 * circleShape.radius;
-    final double borderLimitY = START_Y + maxShapeinRow * 2 * circleShape.radius;
+    final double borderLimitX =
+        START_X + maxShapeinRow * 2 * circleShape.radius;
+    final double borderLimitY =
+        START_Y + maxShapeinRow * 2 * circleShape.radius;
 
     for (int i = 0; i < maxShapeinRow; i++) {
       final double shiftX = START_X + circleShape.radius * 2 * i;
