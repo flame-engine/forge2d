@@ -59,7 +59,8 @@ class TOIOutput {
  * @author daniel
  */
 class TimeOfImpact {
-  static const int MAX_ITERATIONS = 1000;
+  static const int MAX_ITERATIONS = 20;
+  static const int MAX_ROOT_ITERATIONS = 50;
 
   static int toiCalls = 0;
   static int toiIters = 0;
@@ -227,6 +228,9 @@ class TimeOfImpact {
             t = 0.5 * (a1 + a2);
           }
 
+          ++rootIterCount;
+          ++toiRootIters;
+
           double s = _fcn.evaluate(_indexes[0], _indexes[1], t);
 
           if ((s - target).abs() < tolerance) {
@@ -244,11 +248,7 @@ class TimeOfImpact {
             s2 = s;
           }
 
-          ++rootIterCount;
-          ++toiRootIters;
-
-          // djm: whats with this? put in settings?
-          if (rootIterCount == 50) {
+          if (rootIterCount == MAX_ROOT_ITERATIONS) {
             break;
           }
         }
@@ -257,7 +257,8 @@ class TimeOfImpact {
 
         ++pushBackIter;
 
-        if (pushBackIter == Settings.maxPolygonVertices) {
+        if (pushBackIter == Settings.maxPolygonVertices ||
+            rootIterCount == MAX_ROOT_ITERATIONS) {
           break;
         }
       }
@@ -490,10 +491,6 @@ class SeparationFunction {
 
     switch (type) {
       case SeparationFunctionType.POINTS:
-        Rot.mulTransUnsafeVec2(_xfa.q, axis, _axisA);
-        Rot.mulTransUnsafeVec2(_xfb.q, axis..negate(), _axisB);
-        axis.negate();
-
         _localPointA.setFrom(proxyA.getVertex(indexA));
         _localPointB.setFrom(proxyB.getVertex(indexB));
 
@@ -507,9 +504,6 @@ class SeparationFunction {
         Rot.mulToOutUnsafe(_xfa.q, axis, _normal);
         Transform.mulToOutUnsafeVec2(_xfa, localPoint, _pointA);
 
-        Rot.mulTransUnsafeVec2(_xfb.q, _normal..negate(), _axisB);
-        _normal.negate();
-
         _localPointB.setFrom(proxyB.getVertex(indexB));
         Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
         double separation = (_pointB..sub(_pointA)).dot(_normal);
@@ -518,9 +512,6 @@ class SeparationFunction {
       case SeparationFunctionType.FACE_B:
         Rot.mulToOutUnsafe(_xfb.q, axis, _normal);
         Transform.mulToOutUnsafeVec2(_xfb, localPoint, _pointB);
-
-        Rot.mulTransUnsafeVec2(_xfa.q, _normal..negate(), _axisA);
-        _normal.negate();
 
         _localPointA.setFrom(proxyA.getVertex(indexA));
         Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
