@@ -444,8 +444,8 @@ class Body {
       setAwake(true);
     }
 
-    force.x += force.x;
-    force.y += force.y;
+    _force.x += force.x;
+    _force.y += force.y;
   }
 
   /**
