@@ -145,8 +145,8 @@ void arraycopy(List src, int srcPos, List dest, int destPos, int length) {
 
 // Replace Java's Arrays::sort.
 // TODO(srdjan): Make a version that does not require copying.
-void sort(List<Comparable> list, int fromPos, int toPos) {
-  List<Comparable> temp = new List.from(list.getRange(fromPos, toPos));
+void sort<T>(List<T> list, int fromPos, int toPos) {
+  List<T> temp = new List.from(list.getRange(fromPos, toPos));
   temp.sort();
   list.setRange(fromPos, toPos, temp);
 }
