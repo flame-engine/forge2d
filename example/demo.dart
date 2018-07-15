@@ -26,7 +26,7 @@ library demo;
 
 import 'dart:async';
 import 'dart:html' hide Body;
-import 'package:box2d/box2d_browser.dart' hide Timer;
+import 'package:box2d_flame/box2d_browser.dart' hide Timer;
 
 /**
  * An abstract class for any Demo of the Box2D library.

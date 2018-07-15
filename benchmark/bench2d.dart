@@ -22,7 +22,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 
-import 'package:box2d/box2d.dart';
+import 'package:box2d_flame/box2d.dart';
 
 void main() {
   new Bench2d()
