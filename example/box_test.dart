@@ -25,7 +25,7 @@
 library BoxTest;
 
 import 'dart:math' as Math;
-import 'package:box2d/box2d.dart';
+import 'package:box2d_flame/box2d.dart';
 import 'demo.dart';
 
 class BoxTest extends Demo {

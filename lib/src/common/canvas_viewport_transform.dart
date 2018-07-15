@@ -26,7 +26,7 @@ library box2d.common.canvas_viewport_transform;
 
 import 'dart:html';
 
-import 'package:box2d/box2d.dart';
+import 'package:box2d_flame/box2d.dart';
 
 /**
  * Transform for drawing using a canvas context. Y-flip is permenantly set

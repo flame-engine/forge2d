@@ -25,8 +25,8 @@
 library BlobTest;
 
 import 'dart:math' as Math;
-import 'package:box2d/box2d.dart';
-import 'package:box2d/src/math_utils.dart' as MathUtils;
+import 'package:box2d_flame/box2d.dart';
+import 'package:box2d_flame/src/math_utils.dart' as MathUtils;
 import 'demo.dart';
 
 class BlobTest extends Demo {
