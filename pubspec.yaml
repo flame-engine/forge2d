@@ -1,5 +1,5 @@
-name: box2d
-version: 0.4.0
+name: box2d-flame
+version: 0.4.1
 authors:
 - Kevin Moore <kevmoo@google.com>
 - Srdjan Mitrovic <srdjan@google.com>
