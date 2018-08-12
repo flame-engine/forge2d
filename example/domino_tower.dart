@@ -63,7 +63,7 @@ class DominoTower extends Demo {
     fd.friction = DOMINO_FRICTION;
     fd.restitution = 0.65;
     bd.position = new Vector2(x, y);
-    bd.angle = horizontal ? (Math.PI / 2.0) : 0.0;
+    bd.angle = horizontal ? (Math.pi / 2.0) : 0.0;
     Body myBody = world.createBody(bd);
     myBody.createFixtureFromFixtureDef(fd);
     bodies.add(myBody);

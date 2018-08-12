@@ -72,7 +72,7 @@ class BoxTest extends Demo {
   void _createBox() {
     // Create shape
     final PolygonShape shape = new PolygonShape();
-    shape.setAsBox(3.0, 1.5, new Vector2.zero(), Math.PI / 2);
+    shape.setAsBox(3.0, 1.5, new Vector2.zero(), Math.pi / 2);
 
     // Define fixture (links body and shape)
     final FixtureDef activeFixtureDef = new FixtureDef();

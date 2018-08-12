@@ -947,7 +947,7 @@ class ParticleSystem {
     depthBuffer = requestParticleBufferFloat64(depthBuffer);
     for (int i = group._firstIndex; i < group._lastIndex; i++) {
       double w = accumulationBuffer[i];
-      depthBuffer[i] = w < 0.8 ? 0.0 : double.MAX_FINITE;
+      depthBuffer[i] = w < 0.8 ? 0.0 : double.maxFinite;
     }
     int interationCount = group.getParticleCount();
     for (int t = 0; t < interationCount; t++) {
@@ -981,7 +981,7 @@ class ParticleSystem {
     }
     for (int i = group._firstIndex; i < group._lastIndex; i++) {
       double p = depthBuffer[i];
-      if (p < double.MAX_FINITE) {
+      if (p < double.maxFinite) {
         depthBuffer[i] *= particleDiameter;
       } else {
         depthBuffer[i] = 0.0;
@@ -1009,7 +1009,7 @@ class ParticleSystem {
             contactBuffer, oldCapacity, newCapacity, allocParticleContact);
         contactCapacity = newCapacity;
       }
-      double invD = d2 != 0 ? Math.sqrt(1 / d2) : double.MAX_FINITE;
+      double invD = d2 != 0 ? Math.sqrt(1 / d2) : double.maxFinite;
       ParticleContact contact = contactBuffer[contactCount];
       contact.indexA = a;
       contact.indexB = b;
@@ -1078,10 +1078,10 @@ class ParticleSystem {
 
   void updateBodyContacts() {
     final AABB aabb = _temp;
-    aabb.lowerBound.x = double.MAX_FINITE;
-    aabb.lowerBound.y = double.MAX_FINITE;
-    aabb.upperBound.x = -double.MAX_FINITE;
-    aabb.upperBound.y = -double.MAX_FINITE;
+    aabb.lowerBound.x = double.maxFinite;
+    aabb.lowerBound.y = double.maxFinite;
+    aabb.upperBound.x = -double.maxFinite;
+    aabb.upperBound.y = -double.maxFinite;
     for (int i = 0; i < count; i++) {
       Vector2 p = positionBuffer.data[i];
       Vector2.min(aabb.lowerBound, p, aabb.lowerBound);
@@ -1103,10 +1103,10 @@ class ParticleSystem {
     final AABB aabb = _temp;
     final Vector2 lowerBound = aabb.lowerBound;
     final Vector2 upperBound = aabb.upperBound;
-    lowerBound.x = double.MAX_FINITE;
-    lowerBound.y = double.MAX_FINITE;
-    upperBound.x = -double.MAX_FINITE;
-    upperBound.y = -double.MAX_FINITE;
+    lowerBound.x = double.maxFinite;
+    lowerBound.y = double.maxFinite;
+    upperBound.x = -double.maxFinite;
+    upperBound.y = -double.maxFinite;
     for (int i = 0; i < count; i++) {
       final Vector2 v = velocityBuffer.data[i];
       final Vector2 p1 = positionBuffer.data[i];
@@ -1159,7 +1159,7 @@ class ParticleSystem {
       double v2 = v.x * v.x + v.y * v.y;
       if (v2 > criticalVelocytySquared) {
         double a = v2 == 0
-            ? double.MAX_FINITE
+            ? double.maxFinite
             : Math.sqrt(criticalVelocytySquared / v2);
         v.x *= a;
         v.y *= a;
@@ -1402,7 +1402,7 @@ class ParticleSystem {
         double rs = oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
         double rc = oa.dot(pa) + ob.dot(pb) + oc.dot(pc);
         double r2 = rs * rs + rc * rc;
-        double invR = r2 == 0 ? double.MAX_FINITE : Math.sqrt(1.0 / r2);
+        double invR = r2 == 0 ? double.maxFinite : Math.sqrt(1.0 / r2);
         rs *= invR;
         rc *= invR;
         final double strength = elasticStrength_ * triad.strength;
@@ -1438,7 +1438,7 @@ class ParticleSystem {
         final double dy = pb.y - pa.y;
         double r0 = pair.distance;
         double r1 = Math.sqrt(dx * dx + dy * dy);
-        if (r1 == 0) r1 = double.MAX_FINITE;
+        if (r1 == 0) r1 = double.maxFinite;
         double strength = springStrength_ * pair.strength;
         final double fx = strength * (r0 - r1) / r1 * dx;
         final double fy = strength * (r0 - r1) / r1 * dy;
@@ -2158,7 +2158,7 @@ class ParticleSystem {
     final double vx = point2.x - point1.x;
     final double vy = point2.y - point1.y;
     double v2 = vx * vx + vy * vy;
-    if (v2 == 0) v2 = double.MAX_FINITE;
+    if (v2 == 0) v2 = double.maxFinite;
     for (int proxy = firstProxy; proxy < lastProxy; ++proxy) {
       int i = proxyBuffer[proxy].index;
       final Vector2 posI = positionBuffer.data[i];
