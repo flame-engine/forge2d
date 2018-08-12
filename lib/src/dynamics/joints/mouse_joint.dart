@@ -117,7 +117,7 @@ class MouseJoint extends Joint {
     double mass = _bodyB.mass;
 
     // Frequency
-    double omega = 2.0 * Math.PI * _frequencyHz;
+    double omega = 2.0 * Math.pi * _frequencyHz;
 
     // Damping coefficient
     double d = 2.0 * mass * _dampingRatio * omega;

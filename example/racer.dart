@@ -81,7 +81,7 @@ class Racer extends Demo implements ContactListener {
   void preSolve(Contact contact, Manifold oldManifold) {}
   void postSolve(Contact contact, ContactImpulse impulse) {}
 
-  double radians(double deg) => deg * (PI / 180.0);
+  double radians(double deg) => deg * (pi / 180.0);
 
   void _createGround() {
     BodyDef def = new BodyDef();

@@ -65,7 +65,7 @@ const double linearSlop = 0.005;
  * A small angle used as a collision and constraint tolerance. Usually it is chosen to be
  * numerically significant, but visually insignificant.
  */
-const double angularSlop = (2.0 / 180.0 * Math.PI);
+const double angularSlop = (2.0 / 180.0 * Math.pi);
 
 /**
  * The radius of the polygon/edge shape skin. This should not be modified. Making this smaller
@@ -100,7 +100,7 @@ const double maxLinearCorrection = 0.2;
  * The maximum angular position correction used when solving constraints. This helps to prevent
  * overshoot.
  */
-const double maxAngularCorrection = (8.0 / 180.0 * Math.PI);
+const double maxAngularCorrection = (8.0 / 180.0 * Math.pi);
 
 /**
  * The maximum linear velocity of a body. This limit is very large and is used to prevent
@@ -113,7 +113,7 @@ const double maxTranslationSquared = (maxTranslation * maxTranslation);
  * The maximum angular velocity of a body. This limit is very large and is used to prevent
  * numerical problems. You shouldn't need to adjust this.
  */
-const double maxRotation = (0.5 * Math.PI);
+const double maxRotation = (0.5 * Math.pi);
 const double maxRotationSquared = (maxRotation * maxRotation);
 
 /**
@@ -138,7 +138,7 @@ const double linearSleepTolerance = 0.01;
 /**
  * A body cannot sleep if its angular velocity is above this tolerance.
  */
-const double angularSleepTolerance = (2.0 / 180.0 * Math.PI);
+const double angularSleepTolerance = (2.0 / 180.0 * Math.pi);
 
 // Particle
 

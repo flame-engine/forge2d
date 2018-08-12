@@ -290,7 +290,7 @@ class WheelJoint extends Joint {
         double C = d.dot(_ax);
 
         // Frequency
-        double omega = 2.0 * Math.PI * _frequencyHz;
+        double omega = 2.0 * Math.pi * _frequencyHz;
 
         // Damping coefficient
         double dd = 2.0 * _springMass * _dampingRatio * omega;

@@ -355,7 +355,7 @@ class Collision {
 
     // Find the min separating edge.
     int normalIndex = 0;
-    double separation = -double.MAX_FINITE;
+    double separation = -double.maxFinite;
     final double radius = polygon.radius + circle.radius;
     final int vertexCount = polygon.count;
     double s;
@@ -537,14 +537,14 @@ class Collision {
     final Rot xfq = _xf.q;
 
     int bestIndex = 0;
-    double maxSeparation = -double.MAX_FINITE;
+    double maxSeparation = -double.maxFinite;
     for (int i = 0; i < count1; i++) {
       // Get poly1 normal in frame2.
       Rot.mulToOutUnsafe(xfq, n1s[i], _n);
       Transform.mulToOutUnsafeVec2(_xf, v1s[i], _v1);
 
       // Find deepest point for normal i.
-      double si = double.MAX_FINITE;
+      double si = double.maxFinite;
       for (int j = 0; j < count2; ++j) {
         Vector2 v2sj = v2s[j];
         double sij = _n.x * (v2sj.x - _v1.x) + _n.y * (v2sj.y - _v1.y);
@@ -600,7 +600,7 @@ class Collision {
 
     // Find the incident edge on poly2.
     int index = 0;
-    double minDot = double.MAX_FINITE;
+    double minDot = double.maxFinite;
     for (int i = 0; i < count2; ++i) {
       Vector2 b = normals2[i];
       double dot = normal1x * b.x + normal1y * b.y;
@@ -1412,7 +1412,7 @@ class EPCollider {
   void computeEdgeSeparation(EPAxis axis) {
     axis.type = EPAxisType.EDGE_A;
     axis.index = front ? 0 : 1;
-    axis.separation = double.MAX_FINITE;
+    axis.separation = double.maxFinite;
     double nx = normal.x;
     double ny = normal.y;
 
@@ -1433,7 +1433,7 @@ class EPCollider {
   void computePolygonSeparation(EPAxis axis) {
     axis.type = EPAxisType.UNKNOWN;
     axis.index = -1;
-    axis.separation = -double.MAX_FINITE;
+    axis.separation = -double.maxFinite;
 
     _perp.x = -normal.y;
     _perp.y = normal.x;
