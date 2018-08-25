@@ -391,7 +391,7 @@ class PolygonShape extends Shape {
     double pLocalx = xfqc * tx + xfqs * ty;
     double pLocaly = -xfqs * tx + xfqc * ty;
 
-    double maxDistance = -double.MAX_FINITE;
+    double maxDistance = -double.maxFinite;
     double normalForMaxDistanceX = pLocalx;
     double normalForMaxDistanceY = pLocaly;
 

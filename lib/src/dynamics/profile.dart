@@ -32,8 +32,8 @@ class ProfileEntry {
 
   double longAvg = 0.0;
   double shortAvg = 0.0;
-  double min = double.MAX_FINITE;
-  double max = -double.MAX_FINITE;
+  double min = double.maxFinite;
+  double max = -double.maxFinite;
   double _accum = 0.0;
 
   void record(double value) {

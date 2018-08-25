@@ -398,7 +398,7 @@ class DynamicTree implements BroadPhaseStrategy {
 
     AABB b = new AABB();
     while (count > 1) {
-      double minCost = double.MAX_FINITE;
+      double minCost = double.maxFinite;
       int iMin = -1, jMin = -1;
       for (int i = 0; i < count; ++i) {
         AABB aabbi = _nodes[nodes[i]].aabb;

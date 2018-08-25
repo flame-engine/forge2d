@@ -67,8 +67,8 @@
         document.getElementById('fps').style.display = 'block';
         document.getElementById('world-step').style.display = 'block';
         var script = document.createElement('script');
-        script.setAttribute('type', 'application/dart');
-        script.setAttribute('src', demo + '.dart');
+        script.setAttribute('defer', '');
+        script.setAttribute('src', demo + '.dart.js');
         document.body.appendChild(script);
       } else {
         console.log('Creating menu');
@@ -87,7 +87,6 @@
         document.body.appendChild(menu);
       }
     </script>
-    <script src="packages/browser/dart.js"></script>
   </body>
 </html>
 

@@ -82,12 +82,12 @@ class CircleStress extends Demo {
       // Corners
       final cornerDef = new BodyDef();
       sd.setAsBoxXY(20.0, 3.0);
-      cornerDef.angle = (-Math.PI / 4.0);
+      cornerDef.angle = (-Math.pi / 4.0);
       cornerDef.position = new Vector2(-35.0, 8.0);
       Body myBod = world.createBody(cornerDef);
       bodies.add(myBod);
       myBod.createFixtureFromShape(sd);
-      cornerDef.angle = (Math.PI / 4.0);
+      cornerDef.angle = (Math.pi / 4.0);
       cornerDef.position = new Vector2(35.0, 8.0);
       myBod = world.createBody(cornerDef);
       bodies.add(myBod);
@@ -117,9 +117,9 @@ class CircleStress extends Demo {
 
       for (int i = 0; i < numPieces; i++) {
         double xPos =
-            radius * Math.cos(2 * Math.PI * (i / numPieces.toDouble()));
+            radius * Math.cos(2 * Math.pi * (i / numPieces.toDouble()));
         double yPos =
-            radius * Math.sin(2 * Math.PI * (i / numPieces.toDouble()));
+            radius * Math.sin(2 * Math.pi * (i / numPieces.toDouble()));
 
         var cd = new CircleShape()
           ..radius = 1.2
@@ -142,7 +142,7 @@ class CircleStress extends Demo {
 
       RevoluteJointDef rjd = new RevoluteJointDef()
         ..initialize(body, groundBody, body.position)
-        ..motorSpeed = Math.PI
+        ..motorSpeed = Math.pi
         ..maxMotorTorque = 1000000.0
         ..enableMotor = true;
 
