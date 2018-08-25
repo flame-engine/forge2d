@@ -212,8 +212,8 @@ class AABB {
    */
   bool raycastWithPool(final RayCastOutput output, final RayCastInput input,
       IWorldPool argPool) {
-    double tmin = -double.MAX_FINITE;
-    double tmax = double.MAX_FINITE;
+    double tmin = -double.maxFinite;
+    double tmax = double.maxFinite;
 
     final Vector2 p = argPool.popVec2();
     final Vector2 d = argPool.popVec2();

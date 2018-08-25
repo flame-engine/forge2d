@@ -118,10 +118,10 @@ class VoronoiDiagram {
   void generate(double radius) {
     assert(_diagram == null);
     double inverseRadius = 1 / radius;
-    _lower.x = double.MAX_FINITE;
-    _lower.y = double.MAX_FINITE;
-    _upper.x = -double.MAX_FINITE;
-    _upper.y = -double.MAX_FINITE;
+    _lower.x = double.maxFinite;
+    _lower.y = double.maxFinite;
+    _upper.x = -double.maxFinite;
+    _upper.y = -double.maxFinite;
     for (int k = 0; k < _generatorCount; k++) {
       VoronoiGenerator g = _generatorBuffer[k];
       Vector2.min(_lower, g.center, _lower);

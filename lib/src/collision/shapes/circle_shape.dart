@@ -169,7 +169,7 @@ class CircleShape extends Shape {
   }
 
   void computeMass(final MassData massData, final double density) {
-    massData.mass = density * Math.PI * radius * radius;
+    massData.mass = density * Math.pi * radius * radius;
     massData.center.x = p.x;
     massData.center.y = p.y;
 

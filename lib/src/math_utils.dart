@@ -28,7 +28,7 @@ import 'dart:math' as Math;
 
 import 'vector_math.dart';
 
-const double TWOPI = Math.PI * 2.0;
+const double TWOPI = Math.pi * 2.0;
 
 double distanceSquared(Vector2 v1, Vector2 v2) => v1.distanceToSquared(v2);
 
