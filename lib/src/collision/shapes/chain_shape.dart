@@ -165,6 +165,21 @@ class ChainShape extends Shape {
   }
 
   /**
+   * Returns the vertex at the given position (index).
+   * 
+   * @param index the index of the vertex 0 <= index < getVertexCount( )
+   * @param vertex output vertex object, must be initialized
+   */
+  Vector2 getVertex(int index) {
+    assert(index >= 0 && index < _vertices.length);
+    return _vertices[index].clone();
+  }
+
+  int getVertexCount() {
+    return _vertices.length;
+  }
+
+  /**
    * Create a loop. This automatically adjusts connectivity.
    * 
    * @param vertices an array of vertices, these are copied
