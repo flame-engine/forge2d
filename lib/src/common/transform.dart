@@ -109,7 +109,6 @@ class Transform {
 
   static void mulTransToOutUnsafeVec2(
       final Transform T, final Vector2 v, final Vector2 out) {
-    assert(v != out);
     final double px = v.x - T.p.x;
     final double py = v.y - T.p.y;
     out.x = (T.q.c * px + T.q.s * py);
