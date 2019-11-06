@@ -52,9 +52,9 @@ class PsTriad {
   int indexA = 0, indexB = 0, indexC = 0;
   int flags = 0;
   double strength = 0.0;
-  final Vector2 pa = new Vector2.zero(),
-      pb = new Vector2.zero(),
-      pc = new Vector2.zero();
+  final Vector2 pa = Vector2.zero(),
+      pb = Vector2.zero(),
+      pc = Vector2.zero();
   double ka = 0.0, kb = 0.0, kc = 0.0, s = 0.0;
 }
 
@@ -126,10 +126,10 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
 class UpdateBodyContactsCallback implements QueryCallback {
   ParticleSystem system;
 
-  final Vector2 _tempVec = new Vector2.zero();
+  final Vector2 _tempVec = Vector2.zero();
 
   static ParticleBodyContact allocParticleBodyContact() =>
-      new ParticleBodyContact();
+      ParticleBodyContact();
 
   bool reportFixture(Fixture fixture) {
     if (fixture.isSensor()) {
@@ -211,7 +211,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
   }
 }
 
-PsTriad allocPsTriad() => new PsTriad();
+PsTriad allocPsTriad() => PsTriad();
 
 // Callback used with VoronoiDiagram.
 class CreateParticleGroupCallback implements VoronoiDiagramCallback {
@@ -336,10 +336,10 @@ class SolveCollisionCallback implements QueryCallback {
   ParticleSystem system;
   TimeStep step;
 
-  final RayCastInput input = new RayCastInput();
-  final RayCastOutput output = new RayCastOutput();
-  final Vector2 tempVec = new Vector2.zero();
-  final Vector2 tempVec2 = new Vector2.zero();
+  final RayCastInput input = RayCastInput();
+  final RayCastOutput output = RayCastOutput();
+  final Vector2 tempVec = Vector2.zero();
+  final Vector2 tempVec2 = Vector2.zero();
 
   bool reportFixture(Fixture fixture) {
     if (fixture.isSensor()) {
@@ -527,11 +527,11 @@ class ParticleSystem {
 
   World world;
 
-  static Vector2 allocVec2() => new Vector2.zero();
-  static Object allocObject() => new Object();
-  static ParticleColor allocParticleColor() => new ParticleColor();
-  static ParticleGroup allocParticleGroup() => new ParticleGroup();
-  static PsProxy allocPsProxy() => new PsProxy();
+  static Vector2 allocVec2() => Vector2.zero();
+  static Object allocObject() => Object();
+  static ParticleColor allocParticleColor() => ParticleColor();
+  static ParticleGroup allocParticleGroup() => ParticleGroup();
+  static PsProxy allocPsProxy() => PsProxy();
 
   ParticleSystem(World world) {
     world = world;
@@ -547,11 +547,11 @@ class ParticleSystem {
     ejectionStrength = 0.5;
     colorMixingStrength = 0.5;
 
-    flagsBuffer = new ParticleBufferInt();
-    positionBuffer = new ParticleBuffer<Vector2>(allocVec2);
-    velocityBuffer = new ParticleBuffer<Vector2>(allocVec2);
-    colorBuffer = new ParticleBuffer<ParticleColor>(allocParticleColor);
-    userDataBuffer = new ParticleBuffer<Object>(allocObject);
+    flagsBuffer = ParticleBufferInt();
+    positionBuffer = ParticleBuffer<Vector2>(allocVec2);
+    velocityBuffer = ParticleBuffer<Vector2>(allocVec2);
+    colorBuffer = ParticleBuffer<ParticleColor>(allocParticleColor);
+    userDataBuffer = ParticleBuffer<Object>(allocObject);
   }
 
   int createParticle(ParticleDef def) {
@@ -647,7 +647,7 @@ class ParticleSystem {
 
   List<T> requestParticleBuffer<T>(List<T> buffer, T allocClosure()) {
     if (buffer == null) {
-      buffer = new List<T>(internalAllocatedCapacity);
+      buffer = List<T>(internalAllocatedCapacity);
       for (int i = 0; i < internalAllocatedCapacity; i++) {
         try {
           buffer[i] = allocClosure();
@@ -661,7 +661,7 @@ class ParticleSystem {
 
   Float64List requestParticleBufferFloat64(Float64List buffer) {
     if (buffer == null) {
-      buffer = new Float64List(internalAllocatedCapacity);
+      buffer = Float64List(internalAllocatedCapacity);
     }
     return buffer;
   }
@@ -674,9 +674,9 @@ class ParticleSystem {
     flagsBuffer.data[index] |= flags;
   }
 
-  final AABB _temp = new AABB();
+  final AABB _temp = AABB();
   final DestroyParticlesInShapeCallback _dpcallback =
-      new DestroyParticlesInShapeCallback();
+      DestroyParticlesInShapeCallback();
 
   int destroyParticlesInShape(
       Shape shape, Transform xf, bool callDestructionListener) {
@@ -693,13 +693,13 @@ class ParticleSystem {
     }
   }
 
-  final AABB _temp2 = new AABB();
-  final Vector2 _tempVec = new Vector2.zero();
-  final Transform _tempTransform = new Transform.zero();
-  final Transform _tempTransform2 = new Transform.zero();
+  final AABB _temp2 = AABB();
+  final Vector2 _tempVec = Vector2.zero();
+  final Transform _tempTransform = Transform.zero();
+  final Transform _tempTransform2 = Transform.zero();
   CreateParticleGroupCallback _createParticleGroupCallback =
-      new CreateParticleGroupCallback();
-  final ParticleDef _tempParticleDef = new ParticleDef();
+      CreateParticleGroupCallback();
+  final ParticleDef _tempParticleDef = ParticleDef();
 
   ParticleGroup createParticleGroup(ParticleGroupDef groupDef) {
     double stride = getParticleStride();
@@ -752,7 +752,7 @@ class ParticleSystem {
     }
     int lastIndex = count;
 
-    ParticleGroup group = new ParticleGroup();
+    ParticleGroup group = ParticleGroup();
     group._system = this;
     group._firstIndex = firstIndex;
     group._lastIndex = lastIndex;
@@ -805,7 +805,7 @@ class ParticleSystem {
       }
     }
     if ((groupDef.flags & k_triadFlags) != 0) {
-      VoronoiDiagram diagram = new VoronoiDiagram(lastIndex - firstIndex);
+      VoronoiDiagram diagram = VoronoiDiagram(lastIndex - firstIndex);
       for (int i = firstIndex; i < lastIndex; i++) {
         diagram.addGenerator(positionBuffer.data[i], i);
       }
@@ -822,7 +822,7 @@ class ParticleSystem {
     return group;
   }
 
-  static PsPair allocPsPair() => new PsPair();
+  static PsPair allocPsPair() => PsPair();
 
   void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
     assert(groupA != groupB);
@@ -873,14 +873,14 @@ class ParticleSystem {
     }
     if ((particleFlags & k_triadFlags) != 0) {
       VoronoiDiagram diagram =
-          new VoronoiDiagram(groupB._lastIndex - groupA._firstIndex);
+          VoronoiDiagram(groupB._lastIndex - groupA._firstIndex);
       for (int i = groupA._firstIndex; i < groupB._lastIndex; i++) {
         if ((flagsBuffer.data[i] & ParticleType.b2_zombieParticle) == 0) {
           diagram.addGenerator(positionBuffer.data[i], i);
         }
       }
       diagram.generate(getParticleStride() / 2);
-      JoinParticleGroupsCallback callback = new JoinParticleGroupsCallback();
+      JoinParticleGroupsCallback callback = JoinParticleGroupsCallback();
       callback.system = this;
       callback.groupA = groupA;
       callback.groupB = groupB;

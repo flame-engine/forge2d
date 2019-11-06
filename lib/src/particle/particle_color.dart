@@ -30,7 +30,7 @@ part of box2d;
  * @author dmurph
  */
 class ParticleColor {
-  Int8List _data = new Int8List(4);
+  Int8List _data = Int8List(4);
 
   void set r(int v) {
     _data[0] = v;

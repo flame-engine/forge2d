@@ -34,11 +34,11 @@ part of box2d;
 class ChainShape extends Shape {
   List<Vector2> _vertices;
   int _count = 0;
-  final Vector2 _prevVertex = new Vector2.zero(),
-      _nextVertex = new Vector2.zero();
+  final Vector2 _prevVertex = Vector2.zero(),
+      _nextVertex = Vector2.zero();
   bool _hasPrevVertex = false, _hasNextVertex = false;
 
-  final EdgeShape _pool0 = new EdgeShape();
+  final EdgeShape _pool0 = EdgeShape();
 
   ChainShape() : super(ShapeType.CHAIN) {
     radius = Settings.polygonRadius;
@@ -155,7 +155,7 @@ class ChainShape extends Shape {
   }
 
   Shape clone() {
-    ChainShape clone = new ChainShape();
+    ChainShape clone = ChainShape();
     clone.createChain(_vertices, _count);
     clone._prevVertex.setFrom(_prevVertex);
     clone._nextVertex.setFrom(_nextVertex);
@@ -189,7 +189,7 @@ class ChainShape extends Shape {
     assert(_vertices == null && _count == 0);
     assert(count >= 3);
     _count = count + 1;
-    _vertices = new List<Vector2>(_count);
+    _vertices = List<Vector2>(_count);
     for (int i = 1; i < count; i++) {
       Vector2 v1 = vertices[i - 1];
       Vector2 v2 = vertices[i];
@@ -200,9 +200,9 @@ class ChainShape extends Shape {
       }
     }
     for (int i = 0; i < count; i++) {
-      _vertices[i] = new Vector2.copy(vertices[i]);
+      _vertices[i] = Vector2.copy(vertices[i]);
     }
-    _vertices[count] = new Vector2.copy(_vertices[0]);
+    _vertices[count] = Vector2.copy(_vertices[0]);
     _prevVertex.setFrom(_vertices[_count - 2]);
     _nextVertex.setFrom(_vertices[1]);
     _hasPrevVertex = true;
@@ -219,7 +219,7 @@ class ChainShape extends Shape {
     assert(_vertices == null && _count == 0);
     assert(count >= 2);
     _count = count;
-    _vertices = new List<Vector2>(_count);
+    _vertices = List<Vector2>(_count);
     for (int i = 1; i < _count; i++) {
       Vector2 v1 = vertices[i - 1];
       Vector2 v2 = vertices[i];
@@ -230,7 +230,7 @@ class ChainShape extends Shape {
       }
     }
     for (int i = 0; i < _count; i++) {
-      _vertices[i] = new Vector2.copy(vertices[i]);
+      _vertices[i] = Vector2.copy(vertices[i]);
     }
     _hasPrevVertex = false;
     _hasNextVertex = false;
