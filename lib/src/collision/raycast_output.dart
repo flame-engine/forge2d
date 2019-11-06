@@ -29,7 +29,7 @@ part of box2d;
  * come from b2RayCastInput.
  */
 class RayCastOutput {
-  final Vector2 normal = new Vector2.zero();
+  final Vector2 normal = Vector2.zero();
   double fraction = 0.0;
 
   void set(final RayCastOutput rco) {

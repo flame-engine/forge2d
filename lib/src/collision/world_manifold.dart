@@ -33,26 +33,26 @@ class WorldManifold {
   /**
    * World vector pointing from A to B
    */
-  final Vector2 normal = new Vector2.zero();
+  final Vector2 normal = Vector2.zero();
 
   /**
    * World contact point (point of intersection)
    */
-  final List<Vector2> points = new List<Vector2>(Settings.maxManifoldPoints);
+  final List<Vector2> points = List<Vector2>(Settings.maxManifoldPoints);
 
   /**
    * A negative value indicates overlap, in meters.
    */
-  final Float64List separations = new Float64List(Settings.maxManifoldPoints);
+  final Float64List separations = Float64List(Settings.maxManifoldPoints);
 
   WorldManifold() {
     for (int i = 0; i < Settings.maxManifoldPoints; i++) {
-      points[i] = new Vector2.zero();
+      points[i] = Vector2.zero();
     }
   }
 
-  final Vector2 _pool3 = new Vector2.zero();
-  final Vector2 _pool4 = new Vector2.zero();
+  final Vector2 _pool3 = Vector2.zero();
+  final Vector2 _pool4 = Vector2.zero();
 
   void initialize(final Manifold manifold, final Transform xfA, double radiusA,
       final Transform xfB, double radiusB) {

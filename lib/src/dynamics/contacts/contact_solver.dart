@@ -56,12 +56,12 @@ class ContactSolver {
 
   ContactSolver() {
     _positionConstraints =
-        new List<ContactPositionConstraint>(INITIAL_NUM_CONSTRAINTS);
+        List<ContactPositionConstraint>(INITIAL_NUM_CONSTRAINTS);
     _velocityConstraints =
-        new List<ContactVelocityConstraint>(INITIAL_NUM_CONSTRAINTS);
+        List<ContactVelocityConstraint>(INITIAL_NUM_CONSTRAINTS);
     for (int i = 0; i < INITIAL_NUM_CONSTRAINTS; i++) {
-      _positionConstraints[i] = new ContactPositionConstraint();
-      _velocityConstraints[i] = new ContactVelocityConstraint();
+      _positionConstraints[i] = ContactPositionConstraint();
+      _velocityConstraints[i] = ContactVelocityConstraint();
     }
   }
 
@@ -73,20 +73,20 @@ class ContactSolver {
     if (_positionConstraints.length < _count) {
       List<ContactPositionConstraint> old = _positionConstraints;
       _positionConstraints =
-          new List<ContactPositionConstraint>(Math.max(old.length * 2, _count));
+          List<ContactPositionConstraint>(Math.max(old.length * 2, _count));
       BufferUtils.arraycopy(old, 0, _positionConstraints, 0, old.length);
       for (int i = old.length; i < _positionConstraints.length; i++) {
-        _positionConstraints[i] = new ContactPositionConstraint();
+        _positionConstraints[i] = ContactPositionConstraint();
       }
     }
 
     if (_velocityConstraints.length < _count) {
       List<ContactVelocityConstraint> old = _velocityConstraints;
       _velocityConstraints =
-          new List<ContactVelocityConstraint>(Math.max(old.length * 2, _count));
+          List<ContactVelocityConstraint>(Math.max(old.length * 2, _count));
       BufferUtils.arraycopy(old, 0, _velocityConstraints, 0, old.length);
       for (int i = old.length; i < _velocityConstraints.length; i++) {
-        _velocityConstraints[i] = new ContactVelocityConstraint();
+        _velocityConstraints[i] = ContactVelocityConstraint();
       }
     }
 
@@ -211,9 +211,9 @@ class ContactSolver {
 
   // djm pooling, and from above
   // TODO(srdjan): make them private.
-  final Transform xfA = new Transform.zero();
-  final Transform xfB = new Transform.zero();
-  final WorldManifold worldManifold = new WorldManifold();
+  final Transform xfA = Transform.zero();
+  final Transform xfB = Transform.zero();
+  final WorldManifold worldManifold = WorldManifold();
 
   void initializeVelocityConstraints() {
     // Warm start.
@@ -827,7 +827,7 @@ class ContactSolver {
    * -_linearSlop. return minSeparation >= -1.5f * _linearSlop; }
    */
 
-  final PositionSolverManifold _psolver = new PositionSolverManifold();
+  final PositionSolverManifold _psolver = PositionSolverManifold();
 
   /**
    * Sequential solver.
@@ -1024,8 +1024,8 @@ class ContactSolver {
 }
 
 class PositionSolverManifold {
-  final Vector2 normal = new Vector2.zero();
-  final Vector2 point = new Vector2.zero();
+  final Vector2 normal = Vector2.zero();
+  final Vector2 point = Vector2.zero();
   double separation = 0.0;
 
   void initialize(

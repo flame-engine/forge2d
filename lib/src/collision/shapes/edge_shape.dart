@@ -34,20 +34,20 @@ class EdgeShape extends Shape {
   /**
    * edge vertex 1
    */
-  final Vector2 vertex1 = new Vector2.zero();
+  final Vector2 vertex1 = Vector2.zero();
   /**
    * edge vertex 2
    */
-  final Vector2 vertex2 = new Vector2.zero();
+  final Vector2 vertex2 = Vector2.zero();
 
   /**
    * optional adjacent vertex 1. Used for smooth collision
    */
-  final Vector2 vertex0 = new Vector2.zero();
+  final Vector2 vertex0 = Vector2.zero();
   /**
    * optional adjacent vertex 2. Used for smooth collision
    */
-  final Vector2 vertex3 = new Vector2.zero();
+  final Vector2 vertex3 = Vector2.zero();
   bool hasVertex0 = false, hasVertex3 = false;
 
   EdgeShape() : super(ShapeType.EDGE) {
@@ -69,7 +69,7 @@ class EdgeShape extends Shape {
   }
 
   // for pooling
-  final Vector2 normal = new Vector2.zero();
+  final Vector2 normal = Vector2.zero();
 
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
@@ -227,7 +227,7 @@ class EdgeShape extends Shape {
   }
 
   Shape clone() {
-    EdgeShape edge = new EdgeShape();
+    EdgeShape edge = EdgeShape();
     edge.radius = this.radius;
     edge.hasVertex0 = this.hasVertex0;
     edge.hasVertex3 = this.hasVertex3;

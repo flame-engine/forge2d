@@ -47,22 +47,22 @@ class Body {
   /**
    * The body origin transform.
    */
-  final Transform _transform = new Transform.zero();
+  final Transform _transform = Transform.zero();
   /**
    * The previous transform for particle simulation
    */
-  final Transform _xf0 = new Transform.zero();
+  final Transform _xf0 = Transform.zero();
 
   /**
    * The swept motion for CCD
    */
-  final Sweep _sweep = new Sweep();
+  final Sweep _sweep = Sweep();
 
   /// the linear velocity of the center of mass
-  final Vector2 _linearVelocity = new Vector2.zero();
+  final Vector2 _linearVelocity = Vector2.zero();
   double _angularVelocity = 0.0;
 
-  final Vector2 _force = new Vector2.zero();
+  final Vector2 _force = Vector2.zero();
   double _torque = 0.0;
 
   final World world;
@@ -175,7 +175,7 @@ class Body {
       return null;
     }
 
-    Fixture fixture = new Fixture();
+    Fixture fixture = Fixture();
     fixture.create(this, def);
 
     if ((_flags & ACTIVE_FLAG) == ACTIVE_FLAG) {
@@ -201,7 +201,7 @@ class Body {
     return fixture;
   }
 
-  final FixtureDef _fixDef = new FixtureDef();
+  final FixtureDef _fixDef = FixtureDef();
 
   /**
    * Creates a fixture from a shape and attach it to this body. This is a convenience function. Use
@@ -604,7 +604,7 @@ class Body {
     world.getPool().pushVec2(2);
   }
 
-  final MassData _pmd = new MassData();
+  final MassData _pmd = MassData();
 
   /**
    * This resets the mass properties to the sum of the mass properties of the fixtures. This
@@ -693,7 +693,7 @@ class Body {
    * @return the same point expressed in world coordinates.
    */
   Vector2 getWorldPoint(Vector2 localPoint) {
-    Vector2 v = new Vector2.zero();
+    Vector2 v = Vector2.zero();
     getWorldPointToOut(localPoint, v);
     return v;
   }
@@ -709,7 +709,7 @@ class Body {
    * @return the same vector expressed in world coordinates.
    */
   Vector2 getWorldVector(Vector2 localVector) {
-    Vector2 out = new Vector2.zero();
+    Vector2 out = Vector2.zero();
     getWorldVectorToOut(localVector, out);
     return out;
   }
@@ -729,7 +729,7 @@ class Body {
    * @return the corresponding local point relative to the body's origin.
    */
   Vector2 getLocalPoint(Vector2 worldPoint) {
-    Vector2 out = new Vector2.zero();
+    Vector2 out = Vector2.zero();
     getLocalPointToOut(worldPoint, out);
     return out;
   }
@@ -745,7 +745,7 @@ class Body {
    * @return the corresponding local vector.
    */
   Vector2 getLocalVector(Vector2 worldVector) {
-    Vector2 out = new Vector2.zero();
+    Vector2 out = Vector2.zero();
     getLocalVectorToOut(worldVector, out);
     return out;
   }
@@ -765,7 +765,7 @@ class Body {
    * @return the world velocity of a point.
    */
   Vector2 getLinearVelocityFromWorldPoint(Vector2 worldPoint) {
-    Vector2 out = new Vector2.zero();
+    Vector2 out = Vector2.zero();
     getLinearVelocityFromWorldPointToOut(worldPoint, out);
     return out;
   }
@@ -784,7 +784,7 @@ class Body {
    * @return the world velocity of a point.
    */
   Vector2 getLinearVelocityFromLocalPoint(Vector2 localPoint) {
-    Vector2 out = new Vector2.zero();
+    Vector2 out = Vector2.zero();
     getLinearVelocityFromLocalPointToOut(localPoint, out);
     return out;
   }
@@ -1025,7 +1025,7 @@ class Body {
   }
 
   // djm pooling
-  final Transform _pxf = new Transform.zero();
+  final Transform _pxf = Transform.zero();
 
   void synchronizeFixtures() {
     final Transform xf1 = _pxf;

@@ -37,26 +37,26 @@ class DynamicTree implements BroadPhaseStrategy {
   static const int NULL_NODE = -1;
 
   DynamicTreeNode _root;
-  List<DynamicTreeNode> _nodes = new List<DynamicTreeNode>(16);
+  List<DynamicTreeNode> _nodes = List<DynamicTreeNode>(16);
   int _nodeCount = 0;
   int _nodeCapacity = 16;
 
   int _freeList = 0;
 
-  final List<Vector2> drawVecs = new List<Vector2>(4);
-  List<DynamicTreeNode> nodeStack = new List<DynamicTreeNode>(20);
+  final List<Vector2> drawVecs = List<Vector2>(4);
+  List<DynamicTreeNode> nodeStack = List<DynamicTreeNode>(20);
   int nodeStackIndex = 0;
 
   DynamicTree() {
     // Build a linked list for the free list.
     for (int i = _nodeCapacity - 1; i >= 0; i--) {
-      _nodes[i] = new DynamicTreeNode(i);
+      _nodes[i] = DynamicTreeNode(i);
       _nodes[i].parent = (i == _nodeCapacity - 1) ? null : _nodes[i + 1];
       _nodes[i].height = -1;
     }
 
     for (int i = 0; i < drawVecs.length; i++) {
-      drawVecs[i] = new Vector2.zero();
+      drawVecs[i] = Vector2.zero();
     }
   }
 
@@ -160,7 +160,7 @@ class DynamicTree implements BroadPhaseStrategy {
         } else {
           if (nodeStack.length - nodeStackIndex - 2 <= 0) {
             List<DynamicTreeNode> newBuffer =
-                new List<DynamicTreeNode>(nodeStack.length * 2);
+                List<DynamicTreeNode>(nodeStack.length * 2);
             BufferUtils.arraycopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
             nodeStack = newBuffer;
           }
@@ -171,9 +171,9 @@ class DynamicTree implements BroadPhaseStrategy {
     }
   }
 
-  final Vector2 _r = new Vector2.zero();
-  final AABB _aabb = new AABB();
-  final RayCastInput _subInput = new RayCastInput();
+  final Vector2 _r = Vector2.zero();
+  final AABB _aabb = AABB();
+  final RayCastInput _subInput = RayCastInput();
 
   void raycast(TreeRayCastCallback callback, RayCastInput input) {
     final Vector2 p1 = input.p1;
@@ -277,7 +277,7 @@ class DynamicTree implements BroadPhaseStrategy {
       } else {
         if (nodeStack.length - nodeStackIndex - 2 <= 0) {
           List<DynamicTreeNode> newBuffer =
-              new List<DynamicTreeNode>(nodeStack.length * 2);
+              List<DynamicTreeNode>(nodeStack.length * 2);
           BufferUtils.arraycopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
           nodeStack = newBuffer;
         }
@@ -396,7 +396,7 @@ class DynamicTree implements BroadPhaseStrategy {
       }
     }
 
-    AABB b = new AABB();
+    AABB b = AABB();
     while (count > 1) {
       double minCost = double.maxFinite;
       int iMin = -1, jMin = -1;
@@ -446,12 +446,12 @@ class DynamicTree implements BroadPhaseStrategy {
 
       List<DynamicTreeNode> old = _nodes;
       _nodeCapacity *= 2;
-      _nodes = new List<DynamicTreeNode>(_nodeCapacity);
+      _nodes = List<DynamicTreeNode>(_nodeCapacity);
       BufferUtils.arraycopy(old, 0, _nodes, 0, old.length);
 
       // Build a linked list for the free list.
       for (int i = _nodeCapacity - 1; i >= _nodeCount; i--) {
-        _nodes[i] = new DynamicTreeNode(i);
+        _nodes[i] = DynamicTreeNode(i);
         _nodes[i].parent = (i == _nodeCapacity - 1) ? null : _nodes[i + 1];
         _nodes[i].height = -1;
       }
@@ -482,7 +482,7 @@ class DynamicTree implements BroadPhaseStrategy {
     _nodeCount--;
   }
 
-  final AABB _combinedAABB = new AABB();
+  final AABB _combinedAABB = AABB();
 
   void _insertLeaf(int leaf_index) {
     DynamicTreeNode leaf = _nodes[leaf_index];
@@ -822,7 +822,7 @@ class DynamicTree implements BroadPhaseStrategy {
     height = 1 + Math.max(height1, height2);
     assert(node.height == height);
 
-    AABB aabb = new AABB();
+    AABB aabb = AABB();
     aabb.combine2(child1.aabb, child2.aabb);
 
     assert(MathUtils.vector2Equals(aabb.lowerBound, node.aabb.lowerBound));
@@ -840,8 +840,8 @@ class DynamicTree implements BroadPhaseStrategy {
     drawTreeX(argDraw, _root, 0, height);
   }
 
-  final Color3i _color = new Color3i.zero();
-  final Vector2 _textVec = new Vector2.zero();
+  final Color3i _color = Color3i.zero();
+  final Vector2 _textVec = Vector2.zero();
 
   void drawTreeX(
       DebugDraw argDraw, DynamicTreeNode node, int spot, int height) {
