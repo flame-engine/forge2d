@@ -764,7 +764,6 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   }
 
   final Color3i _color = new Color3i.zero();
-  final Vector2 _textVec = new Vector2.zero();
 
   void drawTreeX(DebugDraw argDraw, int node, int spot, int height) {
     AABB a = _aabb[node];
@@ -774,9 +773,11 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
         1.0, (height - spot) * 1.0 / height, (height - spot) * 1.0 / height);
     argDraw.drawPolygon(drawVecs, 4, _color);
 
-    argDraw.getViewportTranform().getWorldToScreen(a.upperBound, _textVec);
+    Vector2 textVec = argDraw
+        .getViewportTranform()
+        .getWorldToScreen(a.upperBound);
     argDraw.drawStringXY(
-        _textVec.x, _textVec.y, "$node-${(spot + 1)}/$height", _color);
+        textVec.x, textVec.y, "$node-${(spot + 1)}/$height", _color);
 
     int c1 = _child1[node];
     int c2 = _child2[node];
