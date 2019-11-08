@@ -28,14 +28,14 @@ part of box2d;
  * A circle shape.
  */
 class CircleShape extends Shape {
-  final Vector2 p = new Vector2.zero();
+  final Vector2 p = Vector2.zero();
 
   CircleShape() : super(ShapeType.CIRCLE) {
     radius = 0.0;
   }
 
   Shape clone() {
-    CircleShape shape = new CircleShape();
+    CircleShape shape = CircleShape();
     shape.p.x = p.x;
     shape.p.y = p.y;
     shape.radius = radius;

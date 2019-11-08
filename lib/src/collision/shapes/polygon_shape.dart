@@ -35,19 +35,19 @@ class PolygonShape extends Shape {
   /**
    * Local position of the shape centroid in parent body frame.
    */
-  final Vector2 centroid = new Vector2.zero();
+  final Vector2 centroid = Vector2.zero();
 
   /**
    * The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
    * active vertices.
    */
-  final List<Vector2> vertices = new List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> vertices = List<Vector2>(Settings.maxPolygonVertices);
 
   /**
    * The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
    * active normals.
    */
-  final List<Vector2> normals = new List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> normals = List<Vector2>(Settings.maxPolygonVertices);
 
   /**
    * Number of active vertices in the shape.
@@ -55,25 +55,25 @@ class PolygonShape extends Shape {
   int count = 0;
 
   // pooling
-  final Vector2 _pool1 = new Vector2.zero();
-  final Vector2 _pool2 = new Vector2.zero();
-  final Vector2 _pool3 = new Vector2.zero();
-  final Vector2 _pool4 = new Vector2.zero();
-  Transform _poolt1 = new Transform.zero();
+  final Vector2 _pool1 = Vector2.zero();
+  final Vector2 _pool2 = Vector2.zero();
+  final Vector2 _pool3 = Vector2.zero();
+  final Vector2 _pool4 = Vector2.zero();
+  Transform _poolt1 = Transform.zero();
 
   PolygonShape() : super(ShapeType.POLYGON) {
     for (int i = 0; i < vertices.length; i++) {
-      vertices[i] = new Vector2.zero();
+      vertices[i] = Vector2.zero();
     }
 
     for (int i = 0; i < normals.length; i++) {
-      normals[i] = new Vector2.zero();
+      normals[i] = Vector2.zero();
     }
     radius = Settings.polygonRadius;
   }
 
   Shape clone() {
-    PolygonShape shape = new PolygonShape();
+    PolygonShape shape = PolygonShape();
     shape.centroid.setFrom(this.centroid);
     for (int i = 0; i < shape.normals.length; i++) {
       shape.normals[i].setFrom(normals[i]);
@@ -115,7 +115,7 @@ class PolygonShape extends Shape {
     // Perform welding and copy vertices into local buffer.
     List<Vector2> ps = (vecPool != null)
         ? vecPool.get(Settings.maxPolygonVertices)
-        : new List<Vector2>(Settings.maxPolygonVertices);
+        : List<Vector2>(Settings.maxPolygonVertices);
     int tempCount = 0;
     for (int i = 0; i < n; ++i) {
       Vector2 v = verts[i];
@@ -200,7 +200,7 @@ class PolygonShape extends Shape {
     // Copy vertices.
     for (int i = 0; i < count; ++i) {
       if (vertices[i] == null) {
-        vertices[i] = new Vector2.zero();
+        vertices[i] = Vector2.zero();
       }
       vertices[i].setFrom(ps[hull[i]]);
     }

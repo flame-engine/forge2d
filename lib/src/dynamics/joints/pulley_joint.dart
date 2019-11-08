@@ -36,14 +36,14 @@ part of box2d;
 class PulleyJoint extends Joint {
   static const double MIN_PULLEY_LENGTH = 2.0;
 
-  final Vector2 _groundAnchorA = new Vector2.zero();
-  final Vector2 _groundAnchorB = new Vector2.zero();
+  final Vector2 _groundAnchorA = Vector2.zero();
+  final Vector2 _groundAnchorB = Vector2.zero();
   double _lengthA = 0.0;
   double _lengthB = 0.0;
 
   // Solver shared
-  final Vector2 _localAnchorA = new Vector2.zero();
-  final Vector2 _localAnchorB = new Vector2.zero();
+  final Vector2 _localAnchorA = Vector2.zero();
+  final Vector2 _localAnchorB = Vector2.zero();
   double _constant = 0.0;
   double _ratio = 0.0;
   double _impulse = 0.0;
@@ -51,12 +51,12 @@ class PulleyJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _uA = new Vector2.zero();
-  final Vector2 _uB = new Vector2.zero();
-  final Vector2 _rA = new Vector2.zero();
-  final Vector2 _rB = new Vector2.zero();
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _uA = Vector2.zero();
+  final Vector2 _uB = Vector2.zero();
+  final Vector2 _rA = Vector2.zero();
+  final Vector2 _rB = Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;

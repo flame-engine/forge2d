@@ -39,7 +39,7 @@ double clampDouble(final double a, final double low, final double high) =>
     Math.max(low, Math.min(a, high));
 
 Vector2 clampVec2(final Vector2 a, final Vector2 low, final Vector2 high) {
-  final Vector2 min = new Vector2.zero();
+  final Vector2 min = Vector2.zero();
   min.x = a.x < high.x ? a.x : high.x;
   min.y = a.y < high.y ? a.y : high.y;
   min.x = low.x > min.x ? low.x : min.x;
@@ -68,7 +68,7 @@ bool approxEquals(num expected, num actual, [num tolerance = null]) {
 }
 
 Vector2 crossDblVec2(double s, Vector2 a) {
-  return new Vector2(-s * a.y, s * a.x);
+  return Vector2(-s * a.y, s * a.x);
 }
 
 bool vector2Equals(Vector2 a, Vector2 b) {
