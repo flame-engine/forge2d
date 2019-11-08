@@ -68,13 +68,13 @@ class GearJoint extends Joint {
   final Body _bodyD;
 
   // Solver shared
-  final Vector2 _localAnchorA = new Vector2.zero();
-  final Vector2 _localAnchorB = new Vector2.zero();
-  final Vector2 _localAnchorC = new Vector2.zero();
-  final Vector2 _localAnchorD = new Vector2.zero();
+  final Vector2 _localAnchorA = Vector2.zero();
+  final Vector2 _localAnchorB = Vector2.zero();
+  final Vector2 _localAnchorC = Vector2.zero();
+  final Vector2 _localAnchorD = Vector2.zero();
 
-  final Vector2 _localAxisC = new Vector2.zero();
-  final Vector2 _localAxisD = new Vector2.zero();
+  final Vector2 _localAxisC = Vector2.zero();
+  final Vector2 _localAxisD = Vector2.zero();
 
   double _referenceAngleA = 0.0;
   double _referenceAngleB = 0.0;
@@ -86,13 +86,13 @@ class GearJoint extends Joint {
 
   // Solver temp
   int _indexA = 0, _indexB = 0, _indexC = 0, _indexD = 0;
-  final Vector2 _lcA = new Vector2.zero(),
-      _lcB = new Vector2.zero(),
-      _lcC = new Vector2.zero(),
-      _lcD = new Vector2.zero();
+  final Vector2 _lcA = Vector2.zero(),
+      _lcB = Vector2.zero(),
+      _lcC = Vector2.zero(),
+      _lcD = Vector2.zero();
   double _mA = 0.0, _mB = 0.0, _mC = 0.0, _mD = 0.0;
   double _iA = 0.0, _iB = 0.0, _iC = 0.0, _iD = 0.0;
-  final Vector2 _JvAC = new Vector2.zero(), _JvBD = new Vector2.zero();
+  final Vector2 _JvAC = Vector2.zero(), _JvBD = Vector2.zero();
   double _JwA = 0.0, _JwB = 0.0, _JwC = 0.0, _JwD = 0.0;
   double _mass = 0.0;
 

@@ -30,7 +30,7 @@ import 'dart:typed_data';
 List<T> reallocateBufferWithAlloc<T>(
     List oldBuffer, int oldCapacity, int newCapacity, T alloc()) {
   assert(newCapacity > oldCapacity);
-  List<T> newBuffer = new List<T>(newCapacity);
+  List<T> newBuffer = List<T>(newCapacity);
   if (oldBuffer != null) {
     arraycopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
@@ -48,7 +48,7 @@ List<T> reallocateBufferWithAlloc<T>(
 List<int> reallocateBufferInt(
     List<int> oldBuffer, int oldCapacity, int newCapacity) {
   assert(newCapacity > oldCapacity);
-  List<int> newBuffer = new List<int>(newCapacity);
+  List<int> newBuffer = List<int>(newCapacity);
   if (oldBuffer != null) {
     arraycopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
@@ -62,7 +62,7 @@ List<int> reallocateBufferInt(
 Float64List reallocateBuffer(
     Float64List oldBuffer, int oldCapacity, int newCapacity) {
   assert(newCapacity > oldCapacity);
-  Float64List newBuffer = new Float64List(newCapacity);
+  Float64List newBuffer = Float64List(newCapacity);
   if (oldBuffer != null) {
     arraycopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
@@ -134,7 +134,7 @@ void rotate<T>(List<T> ray, int first, int new_first, int last) {
 }
 
 /** Helper function to allocate a list of integers and set all elements to 0. */
-List<int> allocClearIntList(int size) => new List<int>.filled(size, 0);
+List<int> allocClearIntList(int size) => List<int>.filled(size, 0);
 
 /**
  * Helper function for ease of porting Java to Dart.
@@ -146,7 +146,7 @@ void arraycopy(List src, int srcPos, List dest, int destPos, int length) {
 // Replace Java's Arrays::sort.
 // TODO(srdjan): Make a version that does not require copying.
 void sort<T>(List<T> list, int fromPos, int toPos) {
-  List<T> temp = new List.from(list.getRange(fromPos, toPos));
+  List<T> temp = List.from(list.getRange(fromPos, toPos));
   temp.sort();
   list.setRange(fromPos, toPos, temp);
 }

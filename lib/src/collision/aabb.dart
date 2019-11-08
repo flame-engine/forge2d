@@ -35,8 +35,8 @@ class AABB {
    * Creates the default object, with vertices at 0,0 and 0,0.
    */
   AABB()
-      : lowerBound = new Vector2.zero(),
-        upperBound = new Vector2.zero();
+      : lowerBound = Vector2.zero(),
+        upperBound = Vector2.zero();
 
   /**
    * Copies from the given object
@@ -44,8 +44,8 @@ class AABB {
    * @param copy the object to copy from
    */
   AABB.copy(final AABB copy)
-      : lowerBound = new Vector2.copy(copy.lowerBound),
-        upperBound = new Vector2.copy(copy.upperBound);
+      : lowerBound = Vector2.copy(copy.lowerBound),
+        upperBound = Vector2.copy(copy.upperBound);
 
   /**
    * Creates an AABB object using the given bounding vertices.
@@ -54,8 +54,8 @@ class AABB {
    * @param maxVertex the top right vertex of the bounding box
    */
   AABB.withVec2(final Vector2 lowerVertex, final Vector2 upperVertex)
-      : lowerBound = new Vector2.copy(lowerVertex),
-        upperBound = new Vector2.copy(upperVertex);
+      : lowerBound = Vector2.copy(lowerVertex),
+        upperBound = Vector2.copy(upperVertex);
 
   /**
    * Sets this object from the given object
@@ -91,7 +91,7 @@ class AABB {
    * @return
    */
   Vector2 getCenter() {
-    final Vector2 center = new Vector2.copy(lowerBound);
+    final Vector2 center = Vector2.copy(lowerBound);
     center.add(upperBound);
     center.scale(.5);
     return center;
@@ -108,7 +108,7 @@ class AABB {
    * @return
    */
   Vector2 getExtents() {
-    final Vector2 center = new Vector2.copy(upperBound);
+    final Vector2 center = Vector2.copy(upperBound);
     center.sub(lowerBound);
     center.scale(.5);
     return center;
@@ -201,7 +201,7 @@ class AABB {
    * @return
    */
   bool raycast(final RayCastOutput output, final RayCastInput input) {
-    return raycastWithPool(output, input, new DefaultWorldPool(4, 4));
+    return raycastWithPool(output, input, DefaultWorldPool(4, 4));
   }
 
   /**

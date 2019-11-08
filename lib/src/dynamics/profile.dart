@@ -61,16 +61,16 @@ class ProfileEntry {
 }
 
 class Profile {
-  final ProfileEntry step = new ProfileEntry();
-  final ProfileEntry stepInit = new ProfileEntry();
-  final ProfileEntry collide = new ProfileEntry();
-  final ProfileEntry solveParticleSystem = new ProfileEntry();
-  final ProfileEntry solve = new ProfileEntry();
-  final ProfileEntry solveInit = new ProfileEntry();
-  final ProfileEntry solveVelocity = new ProfileEntry();
-  final ProfileEntry solvePosition = new ProfileEntry();
-  final ProfileEntry broadphase = new ProfileEntry();
-  final ProfileEntry solveTOI = new ProfileEntry();
+  final ProfileEntry step = ProfileEntry();
+  final ProfileEntry stepInit = ProfileEntry();
+  final ProfileEntry collide = ProfileEntry();
+  final ProfileEntry solveParticleSystem = ProfileEntry();
+  final ProfileEntry solve = ProfileEntry();
+  final ProfileEntry solveInit = ProfileEntry();
+  final ProfileEntry solveVelocity = ProfileEntry();
+  final ProfileEntry solvePosition = ProfileEntry();
+  final ProfileEntry broadphase = ProfileEntry();
+  final ProfileEntry solveTOI = ProfileEntry();
 
   void toDebugStrings(List<String> strings) {
     strings.add("Profile:");

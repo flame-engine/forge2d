@@ -36,7 +36,7 @@ class MassData {
   /**
    * Blank mass data
    */
-  MassData() : this.center = new Vector2.zero();
+  MassData() : this.center = Vector2.zero();
 
   /**
    * Copies from the given mass data
@@ -57,6 +57,6 @@ class MassData {
 
   /** Return a copy of this object. */
   MassData clone() {
-    return new MassData.copy(this);
+    return MassData.copy(this);
   }
 }

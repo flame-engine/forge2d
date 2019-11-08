@@ -51,8 +51,8 @@ abstract class Contact {
   Contact _next;
 
   // Nodes for connecting bodies.
-  ContactEdge _nodeA = new ContactEdge();
-  ContactEdge _nodeB = new ContactEdge();
+  ContactEdge _nodeA = ContactEdge();
+  ContactEdge _nodeB = ContactEdge();
 
   Fixture _fixtureA;
   Fixture _fixtureB;
@@ -60,7 +60,7 @@ abstract class Contact {
   int _indexA = 0;
   int _indexB = 0;
 
-  final Manifold _manifold = new Manifold();
+  final Manifold _manifold = Manifold();
 
   int _toiCount = 0;
   double _toi = 0.0;
@@ -201,7 +201,7 @@ abstract class Contact {
   }
 
   // djm pooling
-  final Manifold _oldManifold = new Manifold();
+  final Manifold _oldManifold = Manifold();
 
   void update(ContactListener listener) {
     _oldManifold.set(_manifold);
