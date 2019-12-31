@@ -841,7 +841,6 @@ class DynamicTree implements BroadPhaseStrategy {
   }
 
   final Color3i _color = Color3i.zero();
-  final Vector2 _textVec = Vector2.zero();
 
   void drawTreeX(
       DebugDraw argDraw, DynamicTreeNode node, int spot, int height) {
@@ -851,11 +850,11 @@ class DynamicTree implements BroadPhaseStrategy {
         1.0, (height - spot) * 1.0 / height, (height - spot) * 1.0 / height);
     argDraw.drawPolygon(drawVecs, 4, _color);
 
-    argDraw
+    Vector2 textVec = argDraw
         .getViewportTranform()
-        .getWorldToScreen(node.aabb.upperBound, _textVec);
+        .getWorldToScreen(node.aabb.upperBound);
     argDraw.drawStringXY(
-        _textVec.x, _textVec.y, "$node.id-${(spot + 1)}/$height", _color);
+        textVec.x, textVec.y, "$node.id-${(spot + 1)}/$height", _color);
 
     if (node.child1 != null) {
       drawTreeX(argDraw, node.child1, spot + 1, height);
