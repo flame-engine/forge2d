@@ -78,32 +78,27 @@ class ViewportTransform {
   }
 
   /**
-   * Takes the world coordinate (argWorld) puts the corresponding
-   * screen coordinate in argScreen.  It should be safe to give the
-   * same object as both parameters.
+   * Takes the world coordinates and return the corresponding screen coordinates
    */
-  void getWorldToScreen(Vector2 argWorld, Vector2 argScreen) {
+  Vector2 getWorldToScreen(Vector2 argWorld) {
     // Correct for canvas considering the upper-left corner, rather than the
     // center, to be the origin.
     double gridCorrectedX = (argWorld.x * scale) + extents.x;
     double gridCorrectedY = extents.y - (argWorld.y * scale);
 
-    Vector2 translationTemp = translation;
-    argScreen.setValues(gridCorrectedX + translationTemp.x,
-        gridCorrectedY + -translationTemp.y);
+    return Vector2(gridCorrectedX + translation.x,
+        gridCorrectedY + -translation.y);
   }
 
   /**
-   * Takes the screen coordinates (argScreen) and puts the
-   * corresponding world coordinates in argWorld. It should be safe
-   * to give the same object as both parameters.
+   * Takes the screen coordinates and return the corresponding world coordinates
    */
-  void getScreenToWorld(Vector2 argScreen, Vector2 argWorld) {
+  Vector2 getScreenToWorld(Vector2 argScreen) {
     double translationCorrectedX = argScreen.x - translation.x;
     double translationCorrectedY = argScreen.y + translation.y;
 
     double gridCorrectedX = (translationCorrectedX - extents.x) / scale;
     double gridCorrectedY = ((translationCorrectedY - extents.y) * -1) / scale;
-    argWorld.setValues(gridCorrectedX, gridCorrectedY);
+    return Vector2(gridCorrectedX, gridCorrectedY);
   }
 }

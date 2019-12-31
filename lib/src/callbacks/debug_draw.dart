@@ -188,90 +188,47 @@ abstract class DebugDraw {
   }
 
   /**
-   * @param argScreen
-   * @param argWorld
-   */
-  void getScreenToWorldToOut(Vector2 argScreen, Vector2 argWorld) {
-    viewportTransform.getScreenToWorld(argScreen, argWorld);
-  }
-
-  /**
-   * @param argWorld
-   * @param argScreen
-   */
-  void getWorldToScreenToOut(Vector2 argWorld, Vector2 argScreen) {
-    viewportTransform.getWorldToScreen(argWorld, argScreen);
-  }
-
-  /**
-   * Takes the world coordinates and puts the corresponding screen coordinates in argScreen.
-   *
-   * @param worldX
-   * @param worldY
-   * @param argScreen
-   */
-  void getWorldToScreenToOutXY(
-      double worldX, double worldY, Vector2 argScreen) {
-    argScreen.setValues(worldX, worldY);
-    viewportTransform.getWorldToScreen(argScreen, argScreen);
-  }
-
-  /**
-   * takes the world coordinate (argWorld) and returns the screen coordinates.
-   *
-   * @param argWorld
-   */
-  Vector2 getWorldToScreen(Vector2 argWorld) {
-    Vector2 screen = new Vector2.zero();
-    viewportTransform.getWorldToScreen(argWorld, screen);
-    return screen;
-  }
-
-  /**
-   * Takes the world coordinates and returns the screen coordinates.
+   * Takes the world coordinates and returns the corresponding screen
+   * coordinates
    *
    * @param worldX
    * @param worldY
    */
-  Vector2 getWorldToScreenXY(double worldX, double worldY) {
-    Vector2 argScreen = new Vector2(worldX, worldY);
-    viewportTransform.getWorldToScreen(argScreen, argScreen);
-    return argScreen;
-  }
+  Vector2 getWorldToScreenToOutXY(double worldX, double worldY) =>
+    viewportTransform.getWorldToScreen(Vector2(worldX, worldY));
 
   /**
-   * takes the screen coordinates and puts the corresponding world coordinates in argWorld.
+   * Takes the world coordinate and returns the screen coordinates.
    *
-   * @param screenX
-   * @param screenY
    * @param argWorld
    */
-  void getScreenToWorldToOutXY(
-      double screenX, double screenY, Vector2 argWorld) {
-    argWorld.setValues(screenX, screenY);
-    viewportTransform.getScreenToWorld(argWorld, argWorld);
-  }
+  Vector2 getWorldToScreen(Vector2 argWorld) =>
+      viewportTransform.getWorldToScreen(argWorld);
+
+  /**
+   * Takes the world coordinates and returns the screen coordinates
+   *
+   * @param worldX
+   * @param worldY
+   */
+  Vector2 getWorldToScreenXY(double worldX, double worldY) =>
+      viewportTransform.getWorldToScreen(Vector2(worldX, worldY));
 
   /**
    * takes the screen coordinates (argScreen) and returns the world coordinates
    *
    * @param argScreen
    */
-  Vector2 getScreenToWorld(Vector2 argScreen) {
-    Vector2 world = new Vector2.zero();
-    viewportTransform.getScreenToWorld(argScreen, world);
-    return world;
-  }
+  Vector2 getScreenToWorld(Vector2 argScreen) =>
+      viewportTransform.getScreenToWorld(argScreen);
 
   /**
-   * takes the screen coordinates and returns the world coordinates.
+   * Takes the screen coordinates and returns the corresponding world
+   * coordinates
    *
    * @param screenX
    * @param screenY
    */
-  Vector2 getScreenToWorldXY(double screenX, double screenY) {
-    Vector2 screen = new Vector2(screenX, screenY);
-    viewportTransform.getScreenToWorld(screen, screen);
-    return screen;
-  }
+  Vector2 getScreenToWorldToOutXY(double screenX, double screenY) =>
+      viewportTransform.getScreenToWorld(Vector2(screenX, screenY));
 }
