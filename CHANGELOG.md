@@ -1,3 +1,9 @@
+### 0.4.5
+* Fixing warnings and formatting
+
+### 0.4.1 - 0.4.4
+* Updates related to Flame interop + bugfixes
+
 ### 0.4.0
 
 * Breaking: Made package strong-mode compliant 

@@ -86,8 +86,8 @@ class ViewportTransform {
     double gridCorrectedX = (argWorld.x * scale) + extents.x;
     double gridCorrectedY = extents.y - (argWorld.y * scale);
 
-    return Vector2(gridCorrectedX + translation.x,
-        gridCorrectedY + -translation.y);
+    return Vector2(
+        gridCorrectedX + translation.x, gridCorrectedY + -translation.y);
   }
 
   /**

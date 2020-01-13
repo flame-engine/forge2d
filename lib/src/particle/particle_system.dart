@@ -52,9 +52,7 @@ class PsTriad {
   int indexA = 0, indexB = 0, indexC = 0;
   int flags = 0;
   double strength = 0.0;
-  final Vector2 pa = Vector2.zero(),
-      pb = Vector2.zero(),
-      pc = Vector2.zero();
+  final Vector2 pa = Vector2.zero(), pb = Vector2.zero(), pc = Vector2.zero();
   double ka = 0.0, kb = 0.0, kc = 0.0, s = 0.0;
 }
 
