@@ -850,9 +850,8 @@ class DynamicTree implements BroadPhaseStrategy {
         1.0, (height - spot) * 1.0 / height, (height - spot) * 1.0 / height);
     argDraw.drawPolygon(drawVecs, 4, _color);
 
-    Vector2 textVec = argDraw
-        .getViewportTranform()
-        .getWorldToScreen(node.aabb.upperBound);
+    Vector2 textVec =
+        argDraw.getViewportTranform().getWorldToScreen(node.aabb.upperBound);
     argDraw.drawStringXY(
         textVec.x, textVec.y, "$node.id-${(spot + 1)}/$height", _color);
 
