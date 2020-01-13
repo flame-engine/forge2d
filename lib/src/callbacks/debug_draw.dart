@@ -190,12 +190,19 @@ abstract class DebugDraw {
   /**
    * Takes the world coordinates and returns the corresponding screen
    * coordinates
+   */
+  Vector2 getWorldToScreenToOut(Vector2 input) =>
+      viewportTransform.getWorldToScreen(input);
+
+  /**
+   * Takes the world coordinates and returns the corresponding screen
+   * coordinates
    *
    * @param worldX
    * @param worldY
    */
   Vector2 getWorldToScreenToOutXY(double worldX, double worldY) =>
-      viewportTransform.getWorldToScreen(Vector2(worldX, worldY));
+      getWorldToScreenToOut(Vector2(worldX, worldY));
 
   /**
    * Takes the world coordinate and returns the screen coordinates.
