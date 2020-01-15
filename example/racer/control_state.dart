@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Used to track keyboard state. Entries are masked bitwise. */
+/// Used to track keyboard state. Entries are masked bitwise.
 
 part of racer;
 

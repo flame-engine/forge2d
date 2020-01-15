@@ -24,50 +24,42 @@
 
 part of box2d;
 
-/**
- * A particle group definition holds all the data needed to construct a particle group. You can
- * safely re-use these definitions.
- */
+/// A particle group definition holds all the data needed to construct a particle group. You can
+/// safely re-use these definitions.
 class ParticleGroupDef {
-  /** The particle-behavior flags. */
+  /// The particle-behavior flags.
   int flags = 0;
 
-  /** The group-construction flags. */
+  /// The group-construction flags.
   int groupFlags = 0;
 
-  /**
-   * The world position of the group. Moves the group's shape a distance equal to the value of
-   * position.
-   */
+  /// The world position of the group. Moves the group's shape a distance equal to the value of
+  /// position.
   final Vector2 position = new Vector2.zero();
 
-  /**
-   * The world angle of the group in radians. Rotates the shape by an angle equal to the value of
-   * angle.
-   */
+  /// The world angle of the group in radians. Rotates the shape by an angle equal to the value of
+  /// angle.
   double angle = 0.0;
 
-  /** The linear velocity of the group's origin in world co-ordinates. */
+  /// The linear velocity of the group's origin in world co-ordinates.
   final Vector2 linearVelocity = new Vector2.zero();
 
-  /** The angular velocity of the group. */
+  /// The angular velocity of the group.
   double angularVelocity = 0.0;
 
-  /** The color of all particles in the group. */
+  /// The color of all particles in the group.
   ParticleColor color;
 
-  /**
-   * The strength of cohesion among the particles in a group with flag b2_elasticParticle or
-   * b2_springParticle.
-   */
+  /// The strength of cohesion among the particles in a group with flag b2_elasticParticle or
+  /// b2_springParticle.
   double strength = 1.0;
 
-  /** Shape containing the particle group. */
+  /// Shape containing the particle group.
   Shape shape;
 
-  /** If true, destroy the group automatically after its last particle has been destroyed. */
+  /// If true, destroy the group automatically after its last particle has been destroyed.
   bool destroyAutomatically = true;
 
-  /** Use this to store application-specific group data. */
+  /// Use this to store application-specific group data.
   Object userData;
 }

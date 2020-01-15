@@ -1,34 +1,31 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 part of box2d;
 
-/**
- * The class manages contact between two shapes. A contact exists for each overlapping AABB in the
- * broad-phase (except if filtered). Therefore a contact object may exist that has no contact
- * points.
- *
- */
+/// The class manages contact between two shapes. A contact exists for each overlapping AABB in the
+/// broad-phase (except if filtered). Therefore a contact object may exist that has no contact
+/// points.
 abstract class Contact {
   // Flags stored in _flags
   // Used when crawling contact graph when forming islands.
@@ -74,7 +71,7 @@ abstract class Contact {
 
   Contact(this._pool);
 
-  /** initialization for pooling */
+  /// initialization for pooling
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
     _flags = ENABLED_FLAG;
 
@@ -106,9 +103,7 @@ abstract class Contact {
     _tangentSpeed = 0.0;
   }
 
-  /**
-   * Get the world manifold.
-   */
+  /// Get the world manifold.
   void getWorldManifold(WorldManifold worldManifold) {
     final Body bodyA = _fixtureA.getBody();
     final Body bodyB = _fixtureB.getBody();
@@ -119,21 +114,13 @@ abstract class Contact {
         bodyB._transform, shapeB.radius);
   }
 
-  /**
-   * Is this contact touching
-   *
-   * @return
-   */
+  /// Is this contact touching
   bool isTouching() {
     return (_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
   }
 
-  /**
-   * Enable/disable this contact. This can be used inside the pre-solve contact listener. The
-   * contact is only disabled for the current time step (or sub-step in continuous collisions).
-   *
-   * @param flag
-   */
+  /// Enable/disable this contact. This can be used inside the pre-solve contact listener. The
+  /// contact is only disabled for the current time step (or sub-step in continuous collisions).
   void setEnabled(bool flag) {
     if (flag) {
       _flags |= ENABLED_FLAG;
@@ -142,40 +129,24 @@ abstract class Contact {
     }
   }
 
-  /**
-   * Has this contact been disabled?
-   *
-   * @return
-   */
+  /// Has this contact been disabled?
   bool isEnabled() {
     return (_flags & ENABLED_FLAG) == ENABLED_FLAG;
   }
 
-  /**
-   * Get the next contact in the world's contact list.
-   *
-   * @return
-   */
+  /// Get the next contact in the world's contact list.
   Contact getNext() {
     return _next;
   }
 
-  /**
-   * Get the first fixture in this contact.
-   *
-   * @return
-   */
+  /// Get the first fixture in this contact.
   Fixture get fixtureA => _fixtureA;
 
   int getChildIndexA() {
     return _indexA;
   }
 
-  /**
-   * Get the second fixture in this contact.
-   *
-   * @return
-   */
+  /// Get the second fixture in this contact.
   Fixture get fixtureB => _fixtureB;
 
   int getChildIndexB() {
@@ -193,9 +164,7 @@ abstract class Contact {
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB);
 
-  /**
-   * Flag this contact for filtering. Filtering will occur the next time step.
-   */
+  /// Flag this contact for filtering. Filtering will occur the next time step.
   void flagForFiltering() {
     _flags |= FILTER_FLAG;
   }
@@ -284,26 +253,14 @@ abstract class Contact {
     }
   }
 
-  /**
-   * Friction mixing law. The idea is to allow either fixture to drive the restitution to zero. For
-   * example, anything slides on ice.
-   *
-   * @param friction1
-   * @param friction2
-   * @return
-   */
+  /// Friction mixing law. The idea is to allow either fixture to drive the restitution to zero. For
+  /// example, anything slides on ice.
   static double mixFriction(double friction1, double friction2) {
     return Math.sqrt(friction1 * friction2);
   }
 
-  /**
-   * Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface. For
-   * example, a superball bounces on anything.
-   *
-   * @param restitution1
-   * @param restitution2
-   * @return
-   */
+  /// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface. For
+  /// example, a superball bounces on anything.
   static double mixRestitution(double restitution1, double restitution2) {
     return restitution1 > restitution2 ? restitution1 : restitution2;
   }

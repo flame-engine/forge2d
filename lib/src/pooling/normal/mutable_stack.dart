@@ -61,7 +61,7 @@ abstract class MutableStack<E> implements IDynamicStack<E> {
     _stack[--_index] = argObject;
   }
 
-  /** Creates a new instance of the object contained by this stack. */
+  /// Creates a new instance of the object contained by this stack.
   E newInstance();
 
   List<E> newArray(int size) {

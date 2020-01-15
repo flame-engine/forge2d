@@ -24,9 +24,7 @@
 
 part of box2d;
 
-/**
- * Ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
- */
+/// Ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
 class RayCastInput {
   final Vector2 p1 = new Vector2.zero(), p2 = new Vector2.zero();
   double maxFraction = 0.0;

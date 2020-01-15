@@ -24,10 +24,8 @@
 
 part of box2d;
 
-/**
- * Provides object pooling for all objects used in the engine. Objects retrieved from here should
- * only be used temporarily, and then pushed back (with the exception of arrays).
- */
+/// Provides object pooling for all objects used in the engine. Objects retrieved from here should
+/// only be used temporarily, and then pushed back (with the exception of arrays).
 
 class OrderedStackVec2 extends OrderedStack<Vector2> {
   OrderedStackVec2(int argStackSize, int argContainerSize)

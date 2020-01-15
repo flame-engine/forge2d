@@ -24,18 +24,11 @@
 
 part of box2d;
 
-/**
- * Implement this class to provide collision filtering. In other words, you can implement
- * this class if you want finer control over contact creation.
- */
+/// Implement this class to provide collision filtering. In other words, you can implement
+/// this class if you want finer control over contact creation.
 class ContactFilter {
-  /**
-   * Return true if contact calculations should be performed between these two shapes.
-   * @warning for performance reasons this is only called when the AABBs begin to overlap.
-   * @param fixtureA
-   * @param fixtureB
-   * @return
-   */
+  /// Return true if contact calculations should be performed between these two shapes.
+  /// @warning for performance reasons this is only called when the AABBs begin to overlap.
   bool shouldCollide(Fixture fixtureA, Fixture fixtureB) {
     Filter filterA = fixtureA.getFilterData();
     Filter filterB = fixtureB.getFilterData();
