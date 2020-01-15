@@ -1,33 +1,31 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
-/**
- * The world class manages all physics entities, dynamic simulation, and asynchronous queries. The
- * world also contains efficient memory management facilities.
- */
+/// The world class manages all physics entities, dynamic simulation, and asynchronous queries. The
+/// world also contains efficient memory management facilities.
 class World {
   static const int WORLD_POOL_SIZE = 100;
   static const int WORLD_POOL_CONTAINER_SIZE = 10;
@@ -56,9 +54,7 @@ class World {
 
   final IWorldPool _pool;
 
-  /**
-   * This is used to compute the time step ratio to support a variable time step.
-   */
+  /// This is used to compute the time step ratio to support a variable time step.
   double _inv_dt0 = 0.0;
 
   // these are for debugging the solver
@@ -83,22 +79,18 @@ class World {
   List<List<ContactRegister>> contactStacks =
       _create2D(ShapeType.values.length, ShapeType.values.length);
 
-  /**
-   * Construct a world object.
-   *
-   * @param gravity the world gravity vector.
-   */
+  /// Construct a world object.
+  ///
+  /// @param gravity the world gravity vector.
   factory World.withGravity(Vector2 gravity) {
     var w = new World.withPool(gravity,
         new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
     return w;
   }
 
-  /**
-   * Construct a world object.
-   *
-   * @param gravity the world gravity vector.
-   */
+  /// Construct a world object.
+  ///
+  /// @param gravity the world gravity vector.
   factory World.withPool(Vector2 gravity, IWorldPool pool) {
     var w = new World.withPoolAndStrategy(gravity, pool, new DynamicTree());
     return w;
@@ -251,51 +243,41 @@ class World {
     return _pool;
   }
 
-  /**
-   * Register a destruction listener. The listener is owned by you and must remain in scope.
-   *
-   * @param listener
-   */
+  /// Register a destruction listener. The listener is owned by you and must remain in scope.
+  ///
+  /// @param listener
   void setDestructionListener(DestructionListener listener) {
     _destructionListener = listener;
   }
 
-  /**
-   * Register a contact filter to provide specific control over collision. Otherwise the default
-   * filter is used (_defaultFilter). The listener is owned by you and must remain in scope.
-   *
-   * @param filter
-   */
+  /// Register a contact filter to provide specific control over collision. Otherwise the default
+  /// filter is used (_defaultFilter). The listener is owned by you and must remain in scope.
+  ///
+  /// @param filter
   void setContactFilter(ContactFilter filter) {
     _contactManager.contactFilter = filter;
   }
 
-  /**
-   * Register a contact event listener. The listener is owned by you and must remain in scope.
-   *
-   * @param listener
-   */
+  /// Register a contact event listener. The listener is owned by you and must remain in scope.
+  ///
+  /// @param listener
   void setContactListener(ContactListener listener) {
     _contactManager.contactListener = listener;
   }
 
-  /**
-   * Register a routine for debug drawing. The debug draw functions are called inside with
-   * World.DrawDebugData method. The debug draw object is owned by you and must remain in scope.
-   *
-   * @param debugDraw
-   */
+  /// Register a routine for debug drawing. The debug draw functions are called inside with
+  /// World.DrawDebugData method. The debug draw object is owned by you and must remain in scope.
+  ///
+  /// @param debugDraw
   void setDebugDraw(DebugDraw debugDraw) {
     debugDraw = debugDraw;
   }
 
-  /**
-   * create a rigid body given a definition. No reference to the definition is retained.
-   *
-   * @warning This function is locked during callbacks.
-   * @param def
-   * @return
-   */
+  /// create a rigid body given a definition. No reference to the definition is retained.
+  ///
+  /// @warning This function is locked during callbacks.
+  /// @param def
+  /// @return
   Body createBody(BodyDef def) {
     assert(isLocked() == false);
     if (isLocked()) {
@@ -316,14 +298,11 @@ class World {
     return b;
   }
 
-  /**
-   * destroy a rigid body given a definition. No reference to the definition is retained. This
-   * function is locked during callbacks.
-   *
-   * @warning This automatically deletes all associated shapes and joints.
-   * @warning This function is locked during callbacks.
-   * @param body
-   */
+  /// Destroys a rigid body given a definition. No reference to the definition is retained. This
+  /// function is locked during callbacks.
+  ///
+  /// @warning This automatically deletes all associated shapes and joints.
+  /// @warning This function is locked during callbacks.
   void destroyBody(Body body) {
     assert(_bodyCount > 0);
     assert(isLocked() == false);
@@ -390,14 +369,10 @@ class World {
     // TODO djm recycle body
   }
 
-  /**
-   * create a joint to constrain bodies together. No reference to the definition is retained. This
-   * may cause the connected bodies to cease colliding.
-   *
-   * @warning This function is locked during callbacks.
-   * @param def
-   * @return
-   */
+  /// create a joint to constrain bodies together. No reference to the definition is retained.
+  /// This may cause the connected bodies to cease colliding.
+  ///
+  /// @warning This function is locked during callbacks.
   Joint createJoint(JointDef def) {
     assert(isLocked() == false);
     if (isLocked()) {
@@ -456,12 +431,10 @@ class World {
     return j;
   }
 
-  /**
-   * destroy a joint. This may cause the connected bodies to begin colliding.
-   *
-   * @warning This function is locked during callbacks.
-   * @param joint
-   */
+  /// destroy a joint. This may cause the connected bodies to begin colliding.
+  ///
+  /// @warning This function is locked during callbacks.
+  /// @param joint
   void destroyJoint(Joint j) {
     assert(isLocked() == false);
     if (isLocked()) {
@@ -549,13 +522,11 @@ class World {
   final Timer stepTimer = new Timer();
   final Timer tempTimer = new Timer();
 
-  /**
-   * Take a time step. This performs collision detection, integration, and constraint solution.
-   *
-   * @param timeStep the amount of time to simulate, this should not vary.
-   * @param velocityIterations for the velocity constraint solver.
-   * @param positionIterations for the position constraint solver.
-   */
+  /// Take a time step. This performs collision detection, integration, and constraint solution.
+  ///
+  /// @param timeStep the amount of time to simulate, this should not vary.
+  /// @param velocityIterations for the velocity constraint solver.
+  /// @param positionIterations for the position constraint solver.
   void stepDt(double dt, int velocityIterations, int positionIterations) {
     stepTimer.reset();
     tempTimer.reset();
@@ -619,13 +590,11 @@ class World {
     _profile.step.record(stepTimer.getMilliseconds());
   }
 
-  /**
-   * Call this after you are done with time steps to clear the forces. You normally call this after
-   * each call to Step, unless you are performing sub-steps. By default, forces will be
-   * automatically cleared, so you don't need to call this function.
-   *
-   * @see setAutoClearForces
-   */
+  /// Call this after you are done with time steps to clear the forces. You normally call this after
+  /// each call to Step, unless you are performing sub-steps. By default, forces will be
+  /// automatically cleared, so you don't need to call this function.
+  ///
+  /// @see setAutoClearForces
   void clearForces() {
     for (Body body = bodyList; body != null; body = body.getNext()) {
       body._force.setZero();
@@ -639,9 +608,7 @@ class World {
   final Vector2 cB = new Vector2.zero();
   final Vec2Array avs = new Vec2Array();
 
-  /**
-   * Call this to draw shapes and other debug draw data.
-   */
+  /// Call this to draw shapes and other debug draw data.
   void drawDebugData() {
     if (debugDraw == null) {
       return;
@@ -737,25 +704,21 @@ class World {
 
   final WorldQueryWrapper wqwrapper = new WorldQueryWrapper();
 
-  /**
-   * Query the world for all fixtures that potentially overlap the provided AABB.
-   *
-   * @param callback a user implemented callback class.
-   * @param aabb the query box.
-   */
+  /// Query the world for all fixtures that potentially overlap the provided AABB.
+  ///
+  /// @param callback a user implemented callback class.
+  /// @param aabb the query box.
   void queryAABB(QueryCallback callback, AABB aabb) {
     wqwrapper.broadPhase = _contactManager.broadPhase;
     wqwrapper.callback = callback;
     _contactManager.broadPhase.query(wqwrapper, aabb);
   }
 
-  /**
-   * Query the world for all fixtures and particles that potentially overlap the provided AABB.
-   *
-   * @param callback a user implemented callback class.
-   * @param particleCallback callback for particles.
-   * @param aabb the query box.
-   */
+  /// Query the world for all fixtures and particles that potentially overlap the provided AABB.
+  ///
+  /// @param callback a user implemented callback class.
+  /// @param particleCallback callback for particles.
+  /// @param aabb the query box.
   void queryAABBTwoCallbacks(QueryCallback callback,
       ParticleQueryCallback particleCallback, AABB aabb) {
     wqwrapper.broadPhase = _contactManager.broadPhase;
@@ -764,12 +727,10 @@ class World {
     _particleSystem.queryAABB(particleCallback, aabb);
   }
 
-  /**
-   * Query the world for all particles that potentially overlap the provided AABB.
-   *
-   * @param particleCallback callback for particles.
-   * @param aabb the query box.
-   */
+  /// Query the world for all particles that potentially overlap the provided AABB.
+  ///
+  /// @param particleCallback callback for particles.
+  /// @param aabb the query box.
   void queryAABBParticle(ParticleQueryCallback particleCallback, AABB aabb) {
     _particleSystem.queryAABB(particleCallback, aabb);
   }
@@ -777,15 +738,13 @@ class World {
   final WorldRayCastWrapper wrcwrapper = new WorldRayCastWrapper();
   final RayCastInput input = new RayCastInput();
 
-  /**
-   * Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
-   * get the closest point, any point, or n-points. The ray-cast ignores shapes that contain the
-   * starting point.
-   *
-   * @param callback a user implemented callback class.
-   * @param point1 the ray starting point
-   * @param point2 the ray ending point
-   */
+  /// Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
+  /// get the closest point, any point, or n-points. The ray-cast ignores shapes that contain the
+  /// starting point.
+  ///
+  /// @param callback a user implemented callback class.
+  /// @param point1 the ray starting point
+  /// @param point2 the ray ending point
   void raycast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
     wrcwrapper.broadPhase = _contactManager.broadPhase;
     wrcwrapper.callback = callback;
@@ -795,16 +754,14 @@ class World {
     _contactManager.broadPhase.raycast(wrcwrapper, input);
   }
 
-  /**
-   * Ray-cast the world for all fixtures and particles in the path of the ray. Your callback
-   * controls whether you get the closest point, any point, or n-points. The ray-cast ignores shapes
-   * that contain the starting point.
-   *
-   * @param callback a user implemented callback class.
-   * @param particleCallback the particle callback class.
-   * @param point1 the ray starting point
-   * @param point2 the ray ending point
-   */
+  /// Ray-cast the world for all fixtures and particles in the path of the ray. Your callback
+  /// controls whether you get the closest point, any point, or n-points. The ray-cast ignores shapes
+  /// that contain the starting point.
+  ///
+  /// @param callback a user implemented callback class.
+  /// @param particleCallback the particle callback class.
+  /// @param point1 the ray starting point
+  /// @param point2 the ray ending point
   void raycastTwoCallBacks(
       RayCastCallback callback,
       ParticleRaycastCallback particleCallback,
@@ -819,108 +776,68 @@ class World {
     _particleSystem.raycast(particleCallback, point1, point2);
   }
 
-  /**
-   * Ray-cast the world for all particles in the path of the ray. Your callback controls whether you
-   * get the closest point, any point, or n-points.
-   *
-   * @param particleCallback the particle callback class.
-   * @param point1 the ray starting point
-   * @param point2 the ray ending point
-   */
+  /// Ray-cast the world for all particles in the path of the ray. Your callback controls whether you
+  /// get the closest point, any point, or n-points.
+  ///
+  /// @param particleCallback the particle callback class.
+  /// @param point1 the ray starting point
+  /// @param point2 the ray ending point
   void raycastParticle(ParticleRaycastCallback particleCallback, Vector2 point1,
       Vector2 point2) {
     _particleSystem.raycast(particleCallback, point1, point2);
   }
 
-  /**
-   * Get the world contact list. With the returned contact, use Contact.getNext to get the next
-   * contact in the world list. A null contact indicates the end of the list.
-   *
-   * @return the head of the world contact list.
-   * @warning contacts are created and destroyed in the middle of a time step. Use ContactListener
-   *          to avoid missing contacts.
-   */
+  /// Get the world contact list. With the returned contact, use Contact.getNext to get the next
+  /// contact in the world list. A null contact indicates the end of the list.
+  ///
+  /// @return the head of the world contact list.
+  /// @warning contacts are created and destroyed in the middle of a time step. Use ContactListener
+  ///          to avoid missing contacts.
   Contact getContactList() {
     return _contactManager.contactList;
   }
 
-  /**
-   * Get the number of broad-phase proxies.
-   *
-   * @return
-   */
+  /// Get the number of broad-phase proxies.
   int getProxyCount() {
     return _contactManager.broadPhase.getProxyCount();
   }
 
-  /**
-   * Get the number of contacts (each may have 0 or more contact points).
-   *
-   * @return
-   */
+  /// Get the number of contacts (each may have 0 or more contact points).
   int getContactCount() {
     return _contactManager.contactCount;
   }
 
-  /**
-   * Gets the height of the dynamic tree
-   *
-   * @return
-   */
+  /// Gets the height of the dynamic tree
   int getTreeHeight() {
     return _contactManager.broadPhase.getTreeHeight();
   }
 
-  /**
-   * Gets the balance of the dynamic tree
-   *
-   * @return
-   */
+  /// Gets the balance of the dynamic tree
   int getTreeBalance() {
     return _contactManager.broadPhase.getTreeBalance();
   }
 
-  /**
-   * Gets the quality of the dynamic tree
-   *
-   * @return
-   */
+  /// Gets the quality of the dynamic tree
   double getTreeQuality() {
     return _contactManager.broadPhase.getTreeQuality();
   }
 
-  /**
-   * Change the global gravity vector.
-   *
-   * @param gravity
-   */
+  /// Change the global gravity vector.
   void setGravity(Vector2 gravity) {
     _gravity.setFrom(gravity);
   }
 
-  /**
-   * Get the global gravity vector.
-   *
-   * @return
-   */
+  /// Get the global gravity vector.
   Vector2 getGravity() {
     return _gravity;
   }
 
-  /**
-   * Is the world locked (in the middle of a time step).
-   *
-   * @return
-   */
+  /// Is the world locked (in the middle of a time step).
   bool isLocked() {
     return (_flags & LOCKED) == LOCKED;
   }
 
-  /**
-   * Set flag to control automatic clearing of forces after each time step.
-   *
-   * @param flag
-   */
+  /// Set flag to control automatic clearing of forces after each time step.
   void setAutoClearForces(bool flag) {
     if (flag) {
       _flags |= CLEAR_FORCES;
@@ -929,11 +846,7 @@ class World {
     }
   }
 
-  /**
-   * Get the flag that controls automatic clearing of forces after each time step.
-   *
-   * @return
-   */
+  /// Get the flag that controls automatic clearing of forces after each time step.
   bool getAutoClearForces() {
     return (_flags & CLEAR_FORCES) == CLEAR_FORCES;
   }
@@ -1560,15 +1473,13 @@ class World {
     }
   }
 
-  /**
-   * Create a particle whose properties have been defined. No reference to the definition is
-   * retained. A simulation step must occur before it's possible to interact with a newly created
-   * particle. For example, DestroyParticleInShape() will not destroy a particle until Step() has
-   * been called.
-   *
-   * @warning This function is locked during callbacks.
-   * @return the index of the particle.
-   */
+  /// Create a particle whose properties have been defined. No reference to the definition is
+  /// retained. A simulation step must occur before it's possible to interact with a newly created
+  /// particle. For example, DestroyParticleInShape() will not destroy a particle until Step() has
+  /// been called.
+  ///
+  /// @warning This function is locked during callbacks.
+  /// @return the index of the particle.
   int createParticle(ParticleDef def) {
     assert(isLocked() == false);
     if (isLocked()) {
@@ -1578,50 +1489,42 @@ class World {
     return p;
   }
 
-  /**
-   * Destroy a particle. The particle is removed after the next step.
-   *
-   * @param index
-   */
+  /// Destroy a particle. The particle is removed after the next step.
+  ///
+  /// @param index
   void destroyParticle(int index) {
     destroyParticleFlag(index, false);
   }
 
-  /**
-   * Destroy a particle. The particle is removed after the next step.
-   *
-   * @param Index of the particle to destroy.
-   * @param Whether to call the destruction listener just before the particle is destroyed.
-   */
+  /// Destroy a particle. The particle is removed after the next step.
+  ///
+  /// @param Index of the particle to destroy.
+  /// @param Whether to call the destruction listener just before the particle is destroyed.
   void destroyParticleFlag(int index, bool callDestructionListener) {
     _particleSystem.destroyParticle(index, callDestructionListener);
   }
 
-  /**
-   * Destroy particles inside a shape without enabling the destruction callback for destroyed
-   * particles. This function is locked during callbacks. For more information see
-   * DestroyParticleInShape(Shape&, Transform&,bool).
-   *
-   * @param Shape which encloses particles that should be destroyed.
-   * @param Transform applied to the shape.
-   * @warning This function is locked during callbacks.
-   * @return Number of particles destroyed.
-   */
+  /// Destroy particles inside a shape without enabling the destruction callback for destroyed
+  /// particles. This function is locked during callbacks. For more information see
+  /// DestroyParticleInShape(Shape&, Transform&,bool).
+  ///
+  /// @param Shape which encloses particles that should be destroyed.
+  /// @param Transform applied to the shape.
+  /// @warning This function is locked during callbacks.
+  /// @return Number of particles destroyed.
   int destroyParticlesInShape(Shape shape, Transform xf) {
     return destroyParticlesInShapeFlag(shape, xf, false);
   }
 
-  /**
-   * Destroy particles inside a shape. This function is locked during callbacks. In addition, this
-   * function immediately destroys particles in the shape in contrast to DestroyParticle() which
-   * defers the destruction until the next simulation step.
-   *
-   * @param Shape which encloses particles that should be destroyed.
-   * @param Transform applied to the shape.
-   * @param Whether to call the world b2DestructionListener for each particle destroyed.
-   * @warning This function is locked during callbacks.
-   * @return Number of particles destroyed.
-   */
+  /// Destroy particles inside a shape. This function is locked during callbacks. In addition, this
+  /// function immediately destroys particles in the shape in contrast to DestroyParticle() which
+  /// defers the destruction until the next simulation step.
+  ///
+  /// @param Shape which encloses particles that should be destroyed.
+  /// @param Transform applied to the shape.
+  /// @param Whether to call the world b2DestructionListener for each particle destroyed.
+  /// @warning This function is locked during callbacks.
+  /// @return Number of particles destroyed.
   int destroyParticlesInShapeFlag(
       Shape shape, Transform xf, bool callDestructionListener) {
     assert(isLocked() == false);
@@ -1632,12 +1535,10 @@ class World {
         shape, xf, callDestructionListener);
   }
 
-  /**
-   * Create a particle group whose properties have been defined. No reference to the definition is
-   * retained.
-   *
-   * @warning This function is locked during callbacks.
-   */
+  /// Create a particle group whose properties have been defined. No reference to the definition is
+  /// retained.
+  ///
+  /// @warning This function is locked during callbacks.
   ParticleGroup createParticleGroup(ParticleGroupDef def) {
     assert(isLocked() == false);
     if (isLocked()) {
@@ -1647,13 +1548,11 @@ class World {
     return g;
   }
 
-  /**
-   * Join two particle groups.
-   *
-   * @param the first group. Expands to encompass the second group.
-   * @param the second group. It is destroyed.
-   * @warning This function is locked during callbacks.
-   */
+  /// Join two particle groups.
+  ///
+  /// @param the first group. Expands to encompass the second group.
+  /// @param the second group. It is destroyed.
+  /// @warning This function is locked during callbacks.
   void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
     assert(isLocked() == false);
     if (isLocked()) {
@@ -1662,13 +1561,11 @@ class World {
     _particleSystem.joinParticleGroups(groupA, groupB);
   }
 
-  /**
-   * Destroy particles in a group. This function is locked during callbacks.
-   *
-   * @param The particle group to destroy.
-   * @param Whether to call the world b2DestructionListener for each particle is destroyed.
-   * @warning This function is locked during callbacks.
-   */
+  /// Destroy particles in a group. This function is locked during callbacks.
+  ///
+  /// @param The particle group to destroy.
+  /// @param Whether to call the world b2DestructionListener for each particle is destroyed.
+  /// @warning This function is locked during callbacks.
   void destroyParticlesInGroupFlag(
       ParticleGroup group, bool callDestructionListener) {
     assert(isLocked() == false);
@@ -1678,144 +1575,114 @@ class World {
     _particleSystem.destroyParticlesInGroup(group, callDestructionListener);
   }
 
-  /**
-   * Destroy particles in a group without enabling the destruction callback for destroyed particles.
-   * This function is locked during callbacks.
-   *
-   * @param The particle group to destroy.
-   * @warning This function is locked during callbacks.
-   */
+  /// Destroy particles in a group without enabling the destruction callback for destroyed particles.
+  /// This function is locked during callbacks.
+  ///
+  /// @param The particle group to destroy.
+  /// @warning This function is locked during callbacks.
   void destroyParticlesInGroup(ParticleGroup group) {
     destroyParticlesInGroupFlag(group, false);
   }
 
-  /**
-   * Get the world particle group list. With the returned group, use ParticleGroup::GetNext to get
-   * the next group in the world list. A NULL group indicates the end of the list.
-   *
-   * @return the head of the world particle group list.
-   */
+  /// Get the world particle group list. With the returned group, use ParticleGroup::GetNext to get
+  /// the next group in the world list. A NULL group indicates the end of the list.
+  ///
+  /// @return the head of the world particle group list.
   List<ParticleGroup> getParticleGroupList() {
     return _particleSystem.getParticleGroupList();
   }
 
-  /**
-   * Get the number of particle groups.
-   *
-   * @return
-   */
+  /// Get the number of particle groups.
+  ///
+  /// @return
   int getParticleGroupCount() {
     return _particleSystem.getParticleGroupCount();
   }
 
-  /**
-   * Get the number of particles.
-   *
-   * @return
-   */
+  /// Get the number of particles.
+  ///
+  /// @return
   int getParticleCount() {
     return _particleSystem.getParticleCount();
   }
 
-  /**
-   * Get the maximum number of particles.
-   *
-   * @return
-   */
+  /// Get the maximum number of particles.
+  ///
+  /// @return
   int getParticleMaxCount() {
     return _particleSystem.getParticleMaxCount();
   }
 
-  /**
-   * Set the maximum number of particles.
-   *
-   * @param count
-   */
+  /// Set the maximum number of particles.
+  ///
+  /// @param count
   void setParticleMaxCount(int count) {
     _particleSystem.setParticleMaxCount(count);
   }
 
-  /**
-   * Change the particle density.
-   *
-   * @param density
-   */
+  /// Change the particle density.
+  ///
+  /// @param density
   void setParticleDensity(double density) {
     _particleSystem.setParticleDensity(density);
   }
 
-  /**
-   * Get the particle density.
-   *
-   * @return
-   */
+  /// Get the particle density.
+  ///
+  /// @return
   double getParticleDensity() {
     return _particleSystem.getParticleDensity();
   }
 
-  /**
-   * Change the particle gravity scale. Adjusts the effect of the global gravity vector on
-   * particles. Default value is 1.0.
-   *
-   * @param gravityScale
-   */
+  /// Change the particle gravity scale. Adjusts the effect of the global gravity vector on
+  /// particles. Default value is 1.0.
+  ///
+  /// @param gravityScale
   void setParticleGravityScale(double gravityScale) {
     _particleSystem.setParticleGravityScale(gravityScale);
   }
 
-  /**
-   * Get the particle gravity scale.
-   *
-   * @return
-   */
+  /// Get the particle gravity scale.
+  ///
+  /// @return
   double getParticleGravityScale() {
     return _particleSystem.getParticleGravityScale();
   }
 
-  /**
-   * Damping is used to reduce the velocity of particles. The damping parameter can be larger than
-   * 1.0 but the damping effect becomes sensitive to the time step when the damping parameter is
-   * large.
-   *
-   * @param damping
-   */
+  /// Damping is used to reduce the velocity of particles. The damping parameter can be larger than
+  /// 1.0 but the damping effect becomes sensitive to the time step when the damping parameter is
+  /// large.
+  ///
+  /// @param damping
   void setParticleDamping(double damping) {
     _particleSystem.setParticleDamping(damping);
   }
 
-  /**
-   * Get damping for particles
-   *
-   * @return
-   */
+  /// Get damping for particles
+  ///
+  /// @return
   double getParticleDamping() {
     return _particleSystem.getParticleDamping();
   }
 
-  /**
-   * Change the particle radius. You should set this only once, on world start. If you change the
-   * radius during execution, existing particles may explode, shrink, or behave unexpectedly.
-   *
-   * @param radius
-   */
+  /// Change the particle radius. You should set this only once, on world start. If you change the
+  /// radius during execution, existing particles may explode, shrink, or behave unexpectedly.
+  ///
+  /// @param radius
   void setParticleRadius(double radius) {
     _particleSystem.setParticleRadius(radius);
   }
 
-  /**
-   * Get the particle radius.
-   *
-   * @return
-   */
+  /// Get the particle radius.
+  ///
+  /// @return
   double getParticleRadius() {
     return _particleSystem.getParticleRadius();
   }
 
-  /**
-   * Get the particle data. @return the pointer to the head of the particle data.
-   *
-   * @return
-   */
+  /// Get the particle data. @return the pointer to the head of the particle data.
+  ///
+  /// @return
   List<int> getParticleFlagsBuffer() {
     return _particleSystem.getParticleFlagsBuffer();
   }
@@ -1840,12 +1707,10 @@ class World {
     return _particleSystem.getParticleUserDataBuffer();
   }
 
-  /**
-   * Set a buffer for particle data.
-   *
-   * @param buffer is a pointer to a block of memory.
-   * @param size is the number of values in the block.
-   */
+  /// Set a buffer for particle data.
+  ///
+  /// @param buffer is a pointer to a block of memory.
+  /// @param size is the number of values in the block.
   void setParticleFlagsBuffer(List<int> buffer, int capacity) {
     _particleSystem.setParticleFlagsBuffer(buffer, capacity);
   }
@@ -1866,11 +1731,9 @@ class World {
     _particleSystem.setParticleUserDataBuffer(buffer, capacity);
   }
 
-  /**
-   * Get contacts between particles
-   *
-   * @return
-   */
+  /// Get contacts between particles
+  ///
+  /// @return
   List<ParticleContact> getParticleContacts() {
     return _particleSystem.contactBuffer;
   }
@@ -1879,11 +1742,9 @@ class World {
     return _particleSystem.contactCount;
   }
 
-  /**
-   * Get contacts between particles and bodies
-   *
-   * @return
-   */
+  /// Get contacts between particles and bodies
+  ///
+  /// @return
   List<ParticleBodyContact> getParticleBodyContacts() {
     return _particleSystem.bodyContactBuffer;
   }
@@ -1892,11 +1753,9 @@ class World {
     return _particleSystem.bodyContactCount;
   }
 
-  /**
-   * Compute the kinetic energy that can be lost by damping force
-   *
-   * @return
-   */
+  /// Compute the kinetic energy that can be lost by damping force
+  ///
+  /// @return
   double computeParticleCollisionEnergy() {
     return _particleSystem.computeParticleCollisionEnergy();
   }

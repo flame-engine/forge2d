@@ -25,40 +25,28 @@
 part of box2d;
 
 class WeldJointDef extends JointDef {
-  /**
-   * The local anchor point relative to body1's origin.
-   */
+  /// The local anchor point relative to body1's origin.
   final Vector2 localAnchorA = new Vector2.zero();
 
-  /**
-   * The local anchor point relative to body2's origin.
-   */
+  /// The local anchor point relative to body2's origin.
   final Vector2 localAnchorB = new Vector2.zero();
 
-  /**
-   * The body2 angle minus body1 angle in the reference state (radians).
-   */
+  /// The body2 angle minus body1 angle in the reference state (radians).
   double referenceAngle = 0.0;
 
-  /**
-   * The mass-spring-damper frequency in Hertz. Rotation only. Disable softness with a value of 0.
-   */
+  /// The mass-spring-damper frequency in Hertz. Rotation only. Disable softness with a value of 0.
   double frequencyHz = 0.0;
 
-  /**
-   * The damping ratio. 0 = no damping, 1 = critical damping.
-   */
+  /// The damping ratio. 0 = no damping, 1 = critical damping.
   double dampingRatio = 0.0;
 
   WeldJointDef() : super(JointType.WELD);
 
-  /**
-   * Initialize the bodies, anchors, and reference angle using a world anchor point.
-   * 
-   * @param bA
-   * @param bB
-   * @param anchor
-   */
+  /// Initialize the bodies, anchors, and reference angle using a world anchor point.
+  ///
+  /// @param bA
+  /// @param bB
+  /// @param anchor
   void initialize(Body bA, Body bB, Vector2 anchor) {
     bodyA = bA;
     bodyB = bB;

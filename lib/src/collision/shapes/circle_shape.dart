@@ -1,32 +1,30 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
-/**
- * A circle shape.
- */
+/// A circle shape.
 class CircleShape extends Shape {
   final Vector2 p = Vector2.zero();
 
@@ -44,46 +42,22 @@ class CircleShape extends Shape {
 
   int getChildCount() => 1;
 
-  /**
-   * Get the supporting vertex index in the given direction.
-   *
-   * @param d
-   * @return
-   */
+  /// Get the supporting vertex index in the given direction.
   int getSupport(final Vector2 d) => 0;
 
-  /**
-   * Get the supporting vertex in the given direction.
-   *
-   * @param d
-   * @return
-   */
+  /// Get the supporting vertex in the given direction.
   Vector2 getSupportVertex(final Vector2 d) => p;
 
-  /**
-   * Get the vertex count.
-   *
-   * @return
-   */
+  /// Get the vertex count.
   int getVertexCount() => 1;
 
-  /**
-   * Get a vertex by index.
-   *
-   * @param index
-   * @return
-   */
+  /// Get a vertex by index.
   Vector2 getVertex(final int index) {
     assert(index == 0);
     return p;
   }
 
   bool testPoint(final Transform transform, final Vector2 p) {
-    // Rot.mulToOutUnsafe(transform.q, _p, center);
-    // center.addLocal(transform.p);
-    //
-    // final Vec2 d = center.subLocal(p).negateLocal();
-    // return Vec2.dot(d, d) <= _radius * _radius;
     final Rot q = transform.q;
     final Vector2 tp = transform.p;
     double centerx = -(q.c * p.x - q.s * p.y + tp.x - p.x);
@@ -174,7 +148,6 @@ class CircleShape extends Shape {
     massData.center.y = p.y;
 
     // inertia about the local origin
-    // massData.I = massData.mass * (0.5f * _radius * _radius + Vec2.dot(_p, _p));
     massData.I =
         massData.mass * (0.5 * radius * radius + (p.x * p.x + p.y * p.y));
   }

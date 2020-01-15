@@ -1,32 +1,30 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
-/**
- * GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
- */
+/// GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
 class _SimplexVertex {
   final Vector2 wA = new Vector2.zero(); // support point in shapeA
   final Vector2 wB = new Vector2.zero(); // support point in shapeB
@@ -46,12 +44,14 @@ class _SimplexVertex {
 }
 
 class SimplexCache {
-  /** length or area */
+  /// length or area
   double metric = 0.0;
   int count = 0;
-  /** vertices on shape A */
+
+  /// vertices on shape A
   final List<int> indexA = BufferUtils.allocClearIntList(3);
-  /** vertices on shape B */
+
+  /// vertices on shape B
   final List<int> indexB = BufferUtils.allocClearIntList(3);
 
   SimplexCache() {
@@ -182,11 +182,7 @@ class _Simplex {
   final Vector2 _case2 = new Vector2.zero();
   final Vector2 _case22 = new Vector2.zero();
 
-  /**
-   * this returns pooled objects. don't keep or modify them
-   *
-   * @return
-   */
+  /// This returns pooled objects. don't keep or modify them
   void getClosestPoint(final Vector2 out) {
     switch (count) {
       case 0:
@@ -303,9 +299,7 @@ class _Simplex {
   }
 
   // djm pooled from above
-  /**
-   * Solve a line segment using barycentric coordinates.
-   */
+  /// Solve a line segment using barycentric coordinates.
   void solve2() {
     // Solve a line segment using barycentric coordinates.
     //
@@ -369,14 +363,12 @@ class _Simplex {
   final Vector2 _w2 = new Vector2.zero();
   final Vector2 _w3 = new Vector2.zero();
 
-  /**
-   * Solve a line segment using barycentric coordinates.<br/>
-   * Possible regions:<br/>
-   * - points[2]<br/>
-   * - edge points[0]-points[2]<br/>
-   * - edge points[1]-points[2]<br/>
-   * - inside the triangle
-   */
+  /// Solve a line segment using barycentric coordinates.<br/>
+  /// Possible regions:<br/>
+  /// - points[2]<br/>
+  /// - edge points[0]-points[2]<br/>
+  /// - edge points[1]-points[2]<br/>
+  /// - inside the triangle
   void solve3() {
     _w1.setFrom(v1.w);
     _w2.setFrom(v2.w);
@@ -502,10 +494,8 @@ class DistanceProxy {
     radius = 0.0;
   }
 
-  /**
-   * Initialize the proxy using the given shape. The shape must remain in scope while the proxy is
-   * in use.
-   */
+  /// Initialize the proxy using the given shape. The shape must remain in scope while the proxy is
+  /// in use.
   void set(final Shape shape, int index) {
     switch (shape.shapeType) {
       case ShapeType.CIRCLE:
@@ -551,12 +541,7 @@ class DistanceProxy {
     }
   }
 
-  /**
-   * Get the supporting vertex index in the given direction.
-   *
-   * @param d
-   * @return
-   */
+  /// Get the supporting vertex index in the given direction.
   int getSupport(final Vector2 d) {
     int bestIndex = 0;
     double bestValue = vertices[0].dot(d);
@@ -571,12 +556,7 @@ class DistanceProxy {
     return bestIndex;
   }
 
-  /**
-   * Get the supporting vertex in the given direction.
-   *
-   * @param d
-   * @return
-   */
+  /// Get the supporting vertex in the given direction.
   Vector2 getSupportVertex(final Vector2 d) {
     int bestIndex = 0;
     double bestValue = vertices[0].dot(d);
@@ -591,21 +571,12 @@ class DistanceProxy {
     return vertices[bestIndex];
   }
 
-  /**
-   * Get the vertex count.
-   *
-   * @return
-   */
+  /// Get the vertex count.
   int getVertexCount() {
     return _count;
   }
 
-  /**
-   * Get a vertex by index. Used by Distance.
-   *
-   * @param index
-   * @return
-   */
+  /// Get a vertex by index. Used by Distance.
   Vector2 getVertex(int index) {
     assert(0 <= index && index < _count);
     return vertices[index];
@@ -627,15 +598,9 @@ class Distance {
   final Vector2 _temp = new Vector2.zero();
   final Vector2 _normal = new Vector2.zero();
 
-  /**
-   * Compute the closest points between two shapes. Supports any combination of: CircleShape and
-   * PolygonShape. The simplex cache is input/output. On the first call set SimplexCache.count to
-   * zero.
-   *
-   * @param output
-   * @param cache
-   * @param input
-   */
+  /// Compute the closest points between two shapes. Supports any combination of: CircleShape and
+  /// PolygonShape. The simplex cache is input/output. On the first call set SimplexCache.count to
+  /// zero.
   void distance(final DistanceOutput output, final SimplexCache cache,
       final DistanceInput input) {
     GJK_CALLS++;
