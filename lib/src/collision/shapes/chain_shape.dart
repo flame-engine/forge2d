@@ -34,8 +34,7 @@ part of box2d;
 class ChainShape extends Shape {
   List<Vector2> _vertices;
   int _count = 0;
-  final Vector2 _prevVertex = Vector2.zero(),
-      _nextVertex = Vector2.zero();
+  final Vector2 _prevVertex = Vector2.zero(), _nextVertex = Vector2.zero();
   bool _hasPrevVertex = false, _hasNextVertex = false;
 
   final EdgeShape _pool0 = EdgeShape();
