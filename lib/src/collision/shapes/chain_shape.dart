@@ -24,13 +24,10 @@
 
 part of box2d;
 
-/***
- * A chain shape is a free form sequence of line segments. The chain has two-sided collision, so you
- * can use inside and outside collision. Therefore, you may use any winding order. Connectivity
- * information is used to create smooth collisions. WARNING: The chain will not collide properly if
- * there are self-intersections.
- */
-
+/// A chain shape is a free form sequence of line segments. The chain has two-sided collision, so you
+/// can use inside and outside collision. Therefore, you may use any winding order. Connectivity
+/// information is used to create smooth collisions. WARNING: The chain will not collide properly if
+/// there are self-intersections.
 class ChainShape extends Shape {
   List<Vector2> _vertices;
   int _count = 0;
@@ -52,9 +49,7 @@ class ChainShape extends Shape {
     return _count - 1;
   }
 
-  /**
-   * Get a child edge.
-   */
+  /// Get a child edge.
   void getChildEdge(EdgeShape edge, int index) {
     assert(0 <= index && index < _count - 1);
     edge.radius = radius;
@@ -163,12 +158,10 @@ class ChainShape extends Shape {
     return clone;
   }
 
-  /**
-   * Returns the vertex at the given position (index).
-   * 
-   * @param index the index of the vertex 0 <= index < getVertexCount( )
-   * @param vertex output vertex object, must be initialized
-   */
+  /// Returns the vertex at the given position (index).
+  ///
+  /// @param index the index of the vertex 0 <= index < getVertexCount( )
+  /// @param vertex output vertex object, must be initialized
   Vector2 getVertex(int index) {
     assert(index >= 0 && index < _vertices.length);
     return _vertices[index].clone();
@@ -178,12 +171,10 @@ class ChainShape extends Shape {
     return _vertices.length;
   }
 
-  /**
-   * Create a loop. This automatically adjusts connectivity.
-   * 
-   * @param vertices an array of vertices, these are copied
-   * @param count the vertex count
-   */
+  /// Create a loop. This automatically adjusts connectivity.
+  ///
+  /// @param vertices an array of vertices, these are copied
+  /// @param count the vertex count
   void createLoop(final List<Vector2> vertices, int count) {
     assert(_vertices == null && _count == 0);
     assert(count >= 3);
@@ -208,12 +199,10 @@ class ChainShape extends Shape {
     _hasNextVertex = true;
   }
 
-  /**
-   * Create a chain with isolated end vertices.
-   * 
-   * @param vertices an array of vertices, these are copied
-   * @param count the vertex count
-   */
+  /// Create a chain with isolated end vertices.
+  ///
+  /// @param vertices an array of vertices, these are copied
+  /// @param count the vertex count
   void createChain(final List<Vector2> vertices, int count) {
     assert(_vertices == null && _count == 0);
     assert(count >= 2);
@@ -238,21 +227,13 @@ class ChainShape extends Shape {
     _nextVertex.setZero();
   }
 
-  /**
-   * Establish connectivity to a vertex that precedes the first vertex. Don't call this for loops.
-   * 
-   * @param prevVertex
-   */
+  /// Establish connectivity to a vertex that precedes the first vertex. Don't call this for loops.
   void setPrevVertex(final Vector2 prevVertex) {
     _prevVertex.setFrom(prevVertex);
     _hasPrevVertex = true;
   }
 
-  /**
-   * Establish connectivity to a vertex that follows the last vertex. Don't call this for loops.
-   * 
-   * @param nextVertex
-   */
+  /// Establish connectivity to a vertex that follows the last vertex. Don't call this for loops.
   void setNextVertex(final Vector2 nextVertex) {
     _nextVertex.setFrom(nextVertex);
     _hasNextVertex = true;

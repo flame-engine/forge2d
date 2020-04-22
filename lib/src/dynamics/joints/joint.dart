@@ -24,15 +24,10 @@
 
 part of box2d;
 
-/**
- * The base joint class. Joints are used to constrain two bodies together in various fashions. Some
- * joints also feature limits and motors.
- * 
- * @author Daniel Murphy
- */
+/// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
+/// joints also feature limits and motors.
 abstract class Joint {
   static Joint create(World world, JointDef def) {
-    // Joint joint = null;
     switch (def.type) {
       case JointType.MOUSE:
         return new MouseJoint(world.getPool(), def as MouseJointDef);
@@ -79,14 +74,7 @@ abstract class Joint {
   bool _islandFlag = false;
   bool _collideConnected = false;
 
-  Object _userData;
-
   IWorldPool pool;
-
-  // Cache here per time step to reduce cache misses.
-  // final Vec2 _localCenterA, _localCenterB;
-  // double _invMassA, _invIA;
-  // double _invMassB, _invIB;
 
   Joint(IWorldPool worldPool, JointDef def) : _type = def.type {
     assert(def.bodyA != def.bodyB);
@@ -98,7 +86,6 @@ abstract class Joint {
     _bodyB = def.bodyB;
     _collideConnected = def.collideConnected;
     _islandFlag = false;
-    _userData = def.userData;
 
     _edgeA = new JointEdge();
     _edgeA.joint = null;
@@ -111,103 +98,76 @@ abstract class Joint {
     _edgeB.other = null;
     _edgeB.prev = null;
     _edgeB.next = null;
-
-    // _localCenterA = new Vec2();
-    // _localCenterB = new Vec2();
   }
 
-  /**
-   * get the type of the concrete joint.
-   * 
-   * @return
-   */
+  /// get the type of the concrete joint.
+  ///
+  /// @return
   JointType getType() {
     return _type;
   }
 
-  /**
-   * get the first body attached to this joint.
-   */
+  /// get the first body attached to this joint.
   Body getBodyA() {
     return _bodyA;
   }
 
-  /**
-   * get the second body attached to this joint.
-   * 
-   * @return
-   */
+  /// get the second body attached to this joint.
+  ///
+  /// @return
   Body getBodyB() {
     return _bodyB;
   }
 
-  /**
-   * get the anchor point on bodyA in world coordinates.
-   * 
-   * @return
-   */
+  /// get the anchor point on bodyA in world coordinates.
+  ///
+  /// @return
   void getAnchorA(Vector2 out);
 
-  /**
-   * get the anchor point on bodyB in world coordinates.
-   * 
-   * @return
-   */
+  /// get the anchor point on bodyB in world coordinates.
+  ///
+  /// @return
   void getAnchorB(Vector2 out);
 
-  /**
-   * get the reaction force on body2 at the joint anchor in Newtons.
-   * 
-   * @param inv_dt
-   * @return
-   */
+  /// get the reaction force on body2 at the joint anchor in Newtons.
+  ///
+  /// @param inv_dt
+  /// @return
   void getReactionForce(double inv_dt, Vector2 out);
 
-  /**
-   * get the reaction torque on body2 in N*m.
-   * 
-   * @param inv_dt
-   * @return
-   */
+  /// get the reaction torque on body2 in N*m.
+  ///
+  /// @param inv_dt
+  /// @return
   double getReactionTorque(double inv_dt);
 
-  /**
-   * get the next joint the world joint list.
-   */
+  /// get the next joint the world joint list.
   Joint getNext() {
     return _next;
   }
 
-  /**
-   * Get collide connected. Note: modifying the collide connect flag won't work correctly because
-   * the flag is only checked when fixture AABBs begin to overlap.
-   */
+  /// Get collide connected. Note: modifying the collide connect flag won't work correctly because
+  /// the flag is only checked when fixture AABBs begin to overlap.
   bool getCollideConnected() {
     return _collideConnected;
   }
 
-  /**
-   * Short-cut function to determine if either body is inactive.
-   * 
-   * @return
-   */
+  /// Short-cut function to determine if either body is inactive.
+  ///
+  /// @return
   bool isActive() {
     return _bodyA.isActive() && _bodyB.isActive();
   }
 
-  /** Internal */
+  /// Internal
   void initVelocityConstraints(SolverData data);
 
-  /** Internal */
+  /// Internal
   void solveVelocityConstraints(SolverData data);
 
-  /**
-   * This returns true if the position errors are within tolerance. Internal.
-   */
+  /// This returns true if the position errors are within tolerance. Internal.
   bool solvePositionConstraints(SolverData data);
 
-  /**
-   * Override to handle destruction of joint
-   */
+  /// Override to handle destruction of joint
   void destructor() {}
 }

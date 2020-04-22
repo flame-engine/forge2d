@@ -24,37 +24,25 @@
 
 part of box2d;
 
-/**
- * Joint definitions are used to construct joints.
- * @author Daniel Murphy
- */
+/// Joint definitions are used to construct joints.
 class JointDef {
   JointDef(JointType type) {
     this.type = type;
     collideConnected = false;
   }
-  /**
-   * The joint type is set automatically for concrete joint types.
-   */
+
+  /// The joint type is set automatically for concrete joint types.
   JointType type;
 
-  /**
-   * Use this to attach application specific data to your joints.
-   */
+  /// Use this to attach application specific data to your joints.
   Object userData;
 
-  /**
-   * The first attached body.
-   */
+  /// The first attached body.
   Body bodyA;
 
-  /**
-   * The second attached body.
-   */
+  /// The second attached body.
   Body bodyB;
 
-  /**
-   * Set this flag to true if the attached bodies should collide.
-   */
+  /// Set this flag to true if the attached bodies should collide.
   bool collideConnected = false;
 }

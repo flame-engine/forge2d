@@ -1,74 +1,67 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d.common;
 
-/**
- * A transform contains translation and rotation. It is used to represent the position and
- * orientation of rigid frames.
- */
+/// A transform contains translation and rotation. It is used to represent the position and
+/// orientation of rigid frames.
 class Transform {
-  /** The translation caused by the transform */
+  /// The translation caused by the transform
   final Vector2 p;
 
-  /** A matrix representing a rotation */
+  /// A matrix representing a rotation
   final Rot q;
 
-  /** The default constructor. */
+  /// The default constructor.
   Transform.zero()
       : p = new Vector2.zero(),
         q = new Rot();
 
-  /** Initialize as a copy of another transform. */
+  /// Initialize as a copy of another transform.
   Transform.clone(final Transform xf)
       : p = xf.p.clone(),
         q = xf.q.clone();
 
-  /** Initialize using a position vector and a rotation matrix. */
+  /// Initialize using a position vector and a rotation matrix.
   Transform.from(final Vector2 _position, final Rot _R)
       : p = _position.clone(),
         q = _R.clone();
 
-  /** Set this to equal another transform. */
+  /// Set this to equal another transform.
   Transform set(final Transform xf) {
     p.setFrom(xf.p);
     q.set(xf.q);
     return this;
   }
 
-  /**
-   * Set this based on the position and angle.
-   *
-   * @param p
-   * @param angle
-   */
+  /// Set this based on the position and angle.
   void setVec2Angle(Vector2 p, double angle) {
     p.setFrom(p);
     q.setAngle(angle);
   }
 
-  /** Set this to the identity transform. */
+  /// Set this to the identity transform.
   void setIdentity() {
     p.setZero();
     q.setIdentity();

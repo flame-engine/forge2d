@@ -1,26 +1,26 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
@@ -36,12 +36,8 @@ part of box2d;
 //J = [0 0 -1 0 0 1]
 //K = invI1 + invI2
 
-/**
- * A motor joint is used to control the relative motion between two bodies. A typical usage is to
- * control the movement of a dynamic body with respect to the ground.
- *
- * @author dmurph
- */
+/// A motor joint is used to control the relative motion between two bodies. A typical usage is to
+/// control the movement of a dynamic body with respect to the ground.
 class MotorJoint extends Joint {
   // Solver shared
   final Vector2 _linearOffset = new Vector2.zero();
@@ -97,9 +93,7 @@ class MotorJoint extends Joint {
     return _angularImpulse * inv_dt;
   }
 
-  /**
-   * Set the target linear offset, in frame A, in meters.
-   */
+  /// Set the target linear offset, in frame A, in meters.
   void setLinearOffset(Vector2 linearOffset) {
     if (linearOffset.x != _linearOffset.x ||
         linearOffset.y != _linearOffset.y) {
@@ -109,25 +103,19 @@ class MotorJoint extends Joint {
     }
   }
 
-  /**
-   * Get the target linear offset, in frame A, in meters.
-   */
+  /// Get the target linear offset, in frame A, in meters.
   void getLinearOffsetOut(Vector2 out) {
     out.setFrom(_linearOffset);
   }
 
-  /**
-   * Get the target linear offset, in frame A, in meters. Do not modify.
-   */
+  /// Get the target linear offset, in frame A, in meters. Do not modify.
   Vector2 getLinearOffset() {
     return _linearOffset;
   }
 
-  /**
-   * Set the target angular offset, in radians.
-   *
-   * @param angularOffset
-   */
+  /// Set the target angular offset, in radians.
+  ///
+  /// @param angularOffset
   void setAngularOffset(double angularOffset) {
     if (angularOffset != _angularOffset) {
       _bodyA.setAwake(true);
@@ -140,34 +128,26 @@ class MotorJoint extends Joint {
     return _angularOffset;
   }
 
-  /**
-   * Set the maximum friction force in N.
-   *
-   * @param force
-   */
+  /// Set the maximum friction force in N.
+  ///
+  /// @param force
   void setMaxForce(double force) {
     assert(force >= 0.0);
     _maxForce = force;
   }
 
-  /**
-   * Get the maximum friction force in N.
-   */
+  /// Get the maximum friction force in N.
   double getMaxForce() {
     return _maxForce;
   }
 
-  /**
-   * Set the maximum friction torque in N*m.
-   */
+  /// Set the maximum friction torque in N*m.
   void setMaxTorque(double torque) {
     assert(torque >= 0.0);
     _maxTorque = torque;
   }
 
-  /**
-   * Get the maximum friction torque in N*m.
-   */
+  /// Get the maximum friction torque in N*m.
   double getMaxTorque() {
     return _maxTorque;
   }

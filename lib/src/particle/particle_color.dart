@@ -24,11 +24,7 @@
 
 part of box2d;
 
-/**
- * Small color object for each particle
- * 
- * @author dmurph
- */
+/// Small color object for each particle
 class ParticleColor {
   Int8List _data = Int8List(4);
 

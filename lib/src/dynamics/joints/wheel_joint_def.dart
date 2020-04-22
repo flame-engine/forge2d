@@ -24,54 +24,34 @@
 
 part of box2d;
 
-/**
- * Wheel joint definition. This requires defining a line of motion using an axis and an anchor
- * point. The definition uses local anchor points and a local axis so that the initial configuration
- * can violate the constraint slightly. The joint translation is zero when the local anchor points
- * coincide in world space. Using local anchors and a local axis helps when saving and loading a
- * game.
- * 
- * @author Daniel Murphy
- */
+/// Wheel joint definition. This requires defining a line of motion using an axis and an anchor
+/// point. The definition uses local anchor points and a local axis so that the initial configuration
+/// can violate the constraint slightly. The joint translation is zero when the local anchor points
+/// coincide in world space. Using local anchors and a local axis helps when saving and loading a
+/// game.
 class WheelJointDef extends JointDef {
-  /**
-   * The local anchor point relative to body1's origin.
-   */
+  /// The local anchor point relative to body1's origin.
   final Vector2 localAnchorA = Vector2.zero();
 
-  /**
-   * The local anchor point relative to body2's origin.
-   */
+  /// The local anchor point relative to body2's origin.
   final Vector2 localAnchorB = Vector2.zero();
 
-  /**
-   * The local translation axis in body1.
-   */
+  /// The local translation axis in body1.
   final Vector2 localAxisA = Vector2.zero();
 
-  /**
-   * Enable/disable the joint motor.
-   */
+  /// Enable/disable the joint motor.
   bool enableMotor = false;
 
-  /**
-   * The maximum motor torque, usually in N-m.
-   */
+  /// The maximum motor torque, usually in N-m.
   double maxMotorTorque = 0.0;
 
-  /**
-   * The desired motor speed in radians per second.
-   */
+  /// The desired motor speed in radians per second.
   double motorSpeed = 0.0;
 
-  /**
-   * Suspension frequency, zero indicates no suspension
-   */
+  /// Suspension frequency, zero indicates no suspension
   double frequencyHz = 0.0;
 
-  /**
-   * Suspension damping ratio, one indicates critical damping
-   */
+  /// Suspension damping ratio, one indicates critical damping
   double dampingRatio = 0.0;
 
   WheelJointDef() : super(JointType.WHEEL) {
