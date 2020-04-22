@@ -1,67 +1,57 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
-/** An axis-aligned bounding box. */
+/// An axis-aligned bounding box.
 class AABB {
-  /** Bottom left vertex of bounding box. */
+  /// Bottom left vertex of bounding box.
   final Vector2 lowerBound;
-  /** Top right vertex of bounding box. */
+
+  /// Top right vertex of bounding box.
   final Vector2 upperBound;
 
-  /**
-   * Creates the default object, with vertices at 0,0 and 0,0.
-   */
+  /// Creates the default object, with vertices at 0,0 and 0,0.
   AABB()
       : lowerBound = Vector2.zero(),
         upperBound = Vector2.zero();
 
-  /**
-   * Copies from the given object
-   *
-   * @param copy the object to copy from
-   */
+  /// Copies from the given object
+  /// @param copy the object to copy from
   AABB.copy(final AABB copy)
       : lowerBound = Vector2.copy(copy.lowerBound),
         upperBound = Vector2.copy(copy.upperBound);
 
-  /**
-   * Creates an AABB object using the given bounding vertices.
-   *
-   * @param lowerVertex the bottom left vertex of the bounding box
-   * @param maxVertex the top right vertex of the bounding box
-   */
+  /// Creates an AABB object using the given bounding vertices.
+  /// @param lowerVertex the bottom left vertex of the bounding box
+  /// @param maxVertex the top right vertex of the bounding box
   AABB.withVec2(final Vector2 lowerVertex, final Vector2 upperVertex)
       : lowerBound = Vector2.copy(lowerVertex),
         upperBound = Vector2.copy(upperVertex);
 
-  /**
-   * Sets this object from the given object
-   *
-   * @param aabb the object to copy from
-   */
+  /// Sets this object from the given object
+  /// @param aabb the object to copy from
   void set(final AABB aabb) {
     Vector2 v = aabb.lowerBound;
     lowerBound.x = v.x;
@@ -71,7 +61,7 @@ class AABB {
     upperBound.y = v1.y;
   }
 
-  /** Verify that the bounds are sorted */
+  /// Verify that the bounds are sorted
   bool isValid() {
     final double dx = upperBound.x - lowerBound.x;
     if (dx < 0.0) {
@@ -85,11 +75,7 @@ class AABB {
         MathUtils.vector2IsValid(upperBound);
   }
 
-  /**
-   * Get the center of the AABB
-   *
-   * @return
-   */
+  /// Get the center of the AABB
   Vector2 getCenter() {
     final Vector2 center = Vector2.copy(lowerBound);
     center.add(upperBound);
@@ -102,11 +88,7 @@ class AABB {
     out.y = (lowerBound.y + upperBound.y) * .5;
   }
 
-  /**
-   * Get the extents of the AABB (half-widths).
-   *
-   * @return
-   */
+  /// Get the extents of the AABB (half-widths).
   Vector2 getExtents() {
     final Vector2 center = Vector2.copy(upperBound);
     center.sub(lowerBound);
@@ -128,12 +110,7 @@ class AABB {
     argRay[3].x -= upperBound.x - lowerBound.x;
   }
 
-  /**
-   * Combine two AABBs into this one.
-   *
-   * @param aabb1
-   * @param aab
-   */
+  /// Combine two AABBs into this one.
   void combine2(final AABB aabb1, final AABB aab) {
     lowerBound.x = aabb1.lowerBound.x < aab.lowerBound.x
         ? aabb1.lowerBound.x
@@ -149,20 +126,12 @@ class AABB {
         : aab.upperBound.y;
   }
 
-  /**
-   * Gets the perimeter length
-   *
-   * @return
-   */
+  /// Gets the perimeter length
   double getPerimeter() {
     return 2.0 * (upperBound.x - lowerBound.x + upperBound.y - lowerBound.y);
   }
 
-  /**
-   * Combines another aabb with this one
-   *
-   * @param aabb
-   */
+  /// Combines another aabb with this one
   void combine(final AABB aabb) {
     lowerBound.x =
         lowerBound.x < aabb.lowerBound.x ? lowerBound.x : aabb.lowerBound.x;
@@ -174,17 +143,8 @@ class AABB {
         upperBound.y > aabb.upperBound.y ? upperBound.y : aabb.upperBound.y;
   }
 
-  /**
-   * Does this aabb contain the provided AABB.
-   *
-   * @return
-   */
+  /// Does this aabb contain the provided AABB.
   bool contains(final AABB aabb) {
-    /*
-     * boolean result = true; result = result && lowerBound.x <= aabb.lowerBound.x; result = result
-     * && lowerBound.y <= aabb.lowerBound.y; result = result && aabb.upperBound.x <= upperBound.x;
-     * result = result && aabb.upperBound.y <= upperBound.y; return result;
-     */
     // djm: faster putting all of them together, as if one is false we leave the logic
     // early
     return lowerBound.x <= aabb.lowerBound.x &&
@@ -193,23 +153,12 @@ class AABB {
         aabb.upperBound.y <= upperBound.y;
   }
 
-  /**
-   * @deprecated please use {@link #raycast(RayCastOutput, RayCastInput, IWorldPool)} for better
-   *             performance
-   * @param output
-   * @param input
-   * @return
-   */
+  /// @deprecated please use {@link #raycast(RayCastOutput, RayCastInput, IWorldPool)} for better performance
   bool raycast(final RayCastOutput output, final RayCastInput input) {
     return raycastWithPool(output, input, DefaultWorldPool(4, 4));
   }
 
-  /**
-   * From Real-time Collision Detection, p179.
-   *
-   * @param output
-   * @param input
-   */
+  /// From Real-time Collision Detection, p179.
   bool raycastWithPool(final RayCastOutput output, final RayCastInput input,
       IWorldPool argPool) {
     double tmin = -double.maxFinite;

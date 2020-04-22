@@ -61,6 +61,6 @@ abstract class OrderedStack<E> {
     assert(_index >= 0);
   }
 
-  /** Creates a new instance of the object contained by this stack. */
+  /// Creates a new instance of the object contained by this stack.
   E newInstance();
 }

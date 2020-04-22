@@ -1,40 +1,36 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
-/**
- * Java-specific class for returning edge results
- */
+/// Java-specific class for returning edge results
 class _EdgeResults {
   double separation = 0.0;
   int edgeIndex = 0;
 }
 
-/**
- * Used for computing contact manifolds.
- */
+/// Used for computing contact manifolds.
 class ClipVertex {
   final Vector2 v = new Vector2.zero();
   final ContactID id = new ContactID();
@@ -51,33 +47,22 @@ class ClipVertex {
   }
 }
 
-/**
- * This is used for determining the state of contact points.
- *
- * @author Daniel Murphy
- */
+/// This is used for determining the state of contact points.
 enum PointState {
-  /**
-   * point does not exist
-   */
+  /// point does not exist
   NULL_STATE,
-  /**
-   * point was added in the update
-   */
+
+  /// point was added in the update
   ADD_STATE,
-  /**
-   * point persisted across the update
-   */
+
+  /// point persisted across the update
   PERSIST_STATE,
-  /**
-   * point was removed in the update
-   */
+
+  /// point was removed in the update
   REMOVE_STATE
 }
 
-/**
- * This structure is used to keep track of the best separating axis.
- */
+/// This structure is used to keep track of the best separating axis.
 
 enum EPAxisType { UNKNOWN, EDGE_A, EDGE_B }
 
@@ -87,9 +72,7 @@ class EPAxis {
   double separation = 0.0;
 }
 
-/**
- * This holds polygon B expressed in frame A.
- */
+/// This holds polygon B expressed in frame A.
 class TempPolygon {
   final List<Vector2> vertices = new List<Vector2>(Settings.maxPolygonVertices);
   final List<Vector2> normals = new List<Vector2>(Settings.maxPolygonVertices);
@@ -103,9 +86,7 @@ class TempPolygon {
   }
 }
 
-/**
- * Reference face used for clipping
- */
+/// Reference face used for clipping
 class _ReferenceFace {
   int i1 = 0, i2 = 0;
   final Vector2 v1 = new Vector2.zero();
@@ -119,11 +100,9 @@ class _ReferenceFace {
   double sideOffset2 = 0.0;
 }
 
-/**
- * Functions used for computing contact points, distance queries, and TOI queries. Collision methods
- * are non-static for pooling speed, retrieve a collision object from the {@link SingletonPool}.
- * Should not be finalructed.
- */
+/// Functions used for computing contact points, distance queries, and TOI queries. Collision methods
+/// are non-static for pooling speed, retrieve a collision object from the {@link SingletonPool}.
+/// Should not be finalructed.
 class Collision {
   static const int NULL_FEATURE = 0x3FFFFFFF; // Integer.MAX_VALUE;
 
@@ -142,15 +121,7 @@ class Collision {
   final SimplexCache _cache = new SimplexCache();
   final DistanceOutput _output = new DistanceOutput();
 
-  /**
-   * Determine if two generic shapes overlap.
-   *
-   * @param shapeA
-   * @param shapeB
-   * @param xfA
-   * @param xfB
-   * @return
-   */
+  /// Determine if two generic shapes overlap.
   bool testOverlap(Shape shapeA, int indexA, Shape shapeB, int indexB,
       Transform xfA, Transform xfB) {
     _input.proxyA.set(shapeA, indexA);
@@ -166,16 +137,9 @@ class Collision {
     return _output.distance < 10.0 * Settings.EPSILON;
   }
 
-  /**
-   * Compute the point states given two manifolds. The states pertain to the transition from
-   * manifold1 to manifold2. So state1 is either persist or remove while state2 is either add or
-   * persist.
-   *
-   * @param state1
-   * @param state2
-   * @param manifold1
-   * @param manifold2
-   */
+  /// Compute the point states given two manifolds. The states pertain to the transition from
+  /// manifold1 to manifold2. So state1 is either persist or remove while state2 is either add or
+  /// persist.
   static void getPointStates(
       final List<PointState> state1,
       final List<PointState> state2,
@@ -215,15 +179,7 @@ class Collision {
     }
   }
 
-  /**
-   * Clipping for contact manifolds. Sutherland-Hodgman clipping.
-   *
-   * @param vOut
-   * @param vIn
-   * @param normal
-   * @param offset
-   * @return
-   */
+  /// Clipping for contact manifolds. Sutherland-Hodgman clipping.
   static int clipSegmentToLine(
       final List<ClipVertex> vOut,
       final List<ClipVertex> vIn,
@@ -275,15 +231,7 @@ class Collision {
   // djm pooling
   static Vector2 _d = new Vector2.zero();
 
-  /**
-   * Compute the collision manifold between two circles.
-   *
-   * @param manifold
-   * @param circle1
-   * @param xfA
-   * @param circle2
-   * @param xfB
-   */
+  /// Compute the collision manifold between two circles.
   void collideCircles(Manifold manifold, final CircleShape circle1,
       final Transform xfA, final CircleShape circle2, final Transform xfB) {
     manifold.pointCount = 0;
@@ -321,15 +269,7 @@ class Collision {
 
   // djm pooling, and from above
 
-  /**
-   * Compute the collision manifold between a polygon and a circle.
-   *
-   * @param manifold
-   * @param polygon
-   * @param xfA
-   * @param circle
-   * @param xfB
-   */
+  /// Compute the collision manifold between a polygon and a circle.
   void collidePolygonAndCircle(Manifold manifold, final PolygonShape polygon,
       final Transform xfA, final CircleShape circle, final Transform xfB) {
     manifold.pointCount = 0;
@@ -341,6 +281,7 @@ class Collision {
     // Transform.mulTransToOut(xfA, c, cLocal);
     // final double cLocalx = cLocal.x;
     // final double cLocaly = cLocal.y;
+
     // after inline:
     final Vector2 circlep = circle.p;
     final Rot xfBq = xfB.q;
@@ -515,16 +456,7 @@ class Collision {
   final Vector2 _n = new Vector2.zero();
   final Vector2 _v1 = new Vector2.zero();
 
-  /**
-   * Find the max separation between poly1 and poly2 using edge normals from poly1.
-   *
-   * @param edgeIndex
-   * @param poly1
-   * @param xf1
-   * @param poly2
-   * @param xf2
-   * @return
-   */
+  /// Find the max separation between poly1 and poly2 using edge normals from poly1.
   void findMaxSeparation(_EdgeResults results, final PolygonShape poly1,
       final Transform xf1, final PolygonShape poly2, final Transform xf2) {
     int count1 = poly1.count;
@@ -647,15 +579,7 @@ class Collision {
   final List<ClipVertex> _clipPoints1 = new List<ClipVertex>(2);
   final List<ClipVertex> _clipPoints2 = new List<ClipVertex>(2);
 
-  /**
-   * Compute the collision manifold between two polygons.
-   *
-   * @param manifold
-   * @param polygon1
-   * @param xf1
-   * @param polygon2
-   * @param xf2
-   */
+  /// Compute the collision manifold between two polygons.
   void collidePolygons(Manifold manifold, final PolygonShape polyA,
       final Transform xfA, final PolygonShape polyB, final Transform xfB) {
     // Find edge normal of max separation on A - return if separating axis is found
@@ -972,9 +896,7 @@ class Collision {
     _collider.collide(manifold, edgeA, xfA, polygonB, xfB);
   }
 
-  /**
-   * This class collides and edge and a polygon, taking into account edge adjacency.
-   */
+  /// This class collides and edge and a polygon, taking into account edge adjacency.
 }
 
 enum VertexType { ISOLATED, CONCAVE, CONVEX }

@@ -1,63 +1,50 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
-/**
- * Input parameters for TOI
- *
- * @author Daniel Murphy
- */
+/// Input parameters for TOI
 class TOIInput {
   final DistanceProxy proxyA = new DistanceProxy();
   final DistanceProxy proxyB = new DistanceProxy();
   final Sweep sweepA = new Sweep();
   final Sweep sweepB = new Sweep();
-  /**
-   * defines sweep interval [0, tMax]
-   */
+
+  /// defines sweep interval [0, tMax]
   double tMax = 0.0;
 }
 
 enum TOIOutputState { UNKNOWN, FAILED, OVERLAPPED, TOUCHING, SEPARATED }
 
-/**
- * Output parameters for TimeOfImpact
- *
- * @author daniel
- */
+/// Output parameters for TimeOfImpact
 class TOIOutput {
   TOIOutputState state = TOIOutputState.UNKNOWN;
   double t = 0.0;
 }
 
-/**
- * Class used for computing the time of impact. This class should not be constructed usually, just
- * retrieve from the {@link SingletonPool#getTOI()}.
- *
- * @author daniel
- */
+/// Class used for computing the time of impact. This class should not be constructed usually, just
+/// retrieve from the {@link SingletonPool#getTOI()}.
 class TimeOfImpact {
   static const int MAX_ITERATIONS = 20;
   static const int MAX_ROOT_ITERATIONS = 50;
@@ -83,15 +70,10 @@ class TimeOfImpact {
 
   TimeOfImpact(this._pool);
 
-  /**
-   * Compute the upper bound on time before two shapes penetrate. Time is represented as a fraction
-   * between [0,tMax]. This uses a swept separating axis and may miss some intermediate,
-   * non-tunneling collision. If you change the time interval, you should call this function again.
-   * Note: use Distance to compute the contact point and normal at the time of impact.
-   *
-   * @param output
-   * @param input
-   */
+  /// Compute the upper bound on time before two shapes penetrate. Time is represented as a fraction
+  /// between [0,tMax]. This uses a swept separating axis and may miss some intermediate,
+  /// non-tunneling collision. If you change the time interval, you should call this function again.
+  /// Note: use Distance to compute the contact point and normal at the time of impact.
   void timeOfImpact(TOIOutput output, TOIInput input) {
     // CCD via the local separating axis method. This seeks progression
     // by computing the largest time at which separation is maintained.

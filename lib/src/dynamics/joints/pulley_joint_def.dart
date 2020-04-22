@@ -24,55 +24,35 @@
 
 part of box2d;
 
-/**
- * Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, and a
- * pulley ratio.
- * 
- * @author Daniel Murphy
- */
+/// Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, and a
+/// pulley ratio.
 class PulleyJointDef extends JointDef {
-  /**
-   * The first ground anchor in world coordinates. This point never moves.
-   */
+  /// The first ground anchor in world coordinates. This point never moves.
   Vector2 groundAnchorA = new Vector2(-1.0, 1.0);
 
-  /**
-   * The second ground anchor in world coordinates. This point never moves.
-   */
+  /// The second ground anchor in world coordinates. This point never moves.
   Vector2 groundAnchorB = new Vector2(1.0, 1.0);
 
-  /**
-   * The local anchor point relative to bodyA's origin.
-   */
+  /// The local anchor point relative to bodyA's origin.
   Vector2 localAnchorA = new Vector2(-1.0, 0.0);
 
-  /**
-   * The local anchor point relative to bodyB's origin.
-   */
+  /// The local anchor point relative to bodyB's origin.
   Vector2 localAnchorB = new Vector2(1.0, 0.0);
 
-  /**
-   * The a reference length for the segment attached to bodyA.
-   */
+  /// The a reference length for the segment attached to bodyA.
   double lengthA = 0.0;
 
-  /**
-   * The a reference length for the segment attached to bodyB.
-   */
+  /// The a reference length for the segment attached to bodyB.
   double lengthB = 0.0;
 
-  /**
-   * The pulley ratio, used to simulate a block-and-tackle.
-   */
+  /// The pulley ratio, used to simulate a block-and-tackle.
   double ratio = 1.0;
 
   PulleyJointDef() : super(JointType.PULLEY) {
     collideConnected = true;
   }
 
-  /**
-   * Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
-   */
+  /// Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
   void initialize(Body b1, Body b2, Vector2 ga1, Vector2 ga2, Vector2 anchor1,
       Vector2 anchor2, double r) {
     bodyA = b1;

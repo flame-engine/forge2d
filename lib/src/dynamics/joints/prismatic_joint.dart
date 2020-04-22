@@ -1,26 +1,26 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
@@ -90,13 +90,9 @@ part of box2d;
 //Now compute impulse to be applied:
 //df = f2 - f1
 
-/**
- * A prismatic joint. This joint provides one degree of freedom: translation along an axis fixed in
- * bodyA. Relative rotation is prevented. You can use a joint limit to restrict the range of motion
- * and a joint motor to drive the motion or to model joint friction.
- *
- * @author Daniel
- */
+/// A prismatic joint. This joint provides one degree of freedom: translation along an axis fixed in
+/// bodyA. Relative rotation is prevented. You can use a joint limit to restrict the range of motion
+/// and a joint motor to drive the motion or to model joint friction.
 class PrismaticJoint extends Joint {
   // Solver shared
   final Vector2 _localAnchorA;
@@ -184,9 +180,7 @@ class PrismaticJoint extends Joint {
     return inv_dt * _impulse.y;
   }
 
-  /**
-   * Get the current joint translation, usually in meters.
-   */
+  /// Get the current joint translation, usually in meters.
   double getJointSpeed() {
     Body bA = _bodyA;
     Body bB = _bodyB;
@@ -254,20 +248,16 @@ class PrismaticJoint extends Joint {
     return translation;
   }
 
-  /**
-   * Is the joint limit enabled?
-   *
-   * @return
-   */
+  /// Is the joint limit enabled?
+  ///
+  /// @return
   bool isLimitEnabled() {
     return _enableLimit;
   }
 
-  /**
-   * Enable/disable the joint limit.
-   *
-   * @param flag
-   */
+  /// Enable/disable the joint limit.
+  ///
+  /// @param flag
   void enableLimit(bool flag) {
     if (flag != _enableLimit) {
       _bodyA.setAwake(true);
@@ -277,30 +267,24 @@ class PrismaticJoint extends Joint {
     }
   }
 
-  /**
-   * Get the lower joint limit, usually in meters.
-   *
-   * @return
-   */
+  /// Get the lower joint limit, usually in meters.
+  ///
+  /// @return
   double getLowerLimit() {
     return _lowerTranslation;
   }
 
-  /**
-   * Get the upper joint limit, usually in meters.
-   *
-   * @return
-   */
+  /// Get the upper joint limit, usually in meters.
+  ///
+  /// @return
   double getUpperLimit() {
     return _upperTranslation;
   }
 
-  /**
-   * Set the joint limits, usually in meters.
-   *
-   * @param lower
-   * @param upper
-   */
+  /// Set the joint limits, usually in meters.
+  ///
+  /// @param lower
+  /// @param upper
   void setLimits(double lower, double upper) {
     assert(lower <= upper);
     if (lower != _lowerTranslation || upper != _upperTranslation) {
@@ -312,63 +296,51 @@ class PrismaticJoint extends Joint {
     }
   }
 
-  /**
-   * Is the joint motor enabled?
-   *
-   * @return
-   */
+  /// Is the joint motor enabled?
+  ///
+  /// @return
   bool isMotorEnabled() {
     return _enableMotor;
   }
 
-  /**
-   * Enable/disable the joint motor.
-   *
-   * @param flag
-   */
+  /// Enable/disable the joint motor.
+  ///
+  /// @param flag
   void enableMotor(bool flag) {
     _bodyA.setAwake(true);
     _bodyB.setAwake(true);
     _enableMotor = flag;
   }
 
-  /**
-   * Set the motor speed, usually in meters per second.
-   *
-   * @param speed
-   */
+  /// Set the motor speed, usually in meters per second.
+  ///
+  /// @param speed
   void setMotorSpeed(double speed) {
     _bodyA.setAwake(true);
     _bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
-  /**
-   * Get the motor speed, usually in meters per second.
-   *
-   * @return
-   */
+  /// Get the motor speed, usually in meters per second.
+  ///
+  /// @return
   double getMotorSpeed() {
     return _motorSpeed;
   }
 
-  /**
-   * Set the maximum motor force, usually in N.
-   *
-   * @param force
-   */
+  /// Set the maximum motor force, usually in N.
+  ///
+  /// @param force
   void setMaxMotorForce(double force) {
     _bodyA.setAwake(true);
     _bodyB.setAwake(true);
     _maxMotorForce = force;
   }
 
-  /**
-   * Get the current motor force, usually in N.
-   *
-   * @param inv_dt
-   * @return
-   */
+  /// Get the current motor force, usually in N.
+  ///
+  /// @param inv_dt
+  /// @return
   double getMotorForce(double inv_dt) {
     return _motorImpulse * inv_dt;
   }

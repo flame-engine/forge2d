@@ -24,13 +24,9 @@
 
 part of box2d;
 
-/**
- * The broad-phase is used for computing pairs and performing volume queries and ray casts. This
- * broad-phase does not persist pairs. Instead, this reports potentially new pairs. It is up to the
- * client to consume the new pairs and to track subsequent overlap.
- * 
- * @author Daniel Murphy
- */
+/// The broad-phase is used for computing pairs and performing volume queries and ray casts. This
+/// broad-phase does not persist pairs. Instead, this reports potentially new pairs. It is up to the
+/// client to consume the new pairs and to track subsequent overlap.
 class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   final BroadPhaseStrategy _tree;
 
@@ -202,9 +198,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     }
   }
 
-  /**
-   * This is called from DynamicTree::query when we are gathering pairs.
-   */
+  /// This is called from DynamicTree::query when we are gathering pairs.
   bool treeCallback(int proxyId) {
     // A proxy cannot form a pair with itself.
     if (proxyId == _queryProxyId) {

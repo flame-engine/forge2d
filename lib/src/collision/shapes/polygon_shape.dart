@@ -1,57 +1,47 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+/// *****************************************************************************
+/// Copyright (c) 2015, Daniel Murphy, Google
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without modification,
+/// are permitted provided that the following conditions are met:
+///  * Redistributions of source code must retain the above copyright notice,
+///    this list of conditions and the following disclaimer.
+///  * Redistributions in binary form must reproduce the above copyright notice,
+///    this list of conditions and the following disclaimer in the documentation
+///    and/or other materials provided with the distribution.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+/// POSSIBILITY OF SUCH DAMAGE.
+/// *****************************************************************************
 
 part of box2d;
 
-/**
- * A convex polygon shape. Polygons have a maximum number of vertices equal to _maxPolygonVertices.
- * In most cases you should not need many vertices for a convex polygon.
- */
+/// A convex polygon shape. Polygons have a maximum number of vertices equal to _maxPolygonVertices.
+/// In most cases you should not need many vertices for a convex polygon.
 class PolygonShape extends Shape {
-  /** Dump lots of debug information. */
+  /// Dump lots of debug information.
   static const bool _debug = false;
 
-  /**
-   * Local position of the shape centroid in parent body frame.
-   */
+  /// Local position of the shape centroid in parent body frame.
   final Vector2 centroid = Vector2.zero();
 
-  /**
-   * The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
-   * active vertices.
-   */
+  /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
+  /// active vertices.
   final List<Vector2> vertices = List<Vector2>(Settings.maxPolygonVertices);
 
-  /**
-   * The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
-   * active normals.
-   */
+  /// The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
+  /// active normals.
   final List<Vector2> normals = List<Vector2>(Settings.maxPolygonVertices);
 
-  /**
-   * Number of active vertices in the shape.
-   */
+  /// Number of active vertices in the shape.
   int count = 0;
 
   // pooling
@@ -84,24 +74,18 @@ class PolygonShape extends Shape {
     return shape;
   }
 
-  /**
-   * Create a convex hull from the given array of points. The count must be in the range [3,
-   * Settings.maxPolygonVertices].
-   *
-   * @warning the points may be re-ordered, even if they form a convex polygon.
-   * @warning collinear points are removed.
-   */
+  /// Create a convex hull from the given array of points. The count must be in the range [3,
+  /// Settings.maxPolygonVertices].
+  /// @warning the points may be re-ordered, even if they form a convex polygon.
+  /// @warning collinear points are removed.
   void set(final List<Vector2> vertices, final int count) {
     setWithPools(vertices, count, null, null);
   }
 
-  /**
-   * Create a convex hull from the given array of points. The count must be in the range [3,
-   * Settings.maxPolygonVertices]. This method takes an arraypool for pooling.
-   *
-   * @warning the points may be re-ordered, even if they form a convex polygon.
-   * @warning collinear points are removed.
-   */
+  /// Create a convex hull from the given array of points. The count must be in the range [3,
+  /// Settings.maxPolygonVertices]. This method takes an arraypool for pooling.
+  /// @warning the points may be re-ordered, even if they form a convex polygon.
+  /// @warning collinear points are removed.
   void setWithPools(final List<Vector2> verts, final int num,
       final Vec2Array vecPool, final IntArray intPool) {
     assert(3 <= num && num <= Settings.maxPolygonVertices);
@@ -224,12 +208,10 @@ class PolygonShape extends Shape {
     computeCentroidToOut(vertices, count, centroid);
   }
 
-  /**
-   * Build vertices to represent an axis-aligned box.
-   *
-   * @param hx the half-width.
-   * @param hy the half-height.
-   */
+  /// Build vertices to represent an axis-aligned box.
+  ///
+  /// @param hx the half-width.
+  /// @param hy the half-height.
   void setAsBoxXY(final double hx, final double hy) {
     count = 4;
     vertices[0].setValues(-hx, -hy);
@@ -243,14 +225,12 @@ class PolygonShape extends Shape {
     centroid.setZero();
   }
 
-  /**
-   * Build vertices to represent an oriented box.
-   *
-   * @param hx the half-width.
-   * @param hy the half-height.
-   * @param center the center of the box in local coordinates.
-   * @param angle the rotation of the box in local coordinates.
-   */
+  /// Build vertices to represent an oriented box.
+  ///
+  /// @param hx the half-width.
+  /// @param hy the half-height.
+  /// @param center the center of the box in local coordinates.
+  /// @param angle the rotation of the box in local coordinates.
   void setAsBox(final double hx, final double hy, final Vector2 center,
       final double angle) {
     count = 4;
@@ -275,9 +255,7 @@ class PolygonShape extends Shape {
     }
   }
 
-  /**
-   * Set this as a single edge.
-   */
+  /// Set this as a single edge.
   void setAsEdge(Vector2 v1, Vector2 v2) {
     count = 2;
     vertices[0].setFrom(v1);
@@ -362,21 +340,12 @@ class PolygonShape extends Shape {
     upper.y += radius;
   }
 
-  /**
-   * Get the vertex count.
-   *
-   * @return
-   */
+  /// Get the vertex count.
   int getVertexCount() {
     return count;
   }
 
-  /**
-   * Get a vertex by index.
-   *
-   * @param index
-   * @return
-   */
+  /// Get a vertex by index.
   Vector2 getVertex(final int index) {
     assert(0 <= index && index < count);
     return vertices[index];
@@ -656,11 +625,7 @@ class PolygonShape extends Shape {
     massData.I += massData.mass * (massData.center.dot(massData.center));
   }
 
-  /**
-   * Validate convexity. This is a very time consuming operation.
-   *
-   * @return
-   */
+  /// Validate convexity. This is a very time consuming operation.
   bool validate() {
     for (int i = 0; i < count; ++i) {
       int i1 = i;
@@ -688,12 +653,12 @@ class PolygonShape extends Shape {
     return true;
   }
 
-  /** Get the centroid and apply the supplied transform. */
+  /// Get the centroid and apply the supplied transform.
   Vector2 applyToCentroid(final Transform xf) {
     return Transform.mulVec2(xf, centroid);
   }
 
-  /** Get the centroid and apply the supplied transform. */
+  /// Get the centroid and apply the supplied transform.
   Vector2 centroidToOut(final Transform xf, final Vector2 out) {
     Transform.mulToOutUnsafeVec2(xf, centroid, out);
     return out;
