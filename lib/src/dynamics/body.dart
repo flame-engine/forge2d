@@ -419,7 +419,7 @@ class Body {
       setAwake(true);
     }
 
-    torque += torque;
+    _torque += torque;
   }
 
   /// Apply an impulse at a point. This immediately modifies the velocity. It also modifies the
