@@ -1,5 +1,5 @@
 name: box2d_flame
-version: 0.4.5
+version: 0.4.6
 description: A Dart 2D physics engine, port from the Java version, works for Web/Flutter
 homepage: https://github.com/feroult/box2d.dart
 dependencies:

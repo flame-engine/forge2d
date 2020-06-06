@@ -1,3 +1,6 @@
+### 0.4.6
+* Fix bug with torque not being modified from applyTorque
+
 ### 0.4.5
 * Fixing warnings and formatting
 
