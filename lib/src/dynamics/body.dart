@@ -483,18 +483,12 @@ class Body {
   /// Get the mass data of the body. The rotational inertia is relative to the center of mass.
   ///
   /// @return a struct containing the mass, inertia and center of the body.
-  void getMassData(MassData data) {
-    // data.mass = _mass;
-    // data.I = _I + _mass * Vec2.dot(_sweep.localCenter, _sweep.localCenter);
-    // data.center.set(_sweep.localCenter);
-
-    data.mass = _mass;
-    data.I = _I +
-        _mass *
-            (_sweep.localCenter.x * _sweep.localCenter.x +
-                _sweep.localCenter.y * _sweep.localCenter.y);
-    data.center.x = _sweep.localCenter.x;
-    data.center.y = _sweep.localCenter.y;
+  MassData getMassData() {
+    return MassData()
+      ..mass = _mass
+      ..I = _I + getInertia()
+      ..center.x = _sweep.localCenter.x
+      ..center.y = _sweep.localCenter.y;
   }
 
   /// Set the mass properties to override the mass properties of the fixtures. Note that this changes
