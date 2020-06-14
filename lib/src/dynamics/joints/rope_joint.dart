@@ -31,8 +31,8 @@ part of box2d;
 /// dynamically control length.
 class RopeJoint extends Joint {
   // Solver shared
-  final Vector2 _localAnchorA = Vector2.zero();
-  final Vector2 _localAnchorB = Vector2.zero();
+  final Vector2 localAnchorA = Vector2.zero();
+  final Vector2 localAnchorB = Vector2.zero();
   double _maxLength = 0.0;
   double _length = 0.0;
   double _impulse = 0.0;
@@ -53,8 +53,8 @@ class RopeJoint extends Joint {
   LimitState _state = LimitState.INACTIVE;
 
   RopeJoint(IWorldPool worldPool, RopeJointDef def) : super(worldPool, def) {
-    _localAnchorA.setFrom(def.localAnchorA);
-    _localAnchorB.setFrom(def.localAnchorB);
+    localAnchorA.setFrom(def.localAnchorA);
+    localAnchorB.setFrom(def.localAnchorB);
 
     _maxLength = def.maxLength;
   }
@@ -90,13 +90,13 @@ class RopeJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         _rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         _rB);
 
@@ -228,13 +228,13 @@ class RopeJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         rB);
     u
@@ -271,11 +271,11 @@ class RopeJoint extends Joint {
   }
 
   void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
+    _bodyA.getWorldPointToOut(localAnchorA, argOut);
   }
 
   void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
+    _bodyB.getWorldPointToOut(localAnchorB, argOut);
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
@@ -290,11 +290,11 @@ class RopeJoint extends Joint {
   }
 
   Vector2 getLocalAnchorA() {
-    return _localAnchorA;
+    return localAnchorA;
   }
 
   Vector2 getLocalAnchorB() {
-    return _localAnchorB;
+    return localAnchorB;
   }
 
   double getMaxLength() {

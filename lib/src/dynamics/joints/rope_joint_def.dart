@@ -27,12 +27,6 @@ part of box2d;
 /// Rope joint definition. This requires two body anchor points and a maximum lengths. Note: by
 /// default the connected objects will not collide. see collideConnected in b2JointDef.
 class RopeJointDef extends JointDef {
-  /// The local anchor point relative to bodyA's origin.
-  final Vector2 localAnchorA = new Vector2.zero();
-
-  /// The local anchor point relative to bodyB's origin.
-  final Vector2 localAnchorB = new Vector2.zero();
-
   /// The maximum length of the rope. Warning: this must be larger than b2_linearSlop or the joint
   /// will have no effect.
   double maxLength = 0.0;

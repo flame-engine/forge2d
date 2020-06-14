@@ -40,8 +40,6 @@ class DistanceJoint extends Joint {
   double _bias = 0.0;
 
   // Solver shared
-  final Vector2 _localAnchorA;
-  final Vector2 _localAnchorB;
   double _gamma = 0.0;
   double _impulse = 0.0;
   double _length = 0.0;
@@ -61,35 +59,25 @@ class DistanceJoint extends Joint {
   double _mass = 0.0;
 
   DistanceJoint(IWorldPool argWorld, final DistanceJointDef def)
-      : _localAnchorA = def.localAnchorA.clone(),
-        _localAnchorB = def.localAnchorB.clone(),
-        super(argWorld, def) {
+      : super(argWorld, def) {
     _length = def.length;
     _frequencyHz = def.frequencyHz;
     _dampingRatio = def.dampingRatio;
   }
 
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
-  }
-
   /// Get the reaction force given the inverse time step. Unit is N.
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.x = _impulse * _u.x * inv_dt;
-    argOut.y = _impulse * _u.y * inv_dt;
+  @override
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2(
+        _impulse * _u.x * inv_dt,
+        _impulse * _u.y * inv_dt,
+    );
   }
 
   /// Get the reaction torque given the inverse time step. Unit is N*m. This is always zero for a
   /// distance joint.
-
-  double getReactionTorque(double inv_dt) {
-    return 0.0;
-  }
+  @override
+  double getReactionTorque(double inv_dt) => 0.0;
 
   void initVelocityConstraints(final SolverData data) {
     _indexA = _bodyA._islandIndex;
@@ -118,18 +106,10 @@ class DistanceJoint extends Joint {
     qB.setAngle(aB);
 
     // use _u as temporary variable
-    Rot.mulToOutUnsafe(
-        qA,
-        _u
-          ..setFrom(_localAnchorA)
-          ..sub(_localCenterA),
-        _rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        _u
-          ..setFrom(_localAnchorB)
-          ..sub(_localCenterB),
-        _rB);
+    _u..setFrom(localAnchorA)..sub(_localCenterA);
+    _rA.setFrom(Rot.mulVec2(qA, _u));
+    _u..setFrom(localAnchorB)..sub(_localCenterB);
+    _rB.setFrom(Rot.mulVec2(qB, _u));
     _u
       ..setFrom(cB)
       ..add(_rB)
@@ -261,18 +241,10 @@ class DistanceJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOutUnsafe(
-        qA,
-        u
-          ..setFrom(_localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        u
-          ..setFrom(_localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    u..setFrom(localAnchorA)..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, u));
+    u..setFrom(localAnchorB)..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, u));
     u
       ..setFrom(cB)
       ..add(rB)

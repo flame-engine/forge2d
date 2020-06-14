@@ -33,12 +33,6 @@ class PulleyJointDef extends JointDef {
   /// The second ground anchor in world coordinates. This point never moves.
   Vector2 groundAnchorB = new Vector2(1.0, 1.0);
 
-  /// The local anchor point relative to bodyA's origin.
-  Vector2 localAnchorA = new Vector2(-1.0, 0.0);
-
-  /// The local anchor point relative to bodyB's origin.
-  Vector2 localAnchorB = new Vector2(1.0, 0.0);
-
   /// The a reference length for the segment attached to bodyA.
   double lengthA = 0.0;
 

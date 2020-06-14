@@ -30,12 +30,6 @@ part of box2d;
 /// coincide in world space. Using local anchors and a local axis helps when saving and loading a
 /// game.
 class WheelJointDef extends JointDef {
-  /// The local anchor point relative to body1's origin.
-  final Vector2 localAnchorA = Vector2.zero();
-
-  /// The local anchor point relative to body2's origin.
-  final Vector2 localAnchorB = Vector2.zero();
-
   /// The local translation axis in body1.
   final Vector2 localAxisA = Vector2.zero();
 

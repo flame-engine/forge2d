@@ -29,7 +29,6 @@ part of box2d;
 /// forces. NOTE: this joint is not documented in the manual because it was developed to be used in
 /// the testbed. If you want to learn how to use the mouse joint, look at the testbed.
 class MouseJoint extends Joint {
-  final Vector2 _localAnchorB = new Vector2.zero();
   final Vector2 _targetA = new Vector2.zero();
   double _frequencyHz = 0.0;
   double _dampingRatio = 0.0;
@@ -57,7 +56,7 @@ class MouseJoint extends Joint {
 
     _targetA.setFrom(def.target);
     Transform.mulTransToOutUnsafeVec2(
-        _bodyB._transform, _targetA, _localAnchorB);
+        _bodyB._transform, _targetA, localAnchorB);
 
     _maxForce = def.maxForce;
     _impulse.setZero();
@@ -66,18 +65,13 @@ class MouseJoint extends Joint {
     _dampingRatio = def.dampingRatio;
   }
 
-  void getAnchorA(Vector2 argOut) {
-    argOut.setFrom(_targetA);
+  @override
+  Vector2 getAnchorA() {
+    return Vector2.copy(_targetA);
   }
 
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
-  }
-
-  void getReactionForce(double invDt, Vector2 argOut) {
-    argOut
-      ..setFrom(_impulse)
-      ..scale(invDt);
+  Vector2 getReactionForce(double invDt) {
+      return Vector2.copy(_impulse)..scale(invDt);
   }
 
   double getReactionTorque(double invDt) {
@@ -138,7 +132,7 @@ class MouseJoint extends Joint {
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         _rB);
 

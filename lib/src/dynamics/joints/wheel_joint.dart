@@ -50,8 +50,8 @@ class WheelJoint extends Joint {
   double _dampingRatio = 0.0;
 
   // Solver shared
-  final Vector2 _localAnchorA = new Vector2.zero();
-  final Vector2 _localAnchorB = new Vector2.zero();
+  final Vector2 localAnchorA = new Vector2.zero();
+  final Vector2 localAnchorB = new Vector2.zero();
   final Vector2 _localXAxisA = new Vector2.zero();
   final Vector2 _localYAxisA = new Vector2.zero();
 
@@ -86,8 +86,8 @@ class WheelJoint extends Joint {
   double _gamma = 0.0;
 
   WheelJoint(IWorldPool argPool, WheelJointDef def) : super(argPool, def) {
-    _localAnchorA.setFrom(def.localAnchorA);
-    _localAnchorB.setFrom(def.localAnchorB);
+    localAnchorA.setFrom(def.localAnchorA);
+    localAnchorB.setFrom(def.localAnchorB);
     _localXAxisA.setFrom(def.localAxisA);
     _localXAxisA.scaleOrthogonalInto(1.0, _localYAxisA);
 
@@ -103,19 +103,19 @@ class WheelJoint extends Joint {
   }
 
   Vector2 getLocalAnchorA() {
-    return _localAnchorA;
+    return localAnchorA;
   }
 
   Vector2 getLocalAnchorB() {
-    return _localAnchorB;
+    return localAnchorB;
   }
 
   void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
+    _bodyA.getWorldPointToOut(localAnchorA, argOut);
   }
 
   void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
+    _bodyB.getWorldPointToOut(localAnchorB, argOut);
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
@@ -142,8 +142,8 @@ class WheelJoint extends Joint {
     Vector2 p1 = pool.popVec2();
     Vector2 p2 = pool.popVec2();
     Vector2 axis = pool.popVec2();
-    b1.getWorldPointToOut(_localAnchorA, p1);
-    b2.getWorldPointToOut(_localAnchorA, p2);
+    b1.getWorldPointToOut(localAnchorA, p1);
+    b2.getWorldPointToOut(localAnchorA, p2);
     p2.sub(p1);
     b1.getWorldVectorToOut(_localXAxisA, axis);
 
@@ -235,13 +235,13 @@ class WheelJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         rB);
     d
@@ -455,13 +455,13 @@ class WheelJoint extends Joint {
     Rot.mulToOut(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         rA);
     Rot.mulToOut(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         rB);
     d

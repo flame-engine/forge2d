@@ -25,12 +25,6 @@
 part of box2d;
 
 class WeldJointDef extends JointDef {
-  /// The local anchor point relative to body1's origin.
-  final Vector2 localAnchorA = new Vector2.zero();
-
-  /// The local anchor point relative to body2's origin.
-  final Vector2 localAnchorB = new Vector2.zero();
-
   /// The body2 angle minus body1 angle in the reference state (radians).
   double referenceAngle = 0.0;
 

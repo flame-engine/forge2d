@@ -47,7 +47,7 @@ class MotorJointDef extends JointDef {
     bodyA = bA;
     bodyB = bB;
     Vector2 xB = bodyB.position;
-    bodyA.getLocalPointToOut(xB, linearOffset);
+    linearOffset.setFrom(bodyA.getLocalPoint(xB));
 
     double angleA = bodyA.getAngle();
     double angleB = bodyB.getAngle();

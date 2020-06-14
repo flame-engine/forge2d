@@ -25,9 +25,6 @@
 part of box2d;
 
 class FrictionJoint extends Joint {
-  final Vector2 _localAnchorA;
-  final Vector2 _localAnchorB;
-
   // Solver shared
   final Vector2 _linearImpulse;
   double _angularImpulse = 0.0;
@@ -37,46 +34,28 @@ class FrictionJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _rA = new Vector2.zero();
-  final Vector2 _rB = new Vector2.zero();
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _rA = Vector2.zero();
+  final Vector2 _rB = Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;
   double _invIB = 0.0;
-  final Matrix2 _linearMass = new Matrix2.zero();
+  final Matrix2 _linearMass = Matrix2.zero();
   double _angularMass = 0.0;
 
   FrictionJoint(IWorldPool argWorldPool, FrictionJointDef def)
-      : _localAnchorA = new Vector2.copy(def.localAnchorA),
-        _localAnchorB = new Vector2.copy(def.localAnchorB),
-        _linearImpulse = new Vector2.zero(),
+      : _linearImpulse = Vector2.zero(),
         super(argWorldPool, def) {
     _maxForce = def.maxForce;
     _maxTorque = def.maxTorque;
   }
 
-  Vector2 getLocalAnchorA() {
-    return _localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return _localAnchorB;
-  }
-
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut
-      ..setFrom(_linearImpulse)
-      ..scale(inv_dt);
+  /// Get the reaction force given the inverse time step. Unit is N.
+  @override
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2.copy(_linearImpulse)..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -132,13 +111,13 @@ class FrictionJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         _rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         _rB);
 

@@ -26,29 +26,20 @@ part of box2d;
 
 /// Friction joint definition.
 class FrictionJointDef extends JointDef {
-  /// The local anchor point relative to bodyA's origin.
-  final Vector2 localAnchorA;
-
-  /// The local anchor point relative to bodyB's origin.
-  final Vector2 localAnchorB;
-
   /// The maximum friction force in N.
   double maxForce = 0.0;
 
   /// The maximum friction torque in N-m.
   double maxTorque = 0.0;
 
-  FrictionJointDef()
-      : localAnchorA = new Vector2.zero(),
-        localAnchorB = new Vector2.zero(),
-        super(JointType.FRICTION);
+  FrictionJointDef() : super(JointType.FRICTION);
 
   /// Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
   /// axis.
   void initialize(Body bA, Body bB, Vector2 anchor) {
     bodyA = bA;
     bodyB = bB;
-    bA.getLocalPointToOut(anchor, localAnchorA);
-    bB.getLocalPointToOut(anchor, localAnchorB);
+    localAnchorA.setFrom(bA.getLocalPoint(anchor));
+    localAnchorB.setFrom(bB.getLocalPoint(anchor));
   }
 }

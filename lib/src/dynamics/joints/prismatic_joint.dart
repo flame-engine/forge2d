@@ -95,8 +95,8 @@ part of box2d;
 /// and a joint motor to drive the motion or to model joint friction.
 class PrismaticJoint extends Joint {
   // Solver shared
-  final Vector2 _localAnchorA;
-  final Vector2 _localAnchorB;
+  final Vector2 localAnchorA;
+  final Vector2 localAnchorB;
   final Vector2 _localXAxisA;
   final Vector2 _localYAxisA;
   double _referenceAngle;
@@ -130,8 +130,8 @@ class PrismaticJoint extends Joint {
       0.0; // effective mass for motor/limit translational constraint.
 
   PrismaticJoint(IWorldPool argWorld, PrismaticJointDef def)
-      : _localAnchorA = new Vector2.copy(def.localAnchorA),
-        _localAnchorB = new Vector2.copy(def.localAnchorB),
+      : localAnchorA = new Vector2.copy(def.localAnchorA),
+        localAnchorB = new Vector2.copy(def.localAnchorB),
         _localXAxisA = new Vector2.copy(def.localAxisA)..normalize(),
         _localYAxisA = new Vector2.zero(),
         super(argWorld, def) {
@@ -148,32 +148,25 @@ class PrismaticJoint extends Joint {
   }
 
   Vector2 getLocalAnchorA() {
-    return _localAnchorA;
+    return localAnchorA;
   }
 
   Vector2 getLocalAnchorB() {
-    return _localAnchorB;
+    return localAnchorB;
   }
 
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
+  @override
+  Vector2 getReactionForce(double inv_dt) {
     Vector2 temp = pool.popVec2();
     temp
       ..setFrom(_axis)
       ..scale(_motorImpulse + _impulse.z);
-    argOut
-      ..setFrom(_perp)
+    Vector2 out = Vector2.copy(_perp)
       ..scale(_impulse.x)
       ..add(temp)
       ..scale(inv_dt);
     pool.pushVec2(1);
+    return out;
   }
 
   double getReactionTorque(double inv_dt) {
@@ -196,12 +189,12 @@ class PrismaticJoint extends Joint {
     Vector2 temp3 = pool.popVec2();
 
     temp
-      ..setFrom(_localAnchorA)
+      ..setFrom(localAnchorA)
       ..sub(bA._sweep.localCenter);
     Rot.mulToOutUnsafe(bA._transform.q, temp, rA);
 
     temp
-      ..setFrom(_localAnchorB)
+      ..setFrom(localAnchorB)
       ..sub(bB._sweep.localCenter);
     Rot.mulToOutUnsafe(bB._transform.q, temp, rB);
 
@@ -239,8 +232,8 @@ class PrismaticJoint extends Joint {
 
   double getJointTranslation() {
     Vector2 pA = pool.popVec2(), pB = pool.popVec2(), axis = pool.popVec2();
-    _bodyA.getWorldPointToOut(_localAnchorA, pA);
-    _bodyB.getWorldPointToOut(_localAnchorB, pB);
+    _bodyA.getWorldPointToOut(localAnchorA, pA);
+    _bodyB.getWorldPointToOut(localAnchorB, pB);
     _bodyA.getWorldVectorToOutUnsafe(_localXAxisA, axis);
     pB.sub(pA);
     double translation = pB.dot(axis);
@@ -391,13 +384,13 @@ class PrismaticJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         d
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         rA);
     Rot.mulToOutUnsafe(
         qB,
         d
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         rB);
     d
@@ -702,13 +695,13 @@ class PrismaticJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         rB);
     d
