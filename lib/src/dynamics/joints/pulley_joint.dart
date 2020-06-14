@@ -38,8 +38,6 @@ class PulleyJoint extends Joint {
   double _lengthB = 0.0;
 
   // Solver shared
-  final Vector2 _localAnchorA = Vector2.zero();
-  final Vector2 _localAnchorB = Vector2.zero();
   double _constant = 0.0;
   double _ratio = 0.0;
   double _impulse = 0.0;
@@ -63,8 +61,8 @@ class PulleyJoint extends Joint {
       : super(argWorldPool, def) {
     _groundAnchorA.setFrom(def.groundAnchorA);
     _groundAnchorB.setFrom(def.groundAnchorB);
-    _localAnchorA.setFrom(def.localAnchorA);
-    _localAnchorB.setFrom(def.localAnchorB);
+    localAnchorA.setFrom(def.localAnchorA);
+    localAnchorB.setFrom(def.localAnchorB);
 
     assert(def.ratio != 0.0);
     _ratio = def.ratio;
@@ -86,7 +84,7 @@ class PulleyJoint extends Joint {
 
   double getCurrentLengthA() {
     final Vector2 p = pool.popVec2();
-    _bodyA.getWorldPointToOut(_localAnchorA, p);
+    _bodyA.getWorldPointToOut(localAnchorA, p);
     p.sub(_groundAnchorA);
     double length = p.length;
     pool.pushVec2(1);
@@ -95,32 +93,16 @@ class PulleyJoint extends Joint {
 
   double getCurrentLengthB() {
     final Vector2 p = pool.popVec2();
-    _bodyB.getWorldPointToOut(_localAnchorB, p);
+    _bodyB.getWorldPointToOut(localAnchorB, p);
     p.sub(_groundAnchorB);
     double length = p.length;
     pool.pushVec2(1);
     return length;
   }
 
-  Vector2 getLocalAnchorA() {
-    return _localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return _localAnchorB;
-  }
-
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut
-      ..setFrom(_uB)
+  @override
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2.copy(_uB)
       ..scale(_impulse)
       ..scale(inv_dt);
   }
@@ -139,7 +121,7 @@ class PulleyJoint extends Joint {
 
   double getLength1() {
     final Vector2 p = pool.popVec2();
-    _bodyA.getWorldPointToOut(_localAnchorA, p);
+    _bodyA.getWorldPointToOut(localAnchorA, p);
     p.sub(_groundAnchorA);
 
     double len = p.length;
@@ -149,7 +131,7 @@ class PulleyJoint extends Joint {
 
   double getLength2() {
     final Vector2 p = pool.popVec2();
-    _bodyB.getWorldPointToOut(_localAnchorB, p);
+    _bodyB.getWorldPointToOut(localAnchorB, p);
     p.sub(_groundAnchorB);
 
     double len = p.length;
@@ -192,13 +174,13 @@ class PulleyJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         _rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         _rB);
 
@@ -337,13 +319,13 @@ class PulleyJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         rB);
 

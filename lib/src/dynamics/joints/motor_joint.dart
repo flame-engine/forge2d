@@ -75,18 +75,19 @@ class MotorJoint extends Joint {
     _correctionFactor = def.correctionFactor;
   }
 
-  void getAnchorA(Vector2 out) {
-    out.setFrom(_bodyA.position);
+  @override
+  Vector2 getAnchorA() {
+    return Vector2.copy(_bodyA.position);
   }
 
-  void getAnchorB(Vector2 out) {
-    out.setFrom(_bodyB.position);
+  @override
+  Vector2 getAnchorB() {
+    return Vector2.copy(_bodyB.position);
   }
 
-  void getReactionForce(double inv_dt, Vector2 out) {
-    out
-      ..setFrom(_linearImpulse)
-      ..scale(inv_dt);
+  @override
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2.copy(_linearImpulse)..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -213,8 +214,7 @@ class MotorJoint extends Joint {
       _angularMass = 1.0 / _angularMass;
     }
 
-    // _linearError = cB + _rB - cA - _rA - b2Mul(qA, _linearOffset);
-    Rot.mulToOutUnsafe(qA, _linearOffset, temp);
+    temp.setFrom(Rot.mulVec2(qA, _linearOffset));
     _linearError.x = cB.x + _rB.x - cA.x - _rA.x - temp.x;
     _linearError.y = cB.y + _rB.y - cA.y - _rA.y - temp.y;
     _angularError = aB - aA - _angularOffset;

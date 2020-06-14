@@ -46,8 +46,8 @@ class WeldJoint extends Joint {
   double _bias = 0.0;
 
   // Solver shared
-  final Vector2 _localAnchorA;
-  final Vector2 _localAnchorB;
+  final Vector2 localAnchorA;
+  final Vector2 localAnchorB;
   double _referenceAngle = 0.0;
   double _gamma = 0.0;
   final Vector3 _impulse;
@@ -66,8 +66,8 @@ class WeldJoint extends Joint {
   final Matrix3 _mass = new Matrix3.zero();
 
   WeldJoint(IWorldPool argWorld, WeldJointDef def)
-      : _localAnchorA = new Vector2.copy(def.localAnchorA),
-        _localAnchorB = new Vector2.copy(def.localAnchorB),
+      : localAnchorA = new Vector2.copy(def.localAnchorA),
+        localAnchorB = new Vector2.copy(def.localAnchorB),
         _impulse = new Vector3.zero(),
         super(argWorld, def) {
     _referenceAngle = def.referenceAngle;
@@ -80,19 +80,19 @@ class WeldJoint extends Joint {
   }
 
   Vector2 getLocalAnchorA() {
-    return _localAnchorA;
+    return localAnchorA;
   }
 
   Vector2 getLocalAnchorB() {
-    return _localAnchorB;
+    return localAnchorB;
   }
 
   void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
+    _bodyA.getWorldPointToOut(localAnchorA, argOut);
   }
 
   void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
+    _bodyB.getWorldPointToOut(localAnchorB, argOut);
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {
@@ -133,11 +133,11 @@ class WeldJoint extends Joint {
 
     // Compute the effective masses.
     temp
-      ..setFrom(_localAnchorA)
+      ..setFrom(localAnchorA)
       ..sub(_localCenterA);
     Rot.mulToOutUnsafe(qA, temp, _rA);
     temp
-      ..setFrom(_localAnchorB)
+      ..setFrom(localAnchorB)
       ..sub(_localCenterB);
     Rot.mulToOutUnsafe(qB, temp, _rB);
 
@@ -326,10 +326,10 @@ class WeldJoint extends Joint {
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
 
-    temp.setFrom(_localAnchorA);
+    temp.setFrom(localAnchorA);
     temp.sub(_localCenterA);
     Rot.mulToOutUnsafe(qA, temp, rA);
-    temp.setFrom(_localAnchorB);
+    temp.setFrom(localAnchorB);
     temp.sub(_localCenterB);
     Rot.mulToOutUnsafe(qB, temp, rB);
     double positionError, angularError;

@@ -34,12 +34,6 @@ part of box2d;
 /// <li>if you add/remove shapes from a body and recompute the mass, the joints will be broken.</li>
 /// </ul>
 class RevoluteJointDef extends JointDef {
-  /// The local anchor point relative to body1's origin.
-  Vector2 localAnchorA = new Vector2.zero();
-
-  /// The local anchor point relative to body2's origin.
-  Vector2 localAnchorB = new Vector2.zero();
-
   /// The body2 angle minus body1 angle in the reference state (radians).
   double referenceAngle = 0.0;
 

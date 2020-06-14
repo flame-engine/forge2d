@@ -1317,8 +1317,8 @@ class World {
     Vector2 x2 = xf2.p;
     Vector2 p1 = _pool.popVec2();
     Vector2 p2 = _pool.popVec2();
-    joint.getAnchorA(p1);
-    joint.getAnchorB(p2);
+    p1.setFrom(joint.getAnchorA());
+    p2.setFrom(joint.getAnchorB());
 
     color.setFromRGBd(0.5, 0.8, 0.8);
 

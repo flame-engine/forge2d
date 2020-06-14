@@ -76,8 +76,14 @@ abstract class Joint {
 
   IWorldPool pool;
 
-  Joint(IWorldPool worldPool, JointDef def) : _type = def.type {
-    assert(def.bodyA != def.bodyB);
+  final Vector2 localAnchorA;
+  final Vector2 localAnchorB;
+
+  Joint(IWorldPool worldPool, JointDef def) :
+        localAnchorA = def.localAnchorA,
+        localAnchorB = def.localAnchorB,
+        _type = def.type {
+  assert(def.bodyA != def.bodyB);
 
     pool = worldPool;
     _prev = null;
@@ -112,28 +118,28 @@ abstract class Joint {
     return _bodyA;
   }
 
-  /// get the second body attached to this joint.
+  /// Get the second body attached to this joint.
   ///
   /// @return
   Body getBodyB() {
     return _bodyB;
   }
 
-  /// get the anchor point on bodyA in world coordinates.
+  /// Get the anchor point on bodyA in world coordinates.
   ///
   /// @return
-  void getAnchorA(Vector2 out);
+  Vector2 getAnchorA() => _bodyA.getWorldPoint(localAnchorA);
 
-  /// get the anchor point on bodyB in world coordinates.
+  /// Get the anchor point on bodyB in world coordinates.
   ///
   /// @return
-  void getAnchorB(Vector2 out);
+  Vector2 getAnchorB() => _bodyB.getWorldPoint(localAnchorB);
 
-  /// get the reaction force on body2 at the joint anchor in Newtons.
+  /// Get the reaction force on body2 at the joint anchor in Newtons.
   ///
   /// @param inv_dt
   /// @return
-  void getReactionForce(double inv_dt, Vector2 out);
+  Vector2 getReactionForce(double inv_dt);
 
   /// get the reaction torque on body2 in N*m.
   ///

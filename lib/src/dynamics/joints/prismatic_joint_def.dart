@@ -32,12 +32,6 @@ part of box2d;
 ///
 /// @warning at least one body should by dynamic with a non-fixed rotation.
 class PrismaticJointDef extends JointDef {
-  /// The local anchor point relative to body1's origin.
-  final Vector2 localAnchorA = new Vector2.zero();
-
-  /// The local anchor point relative to body2's origin.
-  final Vector2 localAnchorB = new Vector2.zero();
-
   /// The local translation axis in body1.
   final Vector2 localAxisA = new Vector2(1.0, 0.0);
 
@@ -69,9 +63,9 @@ class PrismaticJointDef extends JointDef {
   void initialize(Body b1, Body b2, Vector2 anchor, Vector2 axis) {
     bodyA = b1;
     bodyB = b2;
-    bodyA.getLocalPointToOut(anchor, localAnchorA);
-    bodyB.getLocalPointToOut(anchor, localAnchorB);
-    bodyA.getLocalVectorToOut(axis, localAxisA);
+    localAnchorA.setFrom(bodyA.getLocalPoint(anchor));
+    localAnchorB.setFrom(bodyB.getLocalPoint(anchor));
+    localAxisA.setFrom(bodyA.getLocalVector(axis));
     referenceAngle = bodyB.getAngle() - bodyA.getAngle();
   }
 }

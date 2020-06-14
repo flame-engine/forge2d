@@ -43,8 +43,8 @@ part of box2d;
 /// so that infinite forces are not generated.
 class RevoluteJoint extends Joint {
   // Solver shared
-  final Vector2 _localAnchorA = new Vector2.zero();
-  final Vector2 _localAnchorB = new Vector2.zero();
+  final Vector2 localAnchorA = new Vector2.zero();
+  final Vector2 localAnchorB = new Vector2.zero();
   final Vector3 _impulse = new Vector3.zero();
   double _motorImpulse = 0.0;
 
@@ -75,8 +75,8 @@ class RevoluteJoint extends Joint {
 
   RevoluteJoint(IWorldPool argWorld, RevoluteJointDef def)
       : super(argWorld, def) {
-    _localAnchorA.setFrom(def.localAnchorA);
-    _localAnchorB.setFrom(def.localAnchorB);
+    localAnchorA.setFrom(def.localAnchorA);
+    localAnchorB.setFrom(def.localAnchorB);
     _referenceAngle = def.referenceAngle;
 
     _lowerAngle = def.lowerAngle;
@@ -117,13 +117,13 @@ class RevoluteJoint extends Joint {
     Rot.mulToOutUnsafe(
         qA,
         temp
-          ..setFrom(_localAnchorA)
+          ..setFrom(localAnchorA)
           ..sub(_localCenterA),
         _rA);
     Rot.mulToOutUnsafe(
         qB,
         temp
-          ..setFrom(_localAnchorB)
+          ..setFrom(localAnchorB)
           ..sub(_localCenterB),
         _rB);
 
@@ -417,13 +417,13 @@ class RevoluteJoint extends Joint {
       Rot.mulToOutUnsafe(
           qA,
           C
-            ..setFrom(_localAnchorA)
+            ..setFrom(localAnchorA)
             ..sub(_localCenterA),
           rA);
       Rot.mulToOutUnsafe(
           qB,
           C
-            ..setFrom(_localAnchorB)
+            ..setFrom(localAnchorB)
             ..sub(_localCenterB),
           rB);
       C
@@ -469,11 +469,11 @@ class RevoluteJoint extends Joint {
   }
 
   Vector2 getLocalAnchorA() {
-    return _localAnchorA;
+    return localAnchorA;
   }
 
   Vector2 getLocalAnchorB() {
-    return _localAnchorB;
+    return localAnchorB;
   }
 
   double getReferenceAngle() {
@@ -481,11 +481,11 @@ class RevoluteJoint extends Joint {
   }
 
   void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
+    _bodyA.getWorldPointToOut(localAnchorA, argOut);
   }
 
   void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
+    _bodyB.getWorldPointToOut(localAnchorB, argOut);
   }
 
   void getReactionForce(double inv_dt, Vector2 argOut) {

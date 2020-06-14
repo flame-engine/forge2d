@@ -26,6 +26,12 @@ part of box2d;
 
 /// Joint definitions are used to construct joints.
 class JointDef {
+  /// The local anchor point relative to body1's origin.
+  final Vector2 localAnchorA = new Vector2.zero();
+
+  /// The local anchor point relative to body2's origin.
+  final Vector2 localAnchorB = new Vector2.zero();
+
   JointDef(JointType type) {
     this.type = type;
     collideConnected = false;

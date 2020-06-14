@@ -64,8 +64,6 @@ class GearJoint extends Joint {
   final Body _bodyD;
 
   // Solver shared
-  final Vector2 _localAnchorA = Vector2.zero();
-  final Vector2 _localAnchorB = Vector2.zero();
   final Vector2 _localAnchorC = Vector2.zero();
   final Vector2 _localAnchorD = Vector2.zero();
 
@@ -116,8 +114,8 @@ class GearJoint extends Joint {
 
     if (_typeA == JointType.REVOLUTE) {
       final revolute = def.joint1 as RevoluteJoint;
-      _localAnchorC.setFrom(revolute._localAnchorA);
-      _localAnchorA.setFrom(revolute._localAnchorB);
+      _localAnchorC.setFrom(revolute.localAnchorA);
+      localAnchorA.setFrom(revolute.localAnchorB);
       _referenceAngleA = revolute._referenceAngle;
       _localAxisC.setZero();
 
@@ -126,13 +124,13 @@ class GearJoint extends Joint {
       Vector2 pA = pool.popVec2();
       Vector2 temp = pool.popVec2();
       final prismatic = def.joint1 as PrismaticJoint;
-      _localAnchorC.setFrom(prismatic._localAnchorA);
-      _localAnchorA.setFrom(prismatic._localAnchorB);
+      _localAnchorC.setFrom(prismatic.localAnchorA);
+      localAnchorA.setFrom(prismatic.localAnchorB);
       _referenceAngleA = prismatic._referenceAngle;
       _localAxisC.setFrom(prismatic._localXAxisA);
 
       Vector2 pC = _localAnchorC;
-      Rot.mulToOutUnsafe(xfA.q, _localAnchorA, temp);
+      Rot.mulToOutUnsafe(xfA.q, localAnchorA, temp);
       temp
         ..add(xfA.p)
         ..sub(xfC.p);
@@ -151,8 +149,8 @@ class GearJoint extends Joint {
 
     if (_typeB == JointType.REVOLUTE) {
       final revolute = def.joint2 as RevoluteJoint;
-      _localAnchorD.setFrom(revolute._localAnchorA);
-      _localAnchorB.setFrom(revolute._localAnchorB);
+      _localAnchorD.setFrom(revolute.localAnchorA);
+      localAnchorB.setFrom(revolute.localAnchorB);
       _referenceAngleB = revolute._referenceAngle;
       _localAxisD.setZero();
 
@@ -161,13 +159,13 @@ class GearJoint extends Joint {
       Vector2 pB = pool.popVec2();
       Vector2 temp = pool.popVec2();
       final prismatic = def.joint2 as PrismaticJoint;
-      _localAnchorD.setFrom(prismatic._localAnchorA);
-      _localAnchorB.setFrom(prismatic._localAnchorB);
+      _localAnchorD.setFrom(prismatic.localAnchorA);
+      localAnchorB.setFrom(prismatic.localAnchorB);
       _referenceAngleB = prismatic._referenceAngle;
       _localAxisD.setFrom(prismatic._localXAxisA);
 
       Vector2 pD = _localAnchorD;
-      Rot.mulToOutUnsafe(xfB.q, _localAnchorB, temp);
+      Rot.mulToOutUnsafe(xfB.q, localAnchorB, temp);
       temp
         ..add(xfB.p)
         ..sub(xfD.p);
@@ -183,19 +181,10 @@ class GearJoint extends Joint {
     _impulse = 0.0;
   }
 
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut
-      ..setFrom(_JvAC)
-      ..scale(_impulse);
-    argOut.scale(inv_dt);
+  /// Get the reaction force given the inverse time step. Unit is N.
+  @override
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2.copy(_JvAC)..scale(_impulse)..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -280,7 +269,7 @@ class GearJoint extends Joint {
       Rot.mulToOutUnsafe(
           qA,
           temp
-            ..setFrom(_localAnchorA)
+            ..setFrom(localAnchorA)
             ..sub(_lcA),
           rA);
       _JwC = rC.cross(_JvAC);
@@ -308,7 +297,7 @@ class GearJoint extends Joint {
       Rot.mulToOutUnsafe(
           qB,
           temp
-            ..setFrom(_localAnchorB)
+            ..setFrom(localAnchorB)
             ..sub(_lcB),
           rB);
       _JvBD
@@ -465,7 +454,7 @@ class GearJoint extends Joint {
       Rot.mulToOutUnsafe(
           qA,
           temp
-            ..setFrom(_localAnchorA)
+            ..setFrom(localAnchorA)
             ..sub(_lcA),
           rA);
       JwC = rC.cross(JvAC);
@@ -509,7 +498,7 @@ class GearJoint extends Joint {
       Rot.mulToOutUnsafe(
           qB,
           temp
-            ..setFrom(_localAnchorB)
+            ..setFrom(localAnchorB)
             ..sub(_lcB),
           rB);
       JvBD
