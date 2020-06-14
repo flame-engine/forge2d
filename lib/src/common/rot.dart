@@ -33,100 +33,56 @@ class Rot {
       : s = Math.sin(angle),
         c = Math.cos(angle);
 
-  Rot setAngle(double angle) {
+  void setAngle(double angle) {
     s = Math.sin(angle);
     c = Math.cos(angle);
-    return this;
   }
 
-  Rot set(Rot other) {
+  void set(Rot other) {
     s = other.s;
     c = other.c;
-    return this;
   }
 
-  Rot setIdentity() {
+  void setIdentity() {
     s = 0.0;
     c = 1.0;
-    return this;
   }
 
   double getSin() => s;
 
-  String toString() {
-    return "Rot(s:$s, c:$c)";
-  }
+  String toString() => "Rot(s:$s, c:$c)";
 
   double getCos() => c;
 
   double getAngle() => Math.atan2(s, c);
 
-  void getXAxis(Vector2 xAxis) {
-    xAxis.setValues(c, s);
-  }
+  Vector2 getXAxis(Vector2 xAxis) => Vector2(c, s);
 
-  void getYAxis(Vector2 yAxis) {
-    yAxis.setValues(-s, c);
-  }
+  Vector2 getYAxis(Vector2 yAxis) => Vector2(-s, c);
 
   Rot clone() {
-    Rot copy = new Rot();
-    copy.s = s;
-    copy.c = c;
-    return copy;
+    return Rot()
+      ..s = s
+      ..c = c;
   }
 
-  static void mul(Rot q, Rot r, Rot out) {
-    double tempc = q.c * r.c - q.s * r.s;
-    out.s = q.s * r.c + q.c * r.s;
-    out.c = tempc;
+  static Rot mul(Rot q, Rot r) {
+    return Rot()
+        ..s = q.s * r.c + q.c * r.s
+        ..c = q.c * r.c - q.s * r.s;
   }
 
-  static void mulUnsafe(Rot q, Rot r, Rot out) {
-    assert(r != out);
-    assert(q != out);
-    // [qc -qs] * [rc -rs] = [qc*rc-qs*rs -qc*rs-qs*rc]
-    // [qs qc] [rs rc] [qs*rc+qc*rs -qs*rs+qc*rc]
-    // s = qs * rc + qc * rs
-    // c = qc * rc - qs * rs
-    out.s = q.s * r.c + q.c * r.s;
-    out.c = q.c * r.c - q.s * r.s;
+  static Rot mulTrans(Rot q, Rot r) {
+    return Rot()
+      ..s = q.c * r.s - q.s * r.c
+      ..c = q.c * r.c + q.s * r.s;
   }
 
-  static void mulTrans(Rot q, Rot r, Rot out) {
-    final double tempc = q.c * r.c + q.s * r.s;
-    out.s = q.c * r.s - q.s * r.c;
-    out.c = tempc;
+  static Vector2 mulVec2(Rot q, Vector2 v) {
+    return Vector2(q.c * v.x - q.s * v.y, q.s * v.x + q.c * v.y);
   }
 
-  static void mulTransUnsafe(Rot q, Rot r, Rot out) {
-    // [ qc qs] * [rc -rs] = [qc*rc+qs*rs -qc*rs+qs*rc]
-    // [-qs qc] [rs rc] [-qs*rc+qc*rs qs*rs+qc*rc]
-    // s = qc * rs - qs * rc
-    // c = qc * rc + qs * rs
-    out.s = q.c * r.s - q.s * r.c;
-    out.c = q.c * r.c + q.s * r.s;
-  }
-
-  static void mulToOut(Rot q, Vector2 v, Vector2 out) {
-    double tempy = q.s * v.x + q.c * v.y;
-    out.x = q.c * v.x - q.s * v.y;
-    out.y = tempy;
-  }
-
-  static void mulToOutUnsafe(Rot q, Vector2 v, Vector2 out) {
-    out.x = q.c * v.x - q.s * v.y;
-    out.y = q.s * v.x + q.c * v.y;
-  }
-
-  static void mulTransVec2(Rot q, Vector2 v, Vector2 out) {
-    final double tempy = -q.s * v.x + q.c * v.y;
-    out.x = q.c * v.x + q.s * v.y;
-    out.y = tempy;
-  }
-
-  static void mulTransUnsafeVec2(Rot q, Vector2 v, Vector2 out) {
-    out.x = q.c * v.x + q.s * v.y;
-    out.y = -q.s * v.x + q.c * v.y;
+  static Vector2 mulTransVec2(Rot q, Vector2 v) {
+    return Vector2(q.c * v.x + q.s * v.y, -q.s * v.x + q.c * v.y);
   }
 }
