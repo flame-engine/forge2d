@@ -336,8 +336,6 @@ class SolveCollisionCallback implements QueryCallback {
 
   final RayCastInput input = RayCastInput();
   final RayCastOutput output = RayCastOutput();
-  final Vector2 tempVec = Vector2.zero();
-  final Vector2 tempVec2 = Vector2.zero();
 
   bool reportFixture(Fixture fixture) {
     if (fixture.isSensor()) {
@@ -375,20 +373,20 @@ class SolveCollisionCallback implements QueryCallback {
             aabblowerBoundy <= ap.y &&
             ap.y <= aabbupperBoundy) {
           Vector2 av = system.velocityBuffer.data[a];
-          final Vector2 temp = tempVec;
-          Transform.mulTransToOutUnsafeVec2(body._xf0, ap, temp);
-          Transform.mulToOutUnsafeVec2(body._transform, temp, input.p1);
+          final Vector2 temp = Transform.mulTransVec2(body._xf0, ap);
+          input.p1.setFrom(Transform.mulVec2(body._transform, temp));
           input.p2.x = ap.x + step.dt * av.x;
           input.p2.y = ap.y + step.dt * av.y;
           input.maxFraction = 1.0;
           if (fixture.raycast(output, input, childIndex)) {
-            final Vector2 p = tempVec;
-            p.x = (1 - output.fraction) * input.p1.x +
-                output.fraction * input.p2.x +
-                Settings.linearSlop * output.normal.x;
-            p.y = (1 - output.fraction) * input.p1.y +
-                output.fraction * input.p2.y +
-                Settings.linearSlop * output.normal.y;
+            final Vector2 p = Vector2(
+              (1 - output.fraction) * input.p1.x +
+                  output.fraction * input.p2.x +
+                  Settings.linearSlop * output.normal.x,
+              (1 - output.fraction) * input.p1.y +
+                  output.fraction * input.p2.y +
+                  Settings.linearSlop * output.normal.y,
+            );
 
             final double vx = step.inv_dt * (p.x - ap.x);
             final double vy = step.inv_dt * (p.y - ap.y);
@@ -399,9 +397,7 @@ class SolveCollisionCallback implements QueryCallback {
             final double ay = particleMass * (av.y - vy);
             Vector2 b = output.normal;
             final double fdn = ax * b.x + ay * b.y;
-            final Vector2 f = tempVec2;
-            f.x = fdn * b.x;
-            f.y = fdn * b.y;
+            final Vector2 f = Vector2(fdn * b.x, fdn * b.y);
             body.applyLinearImpulse(f, p, true);
           }
         }
@@ -738,7 +734,7 @@ class ParticleSystem {
           p.x = x;
           p.y = y;
           if (shape.testPoint(identity, p)) {
-            Transform.mulToOutVec2(transform, p, p);
+            p.setFrom(Transform.mulVec2(transform, p));
             particleDef.position.x = p.x;
             particleDef.position.y = p.y;
             p.sub(groupDef.position);
@@ -1339,14 +1335,11 @@ class ParticleSystem {
   void solveWall(TimeStep step) {
     for (int i = 0; i < count; i++) {
       if ((flagsBuffer.data[i] & ParticleType.b2_wallParticle) != 0) {
-        final Vector2 r = velocityBuffer.data[i];
-        r.x = 0.0;
-        r.y = 0.0;
+        velocityBuffer.data[i].setFrom(Vector2.zero());
       }
     }
   }
 
-  final Vector2 _tempVec2 = new Vector2.zero();
   final Rot _tempRot = new Rot();
   final Transform _tempXf = new Transform.zero();
   final Transform _tempXf2 = new Transform.zero();
@@ -1358,10 +1351,9 @@ class ParticleSystem {
       if ((group._groupFlags & ParticleGroupType.b2_rigidParticleGroup) != 0) {
         group.updateStatistics();
         Vector2 temp = _tempVec;
-        Vector2 cross = _tempVec2;
         Rot rotation = _tempRot;
         rotation.setAngle(step.dt * group._angularVelocity);
-        Rot.mulToOutUnsafe(rotation, group._center, cross);
+        Vector2 cross = Rot.mulVec2(rotation, group._center);
         temp
           ..setFrom(group._linearVelocity)
           ..scale(step.dt)
@@ -1369,15 +1361,16 @@ class ParticleSystem {
           ..sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.set(rotation);
-        Transform.mulToOut(_tempXf, group._transform, group._transform);
+        group._transform.set(Transform.mul(_tempXf, group._transform));
         final Transform velocityTransform = _tempXf2;
         velocityTransform.p.x = step.inv_dt * _tempXf.p.x;
         velocityTransform.p.y = step.inv_dt * _tempXf.p.y;
         velocityTransform.q.s = step.inv_dt * _tempXf.q.s;
         velocityTransform.q.c = step.inv_dt * (_tempXf.q.c - 1);
         for (int i = group._firstIndex; i < group._lastIndex; i++) {
-          Transform.mulToOutUnsafeVec2(velocityTransform,
-              positionBuffer.data[i], velocityBuffer.data[i]);
+          velocityBuffer.data[i].setFrom(
+              Transform.mulVec2(velocityTransform, positionBuffer.data[i]),
+          );
         }
       }
     }
@@ -2182,9 +2175,7 @@ class ParticleSystem {
         _tempVec.x = px + t * vx;
         _tempVec.y = py + t * vy;
         n.normalize();
-        final Vector2 point = _tempVec2;
-        point.x = point1.x + t * vx;
-        point.y = point1.y + t * vy;
+        final Vector2 point = Vector2(point1.x + t * vx, point1.y + t * vy);
         double f = callback.reportParticle(i, point, n, t);
         fraction = Math.min(fraction, f);
         if (fraction <= 0) {

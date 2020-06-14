@@ -1376,8 +1376,7 @@ class World {
         {
           final circle = fixture.getShape() as CircleShape;
 
-          // Vec2 center = Mul(xf, circle.m_p);
-          Transform.mulToOutUnsafeVec2(xf, circle.p, center);
+          center.setFrom(Transform.mulVec2(xf, circle.p));
           double radius = circle.radius;
           xf.q.getXAxis(axis);
 
@@ -1414,8 +1413,7 @@ class World {
           List<Vector2> vertices = tlvertices.get(Settings.maxPolygonVertices);
 
           for (int i = 0; i < vertexCount; ++i) {
-            // vertices[i] = Mul(xf, poly.m_vertices[i]);
-            Transform.mulToOutUnsafeVec2(xf, poly.vertices[i], vertices[i]);
+            vertices[i] = Transform.mulVec2(xf, poly.vertices[i]);
           }
           if (wireframe) {
             debugDraw.drawPolygon(vertices, vertexCount, color);
@@ -1427,8 +1425,8 @@ class World {
       case ShapeType.EDGE:
         {
           final edge = fixture.getShape() as EdgeShape;
-          Transform.mulToOutUnsafeVec2(xf, edge.vertex1, v1);
-          Transform.mulToOutUnsafeVec2(xf, edge.vertex2, v2);
+          v1.setFrom(Transform.mulVec2(xf, edge.vertex1));
+          v2.setFrom(Transform.mulVec2(xf, edge.vertex2));
           debugDraw.drawSegment(v1, v2, color);
         }
         break;
@@ -1438,9 +1436,9 @@ class World {
           int count = chain._count;
           List<Vector2> vertices = chain._vertices;
 
-          Transform.mulToOutUnsafeVec2(xf, vertices[0], v1);
+          v1.setFrom(Transform.mulVec2(xf, vertices[0]));
           for (int i = 1; i < count; ++i) {
-            Transform.mulToOutUnsafeVec2(xf, vertices[i], v2);
+            v2.setFrom(Transform.mulVec2(xf, vertices[i]));
             debugDraw.drawSegment(v1, v2, color);
             debugDraw.drawCircle(v1, 0.05, color);
             v1.setFrom(v2);
