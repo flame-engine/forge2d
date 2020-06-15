@@ -32,8 +32,8 @@ class _EdgeResults {
 
 /// Used for computing contact manifolds.
 class ClipVertex {
-  final Vector2 v = new Vector2.zero();
-  final ContactID id = new ContactID();
+  final Vector2 v = Vector2.zero();
+  final ContactID id = ContactID();
 
   void set(final ClipVertex cv) {
     Vector2 v1 = cv.v;
@@ -74,14 +74,14 @@ class EPAxis {
 
 /// This holds polygon B expressed in frame A.
 class TempPolygon {
-  final List<Vector2> vertices = new List<Vector2>(Settings.maxPolygonVertices);
-  final List<Vector2> normals = new List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> vertices = List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> normals = List<Vector2>(Settings.maxPolygonVertices);
   int count = 0;
 
   TempPolygon() {
     for (int i = 0; i < vertices.length; i++) {
-      vertices[i] = new Vector2.zero();
-      normals[i] = new Vector2.zero();
+      vertices[i] = Vector2.zero();
+      normals[i] = Vector2.zero();
     }
   }
 }
@@ -89,14 +89,14 @@ class TempPolygon {
 /// Reference face used for clipping
 class _ReferenceFace {
   int i1 = 0, i2 = 0;
-  final Vector2 v1 = new Vector2.zero();
-  final Vector2 v2 = new Vector2.zero();
-  final Vector2 normal = new Vector2.zero();
+  final Vector2 v1 = Vector2.zero();
+  final Vector2 v2 = Vector2.zero();
+  final Vector2 normal = Vector2.zero();
 
-  final Vector2 sideNormal1 = new Vector2.zero();
+  final Vector2 sideNormal1 = Vector2.zero();
   double sideOffset1 = 0.0;
 
-  final Vector2 sideNormal2 = new Vector2.zero();
+  final Vector2 sideNormal2 = Vector2.zero();
   double sideOffset2 = 0.0;
 }
 
@@ -109,17 +109,17 @@ class Collision {
   final IWorldPool _pool;
 
   Collision(this._pool) {
-    _incidentEdge[0] = new ClipVertex();
-    _incidentEdge[1] = new ClipVertex();
-    _clipPoints1[0] = new ClipVertex();
-    _clipPoints1[1] = new ClipVertex();
-    _clipPoints2[0] = new ClipVertex();
-    _clipPoints2[1] = new ClipVertex();
+    _incidentEdge[0] = ClipVertex();
+    _incidentEdge[1] = ClipVertex();
+    _clipPoints1[0] = ClipVertex();
+    _clipPoints1[1] = ClipVertex();
+    _clipPoints2[0] = ClipVertex();
+    _clipPoints2[1] = ClipVertex();
   }
 
-  final DistanceInput _input = new DistanceInput();
-  final SimplexCache _cache = new SimplexCache();
-  final DistanceOutput _output = new DistanceOutput();
+  final DistanceInput _input = DistanceInput();
+  final SimplexCache _cache = SimplexCache();
+  final DistanceOutput _output = DistanceOutput();
 
   /// Determine if two generic shapes overlap.
   bool testOverlap(Shape shapeA, int indexA, Shape shapeB, int indexB,
@@ -229,7 +229,7 @@ class Collision {
   // #### COLLISION STUFF (not from collision.h or collision.cpp) ####
 
   // djm pooling
-  static Vector2 _d = new Vector2.zero();
+  static Vector2 _d = Vector2.zero();
 
   /// Compute the collision manifold between two circles.
   void collideCircles(Manifold manifold, final CircleShape circle1,
@@ -451,10 +451,10 @@ class Collision {
   }
 
   // djm pooling, and from above
-  final Vector2 _temp = new Vector2.zero();
-  final Transform _xf = new Transform.zero();
-  final Vector2 _n = new Vector2.zero();
-  final Vector2 _v1 = new Vector2.zero();
+  final Vector2 _temp = Vector2.zero();
+  final Transform _xf = Transform.zero();
+  final Vector2 _n = Vector2.zero();
+  final Vector2 _v1 = Vector2.zero();
 
   /// Find the max separation between poly1 and poly2 using edge normals from poly1.
   void findMaxSeparation(_EdgeResults results, final PolygonShape poly1,
@@ -563,17 +563,17 @@ class Collision {
     c1.id.typeB = ContactIDType.VERTEX.index & 0xFF;
   }
 
-  final _EdgeResults _results1 = new _EdgeResults();
-  final _EdgeResults results2 = new _EdgeResults();
-  final List<ClipVertex> _incidentEdge = new List<ClipVertex>(2);
-  final Vector2 _localTangent = new Vector2.zero();
-  final Vector2 _localNormal = new Vector2.zero();
-  final Vector2 _planePoint = new Vector2.zero();
-  final Vector2 _tangent = new Vector2.zero();
-  final Vector2 _v11 = new Vector2.zero();
-  final Vector2 _v12 = new Vector2.zero();
-  final List<ClipVertex> _clipPoints1 = new List<ClipVertex>(2);
-  final List<ClipVertex> _clipPoints2 = new List<ClipVertex>(2);
+  final _EdgeResults _results1 = _EdgeResults();
+  final _EdgeResults results2 = _EdgeResults();
+  final List<ClipVertex> _incidentEdge = List<ClipVertex>(2);
+  final Vector2 _localTangent = Vector2.zero();
+  final Vector2 _localNormal = Vector2.zero();
+  final Vector2 _planePoint = Vector2.zero();
+  final Vector2 _tangent = Vector2.zero();
+  final Vector2 _v11 = Vector2.zero();
+  final Vector2 _v12 = Vector2.zero();
+  final List<ClipVertex> _clipPoints1 = List<ClipVertex>(2);
+  final List<ClipVertex> _clipPoints2 = List<ClipVertex>(2);
 
   /// Compute the collision manifold between two polygons.
   void collidePolygons(Manifold manifold, final PolygonShape polyA,
@@ -712,11 +712,11 @@ class Collision {
     manifold.pointCount = pointCount;
   }
 
-  final Vector2 _q = new Vector2.zero();
-  final Vector2 _e = new Vector2.zero();
-  final ContactID _cf = new ContactID();
-  final Vector2 _e1 = new Vector2.zero();
-  final Vector2 _p = new Vector2.zero();
+  final Vector2 _q = Vector2.zero();
+  final Vector2 _e = Vector2.zero();
+  final ContactID _cf = ContactID();
+  final Vector2 _e1 = Vector2.zero();
+  final Vector2 _p = Vector2.zero();
 
   // Compute contact points for edge versus circle.
   // This accounts for edge connectivity.

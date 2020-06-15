@@ -25,7 +25,7 @@
 part of box2d.common;
 
 class Timer {
-  final _stopWatch = new Stopwatch();
+  final _stopWatch = Stopwatch();
 
   Timer() {
     _stopWatch.start();

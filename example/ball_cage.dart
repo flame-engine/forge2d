@@ -44,7 +44,7 @@ class BallCage extends Demo {
 
   /// Entrypoint.
   static void main() {
-    final cage = new BallCage();
+    final cage = BallCage();
     cage.initialize();
     cage.initializeAnimation();
     cage.runAnimation();
@@ -52,17 +52,17 @@ class BallCage extends Demo {
 
   void initialize() {
     // Define the circle shape.
-    final circleShape = new CircleShape();
+    final circleShape = CircleShape();
     circleShape.radius = WALL_BALL_RADIUS;
 
     // Create fixture using the circle shape.
-    final circleFixtureDef = new FixtureDef();
+    final circleFixtureDef = FixtureDef();
     circleFixtureDef.shape = circleShape;
     circleFixtureDef.friction = .9;
     circleFixtureDef.restitution = 1.0;
 
     // Create a body def.
-    final circleBodyDef = new BodyDef();
+    final circleBodyDef = BodyDef();
 
     int maxShapeinRow = 10;
     final double borderLimitX =
@@ -74,33 +74,33 @@ class BallCage extends Demo {
       final double shiftX = START_X + circleShape.radius * 2 * i;
       final double shiftY = START_Y + circleShape.radius * 2 * i;
 
-      circleBodyDef.position = new Vector2(shiftX, START_Y);
+      circleBodyDef.position = Vector2(shiftX, START_Y);
       Body circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixtureFromFixtureDef(circleFixtureDef);
 
-      circleBodyDef.position = new Vector2(shiftX, borderLimitY);
+      circleBodyDef.position = Vector2(shiftX, borderLimitY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixtureFromFixtureDef(circleFixtureDef);
 
-      circleBodyDef.position = new Vector2(START_X, shiftY);
+      circleBodyDef.position = Vector2(START_X, shiftY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixtureFromFixtureDef(circleFixtureDef);
 
-      circleBodyDef.position = new Vector2(borderLimitX, shiftY);
+      circleBodyDef.position = Vector2(borderLimitX, shiftY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixtureFromFixtureDef(circleFixtureDef);
     }
 
     // Create a bouncing ball.
-    final bouncingCircle = new CircleShape();
+    final bouncingCircle = CircleShape();
     bouncingCircle.radius = ACTIVE_BALL_RADIUS;
 
     // Create fixture for that ball shape.
-    final activeFixtureDef = new FixtureDef();
+    final activeFixtureDef = FixtureDef();
     activeFixtureDef.restitution = 1.0;
     activeFixtureDef.density = 0.05;
     activeFixtureDef.shape = bouncingCircle;

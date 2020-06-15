@@ -36,10 +36,10 @@ class ParticleGroup {
   int _timestamp = 0;
   double _mass = 0.0;
   double _inertia = 0.0;
-  final Vector2 _center = new Vector2.zero();
-  final Vector2 _linearVelocity = new Vector2.zero();
+  final Vector2 _center = Vector2.zero();
+  final Vector2 _linearVelocity = Vector2.zero();
   double _angularVelocity = 0.0;
-  final Transform _transform = new Transform.zero();
+  final Transform _transform = Transform.zero();
 
   bool _destroyAutomatically = false;
   bool _toBeDestroyed = false;
