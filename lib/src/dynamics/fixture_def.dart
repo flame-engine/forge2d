@@ -47,7 +47,7 @@ class FixtureDef {
   bool isSensor = false;
 
   /// Contact filtering data;
-  Filter filter = new Filter();
+  Filter filter = Filter();
 
   /// The shape, this must be set. The shape will be cloned, so you can create the shape on the
   /// stack.

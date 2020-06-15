@@ -24,13 +24,6 @@
 
 part of box2d;
 
-//C = norm(p2 - p1) - L
-//u = (p2 - p1) / norm(p2 - p1)
-//Cdot = dot(u, v2 + cross(w2, r2) - v1 - cross(w1, r1))
-//J = [-u -cross(r1, u) u cross(r2, u)]
-//K = J * invM * JT
-//= invMass1 + invI1 * cross(r1, u)^2 + invMass2 + invI2 * cross(r2, u)^2
-
 /// A distance joint constrains two points on two bodies to remain at a fixed distance from each
 /// other. You can view this as a massless, rigid rod.
 
@@ -47,11 +40,11 @@ class DistanceJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _u = new Vector2.zero();
-  final Vector2 _rA = new Vector2.zero();
-  final Vector2 _rB = new Vector2.zero();
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _u = Vector2.zero();
+  final Vector2 _rA = Vector2.zero();
+  final Vector2 _rB = Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;

@@ -150,9 +150,7 @@ class RopeJoint extends Joint {
     pool.pushRot(2);
     pool.pushVec2(1);
 
-    // data.velocities[_indexA].v = vA;
     data.velocities[_indexA].w = wA;
-    // data.velocities[_indexB].v = vB;
     data.velocities[_indexB].w = wB;
   }
 
@@ -162,7 +160,6 @@ class RopeJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    // Cdot = dot(u, v + cross(w, r))
     Vector2 vpA = pool.popVec2();
     Vector2 vpB = pool.popVec2();
     Vector2 temp = pool.popVec2();
@@ -237,11 +234,11 @@ class RopeJoint extends Joint {
       ..sub(rA);
 
     double length = u.normalize();
-    double C = length - _maxLength;
+    double c = length - _maxLength;
 
-    C = MathUtils.clampDouble(C, 0.0, Settings.maxLinearCorrection);
+    c = MathUtils.clampDouble(c, 0.0, Settings.maxLinearCorrection);
 
-    double impulse = -_mass * C;
+    double impulse = -_mass * c;
     double Px = impulse * u.x;
     double Py = impulse * u.y;
 
@@ -255,9 +252,7 @@ class RopeJoint extends Joint {
     pool.pushRot(2);
     pool.pushVec2(4);
 
-    // data.positions[_indexA].c = cA;
     data.positions[_indexA].a = aA;
-    // data.positions[_indexB].c = cB;
     data.positions[_indexB].a = aB;
 
     return length - _maxLength < Settings.linearSlop;
@@ -269,14 +264,6 @@ class RopeJoint extends Joint {
 
   double getReactionTorque(double inv_dt) {
     return 0.0;
-  }
-
-  Vector2 getLocalAnchorA() {
-    return localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return localAnchorB;
   }
 
   double getMaxLength() {

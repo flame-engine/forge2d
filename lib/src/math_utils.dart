@@ -115,7 +115,7 @@ void matrix3GetInverse22(Matrix3 m, Matrix3 M) {
   M.setValues(ex_x, ex_y, ex_z, ey_x, ey_y, ey_z, ez_x, ez_y, ez_z);
 }
 
-// / Returns the zero matrix if singular.
+/// Returns the zero matrix if singular.
 void matrix3GetSymInverse33(Matrix3 m, Matrix3 M) {
   double bx = m.entry(1, 1) * m.entry(2, 2) - m.entry(2, 1) * m.entry(1, 2);
   double by = m.entry(2, 1) * m.entry(0, 2) - m.entry(0, 1) * m.entry(2, 2);

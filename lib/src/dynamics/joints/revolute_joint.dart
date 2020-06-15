@@ -452,14 +452,6 @@ class RevoluteJoint extends Joint {
         angularError <= Settings.angularSlop;
   }
 
-  Vector2 getLocalAnchorA() {
-    return localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return localAnchorB;
-  }
-
   double getReferenceAngle() {
     return _referenceAngle;
   }
