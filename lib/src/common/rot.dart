@@ -38,7 +38,7 @@ class Rot {
     c = Math.cos(angle);
   }
 
-  void set(Rot other) {
+  void setFrom(Rot other) {
     s = other.s;
     c = other.c;
   }

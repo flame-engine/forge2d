@@ -1360,7 +1360,7 @@ class ParticleSystem {
           ..add(group._center)
           ..sub(cross);
         _tempXf.p.setFrom(temp);
-        _tempXf.q.set(rotation);
+        _tempXf.q.setFrom(rotation);
         group._transform.set(Transform.mul(_tempXf, group._transform));
         final Transform velocityTransform = _tempXf2;
         velocityTransform.p.x = step.inv_dt * _tempXf.p.x;
