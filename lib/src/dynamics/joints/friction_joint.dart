@@ -108,27 +108,14 @@ class FrictionJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective mass matrix.
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        _rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        _rB);
-
-    // J = [-I -r1_skew I r2_skew]
-    // [ 0 -1 0 1]
-    // r_skew = [-ry; rx]
-
-    // Matlab
-    // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
-    // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
-    // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    _rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    _rB.setFrom(Rot.mulVec2(qB, temp));
 
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
@@ -173,12 +160,10 @@ class FrictionJoint extends Joint {
       _linearImpulse.setZero();
       _angularImpulse = 0.0;
     }
-//    data.velocities[_indexA].v.set(vA);
     if (data.velocities[_indexA].w != wA) {
       assert(data.velocities[_indexA].w != wA);
     }
     data.velocities[_indexA].w = wA;
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushRot(2);
@@ -256,13 +241,10 @@ class FrictionJoint extends Joint {
       wB += iB * _rB.cross(impulse);
     }
 
-//    data.velocities[_indexA].v.set(vA);
     if (data.velocities[_indexA].w != wA) {
       assert(data.velocities[_indexA].w != wA);
     }
     data.velocities[_indexA].w = wA;
-
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(4);

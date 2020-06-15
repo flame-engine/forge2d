@@ -87,17 +87,8 @@ class WeldJoint extends Joint {
     return localAnchorB;
   }
 
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut.setValues(_impulse.x, _impulse.y);
-    argOut.scale(inv_dt);
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2(_impulse.x, _impulse.y)..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {
@@ -135,20 +126,11 @@ class WeldJoint extends Joint {
     temp
       ..setFrom(localAnchorA)
       ..sub(_localCenterA);
-    Rot.mulToOutUnsafe(qA, temp, _rA);
+    _rA.setFrom(Rot.mulVec2(qA, temp));
     temp
       ..setFrom(localAnchorB)
       ..sub(_localCenterB);
-    Rot.mulToOutUnsafe(qB, temp, _rB);
-
-    // J = [-I -r1_skew I r2_skew]
-    // [ 0 -1 0 1]
-    // r_skew = [-ry; rx]
-
-    // Matlab
-    // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
-    // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
-    // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
+    _rB.setFrom(Rot.mulVec2(qB, temp));
 
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
@@ -326,12 +308,14 @@ class WeldJoint extends Joint {
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
 
-    temp.setFrom(localAnchorA);
-    temp.sub(_localCenterA);
-    Rot.mulToOutUnsafe(qA, temp, rA);
-    temp.setFrom(localAnchorB);
-    temp.sub(_localCenterB);
-    Rot.mulToOutUnsafe(qB, temp, rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
     double positionError, angularError;
 
     final Matrix3 K = pool.popMat33();

@@ -102,33 +102,18 @@ class WheelJoint extends Joint {
     _dampingRatio = def.dampingRatio;
   }
 
-  Vector2 getLocalAnchorA() {
-    return localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return localAnchorB;
-  }
-
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
+  Vector2 getReactionForce(double inv_dt) {
     final Vector2 temp = pool.popVec2();
     temp
       ..setFrom(_ay)
       ..scale(_impulse);
-    argOut
+    final Vector2 result = Vector2.copy(_ax)
       ..setFrom(_ax)
       ..scale(_springImpulse)
       ..add(temp)
       ..scale(inv_dt);
     pool.pushVec2(1);
+    return result;
   }
 
   double getReactionTorque(double inv_dt) {
@@ -142,10 +127,10 @@ class WheelJoint extends Joint {
     Vector2 p1 = pool.popVec2();
     Vector2 p2 = pool.popVec2();
     Vector2 axis = pool.popVec2();
-    b1.getWorldPointToOut(localAnchorA, p1);
-    b2.getWorldPointToOut(localAnchorA, p2);
+    p1.setFrom(b1.getWorldPoint(localAnchorA));
+    p2.setFrom(b2.getWorldPoint(localAnchorA));
     p2.sub(p1);
-    b1.getWorldVectorToOut(_localXAxisA, axis);
+    axis.setFrom(b1.getWorldVector(_localXAxisA));
 
     double translation = p2.dot(axis);
     pool.pushVec2(3);
@@ -232,18 +217,15 @@ class WheelJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
+
     d
       ..setFrom(cB)
       ..add(rB)
@@ -252,7 +234,7 @@ class WheelJoint extends Joint {
 
     // Point to line constraint
     {
-      Rot.mulToOut(qA, _localYAxisA, _ay);
+      _ay.setFrom(Rot.mulVec2(qA, _localYAxisA));
       _sAy = (temp
             ..setFrom(d)
             ..add(rA))
@@ -271,7 +253,7 @@ class WheelJoint extends Joint {
     _bias = 0.0;
     _gamma = 0.0;
     if (_frequencyHz > 0.0) {
-      Rot.mulToOut(qA, _localXAxisA, _ax);
+      _ax.setFrom(Rot.mulVec2(qA, _localXAxisA));
       _sAx = (temp
             ..setFrom(d)
             ..add(rA))
@@ -452,18 +434,15 @@ class WheelJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOut(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOut(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
+
     d
       ..setFrom(cB)
       ..sub(cA)
@@ -471,7 +450,7 @@ class WheelJoint extends Joint {
       ..sub(rA);
 
     Vector2 ay = pool.popVec2();
-    Rot.mulToOut(qA, _localYAxisA, ay);
+    ay.setFrom(Rot.mulVec2(qA, _localYAxisA));
 
     double sAy = (temp
           ..setFrom(d)

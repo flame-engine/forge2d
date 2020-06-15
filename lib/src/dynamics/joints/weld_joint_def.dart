@@ -44,8 +44,8 @@ class WeldJointDef extends JointDef {
   void initialize(Body bA, Body bB, Vector2 anchor) {
     bodyA = bA;
     bodyB = bB;
-    bodyA.getLocalPointToOut(anchor, localAnchorA);
-    bodyB.getLocalPointToOut(anchor, localAnchorB);
+    localAnchorA.setFrom(bodyA.getLocalPoint(anchor));
+    localAnchorB.setFrom(bodyB.getLocalPoint(anchor));
     referenceAngle = bodyB.getAngle() - bodyA.getAngle();
   }
 }

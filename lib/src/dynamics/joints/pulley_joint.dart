@@ -84,7 +84,7 @@ class PulleyJoint extends Joint {
 
   double getCurrentLengthA() {
     final Vector2 p = pool.popVec2();
-    _bodyA.getWorldPointToOut(localAnchorA, p);
+    p.setFrom(_bodyA.getWorldPoint(localAnchorA));
     p.sub(_groundAnchorA);
     double length = p.length;
     pool.pushVec2(1);
@@ -93,7 +93,7 @@ class PulleyJoint extends Joint {
 
   double getCurrentLengthB() {
     final Vector2 p = pool.popVec2();
-    _bodyB.getWorldPointToOut(localAnchorB, p);
+    p.setFrom(_bodyB.getWorldPoint(localAnchorB));
     p.sub(_groundAnchorB);
     double length = p.length;
     pool.pushVec2(1);
@@ -117,26 +117,6 @@ class PulleyJoint extends Joint {
 
   Vector2 getGroundAnchorB() {
     return _groundAnchorB;
-  }
-
-  double getLength1() {
-    final Vector2 p = pool.popVec2();
-    _bodyA.getWorldPointToOut(localAnchorA, p);
-    p.sub(_groundAnchorA);
-
-    double len = p.length;
-    pool.pushVec2(1);
-    return len;
-  }
-
-  double getLength2() {
-    final Vector2 p = pool.popVec2();
-    _bodyB.getWorldPointToOut(localAnchorB, p);
-    p.sub(_groundAnchorB);
-
-    double len = p.length;
-    pool.pushVec2(1);
-    return len;
   }
 
   double getRatio() {
@@ -171,18 +151,14 @@ class PulleyJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        _rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        _rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    _rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    _rB.setFrom(Rot.mulVec2(qB, temp));
 
     _uA
       ..setFrom(cA)
@@ -315,19 +291,14 @@ class PulleyJoint extends Joint {
 
     qA.setAngle(aA);
     qB.setAngle(aB);
-
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
 
     uA
       ..setFrom(cA)
