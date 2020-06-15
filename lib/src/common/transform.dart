@@ -35,8 +35,8 @@ class Transform {
 
   /// The default constructor.
   Transform.zero()
-      : p = new Vector2.zero(),
-        q = new Rot();
+      : p = Vector2.zero(),
+        q = Rot();
 
   /// Initialize as a copy of another transform.
   Transform.clone(final Transform xf)
@@ -79,21 +79,21 @@ class Transform {
   }
 
   static Transform mul(final Transform A, final Transform B) {
-    Transform C = new Transform.zero();
-    Rot.mulUnsafe(A.q, B.q, C.q);
-    Rot.mulToOutUnsafe(A.q, B.p, C.p);
-    C.p.add(A.p);
-    return C;
+    Transform c = Transform.zero();
+    c.q.set(Rot.mul(A.q, B.q));
+    c.p.setFrom(Rot.mulVec2(A.q, B.p));
+    c.p.add(A.p);
+    return c;
   }
 
   static Vector2 _pool = new Vector2.zero();
 
   static Transform mulTrans(final Transform A, final Transform B) {
-    Transform C = new Transform.zero();
-    Rot.mulTransUnsafe(A.q, B.q, C.q);
+    Transform c = Transform.zero();
+    c.q.set(Rot.mulTrans(A.q, B.q));
     (_pool..setFrom(B.p)).sub(A.p);
-    Rot.mulTransUnsafeVec2(A.q, _pool, C.p);
-    return C;
+    c.p.setFrom(Rot.mulTransVec2(A.q, _pool));
+    return c;
   }
 
   String toString() {

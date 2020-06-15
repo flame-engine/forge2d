@@ -89,25 +89,14 @@ class WorldManifold {
         {
           final Vector2 planePoint = _pool3;
 
-          Rot.mulToOutUnsafe(xfA.q, manifold.localNormal, normal);
-          Transform.mulToOutVec2(xfA, manifold.localPoint, planePoint);
+          normal.setFrom(Rot.mulVec2(xfA.q, manifold.localNormal));
+          planePoint.setFrom(Transform.mulVec2(xfA, manifold.localPoint));
 
           final Vector2 clipPoint = _pool4;
 
           for (int i = 0; i < manifold.pointCount; i++) {
-            // b2Vec2 clipPoint = b2Mul(xfB, manifold->points[i].localPoint);
-            // b2Vec2 cA = clipPoint + (radiusA - b2Dot(clipPoint - planePoint,
-            // normal)) * normal;
-            // b2Vec2 cB = clipPoint - radiusB * normal;
-            // points[i] = 0.5f * (cA + cB);
-            Transform.mulToOutVec2(
-                xfB, manifold.points[i].localPoint, clipPoint);
-            // use cA as temporary for now
-            // cA.set(clipPoint).subLocal(planePoint);
-            // double scalar = radiusA - Vec2.dot(cA, normal);
-            // cA.set(normal).mulLocal(scalar).addLocal(clipPoint);
-            // cB.set(normal).mulLocal(radiusB).subLocal(clipPoint).negateLocal();
-            // points[i].set(cA).addLocal(cB).mulLocal(0.5f);
+            clipPoint.setFrom(Transform.mulVec2(
+                xfB, manifold.points[i].localPoint));
 
             final double scalar = radiusA -
                 ((clipPoint.x - planePoint.x) * normal.x +
@@ -127,39 +116,15 @@ class WorldManifold {
         break;
       case ManifoldType.FACE_B:
         final Vector2 planePoint = _pool3;
-        Rot.mulToOutUnsafe(xfB.q, manifold.localNormal, normal);
-        Transform.mulToOutVec2(xfB, manifold.localPoint, planePoint);
-
-        // final Mat22 R = xfB.q;
-        // normal.x = R.ex.x * manifold.localNormal.x + R.ey.x * manifold.localNormal.y;
-        // normal.y = R.ex.y * manifold.localNormal.x + R.ey.y * manifold.localNormal.y;
-        // final Vec2 v = manifold.localPoint;
-        // planePoint.x = xfB.p.x + xfB.q.ex.x * v.x + xfB.q.ey.x * v.y;
-        // planePoint.y = xfB.p.y + xfB.q.ex.y * v.x + xfB.q.ey.y * v.y;
+        normal.setFrom(Rot.mulVec2(xfB.q, manifold.localNormal));
+        planePoint.setFrom(Transform.mulVec2(xfB, manifold.localPoint));
 
         final Vector2 clipPoint = _pool4;
 
         for (int i = 0; i < manifold.pointCount; i++) {
-          // b2Vec2 clipPoint = b2Mul(xfA, manifold->points[i].localPoint);
-          // b2Vec2 cB = clipPoint + (radiusB - b2Dot(clipPoint - planePoint,
-          // normal)) * normal;
-          // b2Vec2 cA = clipPoint - radiusA * normal;
-          // points[i] = 0.5f * (cA + cB);
 
-          Transform.mulToOutVec2(xfA, manifold.points[i].localPoint, clipPoint);
-          // cB.set(clipPoint).subLocal(planePoint);
-          // double scalar = radiusB - Vec2.dot(cB, normal);
-          // cB.set(normal).mulLocal(scalar).addLocal(clipPoint);
-          // cA.set(normal).mulLocal(radiusA).subLocal(clipPoint).negateLocal();
-          // points[i].set(cA).addLocal(cB).mulLocal(0.5f);
-
-          // points[i] = 0.5f * (cA + cB);
-
-          //
-          // clipPoint.x = xfA.p.x + xfA.q.ex.x * manifold.points[i].localPoint.x + xfA.q.ey.x *
-          // manifold.points[i].localPoint.y;
-          // clipPoint.y = xfA.p.y + xfA.q.ex.y * manifold.points[i].localPoint.x + xfA.q.ey.y *
-          // manifold.points[i].localPoint.y;
+          clipPoint.setFrom(
+              Transform.mulVec2(xfA, manifold.points[i].localPoint));
 
           final double scalar = radiusB -
               ((clipPoint.x - planePoint.x) * normal.x +

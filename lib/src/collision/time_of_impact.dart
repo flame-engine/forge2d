@@ -325,8 +325,8 @@ class SeparationFunction {
        */
       _localPointA.setFrom(proxyA.getVertex(cache.indexA[0]));
       _localPointB.setFrom(proxyB.getVertex(cache.indexB[0]));
-      Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
-      Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
+      _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
+      _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
       axis
         ..setFrom(_pointB)
         ..sub(_pointA);
@@ -345,16 +345,16 @@ class SeparationFunction {
       _temp.scaleOrthogonalInto(-1.0, axis);
       axis.normalize();
 
-      Rot.mulToOutUnsafe(_xfb.q, axis, _normal);
+      _normal.setFrom(Rot.mulVec2(_xfb.q, axis));
 
       localPoint
         ..setFrom(_localPointB1)
         ..add(_localPointB2)
         ..scale(.5);
-      Transform.mulToOutUnsafeVec2(_xfb, localPoint, _pointB);
+      _pointB.setFrom(Transform.mulVec2(_xfb, localPoint));
 
       _localPointA.setFrom(proxyA.getVertex(cache.indexA[0]));
-      Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
+      _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
 
       _temp
         ..setFrom(_pointA)
@@ -378,16 +378,16 @@ class SeparationFunction {
       _temp.scaleOrthogonalInto(-1.0, axis);
       axis.normalize();
 
-      Rot.mulToOutUnsafe(_xfa.q, axis, _normal);
+      _normal.setFrom(Rot.mulVec2(_xfa.q, axis));
 
       localPoint
         ..setFrom(_localPointA1)
         ..add(_localPointA2)
         ..scale(.5);
-      Transform.mulToOutUnsafeVec2(_xfa, localPoint, _pointA);
+      _pointA.setFrom(Transform.mulVec2(_xfa, localPoint));
 
       _localPointB.setFrom(proxyB.getVertex(cache.indexB[0]));
-      Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
+      _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
       _temp
         ..setFrom(_pointB)
@@ -411,8 +411,8 @@ class SeparationFunction {
 
     switch (type) {
       case SeparationFunctionType.POINTS:
-        Rot.mulTransUnsafeVec2(_xfa.q, axis, _axisA);
-        Rot.mulTransUnsafeVec2(_xfb.q, axis..negate(), _axisB);
+        _axisA.setFrom(Rot.mulTransVec2(_xfa.q, axis));
+        _axisB.setFrom(Rot.mulTransVec2(_xfb.q, axis..negate()));
         axis.negate();
 
         indexes[0] = proxyA.getSupport(_axisA);
@@ -421,40 +421,40 @@ class SeparationFunction {
         _localPointA.setFrom(proxyA.getVertex(indexes[0]));
         _localPointB.setFrom(proxyB.getVertex(indexes[1]));
 
-        Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
-        Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
+        _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
+        _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
         double separation = (_pointB..sub(_pointA)).dot(axis);
         return separation;
 
       case SeparationFunctionType.FACE_A:
-        Rot.mulToOutUnsafe(_xfa.q, axis, _normal);
-        Transform.mulToOutUnsafeVec2(_xfa, localPoint, _pointA);
+        _normal.setFrom(Rot.mulVec2(_xfa.q, axis));
+        _pointA.setFrom(Transform.mulVec2(_xfa, localPoint));
 
-        Rot.mulTransUnsafeVec2(_xfb.q, _normal..negate(), _axisB);
+        _axisB.setFrom(Rot.mulTransVec2(_xfb.q, _normal..negate()));
         _normal.negate();
 
         indexes[0] = -1;
         indexes[1] = proxyB.getSupport(_axisB);
 
         _localPointB.setFrom(proxyB.getVertex(indexes[1]));
-        Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
+        _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
         double separation = (_pointB..sub(_pointA)).dot(_normal);
         return separation;
 
       case SeparationFunctionType.FACE_B:
-        Rot.mulToOutUnsafe(_xfb.q, axis, _normal);
-        Transform.mulToOutUnsafeVec2(_xfb, localPoint, _pointB);
+        _normal.setFrom(Rot.mulVec2(_xfb.q, axis));
+        _pointB.setFrom(Transform.mulVec2(_xfb, localPoint));
 
-        Rot.mulTransUnsafeVec2(_xfa.q, _normal..negate(), _axisA);
+        _axisA.setFrom(Rot.mulTransVec2(_xfa.q, _normal..negate()));
         _normal.negate();
 
         indexes[1] = -1;
         indexes[0] = proxyA.getSupport(_axisA);
 
         _localPointA.setFrom(proxyA.getVertex(indexes[0]));
-        Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
+        _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
 
         double separation = (_pointA..sub(_pointB)).dot(_normal);
         return separation;
@@ -476,27 +476,27 @@ class SeparationFunction {
         _localPointA.setFrom(proxyA.getVertex(indexA));
         _localPointB.setFrom(proxyB.getVertex(indexB));
 
-        Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
-        Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
+        _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
+        _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
         double separation = (_pointB..sub(_pointA)).dot(axis);
         return separation;
 
       case SeparationFunctionType.FACE_A:
-        Rot.mulToOutUnsafe(_xfa.q, axis, _normal);
-        Transform.mulToOutUnsafeVec2(_xfa, localPoint, _pointA);
+        _normal.setFrom(Rot.mulVec2(_xfa.q, axis));
+        _pointA.setFrom(Transform.mulVec2(_xfa, localPoint));
 
         _localPointB.setFrom(proxyB.getVertex(indexB));
-        Transform.mulToOutUnsafeVec2(_xfb, _localPointB, _pointB);
+        _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
         double separation = (_pointB..sub(_pointA)).dot(_normal);
         return separation;
 
       case SeparationFunctionType.FACE_B:
-        Rot.mulToOutUnsafe(_xfb.q, axis, _normal);
-        Transform.mulToOutUnsafeVec2(_xfb, localPoint, _pointB);
+        _normal.setFrom(Rot.mulVec2(_xfb.q, axis));
+        _pointB.setFrom(Transform.mulVec2(_xfb, localPoint));
 
         _localPointA.setFrom(proxyA.getVertex(indexA));
-        Transform.mulToOutUnsafeVec2(_xfa, _localPointA, _pointA);
+        _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
 
         double separation = (_pointA..sub(_pointB)).dot(_normal);
         return separation;
