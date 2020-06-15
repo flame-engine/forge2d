@@ -102,7 +102,7 @@ class PrismaticJoint extends Joint {
   double _referenceAngle;
 
   // TODO(srdjan): Make fields below private.
-  final Vector3 _impulse = new Vector3.zero();
+  final Vector3 _impulse = Vector3.zero();
   double _motorImpulse = 0.0;
   double _lowerTranslation = 0.0;
   double _upperTranslation = 0.0;

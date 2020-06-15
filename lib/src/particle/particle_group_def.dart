@@ -35,14 +35,14 @@ class ParticleGroupDef {
 
   /// The world position of the group. Moves the group's shape a distance equal to the value of
   /// position.
-  final Vector2 position = new Vector2.zero();
+  final Vector2 position = Vector2.zero();
 
   /// The world angle of the group in radians. Rotates the shape by an angle equal to the value of
   /// angle.
   double angle = 0.0;
 
   /// The linear velocity of the group's origin in world co-ordinates.
-  final Vector2 linearVelocity = new Vector2.zero();
+  final Vector2 linearVelocity = Vector2.zero();
 
   /// The angular velocity of the group.
   double angularVelocity = 0.0;

@@ -27,7 +27,7 @@ part of box2d;
 /// Motor joint definition.
 class MotorJointDef extends JointDef {
   /// Position of bodyB minus the position of bodyA, in bodyA's frame, in meters.
-  final Vector2 linearOffset = new Vector2.zero();
+  final Vector2 linearOffset = Vector2.zero();
 
   /// The bodyB angle minus bodyA angle in radians.
   double angularOffset = 0.0;
