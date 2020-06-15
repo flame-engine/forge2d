@@ -250,8 +250,8 @@ class PolygonShape extends Shape {
 
     // Transform vertices and normals.
     for (int i = 0; i < count; ++i) {
-      Transform.mulToOutVec2(xf, vertices[i], vertices[i]);
-      Rot.mulToOut(xf.q, normals[i], normals[i]);
+      vertices[i].setFrom(Transform.mulVec2(xf, vertices[i]));
+      normals[i].setFrom(Rot.mulVec2(xf.q, normals[i]));
     }
   }
 
@@ -656,11 +656,5 @@ class PolygonShape extends Shape {
   /// Get the centroid and apply the supplied transform.
   Vector2 applyToCentroid(final Transform xf) {
     return Transform.mulVec2(xf, centroid);
-  }
-
-  /// Get the centroid and apply the supplied transform.
-  Vector2 centroidToOut(final Transform xf, final Vector2 out) {
-    Transform.mulToOutUnsafeVec2(xf, centroid, out);
-    return out;
   }
 }
