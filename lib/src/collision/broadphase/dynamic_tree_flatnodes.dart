@@ -218,18 +218,12 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
     // Build a bounding box for the segment.
     final AABB segAABB = _aabbTemp;
-    // Vec2 t = p1 + maxFraction * (p2 - p1);
-    // before inline
-    // temp.set(p2).subLocal(p1).mulLocal(maxFraction).addLocal(p1);
-    // Vec2.minToOut(p1, temp, segAABB.lowerBound);
-    // Vec2.maxToOut(p1, temp, segAABB.upperBound);
     tempx = (p2x - p1x) * maxFraction + p1x;
     tempy = (p2y - p1y) * maxFraction + p1y;
     segAABB.lowerBound.x = p1x < tempx ? p1x : tempx;
     segAABB.lowerBound.y = p1y < tempy ? p1y : tempy;
     segAABB.upperBound.x = p1x > tempx ? p1x : tempx;
     segAABB.upperBound.y = p1y > tempy ? p1y : tempy;
-    // end inline
 
     _nodeStackIndex = 0;
     _nodeStack[_nodeStackIndex++] = _root;
@@ -246,8 +240,6 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
       // Separating axis for segment (Gino, p80).
       // |dot(v, p1 - c)| > dot(|v|, h)
-      // node.aabb.getCenterToOut(c);
-      // node.aabb.getExtentsToOut(h);
       cx = (nodeAABB.lowerBound.x + nodeAABB.upperBound.x) * .5;
       cy = (nodeAABB.lowerBound.y + nodeAABB.upperBound.y) * .5;
       hx = (nodeAABB.upperBound.x - nodeAABB.lowerBound.x) * .5;
@@ -278,9 +270,6 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
         if (value > 0.0) {
           // Update segment bounding box.
           maxFraction = value;
-          // temp.set(p2).subLocal(p1).mulLocal(maxFraction).addLocal(p1);
-          // Vec2.minToOut(p1, temp, segAABB.lowerBound);
-          // Vec2.maxToOut(p1, temp, segAABB.upperBound);
           tempx = (p2x - p1x) * maxFraction + p1x;
           tempy = (p2y - p1y) * maxFraction + p1y;
           segAABB.lowerBound.x = p1x < tempx ? p1x : tempx;
@@ -589,8 +578,6 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
       int iG = _child2[C];
       int F = iF;
       int G = iG;
-      // assert (F != null);
-      // assert (G != null);
       assert(0 <= iF && iF < _nodeCapacity);
       assert(0 <= iG && iG < _nodeCapacity);
 
