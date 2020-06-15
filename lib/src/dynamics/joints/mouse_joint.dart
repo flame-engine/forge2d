@@ -29,24 +29,24 @@ part of box2d;
 /// forces. NOTE: this joint is not documented in the manual because it was developed to be used in
 /// the testbed. If you want to learn how to use the mouse joint, look at the testbed.
 class MouseJoint extends Joint {
-  final Vector2 _targetA = new Vector2.zero();
+  final Vector2 _targetA = Vector2.zero();
   double _frequencyHz = 0.0;
   double _dampingRatio = 0.0;
   double _beta = 0.0;
 
   // Solver shared
-  final Vector2 _impulse = new Vector2.zero();
+  final Vector2 _impulse = Vector2.zero();
   double _maxForce = 0.0;
   double _gamma = 0.0;
 
   // Solver temp
   int _indexB = 0;
-  final Vector2 _rB = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _rB = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassB = 0.0;
   double _invIB = 0.0;
-  final Matrix2 _mass = new Matrix2.zero();
-  final Vector2 _C = new Vector2.zero();
+  final Matrix2 _mass = Matrix2.zero();
+  final Vector2 _C = Vector2.zero();
 
   MouseJoint(IWorldPool argWorld, MouseJointDef def) : super(argWorld, def) {
     assert(MathUtils.vector2IsValid(def.target));

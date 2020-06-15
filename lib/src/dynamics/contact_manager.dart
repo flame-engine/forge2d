@@ -36,7 +36,7 @@ class ContactManager implements PairCallback {
 
   ContactManager(this._pool, BroadPhase broadPhase_) {
     contactList = null;
-    contactFilter = new ContactFilter();
+    contactFilter = ContactFilter();
     contactListener = null;
     broadPhase = broadPhase_;
   }

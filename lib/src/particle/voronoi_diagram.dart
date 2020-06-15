@@ -29,7 +29,7 @@ abstract class VoronoiDiagramCallback {
 }
 
 class VoronoiGenerator {
-  final Vector2 center = new Vector2.zero();
+  final Vector2 center = Vector2.zero();
   int tag = 0;
 }
 
@@ -58,7 +58,7 @@ class VoronoiDiagramTask {
 class VoronoiDiagramTaskMutableStack extends MutableStack<VoronoiDiagramTask> {
   VoronoiDiagramTaskMutableStack(int size) : super(size);
   VoronoiDiagramTask newInstance() {
-    return new VoronoiDiagramTask.zero();
+    return VoronoiDiagramTask.zero();
   }
 }
 
@@ -70,9 +70,9 @@ class VoronoiDiagram {
   List<VoronoiGenerator> _diagram;
 
   VoronoiDiagram(int generatorCapacity) {
-    _generatorBuffer = new List<VoronoiGenerator>(generatorCapacity);
+    _generatorBuffer = List<VoronoiGenerator>(generatorCapacity);
     for (int i = 0; i < generatorCapacity; i++) {
-      _generatorBuffer[i] = new VoronoiGenerator();
+      _generatorBuffer[i] = VoronoiGenerator();
     }
     _generatorCount = 0;
     _countX = 0;
@@ -107,13 +107,13 @@ class VoronoiDiagram {
     g.tag = tag;
   }
 
-  final Vector2 _lower = new Vector2.zero();
-  final Vector2 _upper = new Vector2.zero();
+  final Vector2 _lower = Vector2.zero();
+  final Vector2 _upper = Vector2.zero();
   MutableStack<VoronoiDiagramTask> _taskPool =
-      new VoronoiDiagramTaskMutableStack(50);
+      VoronoiDiagramTaskMutableStack(50);
 
   final StackQueue<VoronoiDiagramTask> _queue =
-      new StackQueue<VoronoiDiagramTask>();
+      StackQueue<VoronoiDiagramTask>();
 
   void generate(double radius) {
     assert(_diagram == null);
@@ -129,8 +129,8 @@ class VoronoiDiagram {
     }
     _countX = 1 + (inverseRadius * (_upper.x - _lower.x)).toInt();
     _countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
-    _diagram = new List<VoronoiGenerator>(_countX * _countY);
-    _queue.reset(new List<VoronoiDiagramTask>(4 * _countX * _countX));
+    _diagram = List<VoronoiGenerator>(_countX * _countY);
+    _queue.reset(List<VoronoiDiagramTask>(4 * _countX * _countX));
     for (int k = 0; k < _generatorCount; k++) {
       VoronoiGenerator g = _generatorBuffer[k];
       g.center.x = inverseRadius * (g.center.x - _lower.x);
