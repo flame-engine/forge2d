@@ -1,3 +1,6 @@
+### 1.0.0
+* Make code more like the dart standard and less C++
+
 ### 0.4.6
 * Fix bug with torque not being modified from applyTorque
 
