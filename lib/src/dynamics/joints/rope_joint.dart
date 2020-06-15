@@ -264,9 +264,7 @@ class RopeJoint extends Joint {
   }
 
   Vector2 getReactionForce(double inv_dt) {
-    return Vector2.copy(_u)
-      ..scale(inv_dt)
-      ..scale(_impulse);
+    return Vector2.copy(_u)..scale(inv_dt)..scale(_impulse);
   }
 
   double getReactionTorque(double inv_dt) {

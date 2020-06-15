@@ -1135,7 +1135,8 @@ class EPCollider {
     // Get polygonB in frameA
     polygonB.count = polygonB_.count;
     for (int i = 0; i < polygonB_.count; ++i) {
-      polygonB.vertices[i].setFrom(Transform.mulVec2(xf, polygonB_.vertices[i]));
+      polygonB.vertices[i]
+          .setFrom(Transform.mulVec2(xf, polygonB_.vertices[i]));
       polygonB.normals[i].setFrom(Rot.mulVec2(xf.q, polygonB_.normals[i]));
     }
 

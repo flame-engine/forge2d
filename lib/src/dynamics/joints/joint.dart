@@ -79,11 +79,11 @@ abstract class Joint {
   final Vector2 localAnchorA;
   final Vector2 localAnchorB;
 
-  Joint(IWorldPool worldPool, JointDef def) :
-        localAnchorA = def.localAnchorA,
+  Joint(IWorldPool worldPool, JointDef def)
+      : localAnchorA = def.localAnchorA,
         localAnchorB = def.localAnchorB,
         _type = def.type {
-  assert(def.bodyA != def.bodyB);
+    assert(def.bodyA != def.bodyB);
 
     pool = worldPool;
     _prev = null;

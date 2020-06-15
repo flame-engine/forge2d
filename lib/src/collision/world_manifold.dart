@@ -95,8 +95,8 @@ class WorldManifold {
           final Vector2 clipPoint = _pool4;
 
           for (int i = 0; i < manifold.pointCount; i++) {
-            clipPoint.setFrom(Transform.mulVec2(
-                xfB, manifold.points[i].localPoint));
+            clipPoint
+                .setFrom(Transform.mulVec2(xfB, manifold.points[i].localPoint));
 
             final double scalar = radiusA -
                 ((clipPoint.x - planePoint.x) * normal.x +
@@ -122,9 +122,8 @@ class WorldManifold {
         final Vector2 clipPoint = _pool4;
 
         for (int i = 0; i < manifold.pointCount; i++) {
-
-          clipPoint.setFrom(
-              Transform.mulVec2(xfA, manifold.points[i].localPoint));
+          clipPoint
+              .setFrom(Transform.mulVec2(xfA, manifold.points[i].localPoint));
 
           final double scalar = radiusB -
               ((clipPoint.x - planePoint.x) * normal.x +

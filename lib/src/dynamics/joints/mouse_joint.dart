@@ -70,7 +70,7 @@ class MouseJoint extends Joint {
   }
 
   Vector2 getReactionForce(double invDt) {
-      return Vector2.copy(_impulse)..scale(invDt);
+    return Vector2.copy(_impulse)..scale(invDt);
   }
 
   double getReactionTorque(double invDt) {

@@ -68,8 +68,8 @@ class Rot {
 
   static Rot mul(Rot q, Rot r) {
     return Rot()
-        ..s = q.s * r.c + q.c * r.s
-        ..c = q.c * r.c - q.s * r.s;
+      ..s = q.s * r.c + q.c * r.s
+      ..c = q.c * r.c - q.s * r.s;
   }
 
   static Rot mulTrans(Rot q, Rot r) {
