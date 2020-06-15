@@ -465,15 +465,15 @@ class Collision {
     List<Vector2> v1s = poly1.vertices;
     List<Vector2> v2s = poly2.vertices;
 
-    Transform.mulTransToOutUnsafe(xf2, xf1, _xf);
+    _xf.set(Transform.mulTrans(xf2, xf1));
     final Rot xfq = _xf.q;
 
     int bestIndex = 0;
     double maxSeparation = -double.maxFinite;
     for (int i = 0; i < count1; i++) {
       // Get poly1 normal in frame2.
-      Rot.mulToOutUnsafe(xfq, n1s[i], _n);
-      Transform.mulToOutUnsafeVec2(_xf, v1s[i], _v1);
+      _n.setFrom(Rot.mulVec2(xfq, n1s[i]));
+      _v1.setFrom(Transform.mulVec2(_xf, v1s[i]));
 
       // Find deepest point for normal i.
       double si = double.maxFinite;
@@ -528,8 +528,6 @@ class Collision {
     final double normal1x = xf2q.c * tempx + xf2q.s * tempy;
     final double normal1y = -xf2q.s * tempx + xf2q.c * tempy;
 
-    // end inline
-
     // Find the incident edge on poly2.
     int index = 0;
     double minDot = double.maxFinite;
@@ -546,7 +544,6 @@ class Collision {
     int i1 = index;
     int i2 = i1 + 1 < count2 ? i1 + 1 : 0;
 
-    // c0.v = Mul(xf2, vertices2[i1]);
     Vector2 v1 = vertices2[i1];
     Vector2 out = c0.v;
     out.x = (xf2q.c * v1.x - xf2q.s * v1.y) + xf2.p.x;
@@ -556,7 +553,6 @@ class Collision {
     c0.id.typeA = ContactIDType.FACE.index & 0xFF;
     c0.id.typeB = ContactIDType.VERTEX.index & 0xFF;
 
-    // c1.v = Mul(xf2, vertices2[i2]);
     Vector2 v2 = vertices2[i2];
     Vector2 out1 = c1.v;
     out1.x = (xf2q.c * v2.x - xf2q.s * v2.y) + xf2.p.x;
@@ -642,46 +638,34 @@ class Collision {
     _localTangent.y = _v12.y - _v11.y;
     _localTangent.normalize();
 
-    // Vec2 _localNormal = Vec2.cross(dv, 1.0f);
     _localNormal.x = 1.0 * _localTangent.y;
     _localNormal.y = -1.0 * _localTangent.x;
 
-    // Vec2 _planePoint = 0.5f * (_v11+ _v12);
     _planePoint.x = (_v11.x + _v12.x) * .5;
     _planePoint.y = (_v11.y + _v12.y) * .5;
 
-    // Rot.mulToOutUnsafe(xf1.q, _localTangent, _tangent);
     _tangent.x = xf1q.c * _localTangent.x - xf1q.s * _localTangent.y;
     _tangent.y = xf1q.s * _localTangent.x + xf1q.c * _localTangent.y;
 
-    // Vec2.crossToOutUnsafe(_tangent, 1f, normal);
     final double normalx = 1.0 * _tangent.y;
     final double normaly = -1.0 * _tangent.x;
 
-    Transform.mulToOutVec2(xf1, _v11, _v11);
-    Transform.mulToOutVec2(xf1, _v12, _v12);
-    // _v11 = Mul(xf1, _v11);
-    // _v12 = Mul(xf1, _v12);
+    _v11.setFrom(Transform.mulVec2(xf1, _v11));
+    _v12.setFrom(Transform.mulVec2(xf1, _v12));
 
     // Face offset
-    // double frontOffset = Vec2.dot(normal, _v11);
     double frontOffset = normalx * _v11.x + normaly * _v11.y;
 
     // Side offsets, extended by polytope skin thickness.
-    // double sideOffset1 = -Vec2.dot(_tangent, _v11) + totalRadius;
-    // double sideOffset2 = Vec2.dot(_tangent, _v12) + totalRadius;
     double sideOffset1 =
         -(_tangent.x * _v11.x + _tangent.y * _v11.y) + totalRadius;
     double sideOffset2 =
         _tangent.x * _v12.x + _tangent.y * _v12.y + totalRadius;
 
     // Clip incident edge against extruded edge1 side edges.
-    // ClipVertex _clipPoints1[2];
-    // ClipVertex _clipPoints2[2];
     int np;
 
     // Clip to box side 1
-    // np = ClipSegmentToLine(_clipPoints1, _incidentEdge, -sideNormal, sideOffset1);
     _tangent.negate();
     np = clipSegmentToLine(
         _clipPoints1, _incidentEdge, _tangent, sideOffset1, iv1);
@@ -705,14 +689,12 @@ class Collision {
 
     int pointCount = 0;
     for (int i = 0; i < Settings.maxManifoldPoints; ++i) {
-      // double separation = Vec2.dot(normal, _clipPoints2[i].v) - frontOffset;
       double separation = normalx * _clipPoints2[i].v.x +
           normaly * _clipPoints2[i].v.y -
           frontOffset;
 
       if (separation <= totalRadius) {
         ManifoldPoint cp = manifold.points[pointCount];
-        // cp.localPoint = MulT(xf2, _clipPoints2[i].v);
         Vector2 out = cp.localPoint;
         final double px = _clipPoints2[i].v.x - xf2.p.x;
         final double py = _clipPoints2[i].v.y - xf2.p.y;
@@ -730,11 +712,11 @@ class Collision {
     manifold.pointCount = pointCount;
   }
 
-  final Vector2 _Q = new Vector2.zero();
+  final Vector2 _q = new Vector2.zero();
   final Vector2 _e = new Vector2.zero();
   final ContactID _cf = new ContactID();
   final Vector2 _e1 = new Vector2.zero();
-  final Vector2 _P = new Vector2.zero();
+  final Vector2 _p = new Vector2.zero();
 
   // Compute contact points for edge versus circle.
   // This accounts for edge connectivity.
@@ -744,8 +726,8 @@ class Collision {
 
     // Compute circle in frame of edge
     // Vec2 Q = MulT(xfA, Mul(xfB, circleB.p));
-    Transform.mulToOutUnsafeVec2(xfB, circleB.p, _temp);
-    Transform.mulTransToOutUnsafeVec2(xfA, _temp, _Q);
+    _temp.setFrom(Transform.mulVec2(xfB, circleB.p));
+    _q.setFrom(Transform.mulTransVec2(xfA, _temp));
 
     final Vector2 A = edgeA.vertex1;
     final Vector2 B = edgeA.vertex2;
@@ -756,14 +738,13 @@ class Collision {
     // Barycentric coordinates
     double u = _e.dot(_temp
       ..setFrom(B)
-      ..sub(_Q));
+      ..sub(_q));
     double v = _e.dot(_temp
-      ..setFrom(_Q)
+      ..setFrom(_q)
       ..sub(A));
 
     double radius = edgeA.radius + circleB.radius;
 
-    // ContactFeature cf;
     _cf.indexB = 0;
     _cf.typeB = ContactIDType.VERTEX.index & 0xFF;
 
@@ -771,7 +752,7 @@ class Collision {
     if (v <= 0.0) {
       final Vector2 P = A;
       _d
-        ..setFrom(_Q)
+        ..setFrom(_q)
         ..sub(P);
       double dd = _d.dot(_d);
       if (dd > radius * radius) {
@@ -787,7 +768,7 @@ class Collision {
           ..sub(A1);
         double u1 = _e1.dot(_temp
           ..setFrom(B1)
-          ..sub(_Q));
+          ..sub(_q));
 
         // Is the circle in Region AB of the previous edge?
         if (u1 > 0.0) {
@@ -811,7 +792,7 @@ class Collision {
     if (u <= 0.0) {
       Vector2 P = B;
       _d
-        ..setFrom(_Q)
+        ..setFrom(_q)
         ..sub(P);
       double dd = _d.dot(_d);
       if (dd > radius * radius) {
@@ -827,7 +808,7 @@ class Collision {
           ..setFrom(B2)
           ..sub(A2);
         double v2 = e2.dot(_temp
-          ..setFrom(_Q)
+          ..setFrom(_q)
           ..sub(A2));
 
         // Is the circle in Region AB of the next edge?
@@ -842,7 +823,6 @@ class Collision {
       manifold.type = ManifoldType.CIRCLES;
       manifold.localNormal.setZero();
       manifold.localPoint.setFrom(P);
-      // manifold.points[0].id.key = 0;
       manifold.points[0].id.set(_cf);
       manifold.points[0].localPoint.setFrom(circleB.p);
       return;
@@ -852,17 +832,16 @@ class Collision {
     double den = _e.dot(_e);
     assert(den > 0.0);
 
-    // Vec2 P = (1.0f / den) * (u * A + v * B);
-    _P
+    _p
       ..setFrom(A)
       ..scale(u)
       ..add(_temp
         ..setFrom(B)
         ..scale(v));
-    _P.scale(1.0 / den);
+    _p.scale(1.0 / den);
     _d
-      ..setFrom(_Q)
-      ..sub(_P);
+      ..setFrom(_q)
+      ..sub(_p);
     double dd = _d.dot(_d);
     if (dd > radius * radius) {
       return;
@@ -871,7 +850,7 @@ class Collision {
     _n.x = -_e.y;
     _n.y = _e.x;
     if (_n.dot(_temp
-          ..setFrom(_Q)
+          ..setFrom(_q)
           ..sub(A)) <
         0.0) {
       _n.setValues(-_n.x, -_n.y);
@@ -943,8 +922,8 @@ class EPCollider {
 
   void collide(Manifold manifold, final EdgeShape edgeA, final Transform xfA,
       final PolygonShape polygonB_, final Transform xfB) {
-    Transform.mulTransToOutUnsafe(xfA, xfB, xf);
-    Transform.mulToOutUnsafeVec2(xf, polygonB_.centroid, centroidB);
+    xf.set(Transform.mulTrans(xfA, xfB));
+    centroidB.setFrom(Transform.mulVec2(xf, polygonB_.centroid));
 
     v0 = edgeA.vertex0;
     v1 = edgeA.vertex1;
@@ -1156,9 +1135,8 @@ class EPCollider {
     // Get polygonB in frameA
     polygonB.count = polygonB_.count;
     for (int i = 0; i < polygonB_.count; ++i) {
-      Transform.mulToOutUnsafeVec2(
-          xf, polygonB_.vertices[i], polygonB.vertices[i]);
-      Rot.mulToOutUnsafe(xf.q, polygonB_.normals[i], polygonB.normals[i]);
+      polygonB.vertices[i].setFrom(Transform.mulVec2(xf, polygonB_.vertices[i]));
+      polygonB.normals[i].setFrom(Rot.mulVec2(xf.q, polygonB_.normals[i]));
     }
 
     radius = 2.0 * Settings.polygonRadius;
@@ -1312,9 +1290,7 @@ class EPCollider {
         ManifoldPoint cp = manifold.points[pointCount];
 
         if (primaryAxis.type == EPAxisType.EDGE_A) {
-          // cp.localPoint = MulT(xf, _clipPoints2[i].v);
-          Transform.mulTransToOutUnsafeVec2(
-              xf, _clipPoints2[i].v, cp.localPoint);
+          cp.localPoint.setFrom(Transform.mulTransVec2(xf, _clipPoints2[i].v));
           cp.id.set(_clipPoints2[i].id);
         } else {
           cp.localPoint.setFrom(_clipPoints2[i].v);

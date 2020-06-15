@@ -97,8 +97,8 @@ class _Simplex {
       v.indexB = cache.indexB[i];
       Vector2 wALocal = proxyA.getVertex(v.indexA);
       Vector2 wBLocal = proxyB.getVertex(v.indexB);
-      Transform.mulToOutUnsafeVec2(transformA, wALocal, v.wA);
-      Transform.mulToOutUnsafeVec2(transformB, wBLocal, v.wB);
+      v.wA.setFrom(Transform.mulVec2(transformA, wALocal));
+      v.wB.setFrom(Transform.mulVec2(transformB, wBLocal));
       v.w
         ..setFrom(v.wB)
         ..sub(v.wA);
@@ -125,8 +125,8 @@ class _Simplex {
       v.indexB = 0;
       Vector2 wALocal = proxyA.getVertex(0);
       Vector2 wBLocal = proxyB.getVertex(0);
-      Transform.mulToOutUnsafeVec2(transformA, wALocal, v.wA);
-      Transform.mulToOutUnsafeVec2(transformB, wBLocal, v.wB);
+      v.wA.setFrom(Transform.mulVec2(transformA, wALocal));
+      v.wB.setFrom(Transform.mulVec2(transformB, wBLocal));
       v.w
         ..setFrom(v.wB)
         ..sub(v.wA);
@@ -688,15 +688,15 @@ class Distance {
       // Compute a tentative new simplex vertex using support points.
       _SimplexVertex vertex = vertices[_simplex.count];
 
-      Rot.mulTransUnsafeVec2(transformA.q, _d..negate(), _temp);
+      _temp.setFrom(Rot.mulTransVec2(transformA.q, _d..negate()));
       vertex.indexA = proxyA.getSupport(_temp);
-      Transform.mulToOutUnsafeVec2(
-          transformA, proxyA.getVertex(vertex.indexA), vertex.wA);
+      vertex.wA.setFrom(Transform.mulVec2(
+          transformA, proxyA.getVertex(vertex.indexA)));
       // Vec2 wBLocal;
-      Rot.mulTransUnsafeVec2(transformB.q, _d..negate(), _temp);
+      _temp.setFrom(Rot.mulTransVec2(transformB.q, _d..negate()));
       vertex.indexB = proxyB.getSupport(_temp);
-      Transform.mulToOutUnsafeVec2(
-          transformB, proxyB.getVertex(vertex.indexB), vertex.wB);
+      vertex.wB.setFrom(Transform.mulVec2(
+          transformB, proxyB.getVertex(vertex.indexB)));
       (vertex.w..setFrom(vertex.wB)).sub(vertex.wA);
 
       // Iteration count is equated to the number of support point calls.
