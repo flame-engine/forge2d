@@ -42,18 +42,18 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
   int _freeList;
 
-  final List<Vector2> drawVecs = new List<Vector2>(4);
+  final List<Vector2> drawVecs = List<Vector2>(4);
 
   DynamicTreeFlatNodes() {
     _expandBuffers(0, _nodeCapacity);
 
     for (int i = 0; i < drawVecs.length; i++) {
-      drawVecs[i] = new Vector2.zero();
+      drawVecs[i] = Vector2.zero();
     }
   }
 
-  static AABB allocAABB() => new AABB();
-  static Object allocObject() => new Object();
+  static AABB allocAABB() => AABB();
+  static Object allocObject() => Object();
 
   void _expandBuffers(int oldSize, int newSize) {
     _aabb = BufferUtils.reallocateBufferWithAlloc(
@@ -67,7 +67,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
 
     // Build a linked list for the free list.
     for (int i = oldSize; i < newSize; i++) {
-      _aabb[i] = new AABB();
+      _aabb[i] = AABB();
       _parent[i] = (i == newSize - 1) ? NULL_NODE : i + 1;
       _height[i] = -1;
       _child1[i] = -1;
@@ -184,9 +184,9 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     }
   }
 
-  final Vector2 _r = new Vector2.zero();
-  final AABB _aabbTemp = new AABB();
-  final RayCastInput _subInput = new RayCastInput();
+  final Vector2 _r = Vector2.zero();
+  final AABB _aabbTemp = AABB();
+  final RayCastInput _subInput = RayCastInput();
 
   void raycast(TreeRayCastCallback callback, RayCastInput input) {
     final Vector2 p1 = input.p1;
@@ -399,7 +399,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     _nodeCount--;
   }
 
-  final AABB _combinedAABB = new AABB();
+  final AABB _combinedAABB = AABB();
 
   void _insertLeaf(int leaf) {
     if (_root == NULL_NODE) {

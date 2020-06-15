@@ -147,14 +147,6 @@ class PrismaticJoint extends Joint {
     _limitState = LimitState.INACTIVE;
   }
 
-  Vector2 getLocalAnchorA() {
-    return localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return localAnchorB;
-  }
-
   @override
   Vector2 getReactionForce(double inv_dt) {
     Vector2 temp = pool.popVec2();

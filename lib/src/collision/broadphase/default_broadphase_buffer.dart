@@ -83,8 +83,6 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   }
 
   bool testOverlap(int proxyIdA, int proxyIdB) {
-    // return AABB.testOverlap(proxyA.aabb, proxyB.aabb);
-    // return _tree.overlap(proxyIdA, proxyIdB);
     final AABB a = _tree.getFatAABB(proxyIdA);
     final AABB b = _tree.getFatAABB(proxyIdB);
     if (b.lowerBound.x - a.upperBound.x > 0.0 ||

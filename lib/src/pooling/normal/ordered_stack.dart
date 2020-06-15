@@ -31,11 +31,10 @@ abstract class OrderedStack<E> {
   final List<E> _container;
 
   OrderedStack(int argStackSize, int argContainerSize)
-      : _pool = new List<E>(argStackSize),
+      : _pool = List<E>(argStackSize),
         _index = 0,
         _size = argStackSize,
-        _container = new List<E>(argContainerSize) {
-    // pool = new List(argStackSize);
+        _container = List<E>(argContainerSize) {
     for (int i = 0; i < argStackSize; i++) {
       _pool[i] = newInstance();
     }

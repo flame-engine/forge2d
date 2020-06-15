@@ -30,37 +30,37 @@ part of box2d;
 class OrderedStackVec2 extends OrderedStack<Vector2> {
   OrderedStackVec2(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  Vector2 newInstance() => new Vector2.zero();
+  Vector2 newInstance() => Vector2.zero();
 }
 
 class OrderedStackVec3 extends OrderedStack<Vector3> {
   OrderedStackVec3(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  Vector3 newInstance() => new Vector3.zero();
+  Vector3 newInstance() => Vector3.zero();
 }
 
 class OrderedStackMat22 extends OrderedStack<Matrix2> {
   OrderedStackMat22(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  Matrix2 newInstance() => new Matrix2.zero();
+  Matrix2 newInstance() => Matrix2.zero();
 }
 
 class OrderedStackMat33 extends OrderedStack<Matrix3> {
   OrderedStackMat33(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  Matrix3 newInstance() => new Matrix3.zero();
+  Matrix3 newInstance() => Matrix3.zero();
 }
 
 class OrderedStackAABB extends OrderedStack<AABB> {
   OrderedStackAABB(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  AABB newInstance() => new AABB();
+  AABB newInstance() => AABB();
 }
 
 class OrderedStackRot extends OrderedStack<Rot> {
   OrderedStackRot(int argStackSize, int argContainerSize)
       : super(argStackSize, argContainerSize);
-  Rot newInstance() => new Rot();
+  Rot newInstance() => Rot();
 }
 
 abstract class MutableStackWithPool<T> extends MutableStack<T> {
@@ -71,48 +71,48 @@ abstract class MutableStackWithPool<T> extends MutableStack<T> {
 class MutableStackPolygonContact extends MutableStackWithPool<PolygonContact> {
   MutableStackPolygonContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
-  PolygonContact newInstance() => new PolygonContact(_pool);
+  PolygonContact newInstance() => PolygonContact(_pool);
 }
 
 class MutableStackCircleContact extends MutableStackWithPool<CircleContact> {
   MutableStackCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
-  CircleContact newInstance() => new CircleContact(_pool);
+  CircleContact newInstance() => CircleContact(_pool);
 }
 
 class MutableStackPolygonAndCircleContact
     extends MutableStackWithPool<PolygonAndCircleContact> {
   MutableStackPolygonAndCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
-  PolygonAndCircleContact newInstance() => new PolygonAndCircleContact(_pool);
+  PolygonAndCircleContact newInstance() => PolygonAndCircleContact(_pool);
 }
 
 class MutableStackEdgeAndCircleContact
     extends MutableStackWithPool<EdgeAndCircleContact> {
   MutableStackEdgeAndCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
-  EdgeAndCircleContact newInstance() => new EdgeAndCircleContact(_pool);
+  EdgeAndCircleContact newInstance() => EdgeAndCircleContact(_pool);
 }
 
 class MutableStackEdgeAndPolygonContact
     extends MutableStackWithPool<EdgeAndPolygonContact> {
   MutableStackEdgeAndPolygonContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
-  EdgeAndPolygonContact newInstance() => new EdgeAndPolygonContact(_pool);
+  EdgeAndPolygonContact newInstance() => EdgeAndPolygonContact(_pool);
 }
 
 class MutableStackChainAndCircleContact
     extends MutableStackWithPool<ChainAndCircleContact> {
   MutableStackChainAndCircleContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
-  ChainAndCircleContact newInstance() => new ChainAndCircleContact(_pool);
+  ChainAndCircleContact newInstance() => ChainAndCircleContact(_pool);
 }
 
 class MutableStackChainAndPolygonContact
     extends MutableStackWithPool<ChainAndPolygonContact> {
   MutableStackChainAndPolygonContact(IWorldPool pool, int argInitSize)
       : super(pool, argInitSize);
-  ChainAndPolygonContact newInstance() => new ChainAndPolygonContact(_pool);
+  ChainAndPolygonContact newInstance() => ChainAndPolygonContact(_pool);
 }
 
 class DefaultWorldPool implements IWorldPool {
@@ -123,9 +123,9 @@ class DefaultWorldPool implements IWorldPool {
   final OrderedStack<AABB> _aabbs;
   final OrderedStack<Rot> _rots;
 
-  final HashMap<int, Float64List> _afloats = new HashMap<int, Float64List>();
-  final HashMap<int, List<int>> _aints = new HashMap<int, List<int>>();
-  final HashMap<int, List<Vector2>> _avecs = new HashMap<int, List<Vector2>>();
+  final HashMap<int, Float64List> _afloats = HashMap<int, Float64List>();
+  final HashMap<int, List<int>> _aints = HashMap<int, List<int>>();
+  final HashMap<int, List<Vector2>> _avecs = HashMap<int, List<Vector2>>();
 
   IWorldPool _world;
 
@@ -144,29 +144,29 @@ class DefaultWorldPool implements IWorldPool {
   final Distance _dist;
 
   DefaultWorldPool(int argSize, int argContainerSize)
-      : _vecs = new OrderedStackVec2(argSize, argContainerSize),
-        _vec3s = new OrderedStackVec3(argSize, argContainerSize),
-        _mats = new OrderedStackMat22(argSize, argContainerSize),
-        _aabbs = new OrderedStackAABB(argSize, argContainerSize),
-        _rots = new OrderedStackRot(argSize, argContainerSize),
-        _mat33s = new OrderedStackMat33(argSize, argContainerSize),
-        _dist = new Distance() {
+      : _vecs = OrderedStackVec2(argSize, argContainerSize),
+        _vec3s = OrderedStackVec3(argSize, argContainerSize),
+        _mats = OrderedStackMat22(argSize, argContainerSize),
+        _aabbs = OrderedStackAABB(argSize, argContainerSize),
+        _rots = OrderedStackRot(argSize, argContainerSize),
+        _mat33s = OrderedStackMat33(argSize, argContainerSize),
+        _dist = Distance() {
     _pcstack =
-        new MutableStackPolygonContact(this, Settings.CONTACT_STACK_INIT_SIZE);
+        MutableStackPolygonContact(this, Settings.CONTACT_STACK_INIT_SIZE);
     _ccstack =
-        new MutableStackCircleContact(this, Settings.CONTACT_STACK_INIT_SIZE);
-    _cpstack = new MutableStackPolygonAndCircleContact(
+        MutableStackCircleContact(this, Settings.CONTACT_STACK_INIT_SIZE);
+    _cpstack = MutableStackPolygonAndCircleContact(
         this, Settings.CONTACT_STACK_INIT_SIZE);
-    _ecstack = new MutableStackEdgeAndCircleContact(
+    _ecstack = MutableStackEdgeAndCircleContact(
         this, Settings.CONTACT_STACK_INIT_SIZE);
-    _epstack = new MutableStackEdgeAndPolygonContact(
+    _epstack = MutableStackEdgeAndPolygonContact(
         this, Settings.CONTACT_STACK_INIT_SIZE);
-    _chcstack = new MutableStackChainAndCircleContact(
+    _chcstack = MutableStackChainAndCircleContact(
         this, Settings.CONTACT_STACK_INIT_SIZE);
-    _chpstack = new MutableStackChainAndPolygonContact(
+    _chpstack = MutableStackChainAndPolygonContact(
         this, Settings.CONTACT_STACK_INIT_SIZE);
-    _collision = new Collision(this);
-    _toi = new TimeOfImpact(this);
+    _collision = Collision(this);
+    _toi = TimeOfImpact(this);
     _world = this;
   }
 
@@ -276,7 +276,7 @@ class DefaultWorldPool implements IWorldPool {
 
   Float64List getFloatArray(int argLength) {
     if (!_afloats.containsKey(argLength)) {
-      _afloats[argLength] = new Float64List(argLength);
+      _afloats[argLength] = Float64List(argLength);
     }
 
     assert(_afloats[argLength].length ==
@@ -296,9 +296,9 @@ class DefaultWorldPool implements IWorldPool {
 
   List<Vector2> getVec2Array(int argLength) {
     if (!_avecs.containsKey(argLength)) {
-      List<Vector2> ray = new List<Vector2>(argLength);
+      List<Vector2> ray = List<Vector2>(argLength);
       for (int i = 0; i < argLength; i++) {
-        ray[i] = new Vector2.zero();
+        ray[i] = Vector2.zero();
       }
       _avecs[argLength] = ray;
     }

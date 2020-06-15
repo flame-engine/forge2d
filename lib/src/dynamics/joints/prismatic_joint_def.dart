@@ -33,7 +33,7 @@ part of box2d;
 /// @warning at least one body should by dynamic with a non-fixed rotation.
 class PrismaticJointDef extends JointDef {
   /// The local translation axis in body1.
-  final Vector2 localAxisA = new Vector2(1.0, 0.0);
+  final Vector2 localAxisA = Vector2(1.0, 0.0);
 
   /// The constrained angle between the bodies: body2_angle - body1_angle.
   double referenceAngle = 0.0;

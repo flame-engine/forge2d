@@ -24,20 +24,6 @@
 
 part of box2d;
 
-//Point-to-point constraint
-//C = p2 - p1
-//Cdot = v2 - v1
-//   = v2 + cross(w2, r2) - v1 - cross(w1, r1)
-//J = [-I -r1_skew I r2_skew ]
-//Identity used:
-//w k % (rx i + ry j) = w * (-ry i + rx j)
-
-//Angle constraint
-//C = angle2 - angle1 - referenceAngle
-//Cdot = w2 - w1
-//J = [0 0 -1 0 0 1]
-//K = invI1 + invI2
-
 /// A weld joint essentially glues two bodies together. A weld joint may distort somewhat because the
 /// island constraint solver is approximate.
 class WeldJoint extends Joint {
@@ -55,20 +41,20 @@ class WeldJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _rA = new Vector2.zero();
-  final Vector2 _rB = new Vector2.zero();
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _rA = Vector2.zero();
+  final Vector2 _rB = Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;
   double _invIB = 0.0;
-  final Matrix3 _mass = new Matrix3.zero();
+  final Matrix3 _mass = Matrix3.zero();
 
   WeldJoint(IWorldPool argWorld, WeldJointDef def)
-      : localAnchorA = new Vector2.copy(def.localAnchorA),
-        localAnchorB = new Vector2.copy(def.localAnchorB),
-        _impulse = new Vector3.zero(),
+      : localAnchorA = Vector2.copy(def.localAnchorA),
+        localAnchorB = Vector2.copy(def.localAnchorB),
+        _impulse = Vector3.zero(),
         super(argWorld, def) {
     _referenceAngle = def.referenceAngle;
     _frequencyHz = def.frequencyHz;
@@ -77,14 +63,6 @@ class WeldJoint extends Joint {
 
   double getReferenceAngle() {
     return _referenceAngle;
-  }
-
-  Vector2 getLocalAnchorA() {
-    return localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return localAnchorB;
   }
 
   Vector2 getReactionForce(double inv_dt) {

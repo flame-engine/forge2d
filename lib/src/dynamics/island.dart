@@ -174,34 +174,34 @@ class Island {
     _listener = listener;
 
     if (_bodies == null || _bodyCapacity > _bodies.length) {
-      _bodies = new List<Body>(_bodyCapacity);
+      _bodies = List<Body>(_bodyCapacity);
     }
     if (_joints == null || _jointCapacity > _joints.length) {
-      _joints = new List<Joint>(_jointCapacity);
+      _joints = List<Joint>(_jointCapacity);
     }
     if (_contacts == null || _contactCapacity > _contacts.length) {
-      _contacts = new List<Contact>(_contactCapacity);
+      _contacts = List<Contact>(_contactCapacity);
     }
 
     // dynamic array
     if (_velocities == null || _bodyCapacity > _velocities.length) {
       final List<Velocity> old =
-          _velocities == null ? new List<Velocity>(0) : _velocities;
-      _velocities = new List<Velocity>(_bodyCapacity);
+          _velocities == null ? List<Velocity>(0) : _velocities;
+      _velocities = List<Velocity>(_bodyCapacity);
       BufferUtils.arraycopy(old, 0, _velocities, 0, old.length);
       for (int i = old.length; i < _velocities.length; i++) {
-        _velocities[i] = new Velocity();
+        _velocities[i] = Velocity();
       }
     }
 
     // dynamic array
     if (_positions == null || _bodyCapacity > _positions.length) {
       final List<Position> old =
-          _positions == null ? new List<Position>(0) : _positions;
-      _positions = new List<Position>(_bodyCapacity);
+          _positions == null ? List<Position>(0) : _positions;
+      _positions = List<Position>(_bodyCapacity);
       BufferUtils.arraycopy(old, 0, _positions, 0, old.length);
       for (int i = old.length; i < _positions.length; i++) {
-        _positions[i] = new Position();
+        _positions[i] = Position();
       }
     }
   }
@@ -212,9 +212,9 @@ class Island {
     _jointCount = 0;
   }
 
-  final ContactSolver _contactSolver = new ContactSolver();
-  final SolverData _solverData = new SolverData();
-  final ContactSolverDef _solverDef = new ContactSolverDef();
+  final ContactSolver _contactSolver = ContactSolver();
+  final SolverData _solverData = SolverData();
+  final ContactSolverDef _solverDef = ContactSolverDef();
 
   void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
     // System.out.println("Solving Island");
@@ -399,8 +399,8 @@ class Island {
     }
   }
 
-  final ContactSolver _toiContactSolver = new ContactSolver();
-  final ContactSolverDef _toiSolverDef = new ContactSolverDef();
+  final ContactSolver _toiContactSolver = ContactSolver();
+  final ContactSolverDef _toiSolverDef = ContactSolverDef();
 
   void solveTOI(TimeStep subStep, int toiIndexA, int toiIndexB) {
     assert(toiIndexA < _bodyCount);
@@ -552,7 +552,7 @@ class Island {
     _joints[_jointCount++] = joint;
   }
 
-  final ContactImpulse _impulse = new ContactImpulse();
+  final ContactImpulse _impulse = ContactImpulse();
 
   void report(List<ContactVelocityConstraint> constraints) {
     if (_listener == null) {

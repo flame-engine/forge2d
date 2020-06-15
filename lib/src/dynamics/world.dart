@@ -69,9 +69,9 @@ class World {
   ParticleSystem _particleSystem;
 
   static List<List<ContactRegister>> _create2D(int a, int b) {
-    var res = new List<List<ContactRegister>>(a);
+    var res = List<List<ContactRegister>>(a);
     for (int i = 0; i < a; i++) {
-      res[i] = new List<ContactRegister>(b);
+      res[i] = List<ContactRegister>(b);
     }
     return res;
   }
@@ -83,8 +83,8 @@ class World {
   ///
   /// @param gravity the world gravity vector.
   factory World.withGravity(Vector2 gravity) {
-    var w = new World.withPool(gravity,
-        new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
+    var w = World.withPool(
+        gravity, DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
     return w;
   }
 
