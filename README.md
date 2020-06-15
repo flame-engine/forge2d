@@ -1,8 +1,5 @@
 ### A Dart 2D physics engine
 
-[![Build Status](https://travis-ci.org/google/box2d.dart.svg?branch=master)](https://travis-ci.org/google/box2d.dart)
-[![Coverage Status](https://coveralls.io/repos/google/box2d.dart/badge.svg?branch=master)](https://coveralls.io/r/google/box2d.dart)
-
 *This is a Dart port of Java's Box2D libraries.*
 
 *The Java Box2D library was originally written by Daniel Murphy (status
