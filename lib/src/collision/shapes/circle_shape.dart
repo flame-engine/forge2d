@@ -60,19 +60,19 @@ class CircleShape extends Shape {
   bool testPoint(final Transform transform, final Vector2 point) {
     final Rot q = transform.q;
     final Vector2 tp = transform.p;
-    double centerx = -(q.c * p.x - q.s * p.y + tp.x - point.x);
-    double centery = -(q.s * p.x + q.c * p.y + tp.y - point.y);
+    double centerX = -(q.c * p.x - q.s * p.y + tp.x - point.x);
+    double centerY = -(q.s * p.x + q.c * p.y + tp.y - point.y);
 
-    return centerx * centerx + centery * centery <= radius * radius;
+    return centerX * centerX + centerY * centerY <= radius * radius;
   }
 
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
     final Rot xfq = xf.q;
-    double centerx = xfq.c * p.x - xfq.s * p.y + xf.p.x;
-    double centery = xfq.s * p.x + xfq.c * p.y + xf.p.y;
-    double dx = p.x - centerx;
-    double dy = p.y - centery;
+    double centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
+    double centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
+    double dx = p.x - centerX;
+    double dy = p.y - centerY;
     double d1 = Math.sqrt(dx * dx + dy * dy);
     normalOut.x = dx * 1 / d1;
     normalOut.y = dy * 1 / d1;

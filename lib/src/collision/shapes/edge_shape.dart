@@ -38,7 +38,8 @@ class EdgeShape extends Shape {
 
   /// optional adjacent vertex 2. Used for smooth collision
   final Vector2 vertex3 = Vector2.zero();
-  bool hasVertex0 = false, hasVertex3 = false;
+  bool hasVertex0 = false;
+  bool hasVertex3 = false;
 
   EdgeShape() : super(ShapeType.EDGE) {
     radius = Settings.polygonRadius;
@@ -99,48 +100,36 @@ class EdgeShape extends Shape {
     return d1;
   }
 
-  // p = p1 + t * d
-  // v = v1 + s * e
-  // p1 + t * d = v1 + s * e
-  // s * e - t * d = p1 - v1
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
-    double tempx, tempy;
     final Vector2 v1 = vertex1;
     final Vector2 v2 = vertex2;
     final Rot xfq = xf.q;
     final Vector2 xfp = xf.p;
 
     // Put the ray into the edge's frame of reference.
-    // b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
-    // b2Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
-    tempx = input.p1.x - xfp.x;
-    tempy = input.p1.y - xfp.y;
-    final double p1x = xfq.c * tempx + xfq.s * tempy;
-    final double p1y = -xfq.s * tempx + xfq.c * tempy;
+    double tempX = input.p1.x - xfp.x;
+    double tempY = input.p1.y - xfp.y;
+    final double p1x = xfq.c * tempX + xfq.s * tempY;
+    final double p1y = -xfq.s * tempX + xfq.c * tempY;
 
-    tempx = input.p2.x - xfp.x;
-    tempy = input.p2.y - xfp.y;
-    final double p2x = xfq.c * tempx + xfq.s * tempy;
-    final double p2y = -xfq.s * tempx + xfq.c * tempy;
+    tempX = input.p2.x - xfp.x;
+    tempY = input.p2.y - xfp.y;
+    final double p2x = xfq.c * tempX + xfq.s * tempY;
+    final double p2y = -xfq.s * tempX + xfq.c * tempY;
 
     final double dx = p2x - p1x;
     final double dy = p2y - p1y;
 
-    // final Vec2 normal = pool2.set(v2).subLocal(v1);
-    // normal.set(normal.y, -normal.x);
     normal.x = v2.y - v1.y;
     normal.y = v1.x - v2.x;
     normal.normalize();
     final double normalx = normal.x;
     final double normaly = normal.y;
 
-    // q = p1 + t * d
-    // dot(normal, q - v1) = 0
-    // dot(normal, p1 - v1) + t * dot(normal, d) = 0
-    tempx = v1.x - p1x;
-    tempy = v1.y - p1y;
-    double numerator = normalx * tempx + normaly * tempy;
+    tempX = v1.x - p1x;
+    tempY = v1.y - p1y;
+    double numerator = normalx * tempX + normaly * tempY;
     double denominator = normalx * dx + normaly * dy;
 
     if (denominator == 0.0) {
@@ -152,34 +141,27 @@ class EdgeShape extends Shape {
       return false;
     }
 
-    // Vec2 q = p1 + t * d;
     final double qx = p1x + t * dx;
     final double qy = p1y + t * dy;
 
-    // q = v1 + s * r
-    // s = dot(q - v1, r) / dot(r, r)
-    // Vec2 r = v2 - v1;
     final double rx = v2.x - v1.x;
     final double ry = v2.y - v1.y;
     final double rr = rx * rx + ry * ry;
     if (rr == 0.0) {
       return false;
     }
-    tempx = qx - v1.x;
-    tempy = qy - v1.y;
-    // double s = Vec2.dot(pool5, r) / rr;
-    double s = (tempx * rx + tempy * ry) / rr;
+    tempX = qx - v1.x;
+    tempY = qy - v1.y;
+    double s = (tempX * rx + tempY * ry) / rr;
     if (s < 0.0 || 1.0 < s) {
       return false;
     }
 
     output.fraction = t;
     if (numerator > 0.0) {
-      // output.normal = -b2Mul(xf.q, normal);
       output.normal.x = -xfq.c * normal.x + xfq.s * normal.y;
       output.normal.y = -xfq.s * normal.x - xfq.c * normal.y;
     } else {
-      // output->normal = b2Mul(xf.q, normal);
       output.normal.x = xfq.c * normal.x - xfq.s * normal.y;
       output.normal.y = xfq.s * normal.x + xfq.c * normal.y;
     }
