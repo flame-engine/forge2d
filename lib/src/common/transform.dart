@@ -51,7 +51,7 @@ class Transform {
   /// Set this to equal another transform.
   Transform set(final Transform xf) {
     p.setFrom(xf.p);
-    q.set(xf.q);
+    q.setFrom(xf.q);
     return this;
   }
 
@@ -80,7 +80,7 @@ class Transform {
 
   static Transform mul(final Transform A, final Transform B) {
     Transform c = Transform.zero();
-    c.q.set(Rot.mul(A.q, B.q));
+    c.q.setFrom(Rot.mul(A.q, B.q));
     c.p.setFrom(Rot.mulVec2(A.q, B.p));
     c.p.add(A.p);
     return c;
@@ -90,7 +90,7 @@ class Transform {
 
   static Transform mulTrans(final Transform A, final Transform B) {
     Transform c = Transform.zero();
-    c.q.set(Rot.mulTrans(A.q, B.q));
+    c.q.setFrom(Rot.mulTrans(A.q, B.q));
     (_pool..setFrom(B.p)).sub(A.p);
     c.p.setFrom(Rot.mulTransVec2(A.q, _pool));
     return c;
