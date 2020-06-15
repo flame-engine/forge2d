@@ -63,7 +63,6 @@ class ContactSolver {
   }
 
   void init(ContactSolverDef def) {
-    // System.out.println("Initializing contact solver");
     _step = def.step;
     _count = def.count;
 
@@ -92,7 +91,6 @@ class ContactSolver {
     _contacts = def.contacts;
 
     for (int i = 0; i < _count; ++i) {
-      // System.out.println("contacts: " + _count);
       final Contact contact = _contacts[i];
 
       final Fixture fixtureA = contact._fixtureA;
@@ -139,14 +137,11 @@ class ContactSolver {
       pc.radiusB = radiusB;
       pc.type = manifold.type;
 
-      // System.out.println("contact point count: " + pointCount);
       for (int j = 0; j < pointCount; j++) {
         ManifoldPoint cp = manifold.points[j];
         VelocityConstraintPoint vcp = vc.points[j];
 
         if (_step.warmStarting) {
-          // assert(cp.normalImpulse == 0);
-          // System.out.println("contact normal impulse: " + cp.normalImpulse);
           vcp.normalImpulse = _step.dtRatio * cp.normalImpulse;
           vcp.tangentImpulse = _step.dtRatio * cp.tangentImpulse;
         } else {

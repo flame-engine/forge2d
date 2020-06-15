@@ -548,7 +548,6 @@ class PrismaticJoint extends Joint {
       ..sub(vA);
     Cdot1.x = _perp.dot(temp) + _s2 * wB - _s1 * wA;
     Cdot1.y = wB - wA;
-    // System.out.println(Cdot1);
 
     if (_enableLimit && _limitState != LimitState.INACTIVE) {
       // Solve prismatic and limit constraint in block form.

@@ -117,18 +117,11 @@ class TimeOfImpact {
     for (;;) {
       _sweepA.getTransform(_xfA, t1);
       _sweepB.getTransform(_xfB, t1);
-      // System.out.printf("sweepA: %f, %f, sweepB: %f, %f\n",
-      // sweepA.c.x, sweepA.c.y, sweepB.c.x, sweepB.c.y);
       // Get the distance between shapes. We can also use the results
       // to get a separating axis
       _distanceInput.transformA = _xfA;
       _distanceInput.transformB = _xfB;
       _pool.getDistance().distance(_distanceOutput, _cache, _distanceInput);
-
-      // System.out.printf("Dist: %f at points %f, %f and %f, %f.  %d iterations\n",
-      // distanceOutput.distance, distanceOutput.pointA.x, distanceOutput.pointA.y,
-      // distanceOutput.pointB.x, distanceOutput.pointB.y,
-      // distanceOutput.iterations);
 
       // If the shapes are overlapped, we give up on continuous collision.
       if (_distanceOutput.distance <= 0.0) {
@@ -157,7 +150,6 @@ class TimeOfImpact {
       for (;;) {
         // Find the deepest point at t2. Store the witness point indices.
         double s2 = _fcn.findMinSeparation(_indexes, t2);
-        // System.out.printf("s2: %f\n", s2);
         // Is the final configuration separated?
         if (s2 > target + tolerance) {
           // Victory!
@@ -178,8 +170,6 @@ class TimeOfImpact {
         double s1 = _fcn.evaluate(_indexes[0], _indexes[1], t1);
         // Check for initial overlap. This might happen if the root finder
         // runs out of iterations.
-        // System.out.printf("s1: %f, target: %f, tolerance: %f\n", s1, target,
-        // tolerance);
         if (s1 < target - tolerance) {
           output.state = TOIOutputState.FAILED;
           output.t = t1;
@@ -249,12 +239,10 @@ class TimeOfImpact {
       ++toiIters;
 
       if (done) {
-        // System.out.println("done");
         break;
       }
 
       if (iter == MAX_ITERATIONS) {
-        // System.out.println("failed, root finder stuck");
         // Root finder got stuck. Semi-victory.
         output.state = TOIOutputState.FAILED;
         output.t = t1;
@@ -262,7 +250,6 @@ class TimeOfImpact {
       }
     }
 
-    // System.out.printf("final sweeps: %f, %f, %f; %f, %f, %f", input.s)
     toiMaxIters = Math.max(toiMaxIters, iter);
   }
 } // Class TimeOfImpact.
@@ -312,17 +299,8 @@ class SeparationFunction {
     sweepA.getTransform(_xfa, t1);
     sweepB.getTransform(_xfb, t1);
 
-    // log.debug("initializing separation.\n" +
-    // "cache: "+cache.count+"-"+cache.metric+"-"+cache.indexA+"-"+cache.indexB+"\n"
-    // "distance: "+proxyA.
-
     if (count == 1) {
       type = SeparationFunctionType.POINTS;
-      /*
-       * Vec2 localPointA = proxyA.GetVertex(cache.indexA[0]); Vec2 localPointB =
-       * proxyB.GetVertex(cache.indexB[0]); Vec2 pointA = Mul(transformA, localPointA); Vec2
-       * pointB = Mul(transformB, localPointB); axis = pointB - pointA; axis.Normalize();
-       */
       _localPointA.setFrom(proxyA.getVertex(cache.indexA[0]));
       _localPointB.setFrom(proxyB.getVertex(cache.indexB[0]));
       _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
