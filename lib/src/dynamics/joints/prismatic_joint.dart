@@ -191,12 +191,12 @@ class PrismaticJoint extends Joint {
     temp
       ..setFrom(localAnchorA)
       ..sub(bA._sweep.localCenter);
-    Rot.mulToOutUnsafe(bA._transform.q, temp, rA);
+    rA.setFrom(Rot.mulVec2(bA._transform.q, temp));
 
     temp
       ..setFrom(localAnchorB)
       ..sub(bB._sweep.localCenter);
-    Rot.mulToOutUnsafe(bB._transform.q, temp, rB);
+    rB.setFrom(Rot.mulVec2(bB._transform.q, temp));
 
     p1
       ..setFrom(bA._sweep.c)
@@ -208,7 +208,7 @@ class PrismaticJoint extends Joint {
     d
       ..setFrom(p2)
       ..sub(p1);
-    Rot.mulToOutUnsafe(bA._transform.q, _localXAxisA, axis);
+    axis.setFrom(Rot.mulVec2(bA._transform.q, _localXAxisA));
 
     Vector2 vA = bA._linearVelocity;
     Vector2 vB = bB._linearVelocity;
@@ -232,9 +232,9 @@ class PrismaticJoint extends Joint {
 
   double getJointTranslation() {
     Vector2 pA = pool.popVec2(), pB = pool.popVec2(), axis = pool.popVec2();
-    _bodyA.getWorldPointToOut(localAnchorA, pA);
-    _bodyB.getWorldPointToOut(localAnchorB, pB);
-    _bodyA.getWorldVectorToOutUnsafe(_localXAxisA, axis);
+    pA.setFrom(_bodyA.getWorldPoint(localAnchorA));
+    pB.setFrom(_bodyB.getWorldPoint(localAnchorB));
+    axis.setFrom(_bodyA.getWorldVector(_localXAxisA));
     pB.sub(pA);
     double translation = pB.dot(axis);
     pool.pushVec2(3);
@@ -381,18 +381,14 @@ class PrismaticJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA,
-        d
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        d
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    d
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, d));
+    d
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, d));
     d
       ..setFrom(cB)
       ..sub(cA)
@@ -404,7 +400,7 @@ class PrismaticJoint extends Joint {
 
     // Compute motor Jacobian and effective mass.
     {
-      Rot.mulToOutUnsafe(qA, _localXAxisA, _axis);
+      _axis.setFrom(Rot.mulVec2(qA, _localXAxisA));
       temp
         ..setFrom(d)
         ..add(rA);
@@ -419,7 +415,7 @@ class PrismaticJoint extends Joint {
 
     // Prismatic constraint.
     {
-      Rot.mulToOutUnsafe(qA, _localYAxisA, _perp);
+      _perp.setFrom(Rot.mulVec2(qA, _localYAxisA));
 
       temp
         ..setFrom(d)
@@ -692,31 +688,27 @@ class PrismaticJoint extends Joint {
     double iA = _invIA, iB = _invIB;
 
     // Compute fresh Jacobians
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
     d
       ..setFrom(cB)
       ..add(rB)
       ..sub(cA)
       ..sub(rA);
 
-    Rot.mulToOutUnsafe(qA, _localXAxisA, axis);
+    axis.setFrom(Rot.mulVec2(qA, _localXAxisA));
     double a1 = (temp
           ..setFrom(d)
           ..add(rA))
         .cross(axis);
     double a2 = rB.cross(axis);
-    Rot.mulToOutUnsafe(qA, _localYAxisA, perp);
+    perp.setFrom(Rot.mulVec2(qA, _localYAxisA));
 
     double s1 = (temp
           ..setFrom(d)

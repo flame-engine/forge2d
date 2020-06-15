@@ -114,27 +114,14 @@ class RevoluteJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        _rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        _rB);
-
-    // J = [-I -r1_skew I r2_skew]
-    // [ 0 -1 0 1]
-    // r_skew = [-ry; rx]
-
-    // Matlab
-    // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
-    // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
-    // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    _rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    _rB.setFrom(Rot.mulVec2(qB, temp));
 
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
@@ -411,27 +398,24 @@ class RevoluteJoint extends Joint {
 
       final Vector2 rA = pool.popVec2();
       final Vector2 rB = pool.popVec2();
-      final Vector2 C = pool.popVec2();
+      final Vector2 temp = pool.popVec2();
       final Vector2 impulse = pool.popVec2();
 
-      Rot.mulToOutUnsafe(
-          qA,
-          C
-            ..setFrom(localAnchorA)
-            ..sub(_localCenterA),
-          rA);
-      Rot.mulToOutUnsafe(
-          qB,
-          C
-            ..setFrom(localAnchorB)
-            ..sub(_localCenterB),
-          rB);
-      C
+      temp
+        ..setFrom(localAnchorA)
+        ..sub(_localCenterA);
+      rA.setFrom(Rot.mulVec2(qA, temp));
+      temp
+        ..setFrom(localAnchorB)
+        ..sub(_localCenterB);
+      rB.setFrom(Rot.mulVec2(qB, temp));
+
+      temp
         ..setFrom(cB)
         ..add(rB)
         ..sub(cA)
         ..sub(rA);
-      positionError = C.length;
+      positionError = temp.length;
 
       double mA = _invMassA, mB = _invMassB;
       double iA = _invIA, iB = _invIB;
@@ -443,7 +427,7 @@ class RevoluteJoint extends Joint {
       double a22 = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
 
       K.setValues(a11, a21, a12, a22);
-      Matrix2.solve(K, impulse, C);
+      Matrix2.solve(K, impulse, temp);
       impulse.negate();
 
       cA.x -= mA * impulse.x;
@@ -480,17 +464,9 @@ class RevoluteJoint extends Joint {
     return _referenceAngle;
   }
 
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut
-      ..setValues(_impulse.x, _impulse.y)
+  @override
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2(_impulse.x, _impulse.y)
       ..scale(inv_dt);
   }
 

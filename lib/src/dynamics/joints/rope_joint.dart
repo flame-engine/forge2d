@@ -87,18 +87,14 @@ class RopeJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        _rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        _rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    _rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    _rB.setFrom(Rot.mulVec2(qB, temp));
 
     _u
       ..setFrom(cB)
@@ -225,18 +221,15 @@ class RopeJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
+
     u
       ..setFrom(cB)
       ..add(rB)
@@ -270,17 +263,8 @@ class RopeJoint extends Joint {
     return length - _maxLength < Settings.linearSlop;
   }
 
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    argOut
-      ..setFrom(_u)
+  Vector2 getReactionForce(double inv_dt) {
+    return Vector2.copy(_u)
       ..scale(inv_dt)
       ..scale(_impulse);
   }

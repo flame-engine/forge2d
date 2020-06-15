@@ -55,8 +55,7 @@ class MouseJoint extends Joint {
     assert(def.dampingRatio >= 0);
 
     _targetA.setFrom(def.target);
-    Transform.mulTransToOutUnsafeVec2(
-        _bodyB._transform, _targetA, localAnchorB);
+    localAnchorB.setFrom(Transform.mulTransVec2(_bodyB._transform, _targetA));
 
     _maxForce = def.maxForce;
     _impulse.setZero();
@@ -129,12 +128,10 @@ class MouseJoint extends Joint {
     Vector2 temp = pool.popVec2();
 
     // Compute the effective mass matrix.
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(localAnchorB)
-          ..sub(_localCenterB),
-        _rB);
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    _rB.setFrom(Rot.mulVec2(qB, temp));
 
     // K = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
     // = [1/m1+1/m2 0 ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]

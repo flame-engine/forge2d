@@ -65,8 +65,8 @@ class RevoluteJointDef extends JointDef {
   void initialize(final Body b1, final Body b2, final Vector2 anchor) {
     bodyA = b1;
     bodyB = b2;
-    bodyA.getLocalPointToOut(anchor, localAnchorA);
-    bodyB.getLocalPointToOut(anchor, localAnchorB);
+    localAnchorA.setFrom(bodyA.getLocalPoint(anchor));
+    localAnchorB.setFrom(bodyB.getLocalPoint(anchor));
     referenceAngle = bodyB.getAngle() - bodyA.getAngle();
   }
 }
