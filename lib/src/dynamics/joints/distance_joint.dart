@@ -69,8 +69,8 @@ class DistanceJoint extends Joint {
   @override
   Vector2 getReactionForce(double inv_dt) {
     return Vector2(
-        _impulse * _u.x * inv_dt,
-        _impulse * _u.y * inv_dt,
+      _impulse * _u.x * inv_dt,
+      _impulse * _u.y * inv_dt,
     );
   }
 
@@ -106,9 +106,13 @@ class DistanceJoint extends Joint {
     qB.setAngle(aB);
 
     // use _u as temporary variable
-    _u..setFrom(localAnchorA)..sub(_localCenterA);
+    _u
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
     _rA.setFrom(Rot.mulVec2(qA, _u));
-    _u..setFrom(localAnchorB)..sub(_localCenterB);
+    _u
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
     _rB.setFrom(Rot.mulVec2(qB, _u));
     _u
       ..setFrom(cB)
@@ -241,9 +245,13 @@ class DistanceJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    u..setFrom(localAnchorA)..sub(_localCenterA);
+    u
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
     rA.setFrom(Rot.mulVec2(qA, u));
-    u..setFrom(localAnchorB)..sub(_localCenterB);
+    u
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
     rB.setFrom(Rot.mulVec2(qB, u));
     u
       ..setFrom(cB)

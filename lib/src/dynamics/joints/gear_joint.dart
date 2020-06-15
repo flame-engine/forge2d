@@ -286,8 +286,8 @@ class GearJoint extends Joint {
         ..setFrom(_localAnchorD)
         ..sub(_lcD);
       rD.setFrom(Rot.mulVec2(qD, temp));
-          temp
-          ..setFrom(localAnchorB)
+      temp
+        ..setFrom(localAnchorB)
         ..sub(_lcB);
       rB.setFrom(Rot.mulVec2(qB, temp));
       _JvBD

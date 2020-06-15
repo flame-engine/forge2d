@@ -690,13 +690,13 @@ class Distance {
 
       _temp.setFrom(Rot.mulTransVec2(transformA.q, _d..negate()));
       vertex.indexA = proxyA.getSupport(_temp);
-      vertex.wA.setFrom(Transform.mulVec2(
-          transformA, proxyA.getVertex(vertex.indexA)));
+      vertex.wA.setFrom(
+          Transform.mulVec2(transformA, proxyA.getVertex(vertex.indexA)));
       // Vec2 wBLocal;
       _temp.setFrom(Rot.mulTransVec2(transformB.q, _d..negate()));
       vertex.indexB = proxyB.getSupport(_temp);
-      vertex.wB.setFrom(Transform.mulVec2(
-          transformB, proxyB.getVertex(vertex.indexB)));
+      vertex.wB.setFrom(
+          Transform.mulVec2(transformB, proxyB.getVertex(vertex.indexB)));
       (vertex.w..setFrom(vertex.wB)).sub(vertex.wA);
 
       // Iteration count is equated to the number of support point calls.

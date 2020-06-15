@@ -466,8 +466,7 @@ class RevoluteJoint extends Joint {
 
   @override
   Vector2 getReactionForce(double inv_dt) {
-    return Vector2(_impulse.x, _impulse.y)
-      ..scale(inv_dt);
+    return Vector2(_impulse.x, _impulse.y)..scale(inv_dt);
   }
 
   double getReactionTorque(double inv_dt) {

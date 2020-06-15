@@ -1369,7 +1369,7 @@ class ParticleSystem {
         velocityTransform.q.c = step.inv_dt * (_tempXf.q.c - 1);
         for (int i = group._firstIndex; i < group._lastIndex; i++) {
           velocityBuffer.data[i].setFrom(
-              Transform.mulVec2(velocityTransform, positionBuffer.data[i]),
+            Transform.mulVec2(velocityTransform, positionBuffer.data[i]),
           );
         }
       }
