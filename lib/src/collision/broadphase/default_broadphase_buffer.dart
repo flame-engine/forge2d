@@ -122,10 +122,8 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
       final AABB fatAABB = _tree.getFatAABB(_queryProxyId);
 
       // Query tree, create pairs and add them pair buffer.
-      // log.debug("quering aabb: "+_queryProxy.aabb);
       _tree.query(this, fatAABB);
     }
-    // log.debug("Number of pairs found: "+_pairCount);
 
     // Reset move buffer
     _moveCount = 0;
@@ -140,7 +138,6 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
       Object userDataA = _tree.getUserData(primaryPair.proxyIdA);
       Object userDataB = _tree.getUserData(primaryPair.proxyIdB);
 
-      // log.debug("returning pair: "+userDataA+", "+userDataB);
       callback.addPair(userDataA, userDataB);
       ++i;
 

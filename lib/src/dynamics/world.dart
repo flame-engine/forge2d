@@ -530,10 +530,8 @@ class World {
   void stepDt(double dt, int velocityIterations, int positionIterations) {
     stepTimer.reset();
     tempTimer.reset();
-    // log.debug("Starting step");
     // If new fixtures were added, we need to find the new contacts.
     if ((_flags & NEW_FIXTURE) == NEW_FIXTURE) {
-      // log.debug("There's a new fixture, lets look for new contacts");
       _contactManager.findNewContacts();
       _flags &= ~NEW_FIXTURE;
     }
@@ -585,7 +583,6 @@ class World {
     }
 
     _flags &= ~LOCKED;
-    // log.debug("ending step");
 
     _profile.step.record(stepTimer.getMilliseconds());
   }

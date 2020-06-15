@@ -189,8 +189,6 @@ abstract class Contact {
     Body bodyB = _fixtureB.getBody();
     Transform xfA = bodyA._transform;
     Transform xfB = bodyB._transform;
-    // log.debug("TransformA: "+xfA);
-    // log.debug("TransformB: "+xfB);
 
     if (sensor) {
       Shape shapeA = _fixtureA.getShape();

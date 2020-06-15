@@ -163,7 +163,6 @@ class Island {
 
   void init(int bodyCapacity, int contactCapacity, int jointCapacity,
       ContactListener listener) {
-    // System.out.println("Initializing Island");
     _bodyCapacity = bodyCapacity;
     _contactCapacity = contactCapacity;
     _jointCapacity = jointCapacity;
@@ -217,7 +216,6 @@ class Island {
   final ContactSolverDef _solverDef = ContactSolverDef();
 
   void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
-    // System.out.println("Solving Island");
     double h = step.dt;
 
     // Integrate velocities and apply damping. Initialize the body state.
@@ -235,7 +233,6 @@ class Island {
 
       if (b._bodyType == BodyType.DYNAMIC) {
         // Integrate velocities.
-        // v += h * (b._gravityScale * gravity + b._invMass * b._force);
         v.x += h * (b._gravityScale * gravity.x + b._invMass * b._force.x);
         v.y += h * (b._gravityScale * gravity.y + b._invMass * b._force.y);
         w += h * b._invI * b._torque;
@@ -274,11 +271,9 @@ class Island {
     _solverDef.velocities = _velocities;
 
     _contactSolver.init(_solverDef);
-    // System.out.println("island init vel");
     _contactSolver.initializeVelocityConstraints();
 
     if (step.warmStarting) {
-      // System.out.println("island warm start");
       _contactSolver.warmStart();
     }
 
@@ -286,7 +281,6 @@ class Island {
       _joints[i].initVelocityConstraints(_solverData);
     }
 
-    // System.out.println("island solving velocities");
     for (int i = 0; i < step.velocityIterations; ++i) {
       for (int j = 0; j < _jointCount; ++j) {
         _joints[j].solveVelocityConstraints(_solverData);
