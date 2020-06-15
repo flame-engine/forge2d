@@ -26,10 +26,10 @@ part of box2d;
 
 /// Input parameters for TOI
 class TOIInput {
-  final DistanceProxy proxyA = new DistanceProxy();
-  final DistanceProxy proxyB = new DistanceProxy();
-  final Sweep sweepA = new Sweep();
-  final Sweep sweepB = new Sweep();
+  final DistanceProxy proxyA = DistanceProxy();
+  final DistanceProxy proxyB = DistanceProxy();
+  final Sweep sweepA = Sweep();
+  final Sweep sweepB = Sweep();
 
   /// defines sweep interval [0, tMax]
   double tMax = 0.0;
@@ -56,15 +56,15 @@ class TimeOfImpact {
   static int toiMaxRootIters = 0;
 
   // djm pooling
-  final SimplexCache _cache = new SimplexCache();
-  final DistanceInput _distanceInput = new DistanceInput();
-  final Transform _xfA = new Transform.zero();
-  final Transform _xfB = new Transform.zero();
-  final DistanceOutput _distanceOutput = new DistanceOutput();
-  final SeparationFunction _fcn = new SeparationFunction();
+  final SimplexCache _cache = SimplexCache();
+  final DistanceInput _distanceInput = DistanceInput();
+  final Transform _xfA = Transform.zero();
+  final Transform _xfB = Transform.zero();
+  final DistanceOutput _distanceOutput = DistanceOutput();
+  final SeparationFunction _fcn = SeparationFunction();
   final List<int> _indexes = BufferUtils.allocClearIntList(2);
-  final Sweep _sweepA = new Sweep();
-  final Sweep _sweepB = new Sweep();
+  final Sweep _sweepA = Sweep();
+  final Sweep _sweepB = Sweep();
 
   final IWorldPool _pool;
 
@@ -273,24 +273,24 @@ class SeparationFunction {
   DistanceProxy proxyA;
   DistanceProxy proxyB;
   SeparationFunctionType type;
-  final Vector2 localPoint = new Vector2.zero();
-  final Vector2 axis = new Vector2.zero();
+  final Vector2 localPoint = Vector2.zero();
+  final Vector2 axis = Vector2.zero();
   Sweep sweepA;
   Sweep sweepB;
 
   // djm pooling
-  final Vector2 _localPointA = new Vector2.zero();
-  final Vector2 _localPointB = new Vector2.zero();
-  final Vector2 _pointA = new Vector2.zero();
-  final Vector2 _pointB = new Vector2.zero();
-  final Vector2 _localPointA1 = new Vector2.zero();
-  final Vector2 _localPointA2 = new Vector2.zero();
-  final Vector2 _normal = new Vector2.zero();
-  final Vector2 _localPointB1 = new Vector2.zero();
-  final Vector2 _localPointB2 = new Vector2.zero();
-  final Vector2 _temp = new Vector2.zero();
-  final Transform _xfa = new Transform.zero();
-  final Transform _xfb = new Transform.zero();
+  final Vector2 _localPointA = Vector2.zero();
+  final Vector2 _localPointB = Vector2.zero();
+  final Vector2 _pointA = Vector2.zero();
+  final Vector2 _pointB = Vector2.zero();
+  final Vector2 _localPointA1 = Vector2.zero();
+  final Vector2 _localPointA2 = Vector2.zero();
+  final Vector2 _normal = Vector2.zero();
+  final Vector2 _localPointB1 = Vector2.zero();
+  final Vector2 _localPointB2 = Vector2.zero();
+  final Vector2 _temp = Vector2.zero();
+  final Transform _xfa = Transform.zero();
+  final Transform _xfb = Transform.zero();
 
   // TODO_ERIN might not need to return the separation
 
@@ -401,8 +401,8 @@ class SeparationFunction {
     }
   }
 
-  final Vector2 _axisA = new Vector2.zero();
-  final Vector2 _axisB = new Vector2.zero();
+  final Vector2 _axisA = Vector2.zero();
+  final Vector2 _axisB = Vector2.zero();
 
   // double FindMinSeparation(int* indexA, int* indexB, double t) const
   double findMinSeparation(List<int> indexes, double t) {

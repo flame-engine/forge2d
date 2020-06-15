@@ -86,7 +86,7 @@ class Transform {
     return c;
   }
 
-  static Vector2 _pool = new Vector2.zero();
+  static Vector2 _pool = Vector2.zero();
 
   static Transform mulTrans(final Transform A, final Transform B) {
     Transform c = Transform.zero();

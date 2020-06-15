@@ -985,7 +985,7 @@ class ParticleSystem {
     }
   }
 
-  static ParticleContact allocParticleContact() => new ParticleContact();
+  static ParticleContact allocParticleContact() => ParticleContact();
 
   void addContact(int a, int b) {
     assert(a != b);
@@ -1069,8 +1069,7 @@ class ParticleSystem {
     }
   }
 
-  final UpdateBodyContactsCallback _ubccallback =
-      new UpdateBodyContactsCallback();
+  final UpdateBodyContactsCallback _ubccallback = UpdateBodyContactsCallback();
 
   void updateBodyContacts() {
     final AABB aabb = _temp;
@@ -1093,7 +1092,7 @@ class ParticleSystem {
     world.queryAABB(_ubccallback, aabb);
   }
 
-  SolveCollisionCallback _sccallback = new SolveCollisionCallback();
+  SolveCollisionCallback _sccallback = SolveCollisionCallback();
 
   void solveCollision(TimeStep step) {
     final AABB aabb = _temp;

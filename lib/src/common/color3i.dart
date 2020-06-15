@@ -25,11 +25,11 @@
 part of box2d.common;
 
 class Color3i {
-  static final Color3i WHITE = new Color3i(255, 255, 255);
-  static final Color3i BLACK = new Color3i(0, 0, 0);
-  static final Color3i BLUE = new Color3i(0, 0, 255);
-  static final Color3i GREEN = new Color3i(0, 255, 0);
-  static final Color3i RED = new Color3i(255, 0, 0);
+  static final Color3i WHITE = Color3i(255, 255, 255);
+  static final Color3i BLACK = Color3i(0, 0, 0);
+  static final Color3i BLUE = Color3i(0, 0, 255);
+  static final Color3i GREEN = Color3i(0, 255, 0);
+  static final Color3i RED = Color3i(255, 0, 0);
 
   int x = 0;
   int y = 0;

@@ -50,10 +50,10 @@ class WheelJoint extends Joint {
   double _dampingRatio = 0.0;
 
   // Solver shared
-  final Vector2 localAnchorA = new Vector2.zero();
-  final Vector2 localAnchorB = new Vector2.zero();
-  final Vector2 _localXAxisA = new Vector2.zero();
-  final Vector2 _localYAxisA = new Vector2.zero();
+  final Vector2 localAnchorA = Vector2.zero();
+  final Vector2 localAnchorB = Vector2.zero();
+  final Vector2 _localXAxisA = Vector2.zero();
+  final Vector2 _localYAxisA = Vector2.zero();
 
   double _impulse = 0.0;
   double _motorImpulse = 0.0;
@@ -66,15 +66,15 @@ class WheelJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;
   double _invIB = 0.0;
 
-  final Vector2 _ax = new Vector2.zero();
-  final Vector2 _ay = new Vector2.zero();
+  final Vector2 _ax = Vector2.zero();
+  final Vector2 _ay = Vector2.zero();
   double _sAx = 0.0, _sBx = 0.0;
   double _sAy = 0.0, _sBy = 0.0;
 
@@ -182,9 +182,9 @@ class WheelJoint extends Joint {
 
   // pooling
   // TODO(srdjan): Make fields private.
-  final Vector2 rA = new Vector2.zero();
-  final Vector2 rB = new Vector2.zero();
-  final Vector2 d = new Vector2.zero();
+  final Vector2 rA = Vector2.zero();
+  final Vector2 rB = Vector2.zero();
+  final Vector2 d = Vector2.zero();
 
   void initVelocityConstraints(SolverData data) {
     _indexA = _bodyA._islandIndex;

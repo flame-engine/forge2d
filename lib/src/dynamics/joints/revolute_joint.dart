@@ -43,7 +43,7 @@ part of box2d;
 /// so that infinite forces are not generated.
 class RevoluteJoint extends Joint {
   // Solver shared
-  final Vector2 localAnchorA = new Vector2.zero();
+  final Vector2 localAnchorA = Vector2.zero();
   final Vector2 localAnchorB = new Vector2.zero();
   final Vector3 _impulse = new Vector3.zero();
   double _motorImpulse = 0.0;

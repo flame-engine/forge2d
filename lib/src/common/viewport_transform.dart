@@ -26,8 +26,8 @@ part of box2d.common;
 
 class ViewportTransform {
   ViewportTransform(Vector2 e, Vector2 c, this.scale)
-      : extents = new Vector2.copy(e),
-        center = new Vector2.copy(c);
+      : extents = Vector2.copy(e),
+        center = Vector2.copy(c);
 
   /// if we flip the y axis when transforming.
   bool yFlip;
@@ -56,7 +56,7 @@ class ViewportTransform {
   /// example, if the actual canvas center is (5, 5) but the current center is
   /// (6, 6), the translation is (1, 1).
   Vector2 get translation {
-    Vector2 result = new Vector2.copy(extents);
+    Vector2 result = Vector2.copy(extents);
     return result..sub(center);
   }
 
