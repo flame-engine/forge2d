@@ -92,8 +92,8 @@ class Racer extends Demo implements ContactListener {
     final double boundaryX = 150.0;
     final double boundaryY = 100.0;
 
-    shape.setAsEdge(Vector2(-boundaryX, -boundaryY),
-        Vector2(boundaryX, -boundaryY));
+    shape.setAsEdge(
+        Vector2(-boundaryX, -boundaryY), Vector2(boundaryX, -boundaryY));
 
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
@@ -105,8 +105,8 @@ class Racer extends Demo implements ContactListener {
         Vector2(boundaryX, boundaryY), Vector2(-boundaryX, boundaryY));
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
-    shape.setAsEdge(Vector2(-boundaryX, boundaryY),
-        Vector2(-boundaryX, -boundaryY));
+    shape.setAsEdge(
+        Vector2(-boundaryX, boundaryY), Vector2(-boundaryX, -boundaryY));
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
   }
 
