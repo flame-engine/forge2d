@@ -31,7 +31,7 @@ class ConstantVolumeJointDef extends JointDef {
   void addBodyAndJoint(Body argBody, DistanceJoint argJoint) {
     addBody(argBody);
     if (joints == null) {
-      joints = new List<DistanceJoint>();
+      joints = List<DistanceJoint>();
     }
     joints.add(argJoint);
   }

@@ -11,7 +11,7 @@ class BlobTest extends Demo {
 
   /// Entrypoint.
   static void main() {
-    final blob = new BlobTest();
+    final blob = BlobTest();
     blob.initialize();
     blob.initializeAnimation();
     blob.runAnimation();
@@ -20,22 +20,22 @@ class BlobTest extends Demo {
   void initialize() {
     Body ground;
     {
-      PolygonShape sd = new PolygonShape();
+      PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(50.0, 0.4);
 
-      BodyDef bd = new BodyDef();
+      BodyDef bd = BodyDef();
       bd.position.setValues(0.0, 0.0);
       assert(world != null);
       ground = world.createBody(bd);
       ground.createFixtureFromShape(sd);
 
-      sd.setAsBox(0.4, 50.0, new Vector2(-10.0, 0.0), 0.0);
+      sd.setAsBox(0.4, 50.0, Vector2(-10.0, 0.0), 0.0);
       ground.createFixtureFromShape(sd);
-      sd.setAsBox(0.4, 50.0, new Vector2(10.0, 0.0), 0.0);
+      sd.setAsBox(0.4, 50.0, Vector2(10.0, 0.0), 0.0);
       ground.createFixtureFromShape(sd);
     }
 
-    ConstantVolumeJointDef cvjd = new ConstantVolumeJointDef();
+    ConstantVolumeJointDef cvjd = ConstantVolumeJointDef();
 
     double cx = 0.0;
     double cy = 10.0;
@@ -46,17 +46,17 @@ class BlobTest extends Demo {
     for (int i = 0; i < nBodies; ++i) {
       double angle = MathUtils.translateAndScale(
           i.toDouble(), 0.0, nBodies, 0.0, Math.pi * 2);
-      BodyDef bd = new BodyDef();
+      BodyDef bd = BodyDef();
       bd.fixedRotation = true;
 
       double x = cx + rx * Math.sin(angle);
       double y = cy + ry * Math.cos(angle);
-      bd.position.setFrom(new Vector2(x, y));
+      bd.position.setFrom(Vector2(x, y));
       bd.type = BodyType.DYNAMIC;
       Body body = world.createBody(bd);
 
-      FixtureDef fd = new FixtureDef();
-      CircleShape cd = new CircleShape();
+      FixtureDef fd = FixtureDef();
+      CircleShape cd = CircleShape();
       cd.radius = bodyRadius;
       fd.shape = cd;
       fd.density = 1.0;
@@ -70,11 +70,11 @@ class BlobTest extends Demo {
     cvjd.collideConnected = false;
     world.createJoint(cvjd);
 
-    BodyDef bd2 = new BodyDef();
+    BodyDef bd2 = BodyDef();
     bd2.type = BodyType.DYNAMIC;
-    PolygonShape psd = new PolygonShape();
-    psd.setAsBox(3.0, 1.5, new Vector2(cx, cy + 15.0), 0.0);
-    bd2.position = new Vector2(cx, cy + 15.0);
+    PolygonShape psd = PolygonShape();
+    psd.setAsBox(3.0, 1.5, Vector2(cx, cy + 15.0), 0.0);
+    bd2.position = Vector2(cx, cy + 15.0);
     Body fallingBox = world.createBody(bd2);
     fallingBox.createFixtureFromShape(psd, 1.0);
   }

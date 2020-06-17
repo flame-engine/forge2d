@@ -1,7 +1,7 @@
 part of box2d;
 
 class Vec2Array {
-  final HashMap<int, List<Vector2>> _map = new HashMap<int, List<Vector2>>();
+  final HashMap<int, List<Vector2>> _map = HashMap<int, List<Vector2>>();
 
   List<Vector2> get(int argLength) {
     assert(argLength > 0);
@@ -16,9 +16,9 @@ class Vec2Array {
   }
 
   List<Vector2> getInitializedArray(int argLength) {
-    final List<Vector2> ray = new List<Vector2>(argLength);
+    final List<Vector2> ray = List<Vector2>(argLength);
     for (int i = 0; i < ray.length; i++) {
-      ray[i] = new Vector2.zero();
+      ray[i] = Vector2.zero();
     }
     return ray;
   }

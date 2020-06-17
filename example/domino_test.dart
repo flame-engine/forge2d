@@ -11,13 +11,13 @@ class DominoTest extends Demo {
   void initialize() {
     {
       // Floor
-      FixtureDef fd = new FixtureDef();
-      PolygonShape sd = new PolygonShape();
+      FixtureDef fd = FixtureDef();
+      PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
       fd.shape = sd;
 
-      BodyDef bd = new BodyDef();
-      bd.position = new Vector2(0.0, -10.0);
+      BodyDef bd = BodyDef();
+      bd.position = Vector2(0.0, -10.0);
       final body = world.createBody(bd);
       body.createFixtureFromFixtureDef(fd);
       bodies.add(body);
@@ -26,13 +26,13 @@ class DominoTest extends Demo {
     {
       // Platforms
       for (int i = 0; i < 4; i++) {
-        FixtureDef fd = new FixtureDef();
-        PolygonShape sd = new PolygonShape();
+        FixtureDef fd = FixtureDef();
+        PolygonShape sd = PolygonShape();
         sd.setAsBoxXY(15.0, 0.125);
         fd.shape = sd;
 
-        BodyDef bd = new BodyDef();
-        bd.position = new Vector2(0.0, 5.0 + 5 * i);
+        BodyDef bd = BodyDef();
+        bd.position = Vector2(0.0, 5.0 + 5 * i);
         final body = world.createBody(bd);
         body.createFixtureFromFixtureDef(fd);
         bodies.add(body);
@@ -41,13 +41,13 @@ class DominoTest extends Demo {
 
     // Dominoes
     {
-      FixtureDef fd = new FixtureDef();
-      PolygonShape sd = new PolygonShape();
+      FixtureDef fd = FixtureDef();
+      PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(0.125, 2.0);
       fd.shape = sd;
       fd.density = 25.0;
 
-      BodyDef bd = new BodyDef();
+      BodyDef bd = BodyDef();
       bd.type = BodyType.DYNAMIC;
 
       double friction = .5;
@@ -57,7 +57,7 @@ class DominoTest extends Demo {
         for (int j = 0; j < numPerRow; j++) {
           fd.friction = friction;
           bd.position =
-              new Vector2(-14.75 + j * (29.5 / (numPerRow - 1)), 7.3 + 5 * i);
+              Vector2(-14.75 + j * (29.5 / (numPerRow - 1)), 7.3 + 5 * i);
           if (i == 2 && j == 0) {
             bd.angle = -.1;
             bd.position.x += .1;
@@ -77,7 +77,7 @@ class DominoTest extends Demo {
 }
 
 void main() {
-  final domino = new DominoTest();
+  final domino = DominoTest();
   domino.initialize();
   domino.initializeAnimation();
   domino.runAnimation();

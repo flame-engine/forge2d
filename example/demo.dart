@@ -10,7 +10,7 @@ abstract class Demo {
   static const int WORLD_POOL_CONTAINER_SIZE = 10;
 
   /// All of the bodies in a simulation.
-  List<Body> bodies = new List<Body>();
+  List<Body> bodies = List<Body>();
 
   /// The default canvas width and height.
   static const int CANVAS_WIDTH = 900;
@@ -61,10 +61,10 @@ abstract class Demo {
   Element worldStepTime;
 
   Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
-      : this.world = new World.withPool(
-            (gravity == null) ? new Vector2(0.0, GRAVITY) : gravity,
-            new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE)),
-        _stopwatch = new Stopwatch()..start() {
+      : this.world = World.withPool(
+            (gravity == null) ? Vector2(0.0, GRAVITY) : gravity,
+            DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE)),
+        _stopwatch = Stopwatch()..start() {
     querySelector("#title").innerHtml = name;
   }
 
@@ -86,19 +86,19 @@ abstract class Demo {
   /// before calling runAnimation.
   void initializeAnimation() {
     // Setup the canvas.
-    canvas = (new Element.tag('canvas') as CanvasElement)
+    canvas = (Element.tag('canvas') as CanvasElement)
       ..width = CANVAS_WIDTH
       ..height = CANVAS_HEIGHT;
     document.body.nodes.add(canvas);
     ctx = canvas.context2D;
 
     // Create the viewport transform with the center at extents.
-    var extents = new Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-    viewport = new CanvasViewportTransform(extents, extents)
+    var extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    viewport = CanvasViewportTransform(extents, extents)
       ..scale = _viewportScale;
 
     // Create our canvas drawing tool to give to the world.
-    debugDraw = new CanvasDraw(viewport, ctx);
+    debugDraw = CanvasDraw(viewport, ctx);
 
     // Have the world draw itself for debugging purposes.
     world.debugDraw = debugDraw;
@@ -106,11 +106,11 @@ abstract class Demo {
     frameCount = 0;
     fpsCounter = querySelector("#fps-counter");
     worldStepTime = querySelector("#world-step-time");
-    new Timer.periodic(new Duration(seconds: 1), (Timer t) {
+    Timer.periodic(Duration(seconds: 1), (Timer t) {
       fpsCounter.innerHtml = frameCount.toString();
       frameCount = 0;
     });
-    new Timer.periodic(new Duration(milliseconds: 200), (Timer t) {
+    Timer.periodic(Duration(milliseconds: 200), (Timer t) {
       if (elapsedUs == null) return;
       worldStepTime.innerHtml = "${elapsedUs / 1000} ms";
     });

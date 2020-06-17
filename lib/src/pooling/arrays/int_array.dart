@@ -1,7 +1,7 @@
 part of box2d;
 
 class IntArray {
-  final HashMap<int, List<int>> _map = new HashMap<int, List<int>>();
+  final HashMap<int, List<int>> _map = HashMap<int, List<int>>();
 
   List<int> get(int argLength) {
     assert(argLength > 0);

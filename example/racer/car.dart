@@ -16,53 +16,53 @@ part of racer;
 
 class Car {
   Car(World world) {
-    final BodyDef def = new BodyDef();
+    final BodyDef def = BodyDef();
     def.type = BodyType.DYNAMIC;
     _body = world.createBody(def);
     _body.userData = "Car";
     _body.angularDamping = 3.0;
 
-    final List<Vector2> vertices = new List<Vector2>(8);
-    vertices[0] = new Vector2(1.5, 0.0);
-    vertices[1] = new Vector2(3.0, 2.5);
-    vertices[2] = new Vector2(2.8, 5.5);
-    vertices[3] = new Vector2(1.0, 10.0);
-    vertices[4] = new Vector2(-1.0, 10.0);
-    vertices[5] = new Vector2(-2.8, 5.5);
-    vertices[6] = new Vector2(-3.0, 2.5);
-    vertices[7] = new Vector2(-1.5, 0.0);
+    final List<Vector2> vertices = List<Vector2>(8);
+    vertices[0] = Vector2(1.5, 0.0);
+    vertices[1] = Vector2(3.0, 2.5);
+    vertices[2] = Vector2(2.8, 5.5);
+    vertices[3] = Vector2(1.0, 10.0);
+    vertices[4] = Vector2(-1.0, 10.0);
+    vertices[5] = Vector2(-2.8, 5.5);
+    vertices[6] = Vector2(-3.0, 2.5);
+    vertices[7] = Vector2(-1.5, 0.0);
 
-    final PolygonShape shape = new PolygonShape();
+    final PolygonShape shape = PolygonShape();
     shape.set(vertices, vertices.length);
 
     _body.createFixtureFromShape(shape, 0.1);
 
-    final RevoluteJointDef jointDef = new RevoluteJointDef();
+    final RevoluteJointDef jointDef = RevoluteJointDef();
     jointDef.bodyA = _body;
     jointDef.enableLimit = true;
     jointDef.lowerAngle = 0.0;
     jointDef.upperAngle = 0.0;
     jointDef.localAnchorB.setZero();
 
-    _blTire = new Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
+    _blTire = Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
         _backTireMaxDriveForce, _backTireMaxLateralImpulse);
     jointDef.bodyB = _blTire._body;
     jointDef.localAnchorA.setValues(-3.0, 0.75);
     world.createJoint(jointDef);
 
-    _brTire = new Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
+    _brTire = Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
         _backTireMaxDriveForce, _backTireMaxLateralImpulse);
     jointDef.bodyB = _brTire._body;
     jointDef.localAnchorA.setValues(3.0, 0.75);
     world.createJoint(jointDef);
 
-    _flTire = new Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
+    _flTire = Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
         _frontTireMaxDriveForce, _frontTireMaxLateralImpulse);
     jointDef.bodyB = _flTire._body;
     jointDef.localAnchorA.setValues(-3.0, 8.5);
     _flJoint = world.createJoint(jointDef) as RevoluteJoint;
 
-    _frTire = new Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
+    _frTire = Tire(world, _maxForwardSpeed, _maxBackwardSpeed,
         _frontTireMaxDriveForce, _frontTireMaxLateralImpulse);
     jointDef.bodyB = _frTire._body;
     jointDef.localAnchorA.setValues(3.0, 8.5);

@@ -14,21 +14,21 @@ part 'racer/tire.dart';
 
 class Racer extends Demo implements ContactListener {
   static void main() {
-    final racer = new Racer();
+    final racer = Racer();
     racer.initialize();
     racer.initializeAnimation();
     document.body.nodes
-        .add(new Element.html("<p>Use the arrow keys to drive the car.</p>"));
+        .add(Element.html("<p>Use the arrow keys to drive the car.</p>"));
     racer.runAnimation();
   }
 
-  Racer() : super("Racer", new Vector2.zero(), 2.5);
+  Racer() : super("Racer", Vector2.zero(), 2.5);
 
   void initialize() {
     _createGround();
     _createBoundary();
 
-    _car = new Car(world);
+    _car = Car(world);
     _controlState = 0;
 
     // Bind to keyboard events.
@@ -60,53 +60,53 @@ class Racer extends Demo implements ContactListener {
   double radians(double deg) => deg * (pi / 180.0);
 
   void _createGround() {
-    BodyDef def = new BodyDef();
+    BodyDef def = BodyDef();
     _groundBody = world.createBody(def);
     _groundBody.userData = "Ground";
 
-    PolygonShape shape = new PolygonShape();
+    PolygonShape shape = PolygonShape();
 
-    FixtureDef fixtureDef = new FixtureDef();
+    FixtureDef fixtureDef = FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.isSensor = true;
 
-    fixtureDef.userData = new GroundArea(0.001, false);
-    shape.setAsBox(27.0, 21.0, new Vector2(-30.0, 30.0), radians(20.0));
+    fixtureDef.userData = GroundArea(0.001, false);
+    shape.setAsBox(27.0, 21.0, Vector2(-30.0, 30.0), radians(20.0));
     _groundBody.createFixtureFromFixtureDef(fixtureDef);
 
-    fixtureDef.userData = new GroundArea(0.2, false);
-    shape.setAsBox(27.0, 15.0, new Vector2(20.0, 40.0), radians(-40.0));
+    fixtureDef.userData = GroundArea(0.2, false);
+    shape.setAsBox(27.0, 15.0, Vector2(20.0, 40.0), radians(-40.0));
     _groundBody.createFixtureFromFixtureDef(fixtureDef);
   }
 
   void _createBoundary() {
-    BodyDef def = new BodyDef();
+    BodyDef def = BodyDef();
     Body boundaryBody = world.createBody(def);
     boundaryBody.userData = "Boundary";
 
-    PolygonShape shape = new PolygonShape();
+    PolygonShape shape = PolygonShape();
 
-    FixtureDef fixtureDef = new FixtureDef();
+    FixtureDef fixtureDef = FixtureDef();
     fixtureDef.shape = shape;
 
     final double boundaryX = 150.0;
     final double boundaryY = 100.0;
 
-    shape.setAsEdge(new Vector2(-boundaryX, -boundaryY),
-        new Vector2(boundaryX, -boundaryY));
+    shape.setAsEdge(Vector2(-boundaryX, -boundaryY),
+        Vector2(boundaryX, -boundaryY));
 
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
     shape.setAsEdge(
-        new Vector2(boundaryX, -boundaryY), new Vector2(boundaryX, boundaryY));
+        Vector2(boundaryX, -boundaryY), Vector2(boundaryX, boundaryY));
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
     shape.setAsEdge(
-        new Vector2(boundaryX, boundaryY), new Vector2(-boundaryX, boundaryY));
+        Vector2(boundaryX, boundaryY), Vector2(-boundaryX, boundaryY));
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
 
-    shape.setAsEdge(new Vector2(-boundaryX, boundaryY),
-        new Vector2(-boundaryX, -boundaryY));
+    shape.setAsEdge(Vector2(-boundaryX, boundaryY),
+        Vector2(-boundaryX, -boundaryY));
     boundaryBody.createFixtureFromFixtureDef(fixtureDef);
   }
 

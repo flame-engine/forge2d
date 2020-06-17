@@ -844,7 +844,7 @@ class Collision {
     manifold.points[0].localPoint.setFrom(circleB.p);
   }
 
-  final EPCollider _collider = new EPCollider();
+  final EPCollider _collider = EPCollider();
 
   void collideEdgeAndPolygon(Manifold manifold, final EdgeShape edgeA,
       final Transform xfA, final PolygonShape polygonB, final Transform xfB) {
@@ -857,44 +857,44 @@ class Collision {
 enum VertexType { ISOLATED, CONCAVE, CONVEX }
 
 class EPCollider {
-  final TempPolygon polygonB = new TempPolygon();
+  final TempPolygon polygonB = TempPolygon();
 
-  final Transform xf = new Transform.zero();
-  final Vector2 centroidB = new Vector2.zero();
-  Vector2 v0 = new Vector2.zero();
-  Vector2 v1 = new Vector2.zero();
-  Vector2 v2 = new Vector2.zero();
-  Vector2 v3 = new Vector2.zero();
-  final Vector2 normal0 = new Vector2.zero();
-  final Vector2 normal1 = new Vector2.zero();
-  final Vector2 normal2 = new Vector2.zero();
-  final Vector2 normal = new Vector2.zero();
+  final Transform xf = Transform.zero();
+  final Vector2 centroidB = Vector2.zero();
+  Vector2 v0 = Vector2.zero();
+  Vector2 v1 = Vector2.zero();
+  Vector2 v2 = Vector2.zero();
+  Vector2 v3 = Vector2.zero();
+  final Vector2 normal0 = Vector2.zero();
+  final Vector2 normal1 = Vector2.zero();
+  final Vector2 normal2 = Vector2.zero();
+  final Vector2 normal = Vector2.zero();
 
   VertexType type1 = VertexType.ISOLATED, type2 = VertexType.ISOLATED;
 
-  final Vector2 lowerLimit = new Vector2.zero();
-  final Vector2 upperLimit = new Vector2.zero();
+  final Vector2 lowerLimit = Vector2.zero();
+  final Vector2 upperLimit = Vector2.zero();
   double radius = 0.0;
   bool front = false;
 
   EPCollider() {
     for (int i = 0; i < 2; i++) {
-      _ie[i] = new ClipVertex();
-      _clipPoints1[i] = new ClipVertex();
-      _clipPoints2[i] = new ClipVertex();
+      _ie[i] = ClipVertex();
+      _clipPoints1[i] = ClipVertex();
+      _clipPoints2[i] = ClipVertex();
     }
   }
 
-  final Vector2 _edge1 = new Vector2.zero();
-  final Vector2 _temp = new Vector2.zero();
-  final Vector2 _edge0 = new Vector2.zero();
-  final Vector2 _edge2 = new Vector2.zero();
-  final List<ClipVertex> _ie = new List<ClipVertex>(2);
-  final List<ClipVertex> _clipPoints1 = new List<ClipVertex>(2);
-  final List<ClipVertex> _clipPoints2 = new List<ClipVertex>(2);
-  final _ReferenceFace _rf = new _ReferenceFace();
-  final EPAxis _edgeAxis = new EPAxis();
-  final EPAxis _polygonAxis = new EPAxis();
+  final Vector2 _edge1 = Vector2.zero();
+  final Vector2 _temp = Vector2.zero();
+  final Vector2 _edge0 = Vector2.zero();
+  final Vector2 _edge2 = Vector2.zero();
+  final List<ClipVertex> _ie = List<ClipVertex>(2);
+  final List<ClipVertex> _clipPoints1 = List<ClipVertex>(2);
+  final List<ClipVertex> _clipPoints2 = List<ClipVertex>(2);
+  final _ReferenceFace _rf = _ReferenceFace();
+  final EPAxis _edgeAxis = EPAxis();
+  final EPAxis _polygonAxis = EPAxis();
 
   void collide(Manifold manifold, final EdgeShape edgeA, final Transform xfA,
       final PolygonShape polygonB_, final Transform xfB) {
@@ -1302,8 +1302,8 @@ class EPCollider {
     }
   }
 
-  final Vector2 _perp = new Vector2.zero();
-  final Vector2 _n = new Vector2.zero();
+  final Vector2 _perp = Vector2.zero();
+  final Vector2 _n = Vector2.zero();
 
   void computePolygonSeparation(EPAxis axis) {
     axis.type = EPAxisType.UNKNOWN;

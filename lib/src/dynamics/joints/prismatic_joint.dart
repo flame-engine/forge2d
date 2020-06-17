@@ -91,25 +91,25 @@ class PrismaticJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;
   double _invIB = 0.0;
-  final Vector2 _axis = new Vector2.zero();
-  final Vector2 _perp = new Vector2.zero();
+  final Vector2 _axis = Vector2.zero();
+  final Vector2 _perp = Vector2.zero();
   double _s1 = 0.0, _s2 = 0.0;
   double _a1 = 0.0, _a2 = 0.0;
-  final Matrix3 _K = new Matrix3.zero();
+  final Matrix3 _K = Matrix3.zero();
   double _motorMass =
       0.0; // effective mass for motor/limit translational constraint.
 
   PrismaticJoint(IWorldPool argWorld, PrismaticJointDef def)
-      : localAnchorA = new Vector2.copy(def.localAnchorA),
-        localAnchorB = new Vector2.copy(def.localAnchorB),
-        _localXAxisA = new Vector2.copy(def.localAxisA)..normalize(),
-        _localYAxisA = new Vector2.zero(),
+      : localAnchorA = Vector2.copy(def.localAnchorA),
+        localAnchorB = Vector2.copy(def.localAnchorB),
+        _localXAxisA = Vector2.copy(def.localAxisA)..normalize(),
+        _localYAxisA = Vector2.zero(),
         super(argWorld, def) {
     _localXAxisA.scaleOrthogonalInto(1.0, _localYAxisA);
     _referenceAngle = def.referenceAngle;
@@ -565,7 +565,7 @@ class PrismaticJoint extends Joint {
         ..sub(temp);
 
       Matrix3.solve2(_K, f2r, b);
-      f2r.add(new Vector2(f1.x, f1.y));
+      f2r.add(Vector2(f1.x, f1.y));
       _impulse.x = f2r.x;
       _impulse.y = f2r.y;
 

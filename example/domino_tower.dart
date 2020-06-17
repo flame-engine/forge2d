@@ -15,28 +15,28 @@ class DominoTower extends Demo {
   /// of the tower.
   double dominoDensity;
 
-  /// Construct a new DominoTower.
+  /// Construct a DominoTower.
   DominoTower() : super("Domino tower");
 
   /// Entrypoint.
   static void main() {
-    final tower = new DominoTower();
+    final tower = DominoTower();
     tower.initialize();
     tower.initializeAnimation();
     tower.runAnimation();
   }
 
   void makeDomino(double x, double y, bool horizontal) {
-    PolygonShape sd = new PolygonShape();
+    PolygonShape sd = PolygonShape();
     sd.setAsBoxXY(.5 * DOMINO_WIDTH, .5 * DOMINO_HEIGHT);
-    FixtureDef fd = new FixtureDef();
+    FixtureDef fd = FixtureDef();
     fd.shape = sd;
     fd.density = dominoDensity;
-    BodyDef bd = new BodyDef();
+    BodyDef bd = BodyDef();
     bd.type = BodyType.DYNAMIC;
     fd.friction = DOMINO_FRICTION;
     fd.restitution = 0.65;
-    bd.position = new Vector2(x, y);
+    bd.position = Vector2(x, y);
     bd.angle = horizontal ? (Math.pi / 2.0) : 0.0;
     Body myBody = world.createBody(bd);
     myBody.createFixtureFromFixtureDef(fd);
@@ -47,11 +47,11 @@ class DominoTower extends Demo {
   void initialize() {
     // Create the floor.
     {
-      PolygonShape sd = new PolygonShape();
+      PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
 
-      BodyDef bd = new BodyDef();
-      bd.position = new Vector2(0.0, -10.0);
+      BodyDef bd = BodyDef();
+      bd.position = Vector2(0.0, -10.0);
       final body = world.createBody(bd);
       body.createFixtureFromShape(sd);
       bodies.add(body);
@@ -60,29 +60,29 @@ class DominoTower extends Demo {
     {
       dominoDensity = 10.0;
       // Make bullet
-      PolygonShape sd = new PolygonShape();
+      PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(.7, .7);
-      FixtureDef fd = new FixtureDef();
+      FixtureDef fd = FixtureDef();
       fd.density = 35.0;
-      BodyDef bd = new BodyDef();
+      BodyDef bd = BodyDef();
       bd.type = BodyType.DYNAMIC;
       fd.shape = sd;
       fd.friction = 0.0;
       fd.restitution = 0.85;
       bd.bullet = true;
-      bd.position = new Vector2(30.0, 5.00);
+      bd.position = Vector2(30.0, 5.00);
       Body b = world.createBody(bd);
       bodies.add(b);
       b.createFixtureFromFixtureDef(fd);
-      b.linearVelocity = new Vector2(-25.0, -25.0);
+      b.linearVelocity = Vector2(-25.0, -25.0);
       b.angularVelocity = 6.7;
 
       fd.density = 25.0;
-      bd.position = new Vector2(-30.0, 25.0);
+      bd.position = Vector2(-30.0, 25.0);
       b = world.createBody(bd);
       bodies.add(b);
       b.createFixtureFromFixtureDef(fd);
-      b.linearVelocity = new Vector2(35.0, -10.0);
+      b.linearVelocity = Vector2(35.0, -10.0);
       b.angularVelocity = -8.3;
     }
 

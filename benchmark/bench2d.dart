@@ -1,7 +1,7 @@
 import 'package:box2d_flame/box2d.dart';
 
 void main() {
-  new Bench2d()
+  Bench2d()
     ..initialize()
     ..warmup()
     ..bench();
@@ -40,30 +40,30 @@ double percentile(List<double> values, double pc) {
 class Bench2d {
   final World world;
 
-  Bench2d() : world = new World.withGravity(new Vector2(0.0, -10.0));
+  Bench2d() : world = World.withGravity(Vector2(0.0, -10.0));
 
   void initialize() {
-    BodyDef bd = new BodyDef();
+    BodyDef bd = BodyDef();
     Body ground = world.createBody(bd);
 
-    EdgeShape groundShape = new EdgeShape()
-      ..set(new Vector2(-40.0, 0.0), new Vector2(40.0, 0.0));
+    EdgeShape groundShape = EdgeShape()
+      ..set(Vector2(-40.0, 0.0), Vector2(40.0, 0.0));
     ground.createFixtureFromShape(groundShape, 0.0);
 
     // add boxes
     const boxSize = .5;
-    PolygonShape shape = new PolygonShape()..setAsBoxXY(boxSize, boxSize);
+    PolygonShape shape = PolygonShape()..setAsBoxXY(boxSize, boxSize);
 
-    Vector2 x = new Vector2(-7.0, 0.75);
-    Vector2 y = new Vector2.zero();
-    Vector2 deltaX = new Vector2(0.5625, 1.0);
-    Vector2 deltaY = new Vector2(1.125, 0.0);
+    Vector2 x = Vector2(-7.0, 0.75);
+    Vector2 y = Vector2.zero();
+    Vector2 deltaX = Vector2(0.5625, 1.0);
+    Vector2 deltaY = Vector2(1.125, 0.0);
 
     for (int i = 0; i < PYRAMID_SIZE; ++i) {
       y.setFrom(x);
 
       for (int j = i; j < PYRAMID_SIZE; ++j) {
-        BodyDef bd = new BodyDef()
+        BodyDef bd = BodyDef()
           ..type = BodyType.DYNAMIC
           ..position.setFrom(y);
         world.createBody(bd)..createFixtureFromShape(shape, 5.0);
@@ -75,8 +75,8 @@ class Bench2d {
   }
 
   List<double> bench() {
-    List<double> times = new List<double>(FRAMES);
-    Stopwatch stopwatch = new Stopwatch()..start();
+    List<double> times = List<double>(FRAMES);
+    Stopwatch stopwatch = Stopwatch()..start();
     for (int i = 0; i < FRAMES; ++i) {
       int begin = stopwatch.elapsedMilliseconds;
       step();
@@ -108,8 +108,8 @@ class Bench2d {
   }
 
   void checksum(World world) {
-    Vector2 positionSum = new Vector2.zero();
-    Vector2 linearVelocitySum = new Vector2.zero();
+    Vector2 positionSum = Vector2.zero();
+    Vector2 linearVelocitySum = Vector2.zero();
     double angularVelocitySum = 0.0;
     var checksum = (Body b) {
       positionSum = positionSum + b.position;
