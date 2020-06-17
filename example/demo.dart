@@ -62,7 +62,7 @@ abstract class Demo {
 
   Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
       : this.world = World.withPool(
-            (gravity == null) ? Vector2(0.0, GRAVITY) : gravity,
+            gravity ??= Vector2(0.0, GRAVITY),
             DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE)),
         _stopwatch = Stopwatch()..start() {
     querySelector("#title").innerHtml = name;

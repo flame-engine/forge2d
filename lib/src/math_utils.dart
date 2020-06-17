@@ -35,9 +35,7 @@ double translateAndScale(
 }
 
 bool approxEquals(num expected, num actual, [num tolerance = null]) {
-  if (tolerance == null) {
-    tolerance = (expected / 1e4).abs();
-  }
+  tolerance ??= (expected / 1e4).abs();
   return ((expected - actual).abs() <= tolerance);
 }
 
