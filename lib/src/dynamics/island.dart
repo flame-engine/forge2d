@@ -122,12 +122,12 @@ part of box2d;
 class Island {
   ContactListener _listener;
 
-  List<Body> _bodies;
-  List<Contact> _contacts;
-  List<Joint> _joints;
+  List<Body> _bodies = List<Body>();
+  List<Contact> _contacts = List<Contact>();
+  List<Joint> _joints = List<Joint>();
 
-  List<Position> _positions;
-  List<Velocity> _velocities;
+  List<Position> _positions = List<Position>();
+  List<Velocity> _velocities = List<Velocity>();
 
   int _bodyCount = 0;
   int _jointCount = 0;
@@ -148,20 +148,19 @@ class Island {
 
     _listener = listener;
 
-    if (_bodies == null || _bodyCapacity > _bodies.length) {
+    if (_bodyCapacity > _bodies.length) {
       _bodies = List<Body>(_bodyCapacity);
     }
-    if (_joints == null || _jointCapacity > _joints.length) {
+    if (_jointCapacity > _joints.length) {
       _joints = List<Joint>(_jointCapacity);
     }
-    if (_contacts == null || _contactCapacity > _contacts.length) {
+    if (_contactCapacity > _contacts.length) {
       _contacts = List<Contact>(_contactCapacity);
     }
 
     // dynamic array
-    if (_velocities == null || _bodyCapacity > _velocities.length) {
-      final List<Velocity> old =
-          _velocities == null ? List<Velocity>(0) : _velocities;
+    if (_bodyCapacity > _velocities.length) {
+      final List<Velocity> old = _velocities;
       _velocities = List<Velocity>(_bodyCapacity);
       BufferUtils.arraycopy(old, 0, _velocities, 0, old.length);
       for (int i = old.length; i < _velocities.length; i++) {
@@ -170,9 +169,8 @@ class Island {
     }
 
     // dynamic array
-    if (_positions == null || _bodyCapacity > _positions.length) {
-      final List<Position> old =
-          _positions == null ? List<Position>(0) : _positions;
+    if (_bodyCapacity > _positions.length) {
+      final List<Position> old = _positions;
       _positions = List<Position>(_bodyCapacity);
       BufferUtils.arraycopy(old, 0, _positions, 0, old.length);
       for (int i = old.length; i < _positions.length; i++) {
@@ -276,14 +274,14 @@ class Island {
       double w = _velocities[i].w;
 
       // Check for large velocities
-      double translationx = v.x * h;
-      double translationy = v.y * h;
+      double translationX = v.x * h;
+      double translationY = v.y * h;
 
-      if (translationx * translationx + translationy * translationy >
+      if (translationX * translationX + translationY * translationY >
           Settings.maxTranslationSquared) {
         double ratio = Settings.maxTranslation /
             Math.sqrt(
-                translationx * translationx + translationy * translationy);
+                translationX * translationX + translationY * translationY);
         v.x *= ratio;
         v.y *= ratio;
       }
@@ -343,8 +341,7 @@ class Island {
       final double angTolSqr =
           Settings.angularSleepTolerance * Settings.angularSleepTolerance;
 
-      for (int i = 0; i < _bodyCount; ++i) {
-        Body b = _bodies[i];
+      for (Body b in _bodies) {
         if (b.getType() == BodyType.STATIC) {
           continue;
         }
@@ -361,10 +358,7 @@ class Island {
       }
 
       if (minSleepTime >= Settings.timeToSleep && positionSolved) {
-        for (int i = 0; i < _bodyCount; ++i) {
-          Body b = _bodies[i];
-          b.setAwake(false);
-        }
+        _bodies.forEach((b) => b.setAwake(false));
       }
     }
   }
@@ -401,38 +395,6 @@ class Island {
         break;
       }
     }
-    // #if 0
-    // // Is the new position really safe?
-    // for (int i = 0; i < _contactCount; ++i)
-    // {
-    // Contact* c = _contacts[i];
-    // Fixture* fA = c.fixtureA;
-    // Fixture* fB = c.fixtureB;
-    //
-    // Body bA = fA.GetBody();
-    // Body bB = fB.GetBody();
-    //
-    // int indexA = c.GetChildIndexA();
-    // int indexB = c.GetChildIndexB();
-    //
-    // DistanceInput input;
-    // input.proxyA.Set(fA.GetShape(), indexA);
-    // input.proxyB.Set(fB.GetShape(), indexB);
-    // input.transformA = bA.GetTransform();
-    // input.transformB = bB.GetTransform();
-    // input.useRadii = false;
-    //
-    // DistanceOutput output;
-    // SimplexCache cache;
-    // cache.count = 0;
-    // Distance(&output, &cache, &input);
-    //
-    // if (output.distance == 0 || cache.count == 3)
-    // {
-    // cache.count += 0;
-    // }
-    // }
-    // #endif
 
     // Leap of faith to new safe state.
     _bodies[toiIndexA]._sweep.c0.x = _positions[toiIndexA].c.x;
@@ -463,13 +425,13 @@ class Island {
       double w = _velocities[i].w;
 
       // Check for large velocities
-      double translationx = v.x * h;
-      double translationy = v.y * h;
-      if (translationx * translationx + translationy * translationy >
+      double translationX = v.x * h;
+      double translationY = v.y * h;
+      if (translationX * translationX + translationY * translationY >
           Settings.maxTranslationSquared) {
         double ratio = Settings.maxTranslation /
             Math.sqrt(
-                translationx * translationx + translationy * translationy);
+                translationX * translationX + translationY * translationY);
         v.scale(ratio);
       }
 
