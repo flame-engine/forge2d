@@ -46,7 +46,7 @@ class VoronoiDiagram {
 
   VoronoiDiagram(int generatorCapacity) {
     _generatorBuffer =
-    List<VoronoiGenerator>.filled(generatorCapacity, VoronoiGenerator());
+        List<VoronoiGenerator>.filled(generatorCapacity, VoronoiGenerator());
     _generatorCount = 0;
     _countX = 0;
     _countY = 0;
