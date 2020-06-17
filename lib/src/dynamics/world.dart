@@ -45,11 +45,7 @@ class World {
   ParticleSystem _particleSystem;
 
   static List<List<ContactRegister>> _create2D(int a, int b) {
-    var res = List<List<ContactRegister>>(a);
-    for (int i = 0; i < a; i++) {
-      res[i] = List<ContactRegister>(b);
-    }
-    return res;
+    return List<List<ContactRegister>>.generate(a, (_) => List<ContactRegister>(b));
   }
 
   List<List<ContactRegister>> contactStacks =

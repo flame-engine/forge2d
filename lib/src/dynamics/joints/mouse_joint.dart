@@ -140,7 +140,6 @@ class MouseJoint extends Joint {
       _impulse.setZero();
     }
 
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(1);
@@ -187,7 +186,6 @@ class MouseJoint extends Joint {
     vB.y += _invMassB * impulse.y;
     wB += _invIB * _rB.cross(impulse);
 
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(3);

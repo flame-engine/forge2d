@@ -153,9 +153,7 @@ class DistanceJoint extends Joint {
     } else {
       _impulse = 0.0;
     }
-//    data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
   }
 
@@ -188,9 +186,7 @@ class DistanceJoint extends Joint {
     vB.y += _invMassB * Py;
     wB += _invIB * (_rB.x * Py - _rB.y * Px);
 
-//    data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(2);
@@ -244,9 +240,7 @@ class DistanceJoint extends Joint {
     cB.y += _invMassB * Py;
     aB += _invIB * (rB.x * Py - rB.y * Px);
 
-//    data.positions[_indexA].c.set(cA);
     data.positions[_indexA].a = aA;
-//    data.positions[_indexB].c.set(cB);
     data.positions[_indexB].a = aB;
 
     pool.pushVec2(3);

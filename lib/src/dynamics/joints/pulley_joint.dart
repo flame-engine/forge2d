@@ -197,9 +197,7 @@ class PulleyJoint extends Joint {
     } else {
       _impulse = 0.0;
     }
-//    data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(1);
@@ -239,9 +237,7 @@ class PulleyJoint extends Joint {
     vB.y += _invMassB * PB.y;
     wB += _invIB * _rB.cross(PB);
 
-//    data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(4);
@@ -330,9 +326,7 @@ class PulleyJoint extends Joint {
     cB.y += _invMassB * PB.y;
     aB += _invIB * rB.cross(PB);
 
-//    data.positions[_indexA].c.set(cA);
     data.positions[_indexA].a = aA;
-//    data.positions[_indexB].c.set(cB);
     data.positions[_indexB].a = aB;
 
     pool.pushRot(2);

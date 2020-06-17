@@ -417,9 +417,7 @@ class RevoluteJoint extends Joint {
       pool.pushVec2(4);
       pool.pushMat22(1);
     }
-    // data.positions[_indexA].c.set(cA);
     data.positions[_indexA].a = aA;
-    // data.positions[_indexB].c.set(cB);
     data.positions[_indexB].a = aB;
 
     pool.pushRot(2);

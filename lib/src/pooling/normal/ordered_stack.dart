@@ -11,9 +11,7 @@ abstract class OrderedStack<E> {
         _index = 0,
         _size = argStackSize,
         _container = List<E>(argContainerSize) {
-    for (int i = 0; i < argStackSize; i++) {
-      _pool[i] = newInstance();
-    }
+    _pool.forEach((e) => e = newInstance());
   }
 
   E pop() {
