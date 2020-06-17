@@ -6,7 +6,7 @@ import 'bench2d.dart';
 
 void main() {
   // Render version
-  new Bench2dWeb()
+  Bench2dWeb()
     ..initializeAnimation()
     ..runAnimation();
 }
@@ -25,7 +25,7 @@ class Bench2dWeb extends Bench2d {
   /// before calling runAnimation.
   void initializeAnimation() {
     // Setup the canvas.
-    canvas = new CanvasElement()
+    canvas = CanvasElement()
       ..width = CANVAS_WIDTH
       ..height = CANVAS_HEIGHT;
 
@@ -33,12 +33,12 @@ class Bench2dWeb extends Bench2d {
     document.body.append(canvas);
 
     // Create the viewport transform with the center at extents.
-    final extents = new Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-    viewport = new CanvasViewportTransform(extents, extents)
+    final extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    viewport = CanvasViewportTransform(extents, extents)
       ..scale = _VIEWPORT_SCALE;
 
     // Create our canvas drawing tool to give to the world.
-    debugDraw = new CanvasDraw(viewport, ctx);
+    debugDraw = CanvasDraw(viewport, ctx);
 
     // Have the world draw itself for debugging purposes.
     world.debugDraw = debugDraw;

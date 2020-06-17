@@ -11,7 +11,7 @@ class ParticleBodyContact {
   double weight = 0.0;
 
   /// The normalized direction from the particle to the body.
-  final Vector2 normal = new Vector2.zero();
+  final Vector2 normal = Vector2.zero();
 
   /// The effective mass used in calculating force.
   double mass = 0.0;

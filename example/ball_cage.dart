@@ -82,9 +82,9 @@ class BallCage extends Demo {
     activeFixtureDef.shape = bouncingCircle;
 
     // Create the active ball body.
-    final activeBodyDef = new BodyDef();
-    activeBodyDef.linearVelocity = new Vector2(0.0, -20.0);
-    activeBodyDef.position = new Vector2(15.0, 15.0);
+    final activeBodyDef = BodyDef();
+    activeBodyDef.linearVelocity = Vector2(0.0, -20.0);
+    activeBodyDef.position = Vector2(15.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     activeBodyDef.bullet = true;
     final activeBody = world.createBody(activeBodyDef);

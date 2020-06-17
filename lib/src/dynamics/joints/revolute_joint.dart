@@ -20,8 +20,8 @@ part of box2d;
 class RevoluteJoint extends Joint {
   // Solver shared
   final Vector2 localAnchorA = Vector2.zero();
-  final Vector2 localAnchorB = new Vector2.zero();
-  final Vector3 _impulse = new Vector3.zero();
+  final Vector2 localAnchorB = Vector2.zero();
+  final Vector3 _impulse = Vector3.zero();
   double _motorImpulse = 0.0;
 
   bool _enableMotor = false;
@@ -36,16 +36,16 @@ class RevoluteJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _rA = new Vector2.zero();
-  final Vector2 _rB = new Vector2.zero();
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _rA = Vector2.zero();
+  final Vector2 _rB = Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;
   double _invIB = 0.0;
   final Matrix3 _mass =
-      new Matrix3.zero(); // effective mass for point-to-point constraint.
+      Matrix3.zero(); // effective mass for point-to-point constraint.
   double _motorMass = 0.0; // effective mass for motor/limit angular constraint.
   LimitState _limitState = LimitState.INACTIVE;
 

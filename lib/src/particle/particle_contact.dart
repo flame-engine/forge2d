@@ -12,5 +12,5 @@ class ParticleContact {
   double weight = 0.0;
 
   /// The normalized direction from A to B.
-  final Vector2 normal = new Vector2.zero();
+  final Vector2 normal = Vector2.zero();
 }

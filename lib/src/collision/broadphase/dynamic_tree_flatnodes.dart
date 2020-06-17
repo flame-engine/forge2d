@@ -704,7 +704,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     height = 1 + Math.max<int>(height1, height2);
     assert(_height[node] == height);
 
-    AABB aabb = new AABB();
+    AABB aabb = AABB();
     aabb.combine2(_aabb[child1], _aabb[child2]);
 
     assert(MathUtils.vector2Equals(aabb.lowerBound, _aabb[node].lowerBound));
@@ -722,7 +722,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     drawTreeX(argDraw, _root, 0, height);
   }
 
-  final Color3i _color = new Color3i.zero();
+  final Color3i _color = Color3i.zero();
 
   void drawTreeX(DebugDraw argDraw, int node, int spot, int height) {
     AABB a = _aabb[node];

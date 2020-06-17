@@ -1315,9 +1315,9 @@ class ParticleSystem {
     }
   }
 
-  final Rot _tempRot = new Rot();
-  final Transform _tempXf = new Transform.zero();
-  final Transform _tempXf2 = new Transform.zero();
+  final Rot _tempRot = Rot();
+  final Transform _tempXf = Transform.zero();
+  final Transform _tempXf2 = Transform.zero();
 
   void solveRigid(final TimeStep step) {
     for (ParticleGroup group = groupList;
@@ -1815,7 +1815,7 @@ class ParticleSystem {
     }
   }
 
-  final NewIndices _newIndices = new NewIndices();
+  final NewIndices _newIndices = NewIndices();
 
   void RotateBuffer(int start, int mid, int end) {
     // move the particles assigned to the given group toward the end of array

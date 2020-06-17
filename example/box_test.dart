@@ -10,7 +10,7 @@ class BoxTest extends Demo {
 
   /// Entrypoint.
   static void main() {
-    final boxTest = new BoxTest();
+    final boxTest = BoxTest();
     boxTest.initialize();
     boxTest.initializeAnimation();
     boxTest.runAnimation();
@@ -24,10 +24,10 @@ class BoxTest extends Demo {
 
   void _createGround() {
     // Create shape
-    final PolygonShape shape = new PolygonShape();
+    final PolygonShape shape = PolygonShape();
 
     // Define body
-    final BodyDef bodyDef = new BodyDef();
+    final BodyDef bodyDef = BodyDef();
     bodyDef.position.setValues(0.0, 0.0);
 
     // Create body
@@ -36,9 +36,9 @@ class BoxTest extends Demo {
     // Set shape 3 times and create fixture on the body for each
     shape.setAsBoxXY(50.0, 0.4);
     ground.createFixtureFromShape(shape);
-    shape.setAsBox(0.4, 50.0, new Vector2(-10.0, 0.0), 0.0);
+    shape.setAsBox(0.4, 50.0, Vector2(-10.0, 0.0), 0.0);
     ground.createFixtureFromShape(shape);
-    shape.setAsBox(0.4, 50.0, new Vector2(10.0, 0.0), 0.0);
+    shape.setAsBox(0.4, 50.0, Vector2(10.0, 0.0), 0.0);
     ground.createFixtureFromShape(shape);
 
     // Add composite body to list
@@ -47,19 +47,19 @@ class BoxTest extends Demo {
 
   void _createBox() {
     // Create shape
-    final PolygonShape shape = new PolygonShape();
-    shape.setAsBox(3.0, 1.5, new Vector2.zero(), Math.pi / 2);
+    final PolygonShape shape = PolygonShape();
+    shape.setAsBox(3.0, 1.5, Vector2.zero(), Math.pi / 2);
 
     // Define fixture (links body and shape)
-    final FixtureDef activeFixtureDef = new FixtureDef();
+    final FixtureDef activeFixtureDef = FixtureDef();
     activeFixtureDef.restitution = 0.5;
     activeFixtureDef.density = 0.05;
     activeFixtureDef.shape = shape;
 
     // Define body
-    final BodyDef bodyDef = new BodyDef();
+    final BodyDef bodyDef = BodyDef();
     bodyDef.type = BodyType.DYNAMIC;
-    bodyDef.position = new Vector2(0.0, 30.0);
+    bodyDef.position = Vector2(0.0, 30.0);
 
     // Create body and fixture from definitions
     final Body fallingBox = world.createBody(bodyDef);

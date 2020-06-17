@@ -32,7 +32,7 @@ class ConstantVolumeJoint extends Joint {
       throw "You cannot create a constant volume joint with less than three _bodies.";
     }
 
-    _targetLengths = new Float64List(_bodies.length);
+    _targetLengths = Float64List(_bodies.length);
     for (int i = 0; i < _targetLengths.length; ++i) {
       final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
       double dist = (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
@@ -44,8 +44,8 @@ class ConstantVolumeJoint extends Joint {
       throw "Incorrect joint definition.  Joints have to correspond to the _bodies";
     }
     if (def.joints == null) {
-      final DistanceJointDef djd = new DistanceJointDef();
-      _distanceJoints = new List<DistanceJoint>(_bodies.length);
+      final DistanceJointDef djd = DistanceJointDef();
+      _distanceJoints = List<DistanceJoint>(_bodies.length);
       for (int i = 0; i < _targetLengths.length; ++i) {
         final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
         djd.frequencyHz = def.frequencyHz; // 20.0;
@@ -59,9 +59,9 @@ class ConstantVolumeJoint extends Joint {
       _distanceJoints = def.joints.toList();
     }
 
-    _normals = new List<Vector2>(_bodies.length);
+    _normals = List<Vector2>(_bodies.length);
     for (int i = 0; i < _normals.length; ++i) {
-      _normals[i] = new Vector2.zero();
+      _normals[i] = Vector2.zero();
     }
   }
 

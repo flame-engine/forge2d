@@ -41,6 +41,6 @@ abstract class MutableStack<E> implements IDynamicStack<E> {
   E newInstance();
 
   List<E> newArray(int size) {
-    return new List<E>(size);
+    return List<E>(size);
   }
 }

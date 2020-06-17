@@ -68,18 +68,18 @@ class World {
   ///
   /// @param gravity the world gravity vector.
   factory World.withPool(Vector2 gravity, IWorldPool pool) {
-    var w = new World.withPoolAndStrategy(gravity, pool, new DynamicTree());
+    var w = World.withPoolAndStrategy(gravity, pool, DynamicTree());
     return w;
   }
 
   factory World.withPoolAndStrategy(
       Vector2 gravity, IWorldPool pool, BroadPhaseStrategy strategy) {
-    var w = new World(gravity, pool, new DefaultBroadPhaseBuffer(strategy));
+    var w = World(gravity, pool, DefaultBroadPhaseBuffer(strategy));
     return w;
   }
 
   World(Vector2 gravity, this._pool, BroadPhase broadPhase)
-      : _gravity = new Vector2.copy(gravity) {
+      : _gravity = Vector2.copy(gravity) {
     _destructionListener = null;
     debugDraw = null;
 
@@ -100,10 +100,10 @@ class World {
 
     _inv_dt0 = 0.0;
 
-    _contactManager = new ContactManager(this, broadPhase);
-    _profile = new Profile();
+    _contactManager = ContactManager(this, broadPhase);
+    _profile = Profile();
 
-    _particleSystem = new ParticleSystem(this);
+    _particleSystem = ParticleSystem(this);
 
     _initializeRegisters();
   }
@@ -135,13 +135,13 @@ class World {
 
   void _addType(
       IDynamicStack<Contact> creator, ShapeType type1, ShapeType type2) {
-    ContactRegister register = new ContactRegister();
+    ContactRegister register = ContactRegister();
     register.creator = creator;
     register.primary = true;
     contactStacks[type1.index][type2.index] = register;
 
     if (type1 != type2) {
-      ContactRegister register2 = new ContactRegister();
+      ContactRegister register2 = ContactRegister();
       register2.creator = creator;
       register2.primary = false;
       contactStacks[type2.index][type1.index] = register2;
@@ -260,7 +260,7 @@ class World {
       return null;
     }
     // TODO djm pooling
-    Body b = new Body(def, this);
+    Body b = Body(def, this);
 
     // add to world doubly linked list
     b._prev = null;
@@ -494,9 +494,9 @@ class World {
 
   // djm pooling
   // TODO(srdjan): Make fields private.
-  final TimeStep step = new TimeStep();
-  final Timer stepTimer = new Timer();
-  final Timer tempTimer = new Timer();
+  final TimeStep step = TimeStep();
+  final Timer stepTimer = Timer();
+  final Timer tempTimer = Timer();
 
   /// Take a time step. This performs collision detection, integration, and constraint solution.
   ///
@@ -575,11 +575,11 @@ class World {
     }
   }
 
-  final Color3i color = new Color3i.zero();
-  final Transform xf = new Transform.zero();
-  final Vector2 cA = new Vector2.zero();
-  final Vector2 cB = new Vector2.zero();
-  final Vec2Array avs = new Vec2Array();
+  final Color3i color = Color3i.zero();
+  final Transform xf = Transform.zero();
+  final Vector2 cA = Vector2.zero();
+  final Vector2 cB = Vector2.zero();
+  final Vec2Array avs = Vec2Array();
 
   /// Call this to draw shapes and other debug draw data.
   void drawDebugData() {
@@ -660,7 +660,7 @@ class World {
     }
 
     if ((flags & DebugDraw.CENTER_OF_MASS_BIT) != 0) {
-      final Color3i xfColor = new Color3i(255, 0, 0);
+      final Color3i xfColor = Color3i(255, 0, 0);
       for (Body b = bodyList; b != null; b = b.getNext()) {
         xf.set(b._transform);
         xf.p.setFrom(b.worldCenter);
@@ -675,7 +675,7 @@ class World {
     debugDraw.flush();
   }
 
-  final WorldQueryWrapper wqwrapper = new WorldQueryWrapper();
+  final WorldQueryWrapper wqwrapper = WorldQueryWrapper();
 
   /// Query the world for all fixtures that potentially overlap the provided AABB.
   ///
@@ -708,8 +708,8 @@ class World {
     _particleSystem.queryAABB(particleCallback, aabb);
   }
 
-  final WorldRayCastWrapper wrcwrapper = new WorldRayCastWrapper();
-  final RayCastInput input = new RayCastInput();
+  final WorldRayCastWrapper wrcwrapper = WorldRayCastWrapper();
+  final RayCastInput input = RayCastInput();
 
   /// Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
   /// get the closest point, any point, or n-points. The ray-cast ignores shapes that contain the
@@ -824,10 +824,10 @@ class World {
     return (_flags & CLEAR_FORCES) == CLEAR_FORCES;
   }
 
-  final Island island = new Island();
+  final Island island = Island();
   List<Body> stack =
-      new List<Body>(10); // TODO djm find a good initial stack number;
-  final Timer broadphaseTimer = new Timer();
+      List<Body>(10); // TODO djm find a good initial stack number;
+  final Timer broadphaseTimer = Timer();
 
   void solve(TimeStep step) {
     _profile.solveInit.startAccum();
@@ -857,7 +857,7 @@ class World {
     // Build and simulate all awake islands.
     int stackSize = _bodyCount;
     if (stack.length < stackSize) {
-      stack = new List<Body>(stackSize);
+      stack = List<Body>(stackSize);
     }
     for (Body seed = bodyList; seed != null; seed = seed._next) {
       if ((seed._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
@@ -992,13 +992,13 @@ class World {
     _profile.broadphase.record(broadphaseTimer.getMilliseconds());
   }
 
-  final Island toiIsland = new Island();
-  final TOIInput toiInput = new TOIInput();
-  final TOIOutput toiOutput = new TOIOutput();
-  final TimeStep subStep = new TimeStep();
-  final List<Body> tempBodies = new List<Body>(2);
-  final Sweep backup1 = new Sweep();
-  final Sweep backup2 = new Sweep();
+  final Island toiIsland = Island();
+  final TOIInput toiInput = TOIInput();
+  final TOIOutput toiOutput = TOIOutput();
+  final TimeStep subStep = TimeStep();
+  final List<Body> tempBodies = List<Body>(2);
+  final Sweep backup1 = Sweep();
+  final Sweep backup2 = Sweep();
 
   void solveTOI(final TimeStep step) {
     final Island island = toiIsland;
@@ -1333,15 +1333,15 @@ class World {
   static int LIQUID_INT = 1234598372;
   double liquidLength = .12;
   double averageLinearVel = -1.0;
-  final Vector2 liquidOffset = new Vector2.zero();
-  final Vector2 circCenterMoved = new Vector2.zero();
-  final Color3i liquidColor = new Color3i.fromRGBd(.4, .4, 1.0);
+  final Vector2 liquidOffset = Vector2.zero();
+  final Vector2 circCenterMoved = Vector2.zero();
+  final Color3i liquidColor = Color3i.fromRGBd(.4, .4, 1.0);
 
-  final Vector2 center = new Vector2.zero();
-  final Vector2 axis = new Vector2.zero();
-  final Vector2 v1 = new Vector2.zero();
-  final Vector2 v2 = new Vector2.zero();
-  final Vec2Array tlvertices = new Vec2Array();
+  final Vector2 center = Vector2.zero();
+  final Vector2 axis = Vector2.zero();
+  final Vector2 v1 = Vector2.zero();
+  final Vector2 v2 = Vector2.zero();
+  final Vec2Array tlvertices = Vec2Array();
 
   void drawShape(Fixture fixture, Transform xf, Color3i color, bool wireframe) {
     switch (fixture.getType()) {
@@ -1751,9 +1751,9 @@ class WorldQueryWrapper implements TreeCallback {
 
 class WorldRayCastWrapper implements TreeRayCastCallback {
   // djm pooling
-  final RayCastOutput _output = new RayCastOutput();
-  final Vector2 _temp = new Vector2.zero();
-  final Vector2 _point = new Vector2.zero();
+  final RayCastOutput _output = RayCastOutput();
+  final Vector2 _temp = Vector2.zero();
+  final Vector2 _point = Vector2.zero();
 
   double raycastCallback(RayCastInput input, int nodeId) {
     final userData = broadPhase.getUserData(nodeId) as FixtureProxy;
