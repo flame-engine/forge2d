@@ -114,7 +114,7 @@ class PolygonShape extends Shape {
     int ih = i0;
 
     int ie = 0;
-    while (ie != i0) {
+    do {
       hull[m] = ih;
 
       for (int j = 1; j < n; ++j) {
@@ -142,7 +142,7 @@ class PolygonShape extends Shape {
 
       ++m;
       ih = ie;
-    }
+    } while (ie != i0);
 
     this.count = m;
 
