@@ -162,7 +162,7 @@ class Island {
     if (_bodyCapacity > _velocities.length) {
       final List<Velocity> old = _velocities;
       _velocities = List<Velocity>(_bodyCapacity);
-      BufferUtils.arraycopy(old, 0, _velocities, 0, old.length);
+      BufferUtils.arrayCopy(old, 0, _velocities, 0, old.length);
       for (int i = old.length; i < _velocities.length; i++) {
         _velocities[i] = Velocity();
       }
@@ -172,7 +172,7 @@ class Island {
     if (_bodyCapacity > _positions.length) {
       final List<Position> old = _positions;
       _positions = List<Position>(_bodyCapacity);
-      BufferUtils.arraycopy(old, 0, _positions, 0, old.length);
+      BufferUtils.arrayCopy(old, 0, _positions, 0, old.length);
       for (int i = old.length; i < _positions.length; i++) {
         _positions[i] = Position();
       }

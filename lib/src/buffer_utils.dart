@@ -8,7 +8,7 @@ List<T> reallocateBufferWithAlloc<T>(
   assert(newCapacity > oldCapacity);
   List<T> newBuffer = List<T>(newCapacity);
   if (oldBuffer != null) {
-    arraycopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
+    arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
   for (int i = oldCapacity; i < newCapacity; i++) {
     try {
@@ -26,7 +26,7 @@ List<int> reallocateBufferInt(
   assert(newCapacity > oldCapacity);
   List<int> newBuffer = List<int>(newCapacity);
   if (oldBuffer != null) {
-    arraycopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
+    arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
   for (int i = oldCapacity; i < newCapacity; i++) {
     newBuffer[i] = 0;
@@ -40,7 +40,7 @@ Float64List reallocateBuffer(
   assert(newCapacity > oldCapacity);
   Float64List newBuffer = Float64List(newCapacity);
   if (oldBuffer != null) {
-    arraycopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
+    arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
   return newBuffer;
 }
@@ -104,10 +104,10 @@ void rotate<T>(List<T> ray, int first, int new_first, int last) {
 }
 
 /// Helper function to allocate a list of integers and set all elements to 0.
-List<int> allocClearIntList(int size) => List<int>.filled(size, 0);
+List<int> intList(int size) => List<int>.filled(size, 0);
 
 /// Helper function for ease of porting Java to Dart.
-void arraycopy(List src, int srcPos, List dest, int destPos, int length) {
+void arrayCopy(List src, int srcPos, List dest, int destPos, int length) {
   dest.setRange(destPos, length + destPos, src, srcPos);
 }
 

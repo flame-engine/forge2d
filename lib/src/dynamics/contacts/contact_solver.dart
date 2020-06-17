@@ -46,7 +46,7 @@ class ContactSolver {
       List<ContactPositionConstraint> old = _positionConstraints;
       _positionConstraints =
           List<ContactPositionConstraint>(Math.max(old.length * 2, _count));
-      BufferUtils.arraycopy(old, 0, _positionConstraints, 0, old.length);
+      BufferUtils.arrayCopy(old, 0, _positionConstraints, 0, old.length);
       for (int i = old.length; i < _positionConstraints.length; i++) {
         _positionConstraints[i] = ContactPositionConstraint();
       }
@@ -56,7 +56,7 @@ class ContactSolver {
       List<ContactVelocityConstraint> old = _velocityConstraints;
       _velocityConstraints =
           List<ContactVelocityConstraint>(Math.max(old.length * 2, _count));
-      BufferUtils.arraycopy(old, 0, _velocityConstraints, 0, old.length);
+      BufferUtils.arrayCopy(old, 0, _velocityConstraints, 0, old.length);
       for (int i = old.length; i < _velocityConstraints.length; i++) {
         _velocityConstraints[i] = ContactVelocityConstraint();
       }

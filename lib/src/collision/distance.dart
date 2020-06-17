@@ -25,10 +25,10 @@ class SimplexCache {
   int count = 0;
 
   /// vertices on shape A
-  final List<int> indexA = BufferUtils.allocClearIntList(3);
+  final List<int> indexA = BufferUtils.intList(3);
 
   /// vertices on shape B
-  final List<int> indexB = BufferUtils.allocClearIntList(3);
+  final List<int> indexB = BufferUtils.intList(3);
 
   SimplexCache() {
     indexA[0] = Settings.INTEGER_MAX_VALUE;
@@ -40,8 +40,8 @@ class SimplexCache {
   }
 
   void set(SimplexCache sc) {
-    BufferUtils.arraycopy(sc.indexA, 0, indexA, 0, indexA.length);
-    BufferUtils.arraycopy(sc.indexB, 0, indexB, 0, indexB.length);
+    BufferUtils.arrayCopy(sc.indexA, 0, indexA, 0, indexA.length);
+    BufferUtils.arrayCopy(sc.indexB, 0, indexB, 0, indexB.length);
     metric = sc.metric;
     count = sc.count;
   }
@@ -567,8 +567,8 @@ class Distance {
   static int GJK_MAX_ITERS = 20;
 
   final _Simplex _simplex = _Simplex();
-  final List<int> _saveA = BufferUtils.allocClearIntList(3);
-  final List<int> _saveB = BufferUtils.allocClearIntList(3);
+  final List<int> _saveA = BufferUtils.intList(3);
+  final List<int> _saveB = BufferUtils.intList(3);
   final Vector2 _closestPoint = Vector2.zero();
   final Vector2 _d = Vector2.zero();
   final Vector2 _temp = Vector2.zero();
