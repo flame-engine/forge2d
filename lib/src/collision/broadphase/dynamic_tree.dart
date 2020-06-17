@@ -309,7 +309,7 @@ class DynamicTree implements BroadPhaseStrategy {
         continue;
       }
 
-      assert((node.child1 == null) == false);
+      assert(node.child1 != null);
 
       DynamicTreeNode child1 = node.child1;
       DynamicTreeNode child2 = node.child2;

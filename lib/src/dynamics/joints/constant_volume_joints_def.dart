@@ -30,9 +30,7 @@ class ConstantVolumeJointDef extends JointDef {
   /// Adds a body and the pre-made distance joint. Should only be used for deserialization.
   void addBodyAndJoint(Body argBody, DistanceJoint argJoint) {
     addBody(argBody);
-    if (joints == null) {
-      joints = List<DistanceJoint>();
-    }
+    joints ??= List<DistanceJoint>();
     joints.add(argJoint);
   }
 }
