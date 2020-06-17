@@ -189,7 +189,7 @@ PsTriad allocPsTriad() => PsTriad();
 
 // Callback used with VoronoiDiagram.
 class CreateParticleGroupCallback implements VoronoiDiagramCallback {
-  void callback(int a, int b, int c) {
+  void call(int a, int b, int c) {
     final Vector2 pa = system.positionBuffer.data[a];
     final Vector2 pb = system.positionBuffer.data[b];
     final Vector2 pc = system.positionBuffer.data[c];
@@ -244,7 +244,7 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
 
 // Callback used with VoronoiDiagram.
 class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
-  void callback(int a, int b, int c) {
+  void call(int a, int b, int c) {
     // Create a triad if it will contain particles from both groups.
     int countA = ((a < groupB._firstIndex) ? 1 : 0) +
         ((b < groupB._firstIndex) ? 1 : 0) +

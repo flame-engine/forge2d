@@ -255,8 +255,8 @@ class DefaultWorldPool implements IWorldPool {
       _afloats[argLength] = Float64List(argLength);
     }
 
-    assert(_afloats[argLength].length ==
-        argLength); // : "Array not built with correct length";
+    // : "Array not built with correct length";
+    assert(_afloats[argLength].length == argLength);
     return _afloats[argLength];
   }
 
@@ -265,22 +265,18 @@ class DefaultWorldPool implements IWorldPool {
       _aints[argLength] = BufferUtils.intList(argLength);
     }
 
-    assert(_aints[argLength].length ==
-        argLength); // : "Array not built with correct length";
+    // : "Array not built with correct length";
+    assert(_aints[argLength].length == argLength);
     return _aints[argLength];
   }
 
   List<Vector2> getVec2Array(int argLength) {
     if (!_avecs.containsKey(argLength)) {
-      List<Vector2> ray = List<Vector2>(argLength);
-      for (int i = 0; i < argLength; i++) {
-        ray[i] = Vector2.zero();
-      }
-      _avecs[argLength] = ray;
+      _avecs[argLength] = List<Vector2>.filled(argLength, Vector2.zero());
     }
 
-    assert(_avecs[argLength].length ==
-        argLength); // : "Array not built with correct length";
+    // : "Array not built with correct length";
+    assert(_avecs[argLength].length == argLength);
     return _avecs[argLength];
   }
 }

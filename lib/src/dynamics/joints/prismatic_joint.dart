@@ -776,9 +776,7 @@ class PrismaticJoint extends Joint {
     cB.y += mB * Py;
     aB += iB * LB;
 
-    // data.positions[_indexA].c.set(cA);
     data.positions[_indexA].a = aA;
-    // data.positions[_indexB].c.set(cB);
     data.positions[_indexB].a = aB;
 
     pool.pushVec2(7);

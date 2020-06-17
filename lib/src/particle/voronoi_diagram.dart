@@ -1,7 +1,7 @@
 part of box2d;
 
 abstract class VoronoiDiagramCallback {
-  void callback(int aTag, int bTag, int cTag);
+  void call(int aTag, int bTag, int cTag);
 }
 
 class VoronoiGenerator {
@@ -33,9 +33,8 @@ class VoronoiDiagramTask {
 
 class VoronoiDiagramTaskMutableStack extends MutableStack<VoronoiDiagramTask> {
   VoronoiDiagramTaskMutableStack(int size) : super(size);
-  VoronoiDiagramTask newInstance() {
-    return VoronoiDiagramTask.zero();
-  }
+
+  VoronoiDiagramTask newInstance() => VoronoiDiagramTask.zero();
 }
 
 class VoronoiDiagram {
@@ -46,10 +45,8 @@ class VoronoiDiagram {
   List<VoronoiGenerator> _diagram;
 
   VoronoiDiagram(int generatorCapacity) {
-    _generatorBuffer = List<VoronoiGenerator>(generatorCapacity);
-    for (int i = 0; i < generatorCapacity; i++) {
-      _generatorBuffer[i] = VoronoiGenerator();
-    }
+    _generatorBuffer =
+    List<VoronoiGenerator>.filled(generatorCapacity, VoronoiGenerator());
     _generatorCount = 0;
     _countX = 0;
     _countY = 0;
@@ -66,10 +63,10 @@ class VoronoiDiagram {
         VoronoiGenerator d = _diagram[i + 1 + _countX];
         if (b != c) {
           if (a != b && a != c) {
-            callback.callback(a.tag, b.tag, c.tag);
+            callback.call(a.tag, b.tag, c.tag);
           }
           if (d != b && d != c) {
-            callback.callback(b.tag, d.tag, c.tag);
+            callback.call(b.tag, d.tag, c.tag);
           }
         }
       }

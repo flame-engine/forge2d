@@ -1,5 +1,19 @@
 part of box2d;
 
+//Point-to-point constraint
+//C = p2 - p1
+//Cdot = v2 - v1
+//   = v2 + cross(w2, r2) - v1 - cross(w1, r1)
+//J = [-I -r1_skew I r2_skew ]
+//Identity used:
+//w k % (rx i + ry j) = w * (-ry i + rx j)
+
+//Angle constraint
+//C = angle2 - angle1 - referenceAngle
+//Cdot = w2 - w1
+//J = [0 0 -1 0 0 1]
+//K = invI1 + invI2
+
 /// A weld joint essentially glues two bodies together. A weld joint may distort somewhat because the
 /// island constraint solver is approximate.
 class WeldJoint extends Joint {
@@ -153,9 +167,7 @@ class WeldJoint extends Joint {
       _impulse.setZero();
     }
 
-//    data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(1);
@@ -237,9 +249,7 @@ class WeldJoint extends Joint {
       pool.pushVec3(2);
     }
 
-//    data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;
-//    data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
 
     pool.pushVec2(3);
@@ -337,9 +347,7 @@ class WeldJoint extends Joint {
       pool.pushVec3(2);
     }
 
-//    data.positions[_indexA].c.set(cA);
     data.positions[_indexA].a = aA;
-//    data.positions[_indexB].c.set(cB);
     data.positions[_indexB].a = aB;
 
     pool.pushVec2(5);
