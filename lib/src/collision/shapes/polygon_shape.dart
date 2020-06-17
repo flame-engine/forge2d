@@ -109,7 +109,7 @@ class PolygonShape extends Shape {
     }
 
     List<int> hull = intPool?.get(Settings.maxPolygonVertices) ??
-        BufferUtils.allocClearIntList(Settings.maxPolygonVertices);
+        BufferUtils.intList(Settings.maxPolygonVertices);
     int m = 0;
     int ih = i0;
 

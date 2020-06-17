@@ -262,7 +262,7 @@ class DefaultWorldPool implements IWorldPool {
 
   List<int> getIntArray(int argLength) {
     if (!_aints.containsKey(argLength)) {
-      _aints[argLength] = BufferUtils.allocClearIntList(argLength);
+      _aints[argLength] = BufferUtils.intList(argLength);
     }
 
     assert(_aints[argLength].length ==

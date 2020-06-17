@@ -23,7 +23,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     for (int i = 0; i < _pairCapacity; i++) {
       _pairBuffer[i] = Pair();
     }
-    _moveBuffer = BufferUtils.allocClearIntList(_moveCapacity);
+    _moveBuffer = BufferUtils.intList(_moveCapacity);
   }
 
   int createProxy(final AABB aabb, Object userData) {
@@ -154,7 +154,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
       List<int> old = _moveBuffer;
       _moveCapacity *= 2;
       _moveBuffer = List<int>(_moveCapacity);
-      BufferUtils.arraycopy(old, 0, _moveBuffer, 0, old.length);
+      BufferUtils.arrayCopy(old, 0, _moveBuffer, 0, old.length);
     }
 
     _moveBuffer[_moveCount] = proxyId;
@@ -181,7 +181,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
       List<Pair> oldBuffer = _pairBuffer;
       _pairCapacity *= 2;
       _pairBuffer = List<Pair>(_pairCapacity);
-      BufferUtils.arraycopy(oldBuffer, 0, _pairBuffer, 0, oldBuffer.length);
+      BufferUtils.arrayCopy(oldBuffer, 0, _pairBuffer, 0, oldBuffer.length);
       for (int i = oldBuffer.length; i < _pairCapacity; i++) {
         _pairBuffer[i] = Pair();
       }

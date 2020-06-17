@@ -122,7 +122,6 @@ class ConstantVolumeJoint extends Joint {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
       delta.setValues(toExtrude * (_normals[i].x + _normals[next].x),
           toExtrude * (_normals[i].y + _normals[next].y));
-      // sumdeltax += dx;
       double normSqrd = delta.length2;
       if (normSqrd >
           Settings.maxLinearCorrection * Settings.maxLinearCorrection) {
@@ -133,12 +132,9 @@ class ConstantVolumeJoint extends Joint {
       }
       positions[_bodies[next]._islandIndex].c.x += delta.x;
       positions[_bodies[next]._islandIndex].c.y += delta.y;
-      // _bodies[next]._linearVelocity.x += delta.x * step.inv_dt;
-      // _bodies[next]._linearVelocity.y += delta.y * step.inv_dt;
     }
 
     pool.pushVec2(1);
-    // .println(sumdeltax);
     return done;
   }
 

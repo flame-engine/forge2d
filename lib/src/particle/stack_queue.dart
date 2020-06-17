@@ -17,7 +17,7 @@ class StackQueue<T> {
 
   void push(T task) {
     if (_back >= _end) {
-      BufferUtils.arraycopy(_buffer, _front, _buffer, 0, _back - _front);
+      BufferUtils.arrayCopy(_buffer, _front, _buffer, 0, _back - _front);
       _back -= _front;
       _front = 0;
       if (_back >= _end) {

@@ -1626,7 +1626,7 @@ class ParticleSystem {
   void solveZombie() {
     // removes particles with zombie flag
     int newCount = 0;
-    List<int> newIndices = BufferUtils.allocClearIntList(count);
+    List<int> newIndices = BufferUtils.intList(count);
     for (int i = 0; i < count; i++) {
       int flags = flagsBuffer.data[i];
       if ((flags & ParticleType.b2_zombieParticle) != 0) {
