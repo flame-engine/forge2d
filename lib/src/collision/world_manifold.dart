@@ -35,8 +35,6 @@ class WorldManifold {
           normal.x = 1.0;
           normal.y = 0.0;
           Vector2 v = manifold.localPoint;
-          // Transform.mulToOutUnsafe(xfA, manifold.localPoint, pointA);
-          // Transform.mulToOutUnsafe(xfB, manifold.points[0].localPoint, pointB);
           pointA.x = (xfA.q.c * v.x - xfA.q.s * v.y) + xfA.p.x;
           pointA.y = (xfA.q.s * v.x + xfA.q.c * v.y) + xfA.p.y;
           Vector2 mp0p = manifold.points[0].localPoint;

@@ -177,18 +177,12 @@ class DynamicTree implements BroadPhaseStrategy {
 
     // Build a bounding box for the segment.
     final AABB segAABB = _aabb;
-    // Vec2 t = p1 + maxFraction * (p2 - p1);
-    // before inline
-    // temp.set(p2).subLocal(p1).mulLocal(maxFraction).addLocal(p1);
-    // Vec2.minToOut(p1, temp, segAABB.lowerBound);
-    // Vec2.maxToOut(p1, temp, segAABB.upperBound);
     tempx = (p2x - p1x) * maxFraction + p1x;
     tempy = (p2y - p1y) * maxFraction + p1y;
-    segAABB.lowerBound.x = p1x < tempx ? p1x : tempx;
-    segAABB.lowerBound.y = p1y < tempy ? p1y : tempy;
-    segAABB.upperBound.x = p1x > tempx ? p1x : tempx;
-    segAABB.upperBound.y = p1y > tempy ? p1y : tempy;
-    // end inline
+    segAABB.lowerBound.x = Math.min(p1x, tempx);
+    segAABB.lowerBound.y = Math.min(p1y, tempy);
+    segAABB.upperBound.x = Math.max(p1x, tempx);
+    segAABB.upperBound.y = Math.max(p1y, tempy);
 
     nodeStackIndex = 0;
     nodeStack[nodeStackIndex++] = _root;
@@ -205,8 +199,6 @@ class DynamicTree implements BroadPhaseStrategy {
 
       // Separating axis for segment (Gino, p80).
       // |dot(v, p1 - c)| > dot(|v|, h)
-      // node.aabb.getCenterToOut(c);
-      // node.aabb.getExtentsToOut(h);
       cx = (nodeAABB.lowerBound.x + nodeAABB.upperBound.x) * .5;
       cy = (nodeAABB.lowerBound.y + nodeAABB.upperBound.y) * .5;
       hx = (nodeAABB.upperBound.x - nodeAABB.lowerBound.x) * .5;
@@ -236,15 +228,12 @@ class DynamicTree implements BroadPhaseStrategy {
         if (value > 0.0) {
           // Update segment bounding box.
           maxFraction = value;
-          // temp.set(p2).subLocal(p1).mulLocal(maxFraction).addLocal(p1);
-          // Vec2.minToOut(p1, temp, segAABB.lowerBound);
-          // Vec2.maxToOut(p1, temp, segAABB.upperBound);
           tempx = (p2x - p1x) * maxFraction + p1x;
           tempy = (p2y - p1y) * maxFraction + p1y;
-          segAABB.lowerBound.x = p1x < tempx ? p1x : tempx;
-          segAABB.lowerBound.y = p1y < tempy ? p1y : tempy;
-          segAABB.upperBound.x = p1x > tempx ? p1x : tempx;
-          segAABB.upperBound.y = p1y > tempy ? p1y : tempy;
+          segAABB.lowerBound.x = Math.min(p1x, tempx);
+          segAABB.lowerBound.y = Math.min(p1y, tempy);
+          segAABB.upperBound.x = Math.max(p1x, tempx);
+          segAABB.upperBound.y = Math.max(p1y, tempy);
         }
       } else {
         if (nodeStack.length - nodeStackIndex - 2 <= 0) {

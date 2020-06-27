@@ -52,17 +52,7 @@ class AABB {
   }
 
   /// Get the center of the AABB
-  Vector2 getCenter() {
-    final Vector2 center = Vector2.copy(lowerBound);
-    center.add(upperBound);
-    center.scale(.5);
-    return center;
-  }
-
-  void getCenterToOut(final Vector2 out) {
-    out.x = (lowerBound.x + upperBound.x) * .5;
-    out.y = (lowerBound.y + upperBound.y) * .5;
-  }
+  Vector2 getCenter() => (lowerBound + upperBound)..scale(0.5);
 
   /// Get the extents of the AABB (half-widths).
   Vector2 getExtents() {

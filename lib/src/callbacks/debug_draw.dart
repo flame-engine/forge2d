@@ -112,16 +112,6 @@ abstract class DebugDraw {
     viewportTransform.setCamera(x, y, scale);
   }
 
-  /// Takes the world coordinates and returns the corresponding screen
-  /// coordinates
-  Vector2 getWorldToScreenToOut(Vector2 input) =>
-      viewportTransform.getWorldToScreen(input);
-
-  /// Takes the world coordinates and returns the corresponding screen
-  /// coordinates
-  Vector2 getWorldToScreenToOutXY(double worldX, double worldY) =>
-      getWorldToScreenToOut(Vector2(worldX, worldY));
-
   /// Takes the world coordinate and returns the screen coordinates.
   Vector2 getWorldToScreen(Vector2 argWorld) =>
       viewportTransform.getWorldToScreen(argWorld);
@@ -133,8 +123,4 @@ abstract class DebugDraw {
   /// Takes the screen coordinates (argScreen) and returns the world coordinates
   Vector2 getScreenToWorld(Vector2 argScreen) =>
       viewportTransform.getScreenToWorld(argScreen);
-
-  /// Takes the screen coordinates and returns the corresponding world coordinates
-  Vector2 getScreenToWorldToOutXY(double screenX, double screenY) =>
-      viewportTransform.getScreenToWorld(Vector2(screenX, screenY));
 }

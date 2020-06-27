@@ -12,15 +12,13 @@ double distance(Vector2 v1, Vector2 v2) => v1.distanceTo(v2);
 
 /// Returns the closest value to 'a' that is in between 'low' and 'high'
 double clampDouble(final double a, final double low, final double high) =>
-    Math.max(low, Math.min(a, high));
+    Math.max<double>(low, Math.min<double>(a, high));
 
 Vector2 clampVec2(final Vector2 a, final Vector2 low, final Vector2 high) {
-  final Vector2 min = Vector2.zero();
-  min.x = a.x < high.x ? a.x : high.x;
-  min.y = a.y < high.y ? a.y : high.y;
-  min.x = low.x > min.x ? low.x : min.x;
-  min.y = low.y > min.y ? low.y : min.y;
-  return min;
+  return Vector2(
+    Math.max(low.x, Math.min(a.x, high.x)),
+    Math.max(low.y, Math.min(a.y, high.y)),
+  );
 }
 
 /// Given a value within the range specified by [fromMin] and [fromMax],
@@ -54,17 +52,17 @@ bool vector2IsValid(Vector2 v) {
   return !v.x.isNaN && !v.x.isInfinite && !v.y.isNaN && !v.y.isInfinite;
 }
 
-void matrix3MulToOutUnsafe(Matrix3 A, Vector3 v, Vector3 out) {
-  assert(out != v);
-  out.x = v.x * A.entry(0, 0) + v.y * A.entry(0, 1) + v.z * A.entry(0, 2);
-  out.y = v.x * A.entry(1, 0) + v.y * A.entry(1, 1) + v.z * A.entry(1, 2);
-  out.z = v.x * A.entry(2, 0) + v.y * A.entry(2, 1) + v.z * A.entry(2, 2);
+Vector3 matrix3Mul(Matrix3 A, Vector3 v) {
+  final x = v.x * A.entry(0, 0) + v.y * A.entry(0, 1) + v.z * A.entry(0, 2);
+  final y = v.x * A.entry(1, 0) + v.y * A.entry(1, 1) + v.z * A.entry(1, 2);
+  final z = v.x * A.entry(2, 0) + v.y * A.entry(2, 1) + v.z * A.entry(2, 2);
+  return Vector3(x, y, z);
 }
 
-void matrix3Mul22ToOutUnsafe(Matrix3 A, Vector2 v, Vector2 out) {
-  assert(v != out);
-  out.y = A.entry(1, 0) * v.x + A.entry(1, 1) * v.y;
-  out.x = A.entry(0, 0) * v.x + A.entry(0, 1) * v.y;
+Vector2 matrix3Mul22(Matrix3 A, Vector2 v) {
+  final y = A.entry(1, 0) * v.x + A.entry(1, 1) * v.y;
+  final x = A.entry(0, 0) * v.x + A.entry(0, 1) * v.y;
+  return Vector2(x, y);
 }
 
 void matrix3GetInverse22(Matrix3 m, Matrix3 M) {
