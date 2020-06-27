@@ -34,7 +34,7 @@ class CanvasDraw extends DebugDraw {
     // TODO(gregbglw): Do a single ctx transform rather than convert all of
     // these vectors.
     for (int i = 0; i < vertexCount; ++i) {
-      vertices[i] = getWorldToScreenToOut(vertices[i]);
+      vertices[i] = getWorldToScreen(vertices[i]);
     }
 
     ctx.beginPath();
@@ -55,8 +55,8 @@ class CanvasDraw extends DebugDraw {
   /// Draw a line segment. WARNING: This mutates [p1] and [p2].
   void drawSegment(Vector2 p1, Vector2 p2, Color3i color) {
     _setColor(color);
-    p1 = getWorldToScreenToOut(p1);
-    p2 = getWorldToScreenToOut(p2);
+    p1 = getWorldToScreen(p1);
+    p2 = getWorldToScreen(p2);
 
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
@@ -88,7 +88,7 @@ class CanvasDraw extends DebugDraw {
 
   void _pathCircle(Vector2 center, num radius, Color3i color) {
     _setColor(color);
-    center = getWorldToScreenToOut(center);
+    center = getWorldToScreen(center);
 
     ctx.beginPath();
     ctx.arc(center.x, center.y, radius, 0, MathUtils.TWOPI, true);

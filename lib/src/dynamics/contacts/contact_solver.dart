@@ -155,15 +155,15 @@ class ContactSolver {
       double wB = _velocities[indexB].w;
 
       Vector2 normal = vc.normal;
-      double tangentx = 1.0 * normal.y;
-      double tangenty = -1.0 * normal.x;
+      double tangentX = 1.0 * normal.y;
+      double tangentY = -1.0 * normal.x;
 
       for (int j = 0; j < pointCount; ++j) {
         VelocityConstraintPoint vcp = vc.points[j];
         double Px =
-            tangentx * vcp.tangentImpulse + normal.x * vcp.normalImpulse;
+            tangentX * vcp.tangentImpulse + normal.x * vcp.normalImpulse;
         double Py =
-            tangenty * vcp.tangentImpulse + normal.y * vcp.normalImpulse;
+            tangentY * vcp.tangentImpulse + normal.y * vcp.normalImpulse;
 
         wA -= iA * (vcp.rA.x * Py - vcp.rA.y * Px);
         vA.x -= Px * mA;
@@ -226,9 +226,9 @@ class ContactSolver {
 
       worldManifold.initialize(manifold, xfA, radiusA, xfB, radiusB);
 
-      final Vector2 vcnormal = vc.normal;
-      vcnormal.x = worldManifold.normal.x;
-      vcnormal.y = worldManifold.normal.y;
+      final Vector2 vcNormal = vc.normal;
+      vcNormal.x = worldManifold.normal.x;
+      vcNormal.y = worldManifold.normal.y;
 
       int pointCount = vc.pointCount;
       for (int j = 0; j < pointCount; ++j) {
@@ -241,18 +241,18 @@ class ContactSolver {
         vcprB.x = wmPj.x - cB.x;
         vcprB.y = wmPj.y - cB.y;
 
-        double rnA = vcprA.x * vcnormal.y - vcprA.y * vcnormal.x;
-        double rnB = vcprB.x * vcnormal.y - vcprB.y * vcnormal.x;
+        double rnA = vcprA.x * vcNormal.y - vcprA.y * vcNormal.x;
+        double rnB = vcprB.x * vcNormal.y - vcprB.y * vcNormal.x;
 
         double kNormal = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
         vcp.normalMass = kNormal > 0.0 ? 1.0 / kNormal : 0.0;
 
-        double tangentx = 1.0 * vcnormal.y;
-        double tangenty = -1.0 * vcnormal.x;
+        double tangentX = 1.0 * vcNormal.y;
+        double tangentY = -1.0 * vcNormal.x;
 
-        double rtA = vcprA.x * tangenty - vcprA.y * tangentx;
-        double rtB = vcprB.x * tangenty - vcprB.y * tangentx;
+        double rtA = vcprA.x * tangentY - vcprA.y * tangentX;
+        double rtB = vcprB.x * tangentY - vcprB.y * tangentX;
 
         double kTangent = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
 
@@ -262,7 +262,7 @@ class ContactSolver {
         vcp.velocityBias = 0.0;
         double tempx = vB.x + -wB * vcprB.y - vA.x - (-wA * vcprA.y);
         double tempy = vB.y + wB * vcprB.x - vA.y - (wA * vcprA.x);
-        double vRel = vcnormal.x * tempx + vcnormal.y * tempy;
+        double vRel = vcNormal.x * tempx + vcNormal.y * tempy;
         if (vRel < -Settings.velocityThreshold) {
           vcp.velocityBias = -vc.restitution * vRel;
         }
@@ -272,10 +272,10 @@ class ContactSolver {
       if (vc.pointCount == 2) {
         VelocityConstraintPoint vcp1 = vc.points[0];
         VelocityConstraintPoint vcp2 = vc.points[1];
-        double rn1A = vcp1.rA.x * vcnormal.y - vcp1.rA.y * vcnormal.x;
-        double rn1B = vcp1.rB.x * vcnormal.y - vcp1.rB.y * vcnormal.x;
-        double rn2A = vcp2.rA.x * vcnormal.y - vcp2.rA.y * vcnormal.x;
-        double rn2B = vcp2.rB.x * vcnormal.y - vcp2.rB.y * vcnormal.x;
+        double rn1A = vcp1.rA.x * vcNormal.y - vcp1.rA.y * vcNormal.x;
+        double rn1B = vcp1.rB.x * vcNormal.y - vcp1.rB.y * vcNormal.x;
+        double rn2A = vcp2.rA.x * vcNormal.y - vcp2.rA.y * vcNormal.x;
+        double rn2B = vcp2.rB.x * vcNormal.y - vcp2.rB.y * vcNormal.x;
 
         double k11 = mA + mB + iA * rn1A * rn1A + iB * rn1B * rn1B;
         double k22 = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
@@ -313,10 +313,10 @@ class ContactSolver {
       double wB = _velocities[indexB].w;
 
       Vector2 normal = vc.normal;
-      final double normalx = normal.x;
-      final double normaly = normal.y;
-      double tangentx = 1.0 * vc.normal.y;
-      double tangenty = -1.0 * vc.normal.x;
+      final double normalX = normal.x;
+      final double normalY = normal.y;
+      double tangentX = 1.0 * vc.normal.y;
+      double tangentY = -1.0 * vc.normal.x;
       final double friction = vc.friction;
 
       assert(pointCount == 1 || pointCount == 2);
@@ -329,7 +329,7 @@ class ContactSolver {
         double dvy = wB * vcp.rB.x + vB.y - vA.y - wA * a.x;
 
         // Compute tangent force
-        final double vt = dvx * tangentx + dvy * tangenty - vc.tangentSpeed;
+        final double vt = dvx * tangentX + dvy * tangentY - vc.tangentSpeed;
         double lambda = vcp.tangentMass * (-vt);
 
         // Clamp the accumulated force
@@ -342,8 +342,8 @@ class ContactSolver {
         // Apply contact impulse
         // Vec2 P = lambda * tangent;
 
-        final double Px = tangentx * lambda;
-        final double Py = tangenty * lambda;
+        final double Px = tangentX * lambda;
+        final double Py = tangentY * lambda;
 
         // vA -= invMassA * P;
         vA.x -= Px * mA;
@@ -367,7 +367,7 @@ class ContactSolver {
         double dvy = wB * vcp.rB.x + vB.y - vA.y - wA * vcp.rA.x;
 
         // Compute normal impulse
-        final double vn = dvx * normalx + dvy * normaly;
+        final double vn = dvx * normalX + dvy * normalY;
         double lambda = -vcp.normalMass * (vn - vcp.velocityBias);
 
         // Clamp the accumulated impulse
@@ -377,10 +377,9 @@ class ContactSolver {
         vcp.normalImpulse = newImpulse;
 
         // Apply contact impulse
-        double Px = normalx * lambda;
-        double Py = normaly * lambda;
+        double Px = normalX * lambda;
+        double Py = normalY * lambda;
 
-        // vA -= invMassA * P;
         vA.x -= Px * mA;
         vA.y -= Py * mA;
         wA -= iA * (vcp.rA.x * Py - vcp.rA.y * Px);
@@ -449,8 +448,8 @@ class ContactSolver {
         double dv2y = wB * cp2rB.x + vB.y - vA.y - wA * cp2rA.x;
 
         // Compute normal velocity
-        double vn1 = dv1x * normalx + dv1y * normaly;
-        double vn2 = dv2x * normalx + dv2y * normaly;
+        double vn1 = dv1x * normalX + dv1y * normalY;
+        double vn2 = dv2x * normalX + dv2y * normalY;
 
         double bx = vn1 - cp1.velocityBias;
         double by = vn2 - cp2.velocityBias;
@@ -481,17 +480,14 @@ class ContactSolver {
 
           if (xx >= 0.0 && xy >= 0.0) {
             // Get the incremental impulse
-            // Vec2 d = x - a;
             double dx = xx - ax;
             double dy = xy - ay;
 
             // Apply incremental impulse
-            // Vec2 P1 = d.x * normal;
-            // Vec2 P2 = d.y * normal;
-            double P1x = dx * normalx;
-            double P1y = dx * normaly;
-            double P2x = dy * normalx;
-            double P2y = dy * normaly;
+            double P1x = dx * normalX;
+            double P1y = dx * normalY;
+            double P2x = dy * normalX;
+            double P2y = dy * normalY;
 
             /*
              * vA -= invMassA * (P1 + P2); wA -= invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
@@ -561,12 +557,10 @@ class ContactSolver {
             double dy = xy - ay;
 
             // Apply incremental impulse
-            // Vec2 P1 = d.x * normal;
-            // Vec2 P2 = d.y * normal;
-            double P1x = normalx * dx;
-            double P1y = normaly * dx;
-            double P2x = normalx * dy;
-            double P2y = normaly * dy;
+            double P1x = normalX * dx;
+            double P1y = normalY * dx;
+            double P2x = normalX * dy;
+            double P2y = normalY * dy;
 
             /*
              * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
@@ -638,10 +632,10 @@ class ContactSolver {
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
-            double P1x = normalx * dx;
-            double P1y = normaly * dx;
-            double P2x = normalx * dy;
-            double P2y = normaly * dy;
+            double P1x = normalX * dx;
+            double P1y = normalY * dx;
+            double P2x = normalX * dy;
+            double P2y = normalY * dy;
 
             vA.x -= mA * (P1x + P2x);
             vA.y -= mA * (P1y + P2y);
@@ -705,10 +699,10 @@ class ContactSolver {
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
-            double P1x = normalx * dx;
-            double P1y = normaly * dx;
-            double P2x = normalx * dy;
-            double P2y = normaly * dy;
+            double P1x = normalX * dx;
+            double P1y = normalY * dx;
+            double P2x = normalX * dy;
+            double P2y = normalY * dy;
 
             vA.x -= mA * (P1x + P2x);
             vA.y -= mA * (P1y + P2y);
@@ -736,9 +730,7 @@ class ContactSolver {
         }
       }
 
-      // _velocities[indexA].v.set(vA);
       _velocities[indexA].w = wA;
-      // _velocities[indexB].v.set(vB);
       _velocities[indexB].w = wB;
     }
   }
@@ -755,47 +747,7 @@ class ContactSolver {
     }
   }
 
-  /*
-   * #if 0 // Sequential solver. bool ContactSolver::SolvePositionConstraints(double baumgarte) {
-   * double minSeparation = 0.0;
-   *
-   * for (int i = 0; i < _constraintCount; ++i) { ContactConstraint* c = _constraints + i; Body*
-   * bodyA = c.bodyA; Body* bodyB = c.bodyB; double invMassA = bodyA._mass * bodyA._invMass; double
-   * invIA = bodyA._mass * bodyA._invI; double invMassB = bodyB._mass * bodyB._invMass; double
-   * invIB = bodyB._mass * bodyB._invI;
-   *
-   * Vec2 normal = c.normal;
-   *
-   * // Solve normal constraints for (int j = 0; j < c.pointCount; ++j) { ContactConstraintPoint*
-   * ccp = c.points + j;
-   *
-   * Vec2 r1 = Mul(bodyA.GetXForm().R, ccp.localAnchorA - bodyA.GetLocalCenter()); Vec2 r2 =
-   * Mul(bodyB.GetXForm().R, ccp.localAnchorB - bodyB.GetLocalCenter());
-   *
-   * Vec2 p1 = bodyA._sweep.c + r1; Vec2 p2 = bodyB._sweep.c + r2; Vec2 dp = p2 - p1;
-   *
-   * // Approximate the current separation. double separation = Dot(dp, normal) + ccp.separation;
-   *
-   * // Track max constraint error. minSeparation = Min(minSeparation, separation);
-   *
-   * // Prevent large corrections and allow slop. double C = Clamp(baumgarte * (separation +
-   * _linearSlop), -_maxLinearCorrection, 0.0);
-   *
-   * // Compute normal impulse double impulse = -ccp.equalizedMass * C;
-   *
-   * Vec2 P = impulse * normal;
-   *
-   * bodyA._sweep.c -= invMassA * P; bodyA._sweep.a -= invIA * Cross(r1, P);
-   * bodyA.SynchronizeTransform();
-   *
-   * bodyB._sweep.c += invMassB * P; bodyB._sweep.a += invIB * Cross(r2, P);
-   * bodyB.SynchronizeTransform(); } }
-   *
-   * // We can't expect minSpeparation >= -_linearSlop because we don't // push the separation above
-   * -_linearSlop. return minSeparation >= -1.5f * _linearSlop; }
-   */
-
-  final PositionSolverManifold _psolver = PositionSolverManifold();
+  final PositionSolverManifold _pSolver = PositionSolverManifold();
 
   /// Sequential solver.
   bool solvePositionConstraints() {
@@ -835,7 +787,7 @@ class ContactSolver {
         xfB.p.x = cB.x - xfBq.c * localCenterBx + xfBq.s * localCenterBy;
         xfB.p.y = cB.y - xfBq.s * localCenterBx - xfBq.c * localCenterBy;
 
-        final PositionSolverManifold psm = _psolver;
+        final PositionSolverManifold psm = _pSolver;
         psm.initialize(pc, xfA, xfB, j);
         final Vector2 normal = psm.normal;
         final Vector2 point = psm.point;
@@ -875,14 +827,11 @@ class ContactSolver {
         aB += iB * (rBx * Py - rBy * Px);
       }
 
-      // _positions[indexA].c.set(cA);
       _positions[indexA].a = aA;
-
-      // _positions[indexB].c.set(cB);
       _positions[indexB].a = aB;
     }
 
-    // We can't expect minSpeparation >= -linearSlop because we don't
+    // We can't expect minSeparation >= -linearSlop because we don't
     // push the separation above -linearSlop.
     return minSeparation >= -3.0 * Settings.linearSlop;
   }
@@ -935,7 +884,7 @@ class ContactSolver {
         xfB.p.x = cB.x - xfBq.c * localCenterBx + xfBq.s * localCenterBy;
         xfB.p.y = cB.y - xfBq.s * localCenterBx - xfBq.c * localCenterBy;
 
-        final PositionSolverManifold psm = _psolver;
+        final PositionSolverManifold psm = _pSolver;
         psm.initialize(pc, xfA, xfB, j);
         Vector2 normal = psm.normal;
 
@@ -976,14 +925,11 @@ class ContactSolver {
         aB += iB * (rBx * Py - rBy * Px);
       }
 
-      // _positions[indexA].c.set(cA);
       _positions[indexA].a = aA;
-
-      // _positions[indexB].c.set(cB);
       _positions[indexB].a = aB;
     }
 
-    // We can't expect minSpeparation >= -_linearSlop because we don't
+    // We can't expect minSeparation >= -_linearSlop because we don't
     // push the separation above -_linearSlop.
     return minSeparation >= -1.5 * Settings.linearSlop;
   }
@@ -1003,14 +949,6 @@ class PositionSolverManifold {
     final Vector2 pcLocalPointsI = pc.localPoints[index];
     switch (pc.type) {
       case ManifoldType.CIRCLES:
-        // Transform.mulToOutUnsafe(xfA, pc.localPoint, pointA);
-        // Transform.mulToOutUnsafe(xfB, pc.localPoints[0], pointB);
-        // normal.set(pointB).subLocal(pointA);
-        // normal.normalize();
-        //
-        // point.set(pointA).addLocal(pointB).mulLocal(.5f);
-        // temp.set(pointB).subLocal(pointA);
-        // separation = Vec2.dot(temp, normal) - pc.radiusA - pc.radiusB;
         final Vector2 plocalPoint = pc.localPoint;
         final Vector2 pLocalPoints0 = pc.localPoints[0];
         final double pointAx =
@@ -1034,13 +972,6 @@ class PositionSolverManifold {
         break;
 
       case ManifoldType.FACE_A:
-        // Rot.mulToOutUnsafe(xfAq, pc.localNormal, normal);
-        // Transform.mulToOutUnsafe(xfA, pc.localPoint, planePoint);
-        //
-        // Transform.mulToOutUnsafe(xfB, pc.localPoints[index], clipPoint);
-        // temp.set(clipPoint).subLocal(planePoint);
-        // separation = Vec2.dot(temp, normal) - pc.radiusA - pc.radiusB;
-        // point.set(clipPoint);
         final Vector2 pcLocalNormal = pc.localNormal;
         final Vector2 pcLocalPoint = pc.localPoint;
         normal.x = xfAq.c * pcLocalNormal.x - xfAq.s * pcLocalNormal.y;
@@ -1063,16 +994,6 @@ class PositionSolverManifold {
         break;
 
       case ManifoldType.FACE_B:
-        // Rot.mulToOutUnsafe(xfBq, pc.localNormal, normal);
-        // Transform.mulToOutUnsafe(xfB, pc.localPoint, planePoint);
-        //
-        // Transform.mulToOutUnsafe(xfA, pcLocalPointsI, clipPoint);
-        // temp.set(clipPoint).subLocal(planePoint);
-        // separation = Vec2.dot(temp, normal) - pc.radiusA - pc.radiusB;
-        // point.set(clipPoint);
-        //
-        // // Ensure normal points from A to B
-        // normal.negateLocal();
         final Vector2 pcLocalNormal = pc.localNormal;
         final Vector2 pcLocalPoint = pc.localPoint;
         normal.x = xfBq.c * pcLocalNormal.x - xfBq.s * pcLocalNormal.y;

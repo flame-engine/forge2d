@@ -625,8 +625,8 @@ class World {
           c = c.getNext()) {
         Fixture fixtureA = c.fixtureA;
         Fixture fixtureB = c.fixtureB;
-        fixtureA.getAABB(c.getChildIndexA()).getCenterToOut(cA);
-        fixtureB.getAABB(c.getChildIndexB()).getCenterToOut(cB);
+        cA.setFrom(fixtureA.getAABB(c.getChildIndexA()).getCenter());
+        cB.setFrom(fixtureB.getAABB(c.getChildIndexB()).getCenter());
         debugDraw.drawSegment(cA, cB, color);
       }
     }
@@ -1285,10 +1285,8 @@ class World {
     Transform xf2 = bodyB._transform;
     Vector2 x1 = xf1.p;
     Vector2 x2 = xf2.p;
-    Vector2 p1 = _pool.popVec2();
-    Vector2 p2 = _pool.popVec2();
-    p1.setFrom(joint.getAnchorA());
-    p2.setFrom(joint.getAnchorB());
+    Vector2 p1 = Vector2.copy(joint.getAnchorA());
+    Vector2 p2 = Vector2.copy(joint.getAnchorB());
 
     color.setFromRGBd(0.5, 0.8, 0.8);
 
@@ -1322,7 +1320,6 @@ class World {
         debugDraw.drawSegment(p1, p2, color);
         debugDraw.drawSegment(x2, p2, color);
     }
-    _pool.pushVec2(2);
   }
 
   // NOTE this corresponds to the liquid test, so the debugdraw can draw

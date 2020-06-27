@@ -211,11 +211,6 @@ class Collision {
   void collideCircles(Manifold manifold, final CircleShape circle1,
       final Transform xfA, final CircleShape circle2, final Transform xfB) {
     manifold.pointCount = 0;
-    // before inline:
-    // Transform.mulToOut(xfA, circle1.p, pA);
-    // Transform.mulToOut(xfB, circle2.p, pB);
-    // d.set(pB).subLocal(pA);
-    // double distSqr = d.x * d.x + d.y * d.y;
 
     // after inline:
     Vector2 circle1p = circle1.p;

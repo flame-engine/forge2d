@@ -483,20 +483,16 @@ class Body {
       _invI = 1.0 / _I;
     }
 
-    final Vector2 oldCenter = world.getPool().popVec2();
     // Move center of mass.
-    oldCenter.setFrom(_sweep.c);
+    final Vector2 oldCenter = Vector2.copy(_sweep.c);
     _sweep.localCenter.setFrom(massData.center);
     _sweep.c0.setFrom(Transform.mulVec2(_transform, _sweep.localCenter));
     _sweep.c.setFrom(_sweep.c0);
 
     // Update center of mass velocity.
-    final Vector2 temp = world.getPool().popVec2();
-    (temp..setFrom(_sweep.c)).sub(oldCenter);
+    final Vector2 temp = Vector2.copy(_sweep.c)..sub(oldCenter);
     temp.scaleOrthogonalInto(_angularVelocity, temp);
     _linearVelocity.add(temp);
-
-    world.getPool().pushVec2(2);
   }
 
   final MassData _pmd = MassData();
@@ -523,9 +519,8 @@ class Body {
     assert(_bodyType == BodyType.DYNAMIC);
 
     // Accumulate mass over all fixtures.
-    final Vector2 localCenter = world.getPool().popVec2();
-    localCenter.setZero();
-    final Vector2 temp = world.getPool().popVec2();
+    final Vector2 localCenter = Vector2.zero();
+    final Vector2 temp = Vector2.zero();
     final MassData massData = _pmd;
     for (Fixture f = _fixtureList; f != null; f = f._next) {
       if (f._density == 0.0) {
@@ -558,9 +553,8 @@ class Body {
       _invI = 0.0;
     }
 
-    Vector2 oldCenter = world.getPool().popVec2();
     // Move center of mass.
-    oldCenter.setFrom(_sweep.c);
+    Vector2 oldCenter = Vector2.copy(_sweep.c);
     _sweep.localCenter.setFrom(localCenter);
     _sweep.c0.setFrom(Transform.mulVec2(_transform, _sweep.localCenter));
     _sweep.c.setFrom(_sweep.c0);
