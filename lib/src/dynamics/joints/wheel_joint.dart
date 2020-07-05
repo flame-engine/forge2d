@@ -79,7 +79,7 @@ class WheelJoint extends Joint {
   }
 
   Vector2 getReactionForce(double inv_dt) {
-    final Vector2 temp = pool.popVec2();
+    final Vector2 temp = Vector2.zero();
     temp
       ..setFrom(_ay)
       ..scale(_impulse);
@@ -88,7 +88,6 @@ class WheelJoint extends Joint {
       ..scale(_springImpulse)
       ..add(temp)
       ..scale(inv_dt);
-    pool.pushVec2(1);
     return result;
   }
 
@@ -100,16 +99,15 @@ class WheelJoint extends Joint {
     Body b1 = _bodyA;
     Body b2 = _bodyB;
 
-    Vector2 p1 = pool.popVec2();
-    Vector2 p2 = pool.popVec2();
-    Vector2 axis = pool.popVec2();
+    Vector2 p1 = Vector2.zero();
+    Vector2 p2 = Vector2.zero();
+    Vector2 axis = Vector2.zero();
     p1.setFrom(b1.getWorldPoint(localAnchorA));
     p2.setFrom(b2.getWorldPoint(localAnchorA));
     p2.sub(p1);
     axis.setFrom(b1.getWorldVector(_localXAxisA));
 
     double translation = p2.dot(axis);
-    pool.pushVec2(3);
     return translation;
   }
 
@@ -185,9 +183,9 @@ class WheelJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -282,7 +280,7 @@ class WheelJoint extends Joint {
     }
 
     if (data.step.warmStarting) {
-      final Vector2 P = pool.popVec2();
+      final Vector2 P = Vector2.zero();
       // Account for variable time step.
       _impulse *= data.step.dtRatio;
       _springImpulse *= data.step.dtRatio;
@@ -300,18 +298,13 @@ class WheelJoint extends Joint {
       vB.x += _invMassB * P.x;
       vB.y += _invMassB * P.y;
       wB += _invIB * LB;
-      pool.pushVec2(1);
     } else {
       _impulse = 0.0;
       _springImpulse = 0.0;
       _motorImpulse = 0.0;
     }
-    pool.pushRot(2);
-    pool.pushVec2(1);
 
-    // data.velocities[_indexA].v = vA;
     data.velocities[_indexA].w = wA;
-    // data.velocities[_indexB].v = vB;
     data.velocities[_indexB].w = wB;
   }
 
@@ -324,8 +317,8 @@ class WheelJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Vector2 temp = pool.popVec2();
-    final Vector2 P = pool.popVec2();
+    final Vector2 temp = Vector2.zero();
+    final Vector2 P = Vector2.zero();
 
     // Solve spring constraint
     {
@@ -389,7 +382,6 @@ class WheelJoint extends Joint {
       vB.y += mB * P.y;
       wB += iB * LB;
     }
-    pool.pushVec2(2);
 
     // data.velocities[_indexA].v = vA;
     data.velocities[_indexA].w = wA;
@@ -403,9 +395,9 @@ class WheelJoint extends Joint {
     Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -425,7 +417,7 @@ class WheelJoint extends Joint {
       ..add(rB)
       ..sub(rA);
 
-    Vector2 ay = pool.popVec2();
+    Vector2 ay = Vector2.zero();
     ay.setFrom(Rot.mulVec2(qA, _localYAxisA));
 
     double sAy = (temp
@@ -446,7 +438,7 @@ class WheelJoint extends Joint {
       impulse = 0.0;
     }
 
-    final Vector2 P = pool.popVec2();
+    final Vector2 P = Vector2.zero();
     P.x = impulse * ay.x;
     P.y = impulse * ay.y;
     double LA = impulse * sAy;
@@ -459,11 +451,7 @@ class WheelJoint extends Joint {
     cB.y += _invMassB * P.y;
     aB += _invIB * LB;
 
-    pool.pushVec2(3);
-    pool.pushRot(2);
-    // data.positions[_indexA].c = cA;
     data.positions[_indexA].a = aA;
-    // data.positions[_indexB].c = cB;
     data.positions[_indexB].a = aB;
 
     return C.abs() <= Settings.linearSlop;

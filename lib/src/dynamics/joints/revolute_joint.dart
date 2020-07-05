@@ -82,9 +82,9 @@ class RevoluteJoint extends Joint {
     double aB = data.positions[_indexB].a;
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -148,7 +148,7 @@ class RevoluteJoint extends Joint {
     }
 
     if (data.step.warmStarting) {
-      final Vector2 P = pool.popVec2();
+      final Vector2 P = Vector2.zero();
       // Scale impulses to support a variable time step.
       _impulse.x *= data.step.dtRatio;
       _impulse.y *= data.step.dtRatio;
@@ -164,7 +164,6 @@ class RevoluteJoint extends Joint {
       vB.x += mB * P.x;
       vB.y += mB * P.y;
       wB += iB * (_rB.cross(P) + _motorImpulse + _impulse.z);
-      pool.pushVec2(1);
     } else {
       _impulse.setZero();
       _motorImpulse = 0.0;
@@ -173,9 +172,6 @@ class RevoluteJoint extends Joint {
     data.velocities[_indexA].w = wA;
     // data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(1);
-    pool.pushRot(2);
   }
 
   void solveVelocityConstraints(final SolverData data) {
@@ -204,14 +200,14 @@ class RevoluteJoint extends Joint {
       wA -= iA * impulse;
       wB += iB * impulse;
     }
-    final Vector2 temp = pool.popVec2();
+    final Vector2 temp = Vector2.zero();
 
     // Solve limit constraint.
     if (_enableLimit &&
         _limitState != LimitState.INACTIVE &&
         fixedRotation == false) {
-      final Vector2 Cdot1 = pool.popVec2();
-      final Vector3 Cdot = pool.popVec3();
+      final Vector2 Cdot1 = Vector2.zero();
+      final Vector3 Cdot = Vector3.zero();
 
       // Solve point-to-point constraint
       _rA.scaleOrthogonalInto(wA, temp);
@@ -223,7 +219,7 @@ class RevoluteJoint extends Joint {
       double Cdot2 = wB - wA;
       Cdot.setValues(Cdot1.x, Cdot1.y, Cdot2);
 
-      Vector3 impulse = pool.popVec3();
+      Vector3 impulse = Vector3.zero();
       Matrix3.solve(_mass, impulse, Cdot);
       impulse.negate();
 
@@ -232,7 +228,7 @@ class RevoluteJoint extends Joint {
       } else if (_limitState == LimitState.AT_LOWER) {
         double newImpulse = _impulse.z + impulse.z;
         if (newImpulse < 0.0) {
-          final Vector2 rhs = pool.popVec2();
+          final Vector2 rhs = Vector2.zero();
           rhs
             ..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
             ..scale(_impulse.z)
@@ -244,14 +240,13 @@ class RevoluteJoint extends Joint {
           _impulse.x += temp.x;
           _impulse.y += temp.y;
           _impulse.z = 0.0;
-          pool.pushVec2(1);
         } else {
           _impulse.add(impulse);
         }
       } else if (_limitState == LimitState.AT_UPPER) {
         double newImpulse = _impulse.z + impulse.z;
         if (newImpulse > 0.0) {
-          final Vector2 rhs = pool.popVec2();
+          final Vector2 rhs = Vector2.zero();
           rhs
             ..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
             ..scale(_impulse.z)
@@ -263,12 +258,11 @@ class RevoluteJoint extends Joint {
           _impulse.x += temp.x;
           _impulse.y += temp.y;
           _impulse.z = 0.0;
-          pool.pushVec2(1);
         } else {
           _impulse.add(impulse);
         }
       }
-      final Vector2 P = pool.popVec2();
+      final Vector2 P = Vector2.zero();
 
       P.setValues(impulse.x, impulse.y);
 
@@ -279,13 +273,10 @@ class RevoluteJoint extends Joint {
       vB.x += mB * P.x;
       vB.y += mB * P.y;
       wB += iB * (_rB.cross(P) + impulse.z);
-
-      pool.pushVec2(2);
-      pool.pushVec3(2);
     } else {
       // Solve point-to-point constraint
-      Vector2 Cdot = pool.popVec2();
-      Vector2 impulse = pool.popVec2();
+      Vector2 Cdot = Vector2.zero();
+      Vector2 impulse = Vector2.zero();
 
       _rA.scaleOrthogonalInto(wA, temp);
       _rB.scaleOrthogonalInto(wB, Cdot);
@@ -305,21 +296,17 @@ class RevoluteJoint extends Joint {
       vB.x += mB * impulse.x;
       vB.y += mB * impulse.y;
       wB += iB * _rB.cross(impulse);
-
-      pool.pushVec2(2);
     }
 
     // data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;
     // data.velocities[_indexB].v.set(vB);
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(1);
   }
 
   bool solvePositionConstraints(final SolverData data) {
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
     Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
     Vector2 cB = data.positions[_indexB].c;
@@ -372,10 +359,10 @@ class RevoluteJoint extends Joint {
       qA.setAngle(aA);
       qB.setAngle(aB);
 
-      final Vector2 rA = pool.popVec2();
-      final Vector2 rB = pool.popVec2();
-      final Vector2 temp = pool.popVec2();
-      final Vector2 impulse = pool.popVec2();
+      final Vector2 rA = Vector2.zero();
+      final Vector2 rB = Vector2.zero();
+      final Vector2 temp = Vector2.zero();
+      final Vector2 impulse = Vector2.zero();
 
       temp
         ..setFrom(localAnchorA)
@@ -396,7 +383,7 @@ class RevoluteJoint extends Joint {
       double mA = _invMassA, mB = _invMassB;
       double iA = _invIA, iB = _invIB;
 
-      final Matrix2 K = pool.popMat22();
+      final Matrix2 K = Matrix2.zero();
       double a11 = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
       double a21 = -iA * rA.x * rA.y - iB * rB.x * rB.y;
       double a12 = a21;
@@ -413,14 +400,9 @@ class RevoluteJoint extends Joint {
       cB.x += mB * impulse.x;
       cB.y += mB * impulse.y;
       aB += iB * rB.cross(impulse);
-
-      pool.pushVec2(4);
-      pool.pushMat22(1);
     }
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
-
-    pool.pushRot(2);
 
     return positionError <= Settings.linearSlop &&
         angularError <= Settings.angularSlop;

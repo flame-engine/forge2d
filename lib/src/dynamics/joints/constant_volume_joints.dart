@@ -112,7 +112,7 @@ class ConstantVolumeJoint extends Joint {
       perimeter += dist;
     }
 
-    final Vector2 delta = pool.popVec2();
+    final Vector2 delta = Vector2.zero();
 
     double deltaArea = _targetVolume - getSolverArea(positions);
     double toExtrude = 0.5 * deltaArea / perimeter; // *relaxationFactor
@@ -134,7 +134,6 @@ class ConstantVolumeJoint extends Joint {
       positions[_bodies[next]._islandIndex].c.y += delta.y;
     }
 
-    pool.pushVec2(1);
     return done;
   }
 

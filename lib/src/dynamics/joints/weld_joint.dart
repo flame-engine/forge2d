@@ -83,8 +83,8 @@ class WeldJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -110,7 +110,7 @@ class WeldJoint extends Joint {
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
 
-    final Matrix3 K = pool.popMat33();
+    final Matrix3 K = Matrix3.zero();
 
     double ex_x = mA + mB + _rA.y * _rA.y * iA + _rB.y * _rB.y * iB;
     double ey_x = -_rA.y * _rA.x * iA - _rB.y * _rB.x * iB;
@@ -174,9 +174,6 @@ class WeldJoint extends Joint {
 
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
-
-    pool.pushRot(2);
-    pool.pushMat33(1);
   }
 
   void solveVelocityConstraints(final SolverData data) {
@@ -255,8 +252,8 @@ class WeldJoint extends Joint {
     double aA = data.positions[_indexA].a;
     Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -273,7 +270,7 @@ class WeldJoint extends Joint {
     final Vector2 rB = Vector2.copy(Rot.mulVec2(qB, temp));
     double positionError, angularError;
 
-    final Matrix3 K = pool.popMat33();
+    final Matrix3 K = Matrix3.zero();
     final Vector2 C1 = Vector2.zero();
     final Vector2 P =  Vector2.zero();
 
@@ -338,9 +335,6 @@ class WeldJoint extends Joint {
 
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
-
-    pool.pushRot(2);
-    pool.pushMat33(1);
 
     return positionError <= Settings.linearSlop &&
         angularError <= Settings.angularSlop;
