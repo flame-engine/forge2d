@@ -59,20 +59,18 @@ class PulleyJoint extends Joint {
   }
 
   double getCurrentLengthA() {
-    final Vector2 p = pool.popVec2();
+    final Vector2 p = Vector2.zero();
     p.setFrom(_bodyA.getWorldPoint(localAnchorA));
     p.sub(_groundAnchorA);
     double length = p.length;
-    pool.pushVec2(1);
     return length;
   }
 
   double getCurrentLengthB() {
-    final Vector2 p = pool.popVec2();
+    final Vector2 p = Vector2.zero();
     p.setFrom(_bodyB.getWorldPoint(localAnchorB));
     p.sub(_groundAnchorB);
     double length = p.length;
-    pool.pushVec2(1);
     return length;
   }
 
@@ -117,9 +115,9 @@ class PulleyJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -176,8 +174,8 @@ class PulleyJoint extends Joint {
       _impulse *= data.step.dtRatio;
 
       // Warm starting.
-      final Vector2 PA = pool.popVec2();
-      final Vector2 PB = pool.popVec2();
+      final Vector2 PA = Vector2.zero();
+      final Vector2 PB = Vector2.zero();
 
       PA
         ..setFrom(_uA)
@@ -192,16 +190,11 @@ class PulleyJoint extends Joint {
       vB.x += _invMassB * PB.x;
       vB.y += _invMassB * PB.y;
       wB += _invIB * _rB.cross(PB);
-
-      pool.pushVec2(2);
     } else {
       _impulse = 0.0;
     }
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(1);
-    pool.pushRot(2);
   }
 
   void solveVelocityConstraints(final SolverData data) {
@@ -210,10 +203,10 @@ class PulleyJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Vector2 vpA = pool.popVec2();
-    final Vector2 vpB = pool.popVec2();
-    final Vector2 PA = pool.popVec2();
-    final Vector2 PB = pool.popVec2();
+    final Vector2 vpA = Vector2.zero();
+    final Vector2 vpB = Vector2.zero();
+    final Vector2 PA = Vector2.zero();
+    final Vector2 PB = Vector2.zero();
 
     _rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
@@ -239,20 +232,18 @@ class PulleyJoint extends Joint {
 
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(4);
   }
 
   bool solvePositionConstraints(final SolverData data) {
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 rA = pool.popVec2();
-    final Vector2 rB = pool.popVec2();
-    final Vector2 uA = pool.popVec2();
-    final Vector2 uB = pool.popVec2();
-    final Vector2 temp = pool.popVec2();
-    final Vector2 PA = pool.popVec2();
-    final Vector2 PB = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 rA = Vector2.zero();
+    final Vector2 rB = Vector2.zero();
+    final Vector2 uA = Vector2.zero();
+    final Vector2 uB = Vector2.zero();
+    final Vector2 temp = Vector2.zero();
+    final Vector2 PA = Vector2.zero();
+    final Vector2 PB = Vector2.zero();
 
     Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
@@ -328,9 +319,6 @@ class PulleyJoint extends Joint {
 
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
-
-    pool.pushRot(2);
-    pool.pushVec2(7);
 
     return linearError < Settings.linearSlop;
   }

@@ -68,8 +68,8 @@ class DistanceJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -88,8 +88,6 @@ class DistanceJoint extends Joint {
       ..add(_rB)
       ..sub(cA)
       ..sub(_rA);
-
-    pool.pushRot(2);
 
     // Handle singularity.
     double length = _u.length;
@@ -136,7 +134,7 @@ class DistanceJoint extends Joint {
       // Scale the impulse to support a variable time step.
       _impulse *= data.step.dtRatio;
 
-      Vector2 P = pool.popVec2();
+      Vector2 P = Vector2.zero();
       P
         ..setFrom(_u)
         ..scale(_impulse);
@@ -149,7 +147,6 @@ class DistanceJoint extends Joint {
       vB.y += _invMassB * P.y;
       wB += _invIB * _rB.cross(P);
 
-      pool.pushVec2(1);
     } else {
       _impulse = 0.0;
     }
@@ -163,8 +160,8 @@ class DistanceJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Vector2 vpA = pool.popVec2();
-    final Vector2 vpB = pool.popVec2();
+    final Vector2 vpA = Vector2.zero();
+    final Vector2 vpB = Vector2.zero();
 
     // Cdot = dot(u, v + cross(w, r))
     _rA.scaleOrthogonalInto(wA, vpA);
@@ -188,19 +185,17 @@ class DistanceJoint extends Joint {
 
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(2);
   }
 
   bool solvePositionConstraints(final SolverData data) {
     if (_frequencyHz > 0.0) {
       return true;
     }
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 rA = pool.popVec2();
-    final Vector2 rB = pool.popVec2();
-    final Vector2 u = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 rA = Vector2.zero();
+    final Vector2 rB = Vector2.zero();
+    final Vector2 u = Vector2.zero();
 
     Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
@@ -242,9 +237,6 @@ class DistanceJoint extends Joint {
 
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
-
-    pool.pushVec2(3);
-    pool.pushRot(2);
 
     return C.abs() < Settings.linearSlop;
   }

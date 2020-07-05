@@ -75,7 +75,7 @@ class MouseJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qB = pool.popRot();
+    final Rot qB = Rot();
 
     qB.setAngle(aB);
 
@@ -101,7 +101,7 @@ class MouseJoint extends Joint {
     }
     _beta = h * k * _gamma;
 
-    Vector2 temp = pool.popVec2();
+    Vector2 temp = Vector2.zero();
 
     // Compute the effective mass matrix.
     temp
@@ -112,7 +112,7 @@ class MouseJoint extends Joint {
     // K = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
     // = [1/m1+1/m2 0 ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]
     // [ 0 1/m1+1/m2] [-r1.x*r1.y r1.x*r1.x] [-r1.x*r1.y r1.x*r1.x]
-    final Matrix2 K = pool.popMat22();
+    final Matrix2 K = Matrix2.zero();
     double a11 = _invMassB + _invIB * _rB.y * _rB.y + _gamma;
     double a21 = -_invIB * _rB.x * _rB.y;
     double a12 = a21;
@@ -141,10 +141,6 @@ class MouseJoint extends Joint {
     }
 
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(1);
-    pool.pushMat22(1);
-    pool.pushRot(1);
   }
 
   bool solvePositionConstraints(final SolverData data) {
@@ -156,12 +152,12 @@ class MouseJoint extends Joint {
     double wB = data.velocities[_indexB].w;
 
     // Cdot = v + cross(w, r)
-    final Vector2 Cdot = pool.popVec2();
+    final Vector2 Cdot = Vector2.zero();
     _rB.scaleOrthogonalInto(wB, Cdot);
     Cdot.add(vB);
 
-    final Vector2 impulse = pool.popVec2();
-    final Vector2 temp = pool.popVec2();
+    final Vector2 impulse = Vector2.zero();
+    final Vector2 temp = Vector2.zero();
 
     temp
       ..setFrom(_impulse)
@@ -187,7 +183,5 @@ class MouseJoint extends Joint {
     wB += _invIB * _rB.cross(impulse);
 
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(3);
   }
 }

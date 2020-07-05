@@ -108,6 +108,7 @@ class Collision {
 
     _cache.count = 0;
 
+    print("Is this called");
     _pool.getDistance().distance(_output, _cache, _input);
     // djm note: anything significant about 10.0f?
     return _output.distance < 10.0 * Settings.EPSILON;

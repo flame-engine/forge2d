@@ -11,13 +11,11 @@ class PolygonShape extends Shape {
 
   /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
   /// active vertices.
-  final List<Vector2> vertices =
-      List<Vector2>.filled(Settings.maxPolygonVertices, Vector2.zero());
+  final List<Vector2> vertices = List<Vector2>(Settings.maxPolygonVertices);
 
   /// The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
   /// active normals.
-  final List<Vector2> normals =
-      List<Vector2>.filled(Settings.maxPolygonVertices, Vector2.zero());
+  final List<Vector2> normals = List<Vector2>(Settings.maxPolygonVertices);
 
   /// Number of active vertices in the shape.
   int count = 0;
@@ -30,18 +28,25 @@ class PolygonShape extends Shape {
   Transform _poolt1 = Transform.zero();
 
   PolygonShape() : super(ShapeType.POLYGON) {
+    for (int i = 0; i < vertices.length; i++) {
+      vertices[i] = Vector2.zero();
+    }
+
+    for (int i = 0; i < normals.length; i++) {
+      normals[i] = Vector2.zero();
+    }
     radius = Settings.polygonRadius;
   }
 
   Shape clone() {
     PolygonShape shape = PolygonShape();
-    shape.centroid.setFrom(centroid);
+    shape.centroid.setFrom(this.centroid);
     for (int i = 0; i < shape.normals.length; i++) {
       shape.normals[i].setFrom(normals[i]);
       shape.vertices[i].setFrom(vertices[i]);
     }
-    shape.radius = radius;
-    shape.count = count;
+    shape.radius = this.radius;
+    shape.count = this.count;
     return shape;
   }
 
@@ -68,8 +73,9 @@ class PolygonShape extends Shape {
     int n = Math.min(num, Settings.maxPolygonVertices);
 
     // Perform welding and copy vertices into local buffer.
-    List<Vector2> ps = vecPool?.get(Settings.maxPolygonVertices) ??
-        List<Vector2>(Settings.maxPolygonVertices);
+    List<Vector2> ps = (vecPool != null)
+        ? vecPool.get(Settings.maxPolygonVertices)
+        : List<Vector2>(Settings.maxPolygonVertices);
     int tempCount = 0;
     for (int i = 0; i < n; ++i) {
       Vector2 v = verts[i];
@@ -113,10 +119,10 @@ class PolygonShape extends Shape {
     int m = 0;
     int ih = i0;
 
-    int ie = 0;
-    do {
+    while (true) {
       hull[m] = ih;
 
+      int ie = 0;
       for (int j = 1; j < n; ++j) {
         if (ie == ih) {
           ie = j;
@@ -142,7 +148,11 @@ class PolygonShape extends Shape {
 
       ++m;
       ih = ie;
-    } while (ie != i0);
+
+      if (ie == i0) {
+        break;
+      }
+    }
 
     this.count = m;
 
@@ -198,7 +208,15 @@ class PolygonShape extends Shape {
   /// @param angle the rotation of the box in local coordinates.
   void setAsBox(final double hx, final double hy, final Vector2 center,
       final double angle) {
-    setAsBoxXY(hx, hy);
+    count = 4;
+    vertices[0].setValues(-hx, -hy);
+    vertices[1].setValues(hx, -hy);
+    vertices[2].setValues(hx, hy);
+    vertices[3].setValues(-hx, hy);
+    normals[0].setValues(0.0, -1.0);
+    normals[1].setValues(1.0, 0.0);
+    normals[2].setValues(0.0, 1.0);
+    normals[3].setValues(-1.0, 0.0);
     centroid.setFrom(center);
 
     final Transform xf = _poolt1;
@@ -236,12 +254,13 @@ class PolygonShape extends Shape {
   }
 
   bool testPoint(final Transform xf, final Vector2 p) {
+    double tempx, tempy;
     final Rot xfq = xf.q;
 
-    double tempX = p.x - xf.p.x;
-    double tempY = p.y - xf.p.y;
-    final double pLocalx = xfq.c * tempX + xfq.s * tempY;
-    final double pLocaly = -xfq.s * tempX + xfq.c * tempY;
+    tempx = p.x - xf.p.x;
+    tempy = p.y - xf.p.y;
+    final double pLocalx = xfq.c * tempx + xfq.s * tempy;
+    final double pLocaly = -xfq.s * tempx + xfq.c * tempy;
 
     if (_debug) {
       print("--testPoint debug--");
@@ -255,9 +274,9 @@ class PolygonShape extends Shape {
     for (int i = 0; i < count; ++i) {
       Vector2 vertex = vertices[i];
       Vector2 normal = normals[i];
-      tempX = pLocalx - vertex.x;
-      tempY = pLocaly - vertex.y;
-      final double dot = normal.x * tempX + normal.y * tempY;
+      tempx = pLocalx - vertex.x;
+      tempy = pLocaly - vertex.y;
+      final double dot = normal.x * tempx + normal.y * tempy;
       if (dot > 0.0) {
         return false;
       }
@@ -368,15 +387,18 @@ class PolygonShape extends Shape {
     final double xfqc = xf.q.c;
     final double xfqs = xf.q.s;
     final Vector2 xfp = xf.p;
-    double tempX = input.p1.x - xfp.x;
-    double tempY = input.p1.y - xfp.y;
-    final double p1x = xfqc * tempX + xfqs * tempY;
-    final double p1y = -xfqs * tempX + xfqc * tempY;
+    double tempx, tempy;
+    // b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
+    // b2Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
+    tempx = input.p1.x - xfp.x;
+    tempy = input.p1.y - xfp.y;
+    final double p1x = xfqc * tempx + xfqs * tempy;
+    final double p1y = -xfqs * tempx + xfqc * tempy;
 
-    tempX = input.p2.x - xfp.x;
-    tempY = input.p2.y - xfp.y;
-    final double p2x = xfqc * tempX + xfqs * tempY;
-    final double p2y = -xfqs * tempX + xfqc * tempY;
+    tempx = input.p2.x - xfp.x;
+    tempy = input.p2.y - xfp.y;
+    final double p2x = xfqc * tempx + xfqs * tempy;
+    final double p2y = -xfqs * tempx + xfqc * tempy;
 
     final double dx = p2x - p1x;
     final double dy = p2y - p1y;
@@ -388,6 +410,9 @@ class PolygonShape extends Shape {
     for (int i = 0; i < count; ++i) {
       Vector2 normal = normals[i];
       Vector2 vertex = vertices[i];
+      // p = p1 + a * d
+      // dot(normal, p - v) = 0
+      // dot(normal, p1 - v) + a * dot(normal, d) = 0
       double tempxn = vertex.x - p1x;
       double tempyn = vertex.y - p1y;
       final double numerator = normal.x * tempxn + normal.y * tempyn;
@@ -424,6 +449,7 @@ class PolygonShape extends Shape {
 
     if (index >= 0) {
       output.fraction = lower;
+      // normal = Mul(xf.R, _normals[index]);
       Vector2 normal = normals[index];
       Vector2 out = output.normal;
       out.x = xfqc * normal.x - xfqs * normal.y;

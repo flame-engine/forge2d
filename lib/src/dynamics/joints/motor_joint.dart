@@ -149,10 +149,10 @@ class MotorJoint extends Joint {
     final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
-    Matrix2 K = pool.popMat22();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
+    Matrix2 K = Matrix2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -213,13 +213,7 @@ class MotorJoint extends Joint {
       _angularImpulse = 0.0;
     }
 
-    pool.pushVec2(1);
-    pool.pushMat22(1);
-    pool.pushRot(2);
-
-    // data.velocities[_indexA].v = vA;
     data.velocities[_indexA].w = wA;
-    // data.velocities[_indexB].v = vB;
     data.velocities[_indexB].w = wB;
   }
 
@@ -235,7 +229,7 @@ class MotorJoint extends Joint {
     double h = data.step.dt;
     double inv_h = data.step.inv_dt;
 
-    final Vector2 temp = pool.popVec2();
+    final Vector2 temp = Vector2.zero();
 
     // Solve angular friction
     {
@@ -252,7 +246,7 @@ class MotorJoint extends Joint {
       wB += iB * impulse;
     }
 
-    final Vector2 Cdot = pool.popVec2();
+    final Vector2 Cdot = Vector2.zero();
 
     // Solve linear friction
     {
@@ -272,7 +266,7 @@ class MotorJoint extends Joint {
       final Vector2 impulse = temp;
       _linearMass.transformed(Cdot, impulse);
       impulse.negate();
-      final Vector2 oldImpulse = pool.popVec2();
+      final Vector2 oldImpulse = Vector2.zero();
       oldImpulse.setFrom(_linearImpulse);
       _linearImpulse.add(impulse);
 
@@ -294,8 +288,6 @@ class MotorJoint extends Joint {
       vB.y += mB * impulse.y;
       wB += iB * (_rB.x * impulse.y - _rB.y * impulse.x);
     }
-
-    pool.pushVec2(3);
 
     // data.velocities[_indexA].v.set(vA);
     data.velocities[_indexA].w = wA;

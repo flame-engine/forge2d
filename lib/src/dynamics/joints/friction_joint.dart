@@ -76,9 +76,9 @@ class FrictionJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Vector2 temp = pool.popVec2();
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
+    final Vector2 temp = Vector2.zero();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -96,7 +96,7 @@ class FrictionJoint extends Joint {
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
 
-    final Matrix2 K = pool.popMat22();
+    final Matrix2 K = Matrix2.zero();
     double a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
     double a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
     double a12 = a21;
@@ -116,7 +116,7 @@ class FrictionJoint extends Joint {
       _linearImpulse.scale(data.step.dtRatio);
       _angularImpulse *= data.step.dtRatio;
 
-      final Vector2 P = pool.popVec2();
+      final Vector2 P = Vector2.zero();
       P.setFrom(_linearImpulse);
 
       temp
@@ -131,7 +131,6 @@ class FrictionJoint extends Joint {
       vB.add(temp);
       wB += iB * (_rB.cross(P) + _angularImpulse);
 
-      pool.pushVec2(1);
     } else {
       _linearImpulse.setZero();
       _angularImpulse = 0.0;
@@ -141,10 +140,6 @@ class FrictionJoint extends Joint {
     }
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
-
-    pool.pushRot(2);
-    pool.pushVec2(1);
-    pool.pushMat22(1);
   }
 
   void solveVelocityConstraints(final SolverData data) {
@@ -175,8 +170,8 @@ class FrictionJoint extends Joint {
 
     // Solve linear friction
     {
-      final Vector2 Cdot = pool.popVec2();
-      final Vector2 temp = pool.popVec2();
+      final Vector2 Cdot = Vector2.zero();
+      final Vector2 temp = Vector2.zero();
 
       _rA.scaleOrthogonalInto(wA, temp);
       _rB.scaleOrthogonalInto(wB, Cdot);
@@ -185,11 +180,11 @@ class FrictionJoint extends Joint {
         ..sub(vA)
         ..sub(temp);
 
-      final Vector2 impulse = pool.popVec2();
+      final Vector2 impulse = Vector2.zero();
       _linearMass.transformed(Cdot, impulse);
       impulse.negate();
 
-      final Vector2 oldImpulse = pool.popVec2();
+      final Vector2 oldImpulse = Vector2.zero();
       oldImpulse.setFrom(_linearImpulse);
       _linearImpulse.add(impulse);
 
@@ -222,8 +217,6 @@ class FrictionJoint extends Joint {
     }
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
-
-    pool.pushVec2(4);
   }
 
   bool solvePositionConstraints(final SolverData data) {

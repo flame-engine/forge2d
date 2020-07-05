@@ -148,35 +148,35 @@ class Island {
 
     _listener = listener;
 
-    if (_bodyCapacity > _bodies.length) {
-      _bodies = List<Body>(_bodyCapacity);
-    }
-    if (_jointCapacity > _joints.length) {
-      _joints = List<Joint>(_jointCapacity);
-    }
-    if (_contactCapacity > _contacts.length) {
-      _contacts = List<Contact>(_contactCapacity);
-    }
+    //if (_bodyCapacity > _bodies.length) {
+    //  _bodies = List<Body>(_bodyCapacity);
+    //}
+    //if (_jointCapacity > _joints.length) {
+    //  _joints = List<Joint>(_jointCapacity);
+    //}
+    //if (_contactCapacity > _contacts.length) {
+    //  _contacts = List<Contact>(_contactCapacity);
+    //}
 
     // dynamic array
-    if (_bodyCapacity > _velocities.length) {
-      final List<Velocity> old = _velocities;
-      _velocities = List<Velocity>(_bodyCapacity);
-      BufferUtils.arrayCopy(old, 0, _velocities, 0, old.length);
-      for (int i = old.length; i < _velocities.length; i++) {
-        _velocities[i] = Velocity();
-      }
-    }
+    //if (_bodyCapacity > _velocities.length) {
+    //  final List<Velocity> old = _velocities;
+    //  _velocities = List<Velocity>(_bodyCapacity);
+    //  BufferUtils.arraycopy(old, 0, _velocities, 0, old.length);
+    //  for (int i = old.length; i < _velocities.length; i++) {
+    //    _velocities[i] = Velocity();
+    //  }
+    //}
 
     // dynamic array
-    if (_bodyCapacity > _positions.length) {
-      final List<Position> old = _positions;
-      _positions = List<Position>(_bodyCapacity);
-      BufferUtils.arrayCopy(old, 0, _positions, 0, old.length);
-      for (int i = old.length; i < _positions.length; i++) {
-        _positions[i] = Position();
-      }
-    }
+    //if (_bodyCapacity > _positions.length) {
+    //  final List<Position> old = _positions;
+    //  _positions = List<Position>(_bodyCapacity);
+    //  BufferUtils.arraycopy(old, 0, _positions, 0, old.length);
+    //  for (int i = old.length; i < _positions.length; i++) {
+    //    _positions[i] = Position();
+    //  }
+    //}
   }
 
   void clear() {
@@ -470,18 +470,20 @@ class Island {
   void addBody(Body body) {
     assert(_bodyCount < _bodyCapacity);
     body._islandIndex = _bodyCount;
-    _bodies[_bodyCount] = body;
-    ++_bodyCount;
+    _bodies.add(body);
+    _bodyCount++;
   }
 
   void addContact(Contact contact) {
     assert(_contactCount < _contactCapacity);
-    _contacts[_contactCount++] = contact;
+    _contacts.add(contact);
+    _contactCount++;
   }
 
   void addJoint(Joint joint) {
     assert(_jointCount < _jointCapacity);
-    _joints[_jointCount++] = joint;
+    _joints.add(joint);
+    _jointCount++;
   }
 
   final ContactImpulse _impulse = ContactImpulse();

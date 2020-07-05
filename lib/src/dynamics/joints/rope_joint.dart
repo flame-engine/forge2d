@@ -55,9 +55,9 @@ class RopeJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -93,8 +93,6 @@ class RopeJoint extends Joint {
       _u.setZero();
       _mass = 0.0;
       _impulse = 0.0;
-      pool.pushRot(2);
-      pool.pushVec2(1);
       return;
     }
 
@@ -123,9 +121,6 @@ class RopeJoint extends Joint {
       _impulse = 0.0;
     }
 
-    pool.pushRot(2);
-    pool.pushVec2(1);
-
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
   }
@@ -136,9 +131,9 @@ class RopeJoint extends Joint {
     Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    Vector2 vpA = pool.popVec2();
-    Vector2 vpB = pool.popVec2();
-    Vector2 temp = pool.popVec2();
+    Vector2 vpA = Vector2.zero();
+    Vector2 vpB = Vector2.zero();
+    Vector2 temp = Vector2.zero();
 
     _rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
@@ -169,8 +164,6 @@ class RopeJoint extends Joint {
     vB.y += _invMassB * Py;
     wB += _invIB * (_rB.x * Py - _rB.y * Px);
 
-    pool.pushVec2(3);
-
     // data.velocities[_indexA].v = vA;
     data.velocities[_indexA].w = wA;
     // data.velocities[_indexB].v = vB;
@@ -183,12 +176,12 @@ class RopeJoint extends Joint {
     Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 u = pool.popVec2();
-    final Vector2 rA = pool.popVec2();
-    final Vector2 rB = pool.popVec2();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 u = Vector2.zero();
+    final Vector2 rA = Vector2.zero();
+    final Vector2 rB = Vector2.zero();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -224,9 +217,6 @@ class RopeJoint extends Joint {
     cB.x += _invMassB * Px;
     cB.y += _invMassB * Py;
     aB += _invIB * (rB.x * Py - rB.y * Px);
-
-    pool.pushRot(2);
-    pool.pushVec2(4);
 
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;

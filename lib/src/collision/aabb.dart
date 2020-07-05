@@ -130,10 +130,10 @@ class AABB {
     double tmin = -double.maxFinite;
     double tmax = double.maxFinite;
 
-    final Vector2 p = argPool.popVec2();
-    final Vector2 d = argPool.popVec2();
-    final Vector2 absD = argPool.popVec2();
-    final Vector2 normal = argPool.popVec2();
+    final Vector2 p = Vector2.zero();
+    final Vector2 d = Vector2.zero();
+    final Vector2 absD = Vector2.zero();
+    final Vector2 normal = Vector2.zero();
 
     p.setFrom(input.p1);
     d
@@ -147,7 +147,6 @@ class AABB {
     if (absD.x < Settings.EPSILON) {
       // Parallel.
       if (p.x < lowerBound.x || upperBound.x < p.x) {
-        argPool.pushVec2(4);
         return false;
       }
     } else {
@@ -176,7 +175,6 @@ class AABB {
       tmax = Math.min(tmax, t2);
 
       if (tmin > tmax) {
-        argPool.pushVec2(4);
         return false;
       }
     }
@@ -184,7 +182,6 @@ class AABB {
     if (absD.y < Settings.EPSILON) {
       // Parallel.
       if (p.y < lowerBound.y || upperBound.y < p.y) {
-        argPool.pushVec2(4);
         return false;
       }
     } else {
@@ -213,7 +210,6 @@ class AABB {
       tmax = Math.min(tmax, t2);
 
       if (tmin > tmax) {
-        argPool.pushVec2(4);
         return false;
       }
     }
@@ -221,7 +217,6 @@ class AABB {
     // Does the ray start inside the box?
     // Does the ray intersect beyond the max fraction?
     if (tmin < 0.0 || input.maxFraction < tmin) {
-      argPool.pushVec2(4);
       return false;
     }
 
@@ -229,7 +224,6 @@ class AABB {
     output.fraction = tmin;
     output.normal.x = normal.x;
     output.normal.y = normal.y;
-    argPool.pushVec2(4);
     return true;
   }
 
