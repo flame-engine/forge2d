@@ -471,6 +471,8 @@ class Island {
     assert(_bodyCount < _bodyCapacity);
     body._islandIndex = _bodyCount;
     _bodies.add(body);
+    _positions.add(Position());
+    _velocities.add(Velocity());
     _bodyCount++;
   }
 
