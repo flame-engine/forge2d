@@ -12,7 +12,7 @@ class PolygonContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    _pool.getCollision().collidePolygons(
+    Collision().collidePolygons(
         manifold,
         _fixtureA.getShape() as PolygonShape,
         xfA,

@@ -991,7 +991,6 @@ class World {
 
   final Island toiIsland = Island();
   final TOIInput toiInput = TOIInput();
-  final TOIOutput toiOutput = TOIOutput();
   final TimeStep subStep = TimeStep();
   final List<Body> tempBodies = List<Body>(2);
   final Sweep backup1 = Sweep();
@@ -1093,7 +1092,7 @@ class World {
           input.sweepB.set(bB._sweep);
           input.tMax = 1.0;
 
-          _pool.getTimeOfImpact().timeOfImpact(toiOutput, input);
+          TOIOutput toiOutput = TimeOfImpact().timeOfImpact(input);
 
           // Beta is the fraction of the remaining portion of the .
           double beta = toiOutput.t;

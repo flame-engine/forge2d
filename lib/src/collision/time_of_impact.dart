@@ -36,23 +36,21 @@ class TimeOfImpact {
   final DistanceInput _distanceInput = DistanceInput();
   final Transform _xfA = Transform.zero();
   final Transform _xfB = Transform.zero();
-  final DistanceOutput _distanceOutput = DistanceOutput();
   final SeparationFunction _fcn = SeparationFunction();
   final List<int> _indexes = BufferUtils.intList(2);
   final Sweep _sweepA = Sweep();
   final Sweep _sweepB = Sweep();
 
-  final IWorldPool _pool;
-
-  TimeOfImpact(this._pool);
+  TimeOfImpact();
 
   /// Compute the upper bound on time before two shapes penetrate. Time is represented as a fraction
   /// between [0,tMax]. This uses a swept separating axis and may miss some intermediate,
   /// non-tunneling collision. If you change the time interval, you should call this function again.
   /// Note: use Distance to compute the contact point and normal at the time of impact.
-  void timeOfImpact(TOIOutput output, TOIInput input) {
+  TOIOutput timeOfImpact(TOIInput input) {
     // CCD via the local separating axis method. This seeks progression
     // by computing the largest time at which separation is maintained.
+    TOIOutput output = TOIOutput();
 
     ++toiCalls;
 
@@ -97,17 +95,17 @@ class TimeOfImpact {
       // to get a separating axis
       _distanceInput.transformA = _xfA;
       _distanceInput.transformB = _xfB;
-      _pool.getDistance().distance(_distanceOutput, _cache, _distanceInput);
+      double distance = Distance().distance(_cache, _distanceInput).distance;
 
       // If the shapes are overlapped, we give up on continuous collision.
-      if (_distanceOutput.distance <= 0.0) {
+      if (distance <= 0.0) {
         // Failure!
         output.state = TOIOutputState.OVERLAPPED;
         output.t = 0.0;
         break;
       }
 
-      if (_distanceOutput.distance < target + tolerance) {
+      if (distance < target + tolerance) {
         // Victory!
         output.state = TOIOutputState.TOUCHING;
         output.t = t1;
@@ -227,6 +225,7 @@ class TimeOfImpact {
     }
 
     toiMaxIters = Math.max(toiMaxIters, iter);
+    return output;
   }
 } // Class TimeOfImpact.
 

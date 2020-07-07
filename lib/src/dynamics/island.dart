@@ -358,6 +358,7 @@ class Island {
       }
 
       if (minSleepTime >= Settings.timeToSleep && positionSolved) {
+        print("Do we ever sleep...");
         _bodies.forEach((b) => b.setAwake(false));
       }
     }

@@ -47,12 +47,6 @@ abstract class IWorldPool {
 
   void pushRot(int num);
 
-  Collision getCollision();
-
-  TimeOfImpact getTimeOfImpact();
-
-  Distance getDistance();
-
   Float64List getFloatArray(int argLength);
 
   List<int> getIntArray(int argLength);

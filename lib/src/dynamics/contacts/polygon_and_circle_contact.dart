@@ -10,7 +10,7 @@ class PolygonAndCircleContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    _pool.getCollision().collidePolygonAndCircle(
+    Collision().collidePolygonAndCircle(
         manifold,
         _fixtureA.getShape() as PolygonShape,
         xfA,

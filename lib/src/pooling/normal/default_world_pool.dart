@@ -116,8 +116,6 @@ class DefaultWorldPool implements IWorldPool {
   MutableStackWithPool<ChainAndPolygonContact> _chpstack;
 
   Collision _collision;
-  TimeOfImpact _toi;
-  final Distance _dist;
 
   DefaultWorldPool(int argSize, int argContainerSize)
       : _vecs = OrderedStackVec2(argSize, argContainerSize),
@@ -125,8 +123,7 @@ class DefaultWorldPool implements IWorldPool {
         _mats = OrderedStackMat22(argSize, argContainerSize),
         _aabbs = OrderedStackAABB(argSize, argContainerSize),
         _rots = OrderedStackRot(argSize, argContainerSize),
-        _mat33s = OrderedStackMat33(argSize, argContainerSize),
-        _dist = Distance() {
+        _mat33s = OrderedStackMat33(argSize, argContainerSize) {
     _pcstack =
         MutableStackPolygonContact(this, Settings.CONTACT_STACK_INIT_SIZE);
     _ccstack =
@@ -141,8 +138,6 @@ class DefaultWorldPool implements IWorldPool {
         this, Settings.CONTACT_STACK_INIT_SIZE);
     _chpstack = MutableStackChainAndPolygonContact(
         this, Settings.CONTACT_STACK_INIT_SIZE);
-    _collision = Collision(this);
-    _toi = TimeOfImpact(this);
     _world = this;
   }
 
@@ -240,14 +235,6 @@ class DefaultWorldPool implements IWorldPool {
 
   Collision getCollision() {
     return _collision;
-  }
-
-  TimeOfImpact getTimeOfImpact() {
-    return _toi;
-  }
-
-  Distance getDistance() {
-    return _dist;
   }
 
   Float64List getFloatArray(int argLength) {
