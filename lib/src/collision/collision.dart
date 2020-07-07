@@ -82,9 +82,7 @@ class _ReferenceFace {
 class Collision {
   static const int NULL_FEATURE = 0x3FFFFFFF; // Integer.MAX_VALUE;
 
-  final IWorldPool _pool;
-
-  Collision(this._pool) {
+  Collision() {
     _incidentEdge[0] = ClipVertex();
     _incidentEdge[1] = ClipVertex();
     _clipPoints1[0] = ClipVertex();
@@ -95,7 +93,6 @@ class Collision {
 
   final DistanceInput _input = DistanceInput();
   final SimplexCache _cache = SimplexCache();
-  final DistanceOutput _output = DistanceOutput();
 
   /// Determine if two generic shapes overlap.
   bool testOverlap(Shape shapeA, int indexA, Shape shapeB, int indexB,
@@ -108,10 +105,9 @@ class Collision {
 
     _cache.count = 0;
 
-    print("Is this called");
-    _pool.getDistance().distance(_output, _cache, _input);
+    double distance = Distance().distance(_cache, _input).distance;
     // djm note: anything significant about 10.0f?
-    return _output.distance < 10.0 * Settings.EPSILON;
+    return distance < 10.0 * Settings.EPSILON;
   }
 
   /// Compute the point states given two manifolds. The states pertain to the transition from
