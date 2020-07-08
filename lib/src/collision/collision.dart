@@ -93,6 +93,7 @@ class Collision {
 
   final DistanceInput _input = DistanceInput();
   final SimplexCache _cache = SimplexCache();
+  final DistanceOutput _output = DistanceOutput();
 
   /// Determine if two generic shapes overlap.
   bool testOverlap(Shape shapeA, int indexA, Shape shapeB, int indexB,
@@ -105,9 +106,9 @@ class Collision {
 
     _cache.count = 0;
 
-    double distance = Distance().distance(_cache, _input).distance;
+    Pool.distance.distance(_output, _cache, _input);
     // djm note: anything significant about 10.0f?
-    return distance < 10.0 * Settings.EPSILON;
+    return _output.distance < 10.0 * Settings.EPSILON;
   }
 
   /// Compute the point states given two manifolds. The states pertain to the transition from

@@ -28,8 +28,6 @@ class World {
   ParticleDestructionListener _particleDestructionListener;
   DebugDraw debugDraw;
 
-  final IWorldPool _pool;
-
   /// This is used to compute the time step ratio to support a variable time step.
   double _inv_dt0 = 0.0;
 
@@ -45,8 +43,12 @@ class World {
   ParticleSystem _particleSystem;
 
   static List<List<ContactRegister>> _create2D(int a, int b) {
-    return List<List<ContactRegister>>.generate(
-        a, (_) => List<ContactRegister>(b));
+    // TODO: fix this
+    var res = new List<List<ContactRegister>>(a);
+    for (int i = 0; i < a; i++) {
+      res[i] = new List<ContactRegister>(b);
+    }
+    return res;
   }
 
   List<List<ContactRegister>> contactStacks =
@@ -56,26 +58,15 @@ class World {
   ///
   /// @param gravity the world gravity vector.
   factory World.withGravity(Vector2 gravity) {
-    var w = World.withPool(
-        gravity, DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
-    return w;
+    return World.withGravityAndStrategy(gravity, DynamicTree());
   }
 
-  /// Construct a world object.
-  ///
-  /// @param gravity the world gravity vector.
-  factory World.withPool(Vector2 gravity, IWorldPool pool) {
-    var w = World.withPoolAndStrategy(gravity, pool, DynamicTree());
-    return w;
+  factory World.withGravityAndStrategy(
+      Vector2 gravity, BroadPhaseStrategy strategy) {
+    return World(gravity, DefaultBroadPhaseBuffer(strategy));
   }
 
-  factory World.withPoolAndStrategy(
-      Vector2 gravity, IWorldPool pool, BroadPhaseStrategy strategy) {
-    var w = World(gravity, pool, DefaultBroadPhaseBuffer(strategy));
-    return w;
-  }
-
-  World(Vector2 gravity, this._pool, BroadPhase broadPhase)
+  World(Vector2 gravity, BroadPhase broadPhase)
       : _gravity = Vector2.copy(gravity) {
     _destructionListener = null;
     debugDraw = null;
@@ -146,18 +137,14 @@ class World {
   }
 
   void _initializeRegisters() {
-    _addType(_pool.getCircleContactStack(), ShapeType.CIRCLE, ShapeType.CIRCLE);
+    _addType(Pool.circleContactStack, ShapeType.CIRCLE, ShapeType.CIRCLE);
     _addType(
-        _pool.getPolyCircleContactStack(), ShapeType.POLYGON, ShapeType.CIRCLE);
-    _addType(_pool.getPolyContactStack(), ShapeType.POLYGON, ShapeType.POLYGON);
-    _addType(
-        _pool.getEdgeCircleContactStack(), ShapeType.EDGE, ShapeType.CIRCLE);
-    _addType(
-        _pool.getEdgePolyContactStack(), ShapeType.EDGE, ShapeType.POLYGON);
-    _addType(
-        _pool.getChainCircleContactStack(), ShapeType.CHAIN, ShapeType.CIRCLE);
-    _addType(
-        _pool.getChainPolyContactStack(), ShapeType.CHAIN, ShapeType.POLYGON);
+        Pool.polygonCircleContactStack, ShapeType.POLYGON, ShapeType.CIRCLE);
+    _addType(Pool.polygonContactStack, ShapeType.POLYGON, ShapeType.POLYGON);
+    _addType(Pool.edgeCircleContactStack, ShapeType.EDGE, ShapeType.CIRCLE);
+    _addType(Pool.edgePolygonContactStack, ShapeType.EDGE, ShapeType.POLYGON);
+    _addType(Pool.chainCircleContactStack, ShapeType.CHAIN, ShapeType.CIRCLE);
+    _addType(Pool.chainPolygonContactStack, ShapeType.CHAIN, ShapeType.POLYGON);
   }
 
   DestructionListener getDestructionListener() {
@@ -210,10 +197,6 @@ class World {
     IDynamicStack<Contact> creator =
         contactStacks[type1.index][type2.index].creator;
     creator.push(contact);
-  }
-
-  IWorldPool getPool() {
-    return _pool;
   }
 
   /// Register a destruction listener. The listener is owned by you and must remain in scope.
@@ -991,6 +974,7 @@ class World {
 
   final Island toiIsland = Island();
   final TOIInput toiInput = TOIInput();
+  final TOIOutput toiOutput = TOIOutput();
   final TimeStep subStep = TimeStep();
   final List<Body> tempBodies = List<Body>(2);
   final Sweep backup1 = Sweep();
@@ -1092,7 +1076,7 @@ class World {
           input.sweepB.set(bB._sweep);
           input.tMax = 1.0;
 
-          TOIOutput toiOutput = TimeOfImpact().timeOfImpact(input);
+          Pool.toi.timeOfImpact(toiOutput, input);
 
           // Beta is the fraction of the remaining portion of the .
           double beta = toiOutput.t;

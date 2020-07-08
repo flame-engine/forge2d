@@ -49,8 +49,7 @@ class RevoluteJoint extends Joint {
   double _motorMass = 0.0; // effective mass for motor/limit angular constraint.
   LimitState _limitState = LimitState.INACTIVE;
 
-  RevoluteJoint(IWorldPool argWorld, RevoluteJointDef def)
-      : super(argWorld, def) {
+  RevoluteJoint(RevoluteJointDef def) : super(def) {
     localAnchorA.setFrom(def.localAnchorA);
     localAnchorB.setFrom(def.localAnchorB);
     _referenceAngle = def.referenceAngle;

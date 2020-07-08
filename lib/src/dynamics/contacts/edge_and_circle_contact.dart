@@ -1,7 +1,7 @@
 part of box2d;
 
 class EdgeAndCircleContact extends Contact {
-  EdgeAndCircleContact(IWorldPool argPool) : super(argPool);
+  EdgeAndCircleContact();
 
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
     super.init(fA, indexA, fB, indexB);
@@ -10,7 +10,7 @@ class EdgeAndCircleContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    Collision().collideEdgeAndCircle(
+    Pool.collision.collideEdgeAndCircle(
         manifold,
         _fixtureA.getShape() as EdgeShape,
         xfA,

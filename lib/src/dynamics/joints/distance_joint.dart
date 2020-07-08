@@ -27,8 +27,7 @@ class DistanceJoint extends Joint {
   double _invIB = 0.0;
   double _mass = 0.0;
 
-  DistanceJoint(IWorldPool argWorld, final DistanceJointDef def)
-      : super(argWorld, def) {
+  DistanceJoint(final DistanceJointDef def) : super(def) {
     _length = def.length;
     _frequencyHz = def.frequencyHz;
     _dampingRatio = def.dampingRatio;
@@ -146,7 +145,6 @@ class DistanceJoint extends Joint {
       vB.x += _invMassB * P.x;
       vB.y += _invMassB * P.y;
       wB += _invIB * _rB.cross(P);
-
     } else {
       _impulse = 0.0;
     }

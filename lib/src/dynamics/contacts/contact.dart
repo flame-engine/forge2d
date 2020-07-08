@@ -44,9 +44,7 @@ abstract class Contact {
 
   double _tangentSpeed = 0.0;
 
-  final IWorldPool _pool;
-
-  Contact(this._pool);
+  Contact();
 
   /// initialization for pooling
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
@@ -170,8 +168,8 @@ abstract class Contact {
     if (sensor) {
       Shape shapeA = _fixtureA.getShape();
       Shape shapeB = _fixtureB.getShape();
-      touching =
-          Collision().testOverlap(shapeA, _indexA, shapeB, _indexB, xfA, xfB);
+      touching = Pool.collision
+          .testOverlap(shapeA, _indexA, shapeB, _indexB, xfA, xfB);
 
       // Sensors don't generate manifolds.
       _manifold.pointCount = 0;

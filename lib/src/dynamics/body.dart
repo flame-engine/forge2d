@@ -565,8 +565,6 @@ class Body {
     final Vector2 temp2 = oldCenter;
     temp.scaleOrthogonalInto(_angularVelocity, temp2);
     _linearVelocity.add(temp2);
-
-    world.getPool().pushVec2(3);
   }
 
   /// Get the world coordinates of a point given the local coordinates.

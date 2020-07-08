@@ -28,7 +28,7 @@ class RopeJoint extends Joint {
   double _mass = 0.0;
   LimitState _state = LimitState.INACTIVE;
 
-  RopeJoint(IWorldPool worldPool, RopeJointDef def) : super(worldPool, def) {
+  RopeJoint(RopeJointDef def) : super(def) {
     localAnchorA.setFrom(def.localAnchorA);
     localAnchorB.setFrom(def.localAnchorB);
 
