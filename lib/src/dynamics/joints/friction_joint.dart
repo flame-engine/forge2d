@@ -21,9 +21,9 @@ class FrictionJoint extends Joint {
   final Matrix2 _linearMass = Matrix2.zero();
   double _angularMass = 0.0;
 
-  FrictionJoint(IWorldPool argWorldPool, FrictionJointDef def)
+  FrictionJoint(FrictionJointDef def)
       : _linearImpulse = Vector2.zero(),
-        super(argWorldPool, def) {
+        super(def) {
     _maxForce = def.maxForce;
     _maxTorque = def.maxTorque;
   }
@@ -130,7 +130,6 @@ class FrictionJoint extends Joint {
         ..scale(mB);
       vB.add(temp);
       wB += iB * (_rB.cross(P) + _angularImpulse);
-
     } else {
       _linearImpulse.setZero();
       _angularImpulse = 0.0;

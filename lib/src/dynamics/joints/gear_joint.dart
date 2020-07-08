@@ -66,14 +66,14 @@ class GearJoint extends Joint {
   double _JwA = 0.0, _JwB = 0.0, _JwC = 0.0, _JwD = 0.0;
   double _mass = 0.0;
 
-  GearJoint(IWorldPool argWorldPool, GearJointDef def)
+  GearJoint(GearJointDef def)
       : _joint1 = def.joint1,
         _joint2 = def.joint2,
         _typeA = def.joint1.getType(),
         _typeB = def.joint2.getType(),
         _bodyC = def.joint1.getBodyA(),
         _bodyD = def.joint2.getBodyA(),
-        super(argWorldPool, def) {
+        super(def) {
     assert(_typeA == JointType.REVOLUTE || _typeA == JointType.PRISMATIC);
     assert(_typeB == JointType.REVOLUTE || _typeB == JointType.PRISMATIC);
 
@@ -210,10 +210,7 @@ class GearJoint extends Joint {
     Vector2 vD = data.velocities[_indexD].v;
     double wD = data.velocities[_indexD].w;
 
-    Rot qA = Rot(),
-        qB = Rot(),
-        qC = Rot(),
-        qD = Rot();
+    Rot qA = Rot(), qB = Rot(), qC = Rot(), qD = Rot();
     qA.setAngle(aA);
     qB.setAngle(aB);
     qC.setAngle(aC);
@@ -368,10 +365,7 @@ class GearJoint extends Joint {
     Vector2 cD = data.positions[_indexD].c;
     double aD = data.positions[_indexD].a;
 
-    Rot qA = Rot(),
-        qB = Rot(),
-        qC = Rot(),
-        qD = Rot();
+    Rot qA = Rot(), qB = Rot(), qC = Rot(), qD = Rot();
     qA.setAngle(aA);
     qB.setAngle(aB);
     qC.setAngle(aC);

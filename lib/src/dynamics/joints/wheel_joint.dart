@@ -61,7 +61,7 @@ class WheelJoint extends Joint {
   double _bias = 0.0;
   double _gamma = 0.0;
 
-  WheelJoint(IWorldPool argPool, WheelJointDef def) : super(argPool, def) {
+  WheelJoint(WheelJointDef def) : super(def) {
     localAnchorA.setFrom(def.localAnchorA);
     localAnchorB.setFrom(def.localAnchorB);
     _localXAxisA.setFrom(def.localAxisA);

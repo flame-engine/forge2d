@@ -8,9 +8,9 @@ class ContactManager implements PairCallback {
   ContactFilter contactFilter;
   ContactListener contactListener;
 
-  final World _pool;
+  final World _world;
 
-  ContactManager(this._pool, BroadPhase broadPhase_) {
+  ContactManager(this._world, BroadPhase broadPhase_) {
     contactList = null;
     contactFilter = ContactFilter();
     contactListener = null;
@@ -73,7 +73,7 @@ class ContactManager implements PairCallback {
     }
 
     // Call the factory.
-    Contact c = _pool.popContact(fixtureA, indexA, fixtureB, indexB);
+    Contact c = _world.popContact(fixtureA, indexA, fixtureB, indexB);
     if (c == null) {
       return;
     }
@@ -181,7 +181,7 @@ class ContactManager implements PairCallback {
     }
 
     // Call the factory.
-    _pool.pushContact(c);
+    _world.pushContact(c);
     --contactCount;
   }
 

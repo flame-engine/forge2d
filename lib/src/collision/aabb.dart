@@ -120,13 +120,15 @@ class AABB {
   }
 
   /// @deprecated please use {@link #raycast(RayCastOutput, RayCastInput, IWorldPool)} for better performance
-  bool raycast(final RayCastOutput output, final RayCastInput input) {
-    return raycastWithPool(output, input, DefaultWorldPool(4, 4));
-  }
+  //bool raycast(final RayCastOutput output, final RayCastInput input) {
+  //  return raycastWithPool(output, input, DefaultWorldPool(4, 4));
+  //}
 
   /// From Real-time Collision Detection, p179.
-  bool raycastWithPool(final RayCastOutput output, final RayCastInput input,
-      IWorldPool argPool) {
+  bool raycastWithPool(
+    final RayCastOutput output,
+    final RayCastInput input,
+  ) {
     double tmin = -double.maxFinite;
     double tmax = double.maxFinite;
 

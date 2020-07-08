@@ -26,7 +26,7 @@ class ConstantVolumeJoint extends Joint {
 
   ConstantVolumeJoint(World argWorld, ConstantVolumeJointDef def)
       : _bodies = def.bodies.toList(growable: false),
-        super(argWorld.getPool(), def) {
+        super(def) {
     _world = argWorld;
     if (def.bodies.length <= 2) {
       throw "You cannot create a constant volume joint with less than three _bodies.";
@@ -140,12 +140,12 @@ class ConstantVolumeJoint extends Joint {
   void initVelocityConstraints(final SolverData step) {
     List<Velocity> velocities = step.velocities;
     List<Position> positions = step.positions;
-    final List<Vector2> d = pool.getVec2Array(_bodies.length);
+    final List<Vector2> d = List<Vector2>(_bodies.length);
 
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i].setFrom(positions[_bodies[next]._islandIndex].c);
+      d[i] = Vector2.copy(positions[_bodies[next]._islandIndex].c);
       d[i].sub(positions[_bodies[prev]._islandIndex].c);
     }
 
@@ -172,12 +172,12 @@ class ConstantVolumeJoint extends Joint {
 
     List<Velocity> velocities = step.velocities;
     List<Position> positions = step.positions;
-    final List<Vector2> d = pool.getVec2Array(_bodies.length);
+    final List<Vector2> d = List<Vector2>(_bodies.length);
 
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i].setFrom(positions[_bodies[next]._islandIndex].c);
+      d[i] = Vector2.copy(positions[_bodies[next]._islandIndex].c);
       d[i].sub(positions[_bodies[prev]._islandIndex].c);
       dotMassSum += (d[i].length2) / _bodies[i].mass;
       crossMassSum += velocities[_bodies[i]._islandIndex].v.cross(d[i]);

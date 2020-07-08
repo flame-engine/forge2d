@@ -1,7 +1,7 @@
 part of box2d;
 
 class EdgeAndPolygonContact extends Contact {
-  EdgeAndPolygonContact(IWorldPool argPool) : super(argPool);
+  EdgeAndPolygonContact();
 
   void init(Fixture fA, int indexA, Fixture fB, int indexB) {
     super.init(fA, indexA, fB, indexB);
@@ -10,7 +10,7 @@ class EdgeAndPolygonContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    Collision().collideEdgeAndPolygon(
+    Pool.collision.collideEdgeAndPolygon(
         manifold,
         _fixtureA.getShape() as EdgeShape,
         xfA,

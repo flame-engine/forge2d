@@ -33,8 +33,7 @@ class PulleyJoint extends Joint {
   double _invIB = 0.0;
   double _mass = 0.0;
 
-  PulleyJoint(IWorldPool argWorldPool, PulleyJointDef def)
-      : super(argWorldPool, def) {
+  PulleyJoint(PulleyJointDef def) : super(def) {
     _groundAnchorA.setFrom(def.groundAnchorA);
     _groundAnchorB.setFrom(def.groundAnchorB);
     localAnchorA.setFrom(def.localAnchorA);

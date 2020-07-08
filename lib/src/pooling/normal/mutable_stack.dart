@@ -1,5 +1,6 @@
 part of box2d;
 
+// TODO(spydon): refactor to just use a normal stack
 abstract class MutableStack<E> implements IDynamicStack<E> {
   List<E> _stack;
   int _index;

@@ -41,11 +41,11 @@ class WeldJoint extends Joint {
   double _invIB = 0.0;
   final Matrix3 _mass = Matrix3.zero();
 
-  WeldJoint(IWorldPool argWorld, WeldJointDef def)
+  WeldJoint(WeldJointDef def)
       : localAnchorA = Vector2.copy(def.localAnchorA),
         localAnchorB = Vector2.copy(def.localAnchorB),
         _impulse = Vector3.zero(),
-        super(argWorld, def) {
+        super(def) {
     _referenceAngle = def.referenceAngle;
     _frequencyHz = def.frequencyHz;
     _dampingRatio = def.dampingRatio;
@@ -90,8 +90,7 @@ class WeldJoint extends Joint {
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    final temp = Vector2.copy(localAnchorA)
-      ..sub(_localCenterA);
+    final temp = Vector2.copy(localAnchorA)..sub(_localCenterA);
     _rA.setFrom(Rot.mulVec2(qA, temp));
     temp
       ..setFrom(localAnchorB)
@@ -261,8 +260,7 @@ class WeldJoint extends Joint {
     double mA = _invMassA, mB = _invMassB;
     double iA = _invIA, iB = _invIB;
 
-    final Vector2 temp = Vector2.copy(localAnchorA)
-      ..sub(_localCenterA);
+    final Vector2 temp = Vector2.copy(localAnchorA)..sub(_localCenterA);
     final Vector2 rA = Vector2.copy(Rot.mulVec2(qA, temp));
     temp
       ..setFrom(localAnchorB)
@@ -272,7 +270,7 @@ class WeldJoint extends Joint {
 
     final Matrix3 K = Matrix3.zero();
     final Vector2 C1 = Vector2.zero();
-    final Vector2 P =  Vector2.zero();
+    final Vector2 P = Vector2.zero();
 
     double ex_x = mA + mB + rA.y * rA.y * iA + rB.y * rB.y * iB;
     double ey_x = -rA.y * rA.x * iA - rB.y * rB.x * iB;

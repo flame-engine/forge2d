@@ -36,6 +36,7 @@ class TimeOfImpact {
   final DistanceInput _distanceInput = DistanceInput();
   final Transform _xfA = Transform.zero();
   final Transform _xfB = Transform.zero();
+  final DistanceOutput _distanceOutput = DistanceOutput();
   final SeparationFunction _fcn = SeparationFunction();
   final List<int> _indexes = BufferUtils.intList(2);
   final Sweep _sweepA = Sweep();
@@ -47,10 +48,9 @@ class TimeOfImpact {
   /// between [0,tMax]. This uses a swept separating axis and may miss some intermediate,
   /// non-tunneling collision. If you change the time interval, you should call this function again.
   /// Note: use Distance to compute the contact point and normal at the time of impact.
-  TOIOutput timeOfImpact(TOIInput input) {
+  void timeOfImpact(TOIOutput output, TOIInput input) {
     // CCD via the local separating axis method. This seeks progression
     // by computing the largest time at which separation is maintained.
-    TOIOutput output = TOIOutput();
 
     ++toiCalls;
 
@@ -95,17 +95,17 @@ class TimeOfImpact {
       // to get a separating axis
       _distanceInput.transformA = _xfA;
       _distanceInput.transformB = _xfB;
-      double distance = Distance().distance(_cache, _distanceInput).distance;
+      Pool.distance.distance(_distanceOutput, _cache, _distanceInput);
 
       // If the shapes are overlapped, we give up on continuous collision.
-      if (distance <= 0.0) {
+      if (_distanceOutput.distance <= 0.0) {
         // Failure!
         output.state = TOIOutputState.OVERLAPPED;
         output.t = 0.0;
         break;
       }
 
-      if (distance < target + tolerance) {
+      if (_distanceOutput.distance < target + tolerance) {
         // Victory!
         output.state = TOIOutputState.TOUCHING;
         output.t = t1;
@@ -225,7 +225,6 @@ class TimeOfImpact {
     }
 
     toiMaxIters = Math.max(toiMaxIters, iter);
-    return output;
   }
 } // Class TimeOfImpact.
 

@@ -6,29 +6,29 @@ abstract class Joint {
   static Joint create(World world, JointDef def) {
     switch (def.type) {
       case JointType.MOUSE:
-        return MouseJoint(world.getPool(), def as MouseJointDef);
+        return MouseJoint(def as MouseJointDef);
       case JointType.DISTANCE:
-        return DistanceJoint(world.getPool(), def as DistanceJointDef);
+        return DistanceJoint(def as DistanceJointDef);
       case JointType.PRISMATIC:
-        return PrismaticJoint(world.getPool(), def as PrismaticJointDef);
+        return PrismaticJoint(def as PrismaticJointDef);
       case JointType.REVOLUTE:
-        return RevoluteJoint(world.getPool(), def as RevoluteJointDef);
+        return RevoluteJoint(def as RevoluteJointDef);
       case JointType.WELD:
-        return WeldJoint(world.getPool(), def as WeldJointDef);
+        return WeldJoint(def as WeldJointDef);
       case JointType.FRICTION:
-        return FrictionJoint(world.getPool(), def as FrictionJointDef);
+        return FrictionJoint(def as FrictionJointDef);
       case JointType.WHEEL:
-        return WheelJoint(world.getPool(), def as WheelJointDef);
+        return WheelJoint(def as WheelJointDef);
       case JointType.GEAR:
-        return GearJoint(world.getPool(), def as GearJointDef);
+        return GearJoint(def as GearJointDef);
       case JointType.PULLEY:
-        return PulleyJoint(world.getPool(), def as PulleyJointDef);
+        return PulleyJoint(def as PulleyJointDef);
       case JointType.CONSTANT_VOLUME:
         return ConstantVolumeJoint(world, def as ConstantVolumeJointDef);
       case JointType.ROPE:
-        return RopeJoint(world.getPool(), def as RopeJointDef);
+        return RopeJoint(def as RopeJointDef);
       case JointType.MOTOR:
-        return MotorJoint(world.getPool(), def as MotorJointDef);
+        return MotorJoint(def as MotorJointDef);
       case JointType.UNKNOWN:
       default:
         return null;
@@ -50,18 +50,15 @@ abstract class Joint {
   bool _islandFlag = false;
   bool _collideConnected = false;
 
-  IWorldPool pool;
-
   final Vector2 localAnchorA;
   final Vector2 localAnchorB;
 
-  Joint(IWorldPool worldPool, JointDef def)
+  Joint(JointDef def)
       : localAnchorA = def.localAnchorA,
         localAnchorB = def.localAnchorB,
         _type = def.type {
     assert(def.bodyA != def.bodyB);
 
-    pool = worldPool;
     _prev = null;
     _next = null;
     _bodyA = def.bodyA;

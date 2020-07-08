@@ -105,12 +105,12 @@ class PrismaticJoint extends Joint {
   double _motorMass =
       0.0; // effective mass for motor/limit translational constraint.
 
-  PrismaticJoint(IWorldPool argWorld, PrismaticJointDef def)
+  PrismaticJoint(PrismaticJointDef def)
       : localAnchorA = Vector2.copy(def.localAnchorA),
         localAnchorB = Vector2.copy(def.localAnchorB),
         _localXAxisA = Vector2.copy(def.localAxisA)..normalize(),
         _localYAxisA = Vector2.zero(),
-        super(argWorld, def) {
+        super(def) {
     _localXAxisA.scaleOrthogonalInto(1.0, _localYAxisA);
     _referenceAngle = def.referenceAngle;
 
@@ -456,7 +456,6 @@ class PrismaticJoint extends Joint {
       vB.x += mB * P.x;
       vB.y += mB * P.y;
       wB += iB * LB;
-
     } else {
       _impulse.setZero();
       _motorImpulse = 0.0;

@@ -40,7 +40,7 @@ class MotorJoint extends Joint {
   final Matrix2 _linearMass = Matrix2.zero();
   double _angularMass = 0.0;
 
-  MotorJoint(IWorldPool pool, MotorJointDef def) : super(pool, def) {
+  MotorJoint(MotorJointDef def) : super(def) {
     _linearOffset.setFrom(def.linearOffset);
     _angularOffset = def.angularOffset;
 

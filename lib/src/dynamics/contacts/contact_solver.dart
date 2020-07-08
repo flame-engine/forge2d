@@ -62,6 +62,8 @@ class ContactSolver {
       }
     }
 
+    print(
+        "${def.positions.length} ${def.velocities.length} ${def.contacts.length}");
     _positions = def.positions;
     _velocities = def.velocities;
     _contacts = def.contacts;

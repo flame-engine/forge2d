@@ -577,8 +577,8 @@ class Distance {
   /// Compute the closest points between two shapes. Supports any combination of: CircleShape and
   /// PolygonShape. The simplex cache is input/output. On the first call set SimplexCache.count to
   /// zero.
-  DistanceOutput distance(final SimplexCache cache, final DistanceInput input) {
-    DistanceOutput output = DistanceOutput();
+  void distance(final DistanceOutput output, final SimplexCache cache,
+      final DistanceInput input) {
     GJK_CALLS++;
 
     final DistanceProxy proxyA = input.proxyA;
@@ -739,6 +739,5 @@ class Distance {
         output.distance = 0.0;
       }
     }
-    return output;
   }
 }

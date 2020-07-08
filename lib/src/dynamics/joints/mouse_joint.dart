@@ -24,7 +24,7 @@ class MouseJoint extends Joint {
   final Matrix2 _mass = Matrix2.zero();
   final Vector2 _C = Vector2.zero();
 
-  MouseJoint(IWorldPool argWorld, MouseJointDef def) : super(argWorld, def) {
+  MouseJoint(MouseJointDef def) : super(def) {
     assert(MathUtils.vector2IsValid(def.target));
     assert(def.maxForce >= 0);
     assert(def.frequencyHz >= 0);
