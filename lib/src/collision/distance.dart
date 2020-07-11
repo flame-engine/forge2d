@@ -476,7 +476,7 @@ class DistanceProxy {
     switch (shape.shapeType) {
       case ShapeType.CIRCLE:
         final circle = shape as CircleShape;
-        vertices[0].setFrom(circle.p);
+        vertices[0].setFrom(circle.position);
         _count = 1;
         radius = circle.radius;
 

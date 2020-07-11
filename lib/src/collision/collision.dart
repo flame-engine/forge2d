@@ -211,8 +211,8 @@ class Collision {
     manifold.pointCount = 0;
 
     // after inline:
-    Vector2 circle1p = circle1.p;
-    Vector2 circle2p = circle2.p;
+    Vector2 circle1p = circle1.position;
+    Vector2 circle2p = circle2.position;
     double pAx = (xfA.q.c * circle1p.x - xfA.q.s * circle1p.y) + xfA.p.x;
     double pAy = (xfA.q.s * circle1p.x + xfA.q.c * circle1p.y) + xfA.p.y;
     double pBx = (xfB.q.c * circle2p.x - xfB.q.s * circle2p.y) + xfB.p.x;
@@ -252,7 +252,7 @@ class Collision {
     // final double cLocaly = cLocal.y;
 
     // after inline:
-    final Vector2 circlep = circle.p;
+    final Vector2 circlep = circle.position;
     final Rot xfBq = xfB.q;
     final Rot xfAq = xfA.q;
     final double cx = (xfBq.c * circlep.x - xfBq.s * circlep.y) + xfB.p.x;
@@ -695,7 +695,7 @@ class Collision {
 
     // Compute circle in frame of edge
     // Vec2 Q = MulT(xfA, Mul(xfB, circleB.p));
-    _temp.setFrom(Transform.mulVec2(xfB, circleB.p));
+    _temp.setFrom(Transform.mulVec2(xfB, circleB.position));
     _q.setFrom(Transform.mulTransVec2(xfA, _temp));
 
     final Vector2 A = edgeA.vertex1;
@@ -753,7 +753,7 @@ class Collision {
       manifold.localPoint.setFrom(P);
       // manifold.points[0].id.key = 0;
       manifold.points[0].id.set(_cf);
-      manifold.points[0].localPoint.setFrom(circleB.p);
+      manifold.points[0].localPoint.setFrom(circleB.position);
       return;
     }
 
@@ -793,7 +793,7 @@ class Collision {
       manifold.localNormal.setZero();
       manifold.localPoint.setFrom(P);
       manifold.points[0].id.set(_cf);
-      manifold.points[0].localPoint.setFrom(circleB.p);
+      manifold.points[0].localPoint.setFrom(circleB.position);
       return;
     }
 
@@ -834,7 +834,7 @@ class Collision {
     manifold.localPoint.setFrom(A);
     // manifold.points[0].id.key = 0;
     manifold.points[0].id.set(_cf);
-    manifold.points[0].localPoint.setFrom(circleB.p);
+    manifold.points[0].localPoint.setFrom(circleB.position);
   }
 
   final EPCollider _collider = EPCollider();
@@ -892,7 +892,7 @@ class EPCollider {
   void collide(Manifold manifold, final EdgeShape edgeA, final Transform xfA,
       final PolygonShape polygonB_, final Transform xfB) {
     xf.set(Transform.mulTrans(xfA, xfB));
-    centroidB.setFrom(Transform.mulVec2(xf, polygonB_.centroid));
+    centroidB.setFrom(Transform.mulVec2(xf, polygonB_.position));
 
     v0 = edgeA.vertex0;
     v1 = edgeA.vertex1;
