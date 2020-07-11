@@ -2,7 +2,7 @@ part of box2d;
 
 /// A circle shape.
 class CircleShape extends Shape {
-  final Vector2 p = Vector2.zero();
+  final Vector2 position = Vector2.zero();
 
   CircleShape() : super(ShapeType.CIRCLE) {
     radius = 0.0;
@@ -10,8 +10,8 @@ class CircleShape extends Shape {
 
   Shape clone() {
     CircleShape shape = CircleShape();
-    shape.p.x = p.x;
-    shape.p.y = p.y;
+    shape.position.x = position.x;
+    shape.position.y = position.y;
     shape.radius = radius;
     return shape;
   }
@@ -22,7 +22,7 @@ class CircleShape extends Shape {
   int getSupport(final Vector2 d) => 0;
 
   /// Get the supporting vertex in the given direction.
-  Vector2 getSupportVertex(final Vector2 d) => p;
+  Vector2 getSupportVertex(final Vector2 d) => position;
 
   /// Get the vertex count.
   int getVertexCount() => 1;
@@ -30,7 +30,7 @@ class CircleShape extends Shape {
   /// Get a vertex by index.
   Vector2 getVertex(final int index) {
     assert(index == 0);
-    return p;
+    return position;
   }
 
   bool testPoint(final Transform transform, final Vector2 point) {
@@ -68,8 +68,8 @@ class CircleShape extends Shape {
 
     // Rot.mulToOutUnsafe(transform.q, _p, position);
     // position.addLocal(transform.p);
-    final double positionx = tq.c * p.x - tq.s * p.y + tp.x;
-    final double positiony = tq.s * p.x + tq.c * p.y + tp.y;
+    final double positionx = tq.c * position.x - tq.s * position.y + tp.x;
+    final double positiony = tq.s * position.x + tq.c * position.y + tp.y;
 
     final double sx = inputp1.x - positionx;
     final double sy = inputp1.y - positiony;
@@ -109,8 +109,8 @@ class CircleShape extends Shape {
   void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
     final Rot tq = transform.q;
     final Vector2 tp = transform.p;
-    final double px = tq.c * p.x - tq.s * p.y + tp.x;
-    final double py = tq.s * p.x + tq.c * p.y + tp.y;
+    final double px = tq.c * position.x - tq.s * position.y + tp.x;
+    final double py = tq.s * position.x + tq.c * position.y + tp.y;
 
     aabb.lowerBound.x = px - radius;
     aabb.lowerBound.y = py - radius;
@@ -120,11 +120,11 @@ class CircleShape extends Shape {
 
   void computeMass(final MassData massData, final double density) {
     massData.mass = density * Math.pi * radius * radius;
-    massData.center.x = p.x;
-    massData.center.y = p.y;
+    massData.center.x = position.x;
+    massData.center.y = position.y;
 
     // inertia about the local origin
     massData.I =
-        massData.mass * (0.5 * radius * radius + (p.x * p.x + p.y * p.y));
+        massData.mass * (0.5 * radius * radius + (position.x * position.x + position.y * position.y));
   }
 }

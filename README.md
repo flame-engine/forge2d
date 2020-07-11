@@ -14,4 +14,6 @@ lib/                     Port of Daniel Murphy's jbox2d
 First Dart port of an earlier version of Box2D library was
 done by Dominic Hamon. We are grateful for his work.
 
+Major refactor of the coding style was done in 2020 by spydon (Lukas Klingsbo).
+
 __*Not an official Google project*__

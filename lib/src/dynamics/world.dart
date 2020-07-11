@@ -1326,7 +1326,7 @@ class World {
         {
           final circle = fixture.getShape() as CircleShape;
 
-          center.setFrom(Transform.mulVec2(xf, circle.p));
+          center.setFrom(Transform.mulVec2(xf, circle.position));
           double radius = circle.radius;
           xf.q.getXAxis(axis);
 
