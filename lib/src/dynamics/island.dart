@@ -137,6 +137,14 @@ class Island {
   int _contactCapacity = 0;
   int _jointCapacity = 0;
 
+  Island() {
+    _bodies = List<Body>(_bodyCapacity);
+    _contacts = List<Contact>(_contactCapacity);
+    _joints = List<Joint>(_jointCapacity);
+    _velocities = List<Velocity>(0);
+    _positions = List<Position>(0);
+  }
+
   void init(int bodyCapacity, int contactCapacity, int jointCapacity,
       ContactListener listener) {
     _bodyCapacity = bodyCapacity;
@@ -148,31 +156,28 @@ class Island {
 
     _listener = listener;
 
-    _bodies ??= List<Body>(_bodyCapacity);
-    _joints ??= List<Joint>(_jointCapacity);
-    _contacts ??= List<Contact>(_contactCapacity);
-    print(_contacts.length);
-    _velocities ??= List<Velocity>(0);
-    _positions ??= List<Position>(0);
-
-    // dynamic array
-    if (_bodyCapacity > _velocities.length) {
-      List<Velocity> updatedVelocities =
-          List.filled(_bodyCapacity, Velocity(), growable: false);
-      for (int i = 0; i < _velocities.length; i++) {
-        updatedVelocities[i] = _velocities[i];
-      }
-      _velocities = updatedVelocities;
+    if (_bodyCapacity > _bodies.length) {
+      _bodies = List<Body>(_bodyCapacity);
     }
 
-    // dynamic array
+    if (_contactCapacity > _contacts.length) {
+      _contacts = List<Contact>(_contactCapacity);
+    }
+
+    if (_jointCapacity > _joints.length) {
+      _joints = List<Joint>(_jointCapacity);
+    }
+
+    if (_bodyCapacity > _velocities.length) {
+      _velocities = List.generate(_bodyCapacity,
+          (i) => _velocities.length > i ? _velocities[i] : Velocity(),
+          growable: false);
+    }
+
     if (_bodyCapacity > _positions.length) {
-      List<Position> updatedPositions =
-          List.filled(_bodyCapacity, Position(), growable: false);
-      for (int i = 0; i < _positions.length; i++) {
-        updatedPositions[i] = _positions[i];
-      }
-      _positions = updatedPositions;
+      _positions = List.generate(_bodyCapacity,
+          (i) => _positions.length > i ? _positions[i] : Position(),
+          growable: false);
     }
   }
 
@@ -356,7 +361,7 @@ class Island {
       }
 
       if (minSleepTime >= Settings.timeToSleep && positionSolved) {
-        _bodies.forEach((b) => b.setAwake(false));
+        _bodies.forEach((b) => b?.setAwake(false));
       }
     }
   }

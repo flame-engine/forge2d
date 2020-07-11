@@ -805,8 +805,8 @@ class World {
   }
 
   final Island island = Island();
-  List<Body> stack =
-      List<Body>(10); // TODO djm find a good initial stack number;
+  // TODO djm find a good initial stack number;
+  List<Body> stack = List<Body>(10);
   final Timer broadphaseTimer = Timer();
 
   void solve(TimeStep step) {
