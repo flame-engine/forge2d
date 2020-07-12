@@ -559,7 +559,6 @@ class World {
   final Transform xf = Transform.zero();
   final Vector2 cA = Vector2.zero();
   final Vector2 cB = Vector2.zero();
-  final Vec2Array avs = Vec2Array();
 
   /// Call this to draw shapes and other debug draw data.
   void drawDebugData() {
@@ -627,7 +626,7 @@ class World {
             FixtureProxy proxy = f._proxies[i];
             AABB aabb = _contactManager.broadPhase.getFatAABB(proxy.proxyId);
             if (aabb != null) {
-              List<Vector2> vs = avs.get(4);
+              List<Vector2> vs = List<Vector2>(4);
               vs[0].setValues(aabb.lowerBound.x, aabb.lowerBound.y);
               vs[1].setValues(aabb.upperBound.x, aabb.lowerBound.y);
               vs[2].setValues(aabb.upperBound.x, aabb.upperBound.y);
@@ -1318,7 +1317,6 @@ class World {
   final Vector2 axis = Vector2.zero();
   final Vector2 v1 = Vector2.zero();
   final Vector2 v2 = Vector2.zero();
-  final Vec2Array tlvertices = Vec2Array();
 
   void drawShape(Fixture fixture, Transform xf, Color3i color, bool wireframe) {
     switch (fixture.getType()) {
@@ -1360,7 +1358,7 @@ class World {
           final poly = fixture.getShape() as PolygonShape;
           int vertexCount = poly.count;
           assert(vertexCount <= Settings.maxPolygonVertices);
-          List<Vector2> vertices = tlvertices.get(Settings.maxPolygonVertices);
+          List<Vector2> vertices = List<Vector2>(Settings.maxPolygonVertices);
 
           for (int i = 0; i < vertexCount; ++i) {
             vertices[i] = Transform.mulVec2(xf, poly.vertices[i]);
