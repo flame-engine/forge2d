@@ -85,8 +85,8 @@ class VoronoiDiagram {
   MutableStack<VoronoiDiagramTask> _taskPool =
       VoronoiDiagramTaskMutableStack(50);
 
-  final StackQueue<VoronoiDiagramTask> _queue =
-      StackQueue<VoronoiDiagramTask>();
+  final ListQueue<VoronoiDiagramTask> _queue =
+      ListQueue<VoronoiDiagramTask>();
 
   void generate(double radius) {
     assert(_diagram == null);
@@ -103,17 +103,17 @@ class VoronoiDiagram {
     _countX = 1 + (inverseRadius * (_upper.x - _lower.x)).toInt();
     _countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
     _diagram = List<VoronoiGenerator>(_countX * _countY);
-    _queue.reset(List<VoronoiDiagramTask>(4 * _countX * _countX));
+    _queue.clear();
     for (int k = 0; k < _generatorCount; k++) {
       VoronoiGenerator g = _generatorBuffer[k];
       g.center.x = inverseRadius * (g.center.x - _lower.x);
       g.center.y = inverseRadius * (g.center.y - _lower.y);
       int x = Math.max(0, Math.min(g.center.x.toInt(), _countX - 1));
       int y = Math.max(0, Math.min(g.center.y.toInt(), _countY - 1));
-      _queue.push(_taskPool.pop().set(x, y, x + y * _countX, g));
+      _queue.addFirst(_taskPool.pop().set(x, y, x + y * _countX, g));
     }
-    while (!_queue.empty()) {
-      VoronoiDiagramTask front = _queue.pop();
+    while (_queue.isNotEmpty) {
+      VoronoiDiagramTask front = _queue.removeFirst();
       int x = front._x;
       int y = front._y;
       int i = front._i;
@@ -121,16 +121,16 @@ class VoronoiDiagram {
       if (_diagram[i] == null) {
         _diagram[i] = g;
         if (x > 0) {
-          _queue.push(_taskPool.pop().set(x - 1, y, i - 1, g));
+          _queue.addFirst(_taskPool.pop().set(x - 1, y, i - 1, g));
         }
         if (y > 0) {
-          _queue.push(_taskPool.pop().set(x, y - 1, i - _countX, g));
+          _queue.addFirst(_taskPool.pop().set(x, y - 1, i - _countX, g));
         }
         if (x < _countX - 1) {
-          _queue.push(_taskPool.pop().set(x + 1, y, i + 1, g));
+          _queue.addFirst(_taskPool.pop().set(x + 1, y, i + 1, g));
         }
         if (y < _countY - 1) {
-          _queue.push(_taskPool.pop().set(x, y + 1, i + _countX, g));
+          _queue.addFirst(_taskPool.pop().set(x, y + 1, i + _countX, g));
         }
       }
       _taskPool.push(front);
@@ -143,8 +143,8 @@ class VoronoiDiagram {
           VoronoiGenerator a = _diagram[i];
           VoronoiGenerator b = _diagram[i + 1];
           if (a != b) {
-            _queue.push(_taskPool.pop().set(x, y, i, b));
-            _queue.push(_taskPool.pop().set(x + 1, y, i + 1, a));
+            _queue.addFirst(_taskPool.pop().set(x, y, i, b));
+            _queue.addFirst(_taskPool.pop().set(x + 1, y, i + 1, a));
           }
         }
       }
@@ -154,14 +154,14 @@ class VoronoiDiagram {
           VoronoiGenerator a = _diagram[i];
           VoronoiGenerator b = _diagram[i + _countX];
           if (a != b) {
-            _queue.push(_taskPool.pop().set(x, y, i, b));
-            _queue.push(_taskPool.pop().set(x, y + 1, i + _countX, a));
+            _queue.addFirst(_taskPool.pop().set(x, y, i, b));
+            _queue.addFirst(_taskPool.pop().set(x, y + 1, i + _countX, a));
           }
         }
       }
       bool updated = false;
-      while (!_queue.empty()) {
-        VoronoiDiagramTask front = _queue.pop();
+      while (_queue.isNotEmpty) {
+        VoronoiDiagramTask front = _queue.removeFirst();
         int x = front._x;
         int y = front._y;
         int i = front._i;
@@ -178,16 +178,16 @@ class VoronoiDiagram {
           if (a2 > b2) {
             _diagram[i] = b;
             if (x > 0) {
-              _queue.push(_taskPool.pop().set(x - 1, y, i - 1, b));
+              _queue.addFirst(_taskPool.pop().set(x - 1, y, i - 1, b));
             }
             if (y > 0) {
-              _queue.push(_taskPool.pop().set(x, y - 1, i - _countX, b));
+              _queue.addFirst(_taskPool.pop().set(x, y - 1, i - _countX, b));
             }
             if (x < _countX - 1) {
-              _queue.push(_taskPool.pop().set(x + 1, y, i + 1, b));
+              _queue.addFirst(_taskPool.pop().set(x + 1, y, i + 1, b));
             }
             if (y < _countY - 1) {
-              _queue.push(_taskPool.pop().set(x, y + 1, i + _countX, b));
+              _queue.addFirst(_taskPool.pop().set(x, y + 1, i + _countX, b));
             }
             updated = true;
           }
