@@ -58,7 +58,7 @@ class PolygonShape extends Shape {
   /// @warning the points may be re-ordered, even if they form a convex polygon.
   /// @warning collinear points are removed.
   void setWithPools(final List<Vector2> verts, final int num,
-      final Vec2Array vecPool, final IntArray intPool) {
+      final List<Vector2> vecPool, final List<int> intPool) {
     assert(3 <= num && num <= Settings.maxPolygonVertices);
     if (num < 3) {
       setAsBoxXY(1.0, 1.0);
@@ -68,8 +68,7 @@ class PolygonShape extends Shape {
     int n = Math.min(num, Settings.maxPolygonVertices);
 
     // Perform welding and copy vertices into local buffer.
-    List<Vector2> ps = vecPool?.get(Settings.maxPolygonVertices) ??
-        List<Vector2>(Settings.maxPolygonVertices);
+    List<Vector2> ps = List<Vector2>(Settings.maxPolygonVertices);
     int tempCount = 0;
     for (int i = 0; i < n; ++i) {
       Vector2 v = verts[i];
@@ -108,8 +107,7 @@ class PolygonShape extends Shape {
       }
     }
 
-    List<int> hull = intPool?.get(Settings.maxPolygonVertices) ??
-        BufferUtils.intList(Settings.maxPolygonVertices);
+    List<int> hull = List<int>(Settings.maxPolygonVertices);
     int m = 0;
     int ih = i0;
 

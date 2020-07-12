@@ -134,14 +134,7 @@ part 'src/pooling/idynamic_stack.dart';
 part 'src/pooling/iordered_stack.dart';
 part 'src/pooling/iworld_pool.dart';
 
-part 'src/pooling/arrays/float_array.dart';
-part 'src/pooling/arrays/generator_array.dart';
-part 'src/pooling/arrays/int_array.dart';
-part 'src/pooling/arrays/vec2_array.dart';
-
-part 'src/pooling/normal/circle_stack.dart';
 part 'src/pooling/normal/default_world_pool.dart';
 part 'src/pooling/normal/mutable_stack.dart';
-part 'src/pooling/normal/ordered_stack.dart';
 
 part 'src/pooling/stacks/dynamic_int_stack.dart';
