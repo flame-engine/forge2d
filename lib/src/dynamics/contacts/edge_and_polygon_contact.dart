@@ -1,10 +1,8 @@
 part of box2d;
 
 class EdgeAndPolygonContact extends Contact {
-  EdgeAndPolygonContact();
-
-  void init(Fixture fA, int indexA, Fixture fB, int indexB) {
-    super.init(fA, indexA, fB, indexB);
+  EdgeAndPolygonContact(Fixture fA, int indexA, Fixture fB, int indexB) :
+    super(fA, indexA, fB, indexB) {
     assert(_fixtureA.getType() == ShapeType.EDGE);
     assert(_fixtureB.getType() == ShapeType.POLYGON);
   }

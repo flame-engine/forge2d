@@ -1,10 +1,7 @@
 part of box2d;
 
 class CircleContact extends Contact {
-  CircleContact();
-
-  void init0(Fixture fixtureA, Fixture fixtureB) {
-    init(fixtureA, 0, fixtureB, 0);
+  CircleContact(Fixture fixtureA, Fixture fixtureB) : super(fixtureA, 0, fixtureB, 0) {
     assert(_fixtureA.getType() == ShapeType.CIRCLE);
     assert(_fixtureB.getType() == ShapeType.CIRCLE);
   }

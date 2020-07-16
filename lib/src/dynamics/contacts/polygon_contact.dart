@@ -1,10 +1,7 @@
 part of box2d;
 
 class PolygonContact extends Contact {
-  PolygonContact();
-
-  void init0(Fixture fixtureA, Fixture fixtureB) {
-    init(fixtureA, 0, fixtureB, 0);
+  PolygonContact(Fixture fixtureA, Fixture fixtureB) : super(fixtureA, 0, fixtureB, 0) {
     assert(_fixtureA.getType() == ShapeType.POLYGON);
     assert(_fixtureB.getType() == ShapeType.POLYGON);
   }

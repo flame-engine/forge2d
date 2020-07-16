@@ -44,10 +44,7 @@ abstract class Contact {
 
   double _tangentSpeed = 0.0;
 
-  Contact();
-
-  /// initialization for pooling
-  void init(Fixture fA, int indexA, Fixture fB, int indexB) {
+  Contact(Fixture fA, int indexA, Fixture fB, int indexB) {
     _flags = ENABLED_FLAG;
 
     _fixtureA = fA;
@@ -76,6 +73,36 @@ abstract class Contact {
     _restitution = Contact.mixRestitution(fA._restitution, fB._restitution);
 
     _tangentSpeed = 0.0;
+  }
+
+  static Contact init(Fixture fA, int indexA, Fixture fB, int indexB) {
+    // Remember that we use the order in the enum here to determine in which
+    // order the arguments should come in the different contact classes.
+    // { CIRCLE, EDGE, POLYGON, CHAIN }
+    ShapeType typeA = fA.getType().index < fB.getType().index ? fA.getType() : fB.getType();
+    ShapeType typeB = fA.getType() == typeA ? fB.getType() : fA.getType();
+    Fixture temp = fA;
+    fA = fA.getType() == typeA ? fA : fB;
+    fB = fB.getType() == typeB ? fB : temp;
+
+    if (typeA == ShapeType.CIRCLE && typeB == ShapeType.CIRCLE) {
+      return CircleContact(fA, fB);
+    } else if (typeA == ShapeType.POLYGON && typeB == ShapeType.POLYGON) {
+      return PolygonContact(fA, fB);
+    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.POLYGON) {
+      return PolygonAndCircleContact(fB, fA);
+    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.EDGE) {
+      return EdgeAndCircleContact(fB, indexB, fA, indexA);
+    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.POLYGON) {
+      return EdgeAndPolygonContact(fA, indexA, fB, indexB);
+    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.CHAIN) {
+      return ChainAndCircleContact(fB, indexB, fA, indexA);
+    } else if (typeA == ShapeType.POLYGON && typeB == ShapeType.CHAIN) {
+      return ChainAndPolygonContact(fB, indexB, fA, indexA);
+    } else {
+      assert(false, "Not compatible contact type");
+      return CircleContact(fA, fB);
+    }
   }
 
   /// Get the world manifold.

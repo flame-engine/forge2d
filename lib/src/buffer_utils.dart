@@ -87,8 +87,8 @@ Float64List reallocateBufferFloat64Deferred(Float64List buffer,
 }
 
 /// Rotate an array, see std::rotate
-void rotate<T>(List<T> ray, int first, int new_first, int last) {
-  int next = new_first;
+void rotate<T>(List<T> ray, int first, int newFirst, int last) {
+  int next = newFirst;
   while (next != first) {
     var temp = ray[first];
     ray[first] = ray[next];
@@ -96,9 +96,9 @@ void rotate<T>(List<T> ray, int first, int new_first, int last) {
     first++;
     next++;
     if (next == last) {
-      next = new_first;
-    } else if (first == new_first) {
-      new_first = next;
+      next = newFirst;
+    } else if (first == newFirst) {
+      newFirst = next;
     }
   }
 }
