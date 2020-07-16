@@ -7,7 +7,7 @@ class PolygonShape extends Shape {
   static const bool _debug = false;
 
   /// Local position of the shape centroid in parent body frame.
-  final Vector2 position = Vector2.zero();
+  final Vector2 centroid = Vector2.zero();
 
   /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
   /// active vertices.
@@ -168,7 +168,7 @@ class PolygonShape extends Shape {
     }
 
     // Compute the polygon centroid.
-    computeCentroidToOut(vertices, count, position);
+    computeCentroidToOut(vertices, count, centroid);
   }
 
   /// Build vertices to represent an axis-aligned box.
@@ -185,7 +185,7 @@ class PolygonShape extends Shape {
     normals[1].setValues(1.0, 0.0);
     normals[2].setValues(0.0, 1.0);
     normals[3].setValues(-1.0, 0.0);
-    position.setZero();
+    centroid.setZero();
   }
 
   /// Build vertices to represent an oriented box.
@@ -215,7 +215,7 @@ class PolygonShape extends Shape {
     count = 2;
     vertices[0].setFrom(v1);
     vertices[1].setFrom(v2);
-    position
+    centroid
       ..setFrom(v1)
       ..add(v2)
       ..scale(0.5);
@@ -602,6 +602,6 @@ class PolygonShape extends Shape {
 
   /// Get the centroid and apply the supplied transform.
   Vector2 applyToCentroid(final Transform xf) {
-    return Transform.mulVec2(xf, position);
+    return Transform.mulVec2(xf, centroid);
   }
 }

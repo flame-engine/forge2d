@@ -1,6 +1,6 @@
 part of box2d;
 
 class ContactRegister {
-  IDynamicStack<Contact> creator;
+  ListQueue<Contact> creator;
   bool primary = false;
 }

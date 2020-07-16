@@ -42,18 +42,6 @@ class World {
 
   ParticleSystem _particleSystem;
 
-  static List<List<ContactRegister>> _create2D(int a, int b) {
-    // TODO: fix this
-    var res = new List<List<ContactRegister>>(a);
-    for (int i = 0; i < a; i++) {
-      res[i] = new List<ContactRegister>(b);
-    }
-    return res;
-  }
-
-  List<List<ContactRegister>> contactStacks =
-      _create2D(ShapeType.values.length, ShapeType.values.length);
-
   /// Construct a world object.
   ///
   /// @param gravity the world gravity vector.
@@ -93,7 +81,7 @@ class World {
 
     _particleSystem = ParticleSystem(this);
 
-    _initializeRegisters();
+    //_initializeRegisters();
   }
 
   void setAllowSleep(bool flag) {
@@ -121,32 +109,6 @@ class World {
     return _allowSleep;
   }
 
-  void _addType(
-      IDynamicStack<Contact> creator, ShapeType type1, ShapeType type2) {
-    ContactRegister register = ContactRegister();
-    register.creator = creator;
-    register.primary = true;
-    contactStacks[type1.index][type2.index] = register;
-
-    if (type1 != type2) {
-      ContactRegister register2 = ContactRegister();
-      register2.creator = creator;
-      register2.primary = false;
-      contactStacks[type2.index][type1.index] = register2;
-    }
-  }
-
-  void _initializeRegisters() {
-    _addType(Pool.circleContactStack, ShapeType.CIRCLE, ShapeType.CIRCLE);
-    _addType(
-        Pool.polygonCircleContactStack, ShapeType.POLYGON, ShapeType.CIRCLE);
-    _addType(Pool.polygonContactStack, ShapeType.POLYGON, ShapeType.POLYGON);
-    _addType(Pool.edgeCircleContactStack, ShapeType.EDGE, ShapeType.CIRCLE);
-    _addType(Pool.edgePolygonContactStack, ShapeType.EDGE, ShapeType.POLYGON);
-    _addType(Pool.chainCircleContactStack, ShapeType.CHAIN, ShapeType.CIRCLE);
-    _addType(Pool.chainPolygonContactStack, ShapeType.CHAIN, ShapeType.POLYGON);
-  }
-
   DestructionListener getDestructionListener() {
     return _destructionListener;
   }
@@ -157,46 +119,6 @@ class World {
 
   void setParticleDestructionListener(ParticleDestructionListener listener) {
     _particleDestructionListener = listener;
-  }
-
-  Contact popContact(
-      Fixture fixtureA, int indexA, Fixture fixtureB, int indexB) {
-    final ShapeType type1 = fixtureA.getType();
-    final ShapeType type2 = fixtureB.getType();
-
-    final ContactRegister reg = contactStacks[type1.index][type2.index];
-    if (reg != null) {
-      if (reg.primary) {
-        Contact c = reg.creator.pop();
-        c.init(fixtureA, indexA, fixtureB, indexB);
-        return c;
-      } else {
-        Contact c = reg.creator.pop();
-        c.init(fixtureB, indexB, fixtureA, indexA);
-        return c;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  void pushContact(Contact contact) {
-    Fixture fixtureA = contact.fixtureA;
-    Fixture fixtureB = contact.fixtureB;
-
-    if (contact._manifold.pointCount > 0 &&
-        !fixtureA.isSensor() &&
-        !fixtureB.isSensor()) {
-      fixtureA.getBody().setAwake(true);
-      fixtureB.getBody().setAwake(true);
-    }
-
-    ShapeType type1 = fixtureA.getType();
-    ShapeType type2 = fixtureB.getType();
-
-    IDynamicStack<Contact> creator =
-        contactStacks[type1.index][type2.index].creator;
-    creator.push(contact);
   }
 
   /// Register a destruction listener. The listener is owned by you and must remain in scope.

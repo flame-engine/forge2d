@@ -304,11 +304,6 @@ class Collision {
       manifold.pointCount = 1;
       manifold.type = ManifoldType.FACE_A;
 
-      // before inline:
-      // manifold._localNormal.set(normals[normalIndex]);
-      // manifold.localPoint.set(v1).addLocal(v2).mulLocal(.5f);
-      // manifold.points[0].localPoint.set(circle.p);
-      // after inline:
       final Vector2 normal = normals[normalIndex];
       manifold.localNormal.x = normal.x;
       manifold.localNormal.y = normal.y;
@@ -324,14 +319,6 @@ class Collision {
     }
 
     // Compute barycentric coordinates
-    // before inline:
-    // temp.set(cLocal).subLocal(v1);
-    // temp2.set(v2).subLocal(v1);
-    // double u1 = Vec2.dot(temp, temp2);
-    // temp.set(cLocal).subLocal(v2);
-    // temp2.set(v1).subLocal(v2);
-    // double u2 = Vec2.dot(temp, temp2);
-    // after inline:
     final double tempX = cLocalx - v1.x;
     final double tempY = cLocaly - v1.y;
     final double temp2X = v2.x - v1.x;
@@ -343,10 +330,8 @@ class Collision {
     final double temp4X = v1.x - v2.x;
     final double temp4Y = v1.y - v2.y;
     final double u2 = temp3X * temp4X + temp3Y * temp4Y;
-    // end inline
 
     if (u1 <= 0.0) {
-      // inlined
       final double dx = cLocalx - v1.x;
       final double dy = cLocaly - v1.y;
       if (dx * dx + dy * dy > radius * radius) {
@@ -355,18 +340,13 @@ class Collision {
 
       manifold.pointCount = 1;
       manifold.type = ManifoldType.FACE_A;
-      // before inline:
-      // manifold._localNormal.set(cLocal).subLocal(v1);
-      // after inline:
       manifold.localNormal.x = cLocalx - v1.x;
       manifold.localNormal.y = cLocaly - v1.y;
-      // end inline
       manifold.localNormal.normalize();
       manifold.localPoint.setFrom(v1);
       manifold.points[0].localPoint.setFrom(circlep);
       manifold.points[0].id.zero();
     } else if (u2 <= 0.0) {
-      // inlined
       final double dx = cLocalx - v2.x;
       final double dy = cLocaly - v2.y;
       if (dx * dx + dy * dy > radius * radius) {
@@ -375,28 +355,13 @@ class Collision {
 
       manifold.pointCount = 1;
       manifold.type = ManifoldType.FACE_A;
-      // before inline:
-      // manifold._localNormal.set(cLocal).subLocal(v2);
-      // after inline:
       manifold.localNormal.x = cLocalx - v2.x;
       manifold.localNormal.y = cLocaly - v2.y;
-      // end inline
       manifold.localNormal.normalize();
       manifold.localPoint.setFrom(v2);
       manifold.points[0].localPoint.setFrom(circlep);
       manifold.points[0].id.zero();
     } else {
-      // Vec2 faceCenter = 0.5f * (v1 + v2);
-      // (temp is faceCenter)
-      // before inline:
-      // temp.set(v1).addLocal(v2).mulLocal(.5f);
-      //
-      // temp2.set(cLocal).subLocal(temp);
-      // separation = Vec2.dot(temp2, normals[vertIndex1]);
-      // if (separation > radius) {
-      // return;
-      // }
-      // after inline:
       final double fcx = (v1.x + v2.x) * .5;
       final double fcy = (v1.y + v2.y) * .5;
 
@@ -407,7 +372,6 @@ class Collision {
       if (separation > radius) {
         return;
       }
-      // end inline
 
       manifold.pointCount = 1;
       manifold.type = ManifoldType.FACE_A;
@@ -486,11 +450,6 @@ class Collision {
     final Rot xf2q = xf2.q;
 
     // Get the normal of the reference edge in poly2's frame.
-    // Vec2 normal1 = MulT(xf2.R, Mul(xf1.R, normals1[edge1]));
-    // before inline:
-    // Rot.mulToOutUnsafe(xf1.q, normals1[edge1], normal1); // temporary
-    // Rot.mulTrans(xf2.q, normal1, normal1);
-    // after inline:
     final Vector2 v = normals1[edge1];
     final double tempx = xf1q.c * v.x - xf1q.s * v.y;
     final double tempy = xf1q.s * v.x + xf1q.c * v.y;
@@ -801,6 +760,7 @@ class Collision {
     double den = _e.dot(_e);
     assert(den > 0.0);
 
+    // Vec2 P = (1.0f / den) * (u * A + v * B);
     _p
       ..setFrom(A)
       ..scale(u)
@@ -892,7 +852,7 @@ class EPCollider {
   void collide(Manifold manifold, final EdgeShape edgeA, final Transform xfA,
       final PolygonShape polygonB_, final Transform xfB) {
     xf.set(Transform.mulTrans(xfA, xfB));
-    centroidB.setFrom(Transform.mulVec2(xf, polygonB_.position));
+    centroidB.setFrom(Transform.mulVec2(xf, polygonB_.centroid));
 
     v0 = edgeA.vertex0;
     v1 = edgeA.vertex1;

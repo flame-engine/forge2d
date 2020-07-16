@@ -72,8 +72,7 @@ class ContactManager implements PairCallback {
       return;
     }
 
-    // Call the factory.
-    Contact c = _world.popContact(fixtureA, indexA, fixtureB, indexB);
+    Contact c = Contact.init(fixtureA, indexA, fixtureB, indexB);
     if (c == null) {
       return;
     }
@@ -180,8 +179,12 @@ class ContactManager implements PairCallback {
       bodyB._contactList = c._nodeB.next;
     }
 
-    // Call the factory.
-    _world.pushContact(c);
+    if (c._manifold.pointCount > 0 &&
+        !fixtureA.isSensor() &&
+        !fixtureB.isSensor()) {
+      fixtureA.getBody().setAwake(true);
+      fixtureB.getBody().setAwake(true);
+    }
     --contactCount;
   }
 

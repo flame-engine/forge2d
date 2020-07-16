@@ -1,10 +1,8 @@
 part of box2d;
 
 class EdgeAndCircleContact extends Contact {
-  EdgeAndCircleContact();
-
-  void init(Fixture fA, int indexA, Fixture fB, int indexB) {
-    super.init(fA, indexA, fB, indexB);
+  EdgeAndCircleContact(Fixture fA, int indexA, Fixture fB, int indexB) :
+    super(fA, indexA, fB, indexB) {
     assert(_fixtureA.getType() == ShapeType.EDGE);
     assert(_fixtureB.getType() == ShapeType.CIRCLE);
   }
