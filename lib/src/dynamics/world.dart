@@ -10,6 +10,11 @@ class World {
   static const int LOCKED = 0x0002;
   static const int CLEAR_FORCES = 0x0004;
 
+  // TODO.spydon: Don't have these fields as static
+  static final Distance distance = Distance();
+  static final Collision collision = Collision();
+  static final TimeOfImpact toi = TimeOfImpact();
+
   int _flags = 0;
 
   ContactManager _contactManager;
@@ -29,7 +34,7 @@ class World {
   DebugDraw debugDraw;
 
   /// This is used to compute the time step ratio to support a variable time step.
-  double _inv_dt0 = 0.0;
+  double _invDt0 = 0.0;
 
   // these are for debugging the solver
   bool _warmStarting = false;
@@ -74,7 +79,7 @@ class World {
 
     _flags = CLEAR_FORCES;
 
-    _inv_dt0 = 0.0;
+    _invDt0 = 0.0;
 
     _contactManager = ContactManager(this, broadPhase);
     _profile = Profile();
@@ -425,7 +430,7 @@ class World {
       step.inv_dt = 0.0;
     }
 
-    step.dtRatio = _inv_dt0 * dt;
+    step.dtRatio = _invDt0 * dt;
 
     step.warmStarting = _warmStarting;
     _profile.stepInit.record(tempTimer.getMilliseconds());
@@ -453,7 +458,7 @@ class World {
     }
 
     if (step.dt > 0.0) {
-      _inv_dt0 = step.inv_dt;
+      _invDt0 = step.inv_dt;
     }
 
     if ((_flags & CLEAR_FORCES) == CLEAR_FORCES) {
@@ -997,7 +1002,7 @@ class World {
           input.sweepB.set(bB._sweep);
           input.tMax = 1.0;
 
-          Pool.toi.timeOfImpact(toiOutput, input);
+          toi.timeOfImpact(toiOutput, input);
 
           // Beta is the fraction of the remaining portion of the .
           double beta = toiOutput.t;

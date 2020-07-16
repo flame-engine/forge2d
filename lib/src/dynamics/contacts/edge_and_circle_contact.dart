@@ -8,7 +8,7 @@ class EdgeAndCircleContact extends Contact {
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    Pool.collision.collideEdgeAndCircle(
+    World.collision.collideEdgeAndCircle(
         manifold,
         _fixtureA.getShape() as EdgeShape,
         xfA,
