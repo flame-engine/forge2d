@@ -106,7 +106,7 @@ class Collision {
 
     _cache.count = 0;
 
-    Pool.distance.distance(_output, _cache, _input);
+    World.distance.compute(_output, _cache, _input);
     // djm note: anything significant about 10.0f?
     return _output.distance < 10.0 * Settings.EPSILON;
   }

@@ -195,7 +195,7 @@ abstract class Contact {
     if (sensor) {
       Shape shapeA = _fixtureA.getShape();
       Shape shapeB = _fixtureB.getShape();
-      touching = Pool.collision
+      touching = World.collision
           .testOverlap(shapeA, _indexA, shapeB, _indexB, xfA, xfB);
 
       // Sensors don't generate manifolds.

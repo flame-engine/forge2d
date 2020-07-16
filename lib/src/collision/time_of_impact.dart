@@ -95,7 +95,7 @@ class TimeOfImpact {
       // to get a separating axis
       _distanceInput.transformA = _xfA;
       _distanceInput.transformB = _xfB;
-      Pool.distance.distance(_distanceOutput, _cache, _distanceInput);
+      World.distance.compute(_distanceOutput, _cache, _distanceInput);
 
       // If the shapes are overlapped, we give up on continuous collision.
       if (_distanceOutput.distance <= 0.0) {
