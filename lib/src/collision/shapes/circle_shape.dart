@@ -57,11 +57,11 @@ class CircleShape extends Shape {
     return p;
   }
 
-  bool testPoint(final Transform transform, final Vector2 p) {
+  bool testPoint(final Transform transform, final Vector2 point) {
     final Rot q = transform.q;
     final Vector2 tp = transform.p;
-    double centerx = -(q.c * p.x - q.s * p.y + tp.x - p.x);
-    double centery = -(q.s * p.x + q.c * p.y + tp.y - p.y);
+    double centerx = -(q.c * p.x - q.s * p.y + tp.x - point.x);
+    double centery = -(q.s * p.x + q.c * p.y + tp.y - point.y);
 
     return centerx * centerx + centery * centery <= radius * radius;
   }
