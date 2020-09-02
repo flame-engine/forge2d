@@ -22,13 +22,6 @@ class PolygonShape extends Shape {
   /// Number of active vertices in the shape.
   int count = 0;
 
-  // pooling
-  final Vector2 _pool1 = Vector2.zero();
-  final Vector2 _pool2 = Vector2.zero();
-  final Vector2 _pool3 = Vector2.zero();
-  final Vector2 _pool4 = Vector2.zero();
-  Transform _poolt1 = Transform.zero();
-
   PolygonShape() : super(ShapeType.POLYGON) {
     radius = Settings.polygonRadius;
   }
@@ -49,29 +42,20 @@ class PolygonShape extends Shape {
   /// Settings.maxPolygonVertices].
   /// @warning the points may be re-ordered, even if they form a convex polygon.
   /// @warning collinear points are removed.
-  void set(final List<Vector2> vertices, final int count) {
-    setWithPools(vertices, count, null, null);
-  }
-
-  /// Create a convex hull from the given array of points. The count must be in the range [3,
-  /// Settings.maxPolygonVertices]. This method takes an arraypool for pooling.
-  /// @warning the points may be re-ordered, even if they form a convex polygon.
-  /// @warning collinear points are removed.
-  void setWithPools(final List<Vector2> verts, final int num,
-      final List<Vector2> vecPool, final List<int> intPool) {
-    assert(3 <= num && num <= Settings.maxPolygonVertices);
-    if (num < 3) {
+  void set(final List<Vector2> updatedVertices, final int updatedCount) {
+    assert(3 <= updatedCount && updatedCount <= Settings.maxPolygonVertices);
+    if (updatedCount < 3) {
       setAsBoxXY(1.0, 1.0);
       return;
     }
 
-    int n = Math.min(num, Settings.maxPolygonVertices);
+    int n = Math.min(updatedCount, Settings.maxPolygonVertices);
 
     // Perform welding and copy vertices into local buffer.
     List<Vector2> ps = List<Vector2>(Settings.maxPolygonVertices);
     int tempCount = 0;
     for (int i = 0; i < n; ++i) {
-      Vector2 v = verts[i];
+      Vector2 v = updatedVertices[i];
       bool unique = true;
       for (int j = 0; j < tempCount; ++j) {
         if (MathUtils.distanceSquared(v, ps[j]) < 0.5 * Settings.linearSlop) {
@@ -121,11 +105,9 @@ class PolygonShape extends Shape {
           continue;
         }
 
-        Vector2 r = _pool1
-          ..setFrom(ps[ie])
+        Vector2 r = Vector2.copy(ps[ie])
           ..sub(ps[hull[m]]);
-        Vector2 v = _pool2
-          ..setFrom(ps[j])
+        Vector2 v = Vector2.copy(ps[j])
           ..sub(ps[hull[m]]);
         double c = r.cross(v);
         if (c < 0.0) {
@@ -152,7 +134,7 @@ class PolygonShape extends Shape {
       vertices[i].setFrom(ps[hull[i]]);
     }
 
-    final Vector2 edge = _pool1;
+    final Vector2 edge = Vector2.zero();
 
     // Compute normals. Ensure the edges have non-zero length.
     for (int i = 0; i < count; ++i) {
@@ -199,7 +181,7 @@ class PolygonShape extends Shape {
     setAsBoxXY(hx, hy);
     centroid.setFrom(center);
 
-    final Transform xf = _poolt1;
+    final Transform xf = Transform.zero();
     xf.p.setFrom(center);
     xf.q.setAngle(angle);
 
@@ -440,11 +422,10 @@ class PolygonShape extends Shape {
 
     // pRef is the reference point for forming triangles.
     // It's location doesn't change the result (except for rounding error).
-    final Vector2 pRef = _pool1;
-    pRef.setZero();
+    final Vector2 pRef = Vector2.zero();
 
-    final Vector2 e1 = _pool2;
-    final Vector2 e2 = _pool3;
+    final Vector2 e1 = Vector2.zero();
+    final Vector2 e2 = Vector2.zero();
 
     final double inv3 = 1.0 / 3.0;
 
@@ -507,15 +488,13 @@ class PolygonShape extends Shape {
 
     assert(count >= 3);
 
-    final Vector2 center = _pool1;
-    center.setZero();
+    final Vector2 center = Vector2.zero();
     double area = 0.0;
     double I = 0.0;
 
     // pRef is the reference point for forming triangles.
     // It's location doesn't change the result (except for rounding error).
-    final Vector2 s = _pool2;
-    s.setZero();
+    final Vector2 s = Vector2.zero();
     // This code would put the reference point inside the polygon.
     for (int i = 0; i < count; ++i) {
       s.add(vertices[i]);
@@ -524,8 +503,8 @@ class PolygonShape extends Shape {
 
     final double k_inv3 = 1.0 / 3.0;
 
-    final Vector2 e1 = _pool3;
-    final Vector2 e2 = _pool4;
+    final Vector2 e1 = Vector2.zero();
+    final Vector2 e2 = Vector2.zero();
 
     for (int i = 0; i < count; ++i) {
       // Triangle vertices.
@@ -578,18 +557,14 @@ class PolygonShape extends Shape {
       int i1 = i;
       int i2 = i < count - 1 ? i1 + 1 : 0;
       Vector2 p = vertices[i1];
-      Vector2 e = _pool1
-        ..setFrom(vertices[i2])
-        ..sub(p);
+      Vector2 e = Vector2.copy(vertices[i2])..sub(p);
 
       for (int j = 0; j < count; ++j) {
         if (j == i1 || j == i2) {
           continue;
         }
 
-        Vector2 v = _pool2
-          ..setFrom(vertices[j])
-          ..sub(p);
+        Vector2 v = Vector2.copy(vertices[j])..sub(p);
         double c = e.cross(v);
         if (c < 0.0) {
           return false;

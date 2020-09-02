@@ -36,8 +36,8 @@ class CircleShape extends Shape {
   bool testPoint(final Transform transform, final Vector2 point) {
     final Rot q = transform.q;
     final Vector2 tp = transform.p;
-    double centerX = -(q.c * p.x - q.s * p.y + tp.x - point.x);
-    double centerY = -(q.s * p.x + q.c * p.y + tp.y - point.y);
+    double centerX = -(q.c * position.x - q.s * position.y + tp.x - point.x);
+    double centerY = -(q.s * position.x + q.c * position.y + tp.y - point.y);
 
     return centerX * centerX + centerY * centerY <= radius * radius;
   }
