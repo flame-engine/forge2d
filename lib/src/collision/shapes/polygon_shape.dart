@@ -12,12 +12,12 @@ class PolygonShape extends Shape {
   /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
   /// active vertices.
   final List<Vector2> vertices =
-      List<Vector2>.filled(Settings.maxPolygonVertices, Vector2.zero());
+      List<Vector2>.generate(Settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
   /// active normals.
   final List<Vector2> normals =
-      List<Vector2>.filled(Settings.maxPolygonVertices, Vector2.zero());
+      List<Vector2>.generate(Settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// Number of active vertices in the shape.
   int count = 0;
@@ -95,10 +95,10 @@ class PolygonShape extends Shape {
     int m = 0;
     int ih = i0;
 
-    int ie = 0;
-    while (ie != i0) {
+    while (true) {
       hull[m] = ih;
 
+      int ie = 0;
       for (int j = 1; j < n; ++j) {
         if (ie == ih) {
           ie = j;
@@ -122,6 +122,10 @@ class PolygonShape extends Shape {
 
       ++m;
       ih = ie;
+
+      if (ie == i0) {
+        break;
+      }
     }
 
     this.count = m;
@@ -150,7 +154,7 @@ class PolygonShape extends Shape {
     }
 
     // Compute the polygon centroid.
-    computeCentroidToOut(vertices, count, centroid);
+    computeCentroid(vertices, count);
   }
 
   /// Build vertices to represent an axis-aligned box.
@@ -413,11 +417,10 @@ class PolygonShape extends Shape {
     return false;
   }
 
-  void computeCentroidToOut(
-      final List<Vector2> vs, final int count, final Vector2 out) {
+  void computeCentroid(final List<Vector2> vs, final int count) {
     assert(count >= 3);
 
-    out.setValues(0.0, 0.0);
+    centroid.setZero();
     double area = 0.0;
 
     // pRef is the reference point for forming triangles.
@@ -453,12 +456,12 @@ class PolygonShape extends Shape {
         ..add(p2)
         ..add(p3)
         ..scale(triangleArea * inv3);
-      out.add(e1);
+      centroid.add(e1);
     }
 
     // Centroid
     assert(area > Settings.EPSILON);
-    out.scale(1.0 / area);
+    centroid.scale(1.0 / area);
   }
 
   void computeMass(final MassData massData, double density) {
