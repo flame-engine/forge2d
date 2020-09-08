@@ -4,3 +4,4 @@
 packages
 pubspec.lock
 .dart_tool
+build/
