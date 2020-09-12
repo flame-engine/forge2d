@@ -79,7 +79,8 @@ abstract class Contact {
     // Remember that we use the order in the enum here to determine in which
     // order the arguments should come in the different contact classes.
     // { CIRCLE, EDGE, POLYGON, CHAIN }
-    ShapeType typeA = fA.getType().index < fB.getType().index ? fA.getType() : fB.getType();
+    ShapeType typeA =
+        fA.getType().index < fB.getType().index ? fA.getType() : fB.getType();
     ShapeType typeB = fA.getType() == typeA ? fB.getType() : fA.getType();
     Fixture temp = fA;
     fA = fA.getType() == typeA ? fA : fB;

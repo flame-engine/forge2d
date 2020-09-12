@@ -79,8 +79,7 @@ class VoronoiDiagram {
   final ListQueue<VoronoiDiagramTask> _taskPool =
       ListQueue<VoronoiDiagramTask>(50);
 
-  final ListQueue<VoronoiDiagramTask> _queue =
-      ListQueue<VoronoiDiagramTask>();
+  final ListQueue<VoronoiDiagramTask> _queue = ListQueue<VoronoiDiagramTask>();
 
   void generate(double radius) {
     assert(_diagram == null);
@@ -118,13 +117,15 @@ class VoronoiDiagram {
           _queue.addFirst(_taskPool.removeFirst().set(x - 1, y, i - 1, g));
         }
         if (y > 0) {
-          _queue.addFirst(_taskPool.removeFirst().set(x, y - 1, i - _countX, g));
+          _queue
+              .addFirst(_taskPool.removeFirst().set(x, y - 1, i - _countX, g));
         }
         if (x < _countX - 1) {
           _queue.addFirst(_taskPool.removeFirst().set(x + 1, y, i + 1, g));
         }
         if (y < _countY - 1) {
-          _queue.addFirst(_taskPool.removeFirst().set(x, y + 1, i + _countX, g));
+          _queue
+              .addFirst(_taskPool.removeFirst().set(x, y + 1, i + _countX, g));
         }
       }
       _taskPool.addFirst(front);
@@ -149,7 +150,8 @@ class VoronoiDiagram {
           VoronoiGenerator b = _diagram[i + _countX];
           if (a != b) {
             _queue.addFirst(_taskPool.removeFirst().set(x, y, i, b));
-            _queue.addFirst(_taskPool.removeFirst().set(x, y + 1, i + _countX, a));
+            _queue.addFirst(
+                _taskPool.removeFirst().set(x, y + 1, i + _countX, a));
           }
         }
       }
@@ -175,13 +177,15 @@ class VoronoiDiagram {
               _queue.addFirst(_taskPool.removeFirst().set(x - 1, y, i - 1, b));
             }
             if (y > 0) {
-              _queue.addFirst(_taskPool.removeFirst().set(x, y - 1, i - _countX, b));
+              _queue.addFirst(
+                  _taskPool.removeFirst().set(x, y - 1, i - _countX, b));
             }
             if (x < _countX - 1) {
               _queue.addFirst(_taskPool.removeFirst().set(x + 1, y, i + 1, b));
             }
             if (y < _countY - 1) {
-              _queue.addFirst(_taskPool.removeFirst().set(x, y + 1, i + _countX, b));
+              _queue.addFirst(
+                  _taskPool.removeFirst().set(x, y + 1, i + _countX, b));
             }
             updated = true;
           }

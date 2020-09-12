@@ -124,7 +124,8 @@ class CircleShape extends Shape {
     massData.center.y = position.y;
 
     // inertia about the local origin
-    massData.I =
-        massData.mass * (0.5 * radius * radius + (position.x * position.x + position.y * position.y));
+    massData.I = massData.mass *
+        (0.5 * radius * radius +
+            (position.x * position.x + position.y * position.y));
   }
 }
