@@ -11,13 +11,13 @@ class PolygonShape extends Shape {
 
   /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
   /// active vertices.
-  final List<Vector2> vertices =
-      List<Vector2>.generate(Settings.maxPolygonVertices, (i) => Vector2.zero());
+  final List<Vector2> vertices = List<Vector2>.generate(
+      Settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
   /// active normals.
-  final List<Vector2> normals =
-      List<Vector2>.generate(Settings.maxPolygonVertices, (i) => Vector2.zero());
+  final List<Vector2> normals = List<Vector2>.generate(
+      Settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// Number of active vertices in the shape.
   int count = 0;
@@ -105,10 +105,8 @@ class PolygonShape extends Shape {
           continue;
         }
 
-        Vector2 r = Vector2.copy(ps[ie])
-          ..sub(ps[hull[m]]);
-        Vector2 v = Vector2.copy(ps[j])
-          ..sub(ps[hull[m]]);
+        Vector2 r = Vector2.copy(ps[ie])..sub(ps[hull[m]]);
+        Vector2 v = Vector2.copy(ps[j])..sub(ps[hull[m]]);
         double c = r.cross(v);
         if (c < 0.0) {
           ie = j;

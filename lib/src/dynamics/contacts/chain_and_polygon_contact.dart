@@ -1,8 +1,8 @@
 part of box2d;
 
 class ChainAndPolygonContact extends Contact {
-  ChainAndPolygonContact(Fixture fA, int indexA, Fixture fB, int indexB) :
-    super(fA, indexA, fB, indexB) {
+  ChainAndPolygonContact(Fixture fA, int indexA, Fixture fB, int indexB)
+      : super(fA, indexA, fB, indexB) {
     assert(_fixtureA.getType() == ShapeType.CHAIN);
     assert(_fixtureB.getType() == ShapeType.POLYGON);
   }

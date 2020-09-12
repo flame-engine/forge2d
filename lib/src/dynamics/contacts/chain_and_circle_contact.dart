@@ -1,8 +1,8 @@
 part of box2d;
 
 class ChainAndCircleContact extends Contact {
-  ChainAndCircleContact(Fixture fA, int indexA, Fixture fB, int indexB) :
-        super(fA, indexA, fB, indexB) {
+  ChainAndCircleContact(Fixture fA, int indexA, Fixture fB, int indexB)
+      : super(fA, indexA, fB, indexB) {
     assert(_fixtureA.getType() == ShapeType.CHAIN);
     assert(_fixtureB.getType() == ShapeType.CIRCLE);
   }
