@@ -1,9 +1,9 @@
 library BlobTest;
 
 import 'dart:math' as Math;
-import 'package:box2d_flame/box2d.dart';
-import 'package:box2d_flame/src/math_utils.dart' as MathUtils;
 import 'demo.dart';
+import '../lib/box2d.dart';
+import '../lib/src/math_utils.dart';
 
 class BlobTest extends Demo {
   /// Constructs a new BlobTest.
@@ -44,7 +44,7 @@ class BlobTest extends Demo {
     double nBodies = 20.0;
     double bodyRadius = 0.5;
     for (int i = 0; i < nBodies; ++i) {
-      double angle = MathUtils.translateAndScale(
+      double angle = translateAndScale(
           i.toDouble(), 0.0, nBodies, 0.0, Math.pi * 2);
       BodyDef bd = BodyDef();
       bd.fixedRotation = true;

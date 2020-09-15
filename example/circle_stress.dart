@@ -1,8 +1,9 @@
 library CircleStress;
 
 import 'dart:math' as Math;
-import 'package:box2d_flame/box2d.dart';
 import 'demo.dart';
+
+import '../lib/box2d.dart';
 
 /// Scale of the viewport for this Demo.
 const double _MY_VIEWPORT_SCALE = 4.0;
