@@ -1,9 +1,9 @@
 library DominoTower;
 
 import 'dart:math' as Math;
-import 'package:box2d_flame/box2d.dart';
 
 import 'demo.dart';
+import '../lib/box2d.dart';
 
 class DominoTower extends Demo {
   static const double DOMINO_WIDTH = .2;

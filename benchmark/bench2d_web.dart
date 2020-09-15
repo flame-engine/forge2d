@@ -1,6 +1,6 @@
 import 'dart:html';
 
-import 'package:box2d_flame/box2d_browser.dart';
+import '../lib/box2d_browser.dart';
 
 import 'bench2d.dart';
 

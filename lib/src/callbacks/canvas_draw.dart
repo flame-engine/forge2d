@@ -2,8 +2,8 @@ library box2d.callbacks.canvas_draw;
 
 import 'dart:html';
 
-import 'package:box2d_flame/box2d.dart';
-import 'package:box2d_flame/src/math_utils.dart' as MathUtils;
+import '../../box2d.dart';
+import '../math_utils.dart' as MathUtils;
 
 class CanvasDraw extends DebugDraw {
   /// The canvas rendering context with which to draw.

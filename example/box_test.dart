@@ -1,8 +1,9 @@
 library BoxTest;
 
 import 'dart:math' as Math;
-import 'package:box2d_flame/box2d.dart';
 import 'demo.dart';
+
+import '../lib/box2d.dart';
 
 class BoxTest extends Demo {
   /// Constructs a new BoxTest.

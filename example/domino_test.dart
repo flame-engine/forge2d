@@ -1,8 +1,8 @@
 library DominoTest;
 
-import 'package:box2d_flame/box2d.dart';
-
 import 'demo.dart';
+
+import '../lib/box2d.dart';
 
 /// Demonstration of dominoes being knocked over.
 class DominoTest extends Demo {

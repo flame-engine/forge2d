@@ -1,6 +1,6 @@
 library BallCage;
 
-import 'package:box2d_flame/box2d.dart';
+import '../lib/box2d.dart';
 
 import 'demo.dart';
 

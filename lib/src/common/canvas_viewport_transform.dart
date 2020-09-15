@@ -2,9 +2,9 @@ library box2d.common.canvas_viewport_transform;
 
 import 'dart:html';
 
-import 'package:box2d_flame/box2d.dart';
+import '../../box2d.dart';
 
-/// Transform for drawing using a canvas context. Y-flip is permenantly set
+/// Transform for drawing using a canvas context. Y-flip is permanently set
 /// to true.
 class CanvasViewportTransform extends ViewportTransform {
   static const double DEFAULT_DRAWING_SCALE = 20.0;
