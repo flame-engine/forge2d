@@ -112,7 +112,6 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     int i = 0;
     while (i < _pairCount) {
       int primaryPair = _pairBuffer[i];
-      // print("Pairs => ${primaryPair >> 32} ${primaryPair & _mask}");
       Object userDataA = _tree.getUserData(primaryPair >> 32);
       Object userDataB = _tree.getUserData(primaryPair & _mask32Bits);
 
