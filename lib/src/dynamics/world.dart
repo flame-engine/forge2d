@@ -470,12 +470,11 @@ class World {
       clearForces();
     }
 
+    _flags &= ~LOCKED;
+
     // Destroy all bodies that have been marked for destruction
     _destroyBodies.forEach((body) => _destroyBody(body));
     _destroyBodies.clear();
-
-    _flags &= ~LOCKED;
-
     _profile.step.record(stepTimer.getMilliseconds());
   }
 
