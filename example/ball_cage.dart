@@ -1,6 +1,6 @@
 library BallCage;
 
-import '../lib/box2d.dart';
+import '../lib/forge2d.dart';
 
 import 'demo.dart';
 

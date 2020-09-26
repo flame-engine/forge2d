@@ -4,7 +4,7 @@ import 'dart:html' hide Body;
 import 'dart:math';
 
 import 'demo.dart';
-import '../lib/box2d.dart';
+import '../lib/forge2d.dart';
 import '../lib/src/math_utils.dart' as MathUtils;
 
 part 'racer/car.dart';

@@ -1,4 +1,4 @@
-part of box2d.common;
+part of forge2d.common;
 
 class Color3i {
   static final Color3i WHITE = Color3i(255, 255, 255);

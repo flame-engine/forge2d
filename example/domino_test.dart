@@ -2,7 +2,7 @@ library DominoTest;
 
 import 'demo.dart';
 
-import '../lib/box2d.dart';
+import '../lib/forge2d.dart';
 
 /// Demonstration of dominoes being knocked over.
 class DominoTest extends Demo {

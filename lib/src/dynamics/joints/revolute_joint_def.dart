@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Revolute joint definition. This requires defining an anchor point where the bodies are joined.
 /// The definition uses local anchor points so that the initial configuration can violate the

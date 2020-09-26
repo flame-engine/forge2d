@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class ContactPositionConstraint {
   List<Vector2> localPoints = List<Vector2>(Settings.maxManifoldPoints);

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A rigid body. These are created via World.createBody.
 class Body {

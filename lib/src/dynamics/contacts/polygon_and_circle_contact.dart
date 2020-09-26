@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class PolygonAndCircleContact extends Contact {
   PolygonAndCircleContact(Fixture fixtureA, Fixture fixtureB)

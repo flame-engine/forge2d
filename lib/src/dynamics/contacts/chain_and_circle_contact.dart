@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class ChainAndCircleContact extends Contact {
   ChainAndCircleContact(Fixture fA, int indexA, Fixture fB, int indexB)

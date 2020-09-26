@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
 /// joints also feature limits and motors.

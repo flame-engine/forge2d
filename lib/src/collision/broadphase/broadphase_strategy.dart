@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 abstract class BroadPhaseStrategy {
   /// Create a proxy. Provide a tight fitting AABB and a userData pointer.

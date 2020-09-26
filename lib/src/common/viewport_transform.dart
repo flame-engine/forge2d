@@ -1,4 +1,4 @@
-part of box2d.common;
+part of forge2d.common;
 
 class ViewportTransform {
   ViewportTransform(Vector2 e, Vector2 c, this.scale)

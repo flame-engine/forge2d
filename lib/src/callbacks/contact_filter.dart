@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Implement this class to provide collision filtering. In other words, you can implement
 /// this class if you want finer control over contact creation.

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class VelocityConstraintPoint {
   final Vector2 rA = Vector2.zero();

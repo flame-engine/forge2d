@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class CircleContact extends Contact {
   CircleContact(Fixture fixtureA, Fixture fixtureB)

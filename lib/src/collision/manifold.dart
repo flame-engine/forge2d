@@ -1,6 +1,6 @@
-part of box2d;
+part of forge2d;
 
-/// A manifold for two touching convex shapes. Box2D supports multiple types of contact:
+/// A manifold for two touching convex shapes. Forge2D supports multiple types of contact:
 /// <ul>
 /// <li>clip point versus plane with radius</li>
 /// <li>point versus point with radius (circles)</li>

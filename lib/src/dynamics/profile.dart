@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class ProfileEntry {
   static const int _LONG_AVG_NUMS = 20;

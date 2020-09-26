@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class DynamicTreeFlatNodes implements BroadPhaseStrategy {
   static const int MAX_STACK_SIZE = 64;

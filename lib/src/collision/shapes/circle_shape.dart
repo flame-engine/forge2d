@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A circle shape.
 class CircleShape extends Shape {

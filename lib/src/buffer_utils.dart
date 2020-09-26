@@ -1,4 +1,4 @@
-library box2d.buffer_utils;
+library forge2d.buffer_utils;
 
 import 'dart:typed_data';
 

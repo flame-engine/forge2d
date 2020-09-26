@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Motor joint definition.
 class MotorJointDef extends JointDef {

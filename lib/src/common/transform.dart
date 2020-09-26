@@ -1,4 +1,4 @@
-part of box2d.common;
+part of forge2d.common;
 
 /// A transform contains translation and rotation. It is used to represent the position and
 /// orientation of rigid frames.

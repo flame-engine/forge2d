@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A manifold point is a contact point belonging to a contact
 /// manifold. It holds details related to the geometry and dynamics

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 //Gear Joint:
 //C0 = (coordinate1 + ratio * coordinate2)_initial

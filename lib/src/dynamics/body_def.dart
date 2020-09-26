@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A body definition holds all the data needed to construct a rigid body. You can safely re-use body
 /// definitions. Shapes are added to a body after construction.

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 abstract class ContactCreator {
   Contact contactCreateFcn(Fixture fixtureA, Fixture fixtureB);

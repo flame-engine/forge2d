@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A chain shape is a free form sequence of line segments. The chain has two-sided collision, so you
 /// can use inside and outside collision. Therefore, you may use any winding order. Connectivity

@@ -1,4 +1,4 @@
-part of box2d.common;
+part of forge2d.common;
 
 class RaycastResult {
   double lambda = 0.0;
