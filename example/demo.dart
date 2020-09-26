@@ -2,9 +2,9 @@ library demo;
 
 import 'dart:async';
 import 'dart:html' hide Body;
-import '../lib/box2d_browser.dart' hide Timer;
+import '../lib/forge2d_browser.dart' hide Timer;
 
-/// An abstract class for any Demo of the Box2D library.
+/// An abstract class for any Demo of the Forge2D library.
 abstract class Demo {
   static const int WORLD_POOL_SIZE = 100;
   static const int WORLD_POOL_CONTAINER_SIZE = 10;

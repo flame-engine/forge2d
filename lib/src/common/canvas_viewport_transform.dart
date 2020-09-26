@@ -1,8 +1,8 @@
-library box2d.common.canvas_viewport_transform;
+library forge2d.common.canvas_viewport_transform;
 
 import 'dart:html';
 
-import '../../box2d.dart';
+import '../../forge2d.dart';
 
 /// Transform for drawing using a canvas context. Y-flip is permanently set
 /// to true.

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Joint definitions are used to construct joints.
 class JointDef {

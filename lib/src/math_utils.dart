@@ -1,4 +1,4 @@
-library box2d.math_utils;
+library forge2d.math_utils;
 
 import 'dart:math' as Math;
 

@@ -1,4 +1,4 @@
-### Benchmark for Dart Box2D
+### Benchmark for Dart Forge2D
 
 Run:
 ```sh

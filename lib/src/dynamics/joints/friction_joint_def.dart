@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Friction joint definition.
 class FrictionJointDef extends JointDef {

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, and a
 /// pulley ratio.

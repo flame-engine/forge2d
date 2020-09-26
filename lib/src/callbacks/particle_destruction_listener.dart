@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 abstract class ParticleDestructionListener {
   /// Called when any particle group is about to be destroyed.

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// The particle type. Can be combined with | operator. Zero means liquid.
 class ParticleType {

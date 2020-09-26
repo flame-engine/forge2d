@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Ray-cast output data. The ray hits at p1 + fraction * (p2 - p1), where p1 and p2
 /// come from b2RayCastInput.

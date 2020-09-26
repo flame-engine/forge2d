@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class ParticleDef {
   /// Specifies the type of particle. A particle may be more than one type. Multiple types are

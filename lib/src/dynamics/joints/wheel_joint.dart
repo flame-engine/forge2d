@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 //Linear constraint (point-to-line)
 //d = pB - pA = xB + rB - xA - rA

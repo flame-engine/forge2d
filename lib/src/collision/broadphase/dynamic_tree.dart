@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A dynamic tree arranges data in a binary tree to accelerate queries such as volume queries and
 /// ray casts. Leafs are proxies with an AABB. In the tree we expand the proxy AABB by _fatAABBFactor

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Small color object for each particle
 class ParticleColor {

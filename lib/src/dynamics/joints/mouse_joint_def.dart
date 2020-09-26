@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Mouse joint definition. This requires a world target point, tuning parameters, and the time step.
 class MouseJointDef extends JointDef {

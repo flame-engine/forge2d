@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A convex polygon shape. Polygons have a maximum number of vertices equal to _maxPolygonVertices.
 /// In most cases you should not need many vertices for a convex polygon.

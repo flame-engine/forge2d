@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
 class _SimplexVertex {

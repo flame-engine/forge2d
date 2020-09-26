@@ -2,7 +2,7 @@ library BlobTest;
 
 import 'dart:math' as Math;
 import 'demo.dart';
-import '../lib/box2d.dart';
+import '../lib/forge2d.dart';
 import '../lib/src/math_utils.dart';
 
 class BlobTest extends Demo {

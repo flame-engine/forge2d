@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Implement this abstract class to allow DBox2d to automatically draw your physics for debugging
 /// purposes. Not intended to replace your own custom rendering routines!

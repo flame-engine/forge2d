@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// The broad-phase is used for computing pairs and performing volume queries and ray casts. This
 /// broad-phase does not persist pairs. Instead, this reports potentially new pairs. It is up to the

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// This holds the mass data computed for a shape.
 class MassData {

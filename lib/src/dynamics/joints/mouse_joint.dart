@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A mouse joint is used to make a point on a body track a specified world point. This a soft
 /// constraint with a maximum force. This allows the constraint to stretch and without applying huge

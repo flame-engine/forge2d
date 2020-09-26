@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
 class RayCastInput {

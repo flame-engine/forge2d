@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Callback class for ray casts.
 /// See {@link World#raycast(RayCastCallback, Vec2, Vec2)}

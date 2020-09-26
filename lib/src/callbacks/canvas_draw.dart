@@ -1,8 +1,8 @@
-library box2d.callbacks.canvas_draw;
+library forge2d.callbacks.canvas_draw;
 
 import 'dart:html';
 
-import '../../box2d.dart';
+import '../../forge2d.dart';
 import '../math_utils.dart' as MathUtils;
 
 class CanvasDraw extends DebugDraw {

@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Input for Distance.
 /// You have to option to use the shape radii in the computation.

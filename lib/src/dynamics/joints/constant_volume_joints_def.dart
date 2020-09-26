@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Definition for a {@link ConstantVolumeJoint}, which connects a group a bodies together so they
 /// maintain a constant volume within them.

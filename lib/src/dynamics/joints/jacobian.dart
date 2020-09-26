@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class Jacobian {
   final Vector2 linearA = Vector2.zero();

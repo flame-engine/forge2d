@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A fixture is used to attach a shape to a body for collision detection. A fixture inherits its
 /// transform from its parent. Fixtures hold additional non-geometric data such as friction,

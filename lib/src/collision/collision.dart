@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// Java-specific class for returning edge results
 class _EdgeResults {

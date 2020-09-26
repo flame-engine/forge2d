@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class ConstantVolumeJoint extends Joint {
   final List<Body> _bodies;

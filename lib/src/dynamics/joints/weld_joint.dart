@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 //Point-to-point constraint
 //C = p2 - p1

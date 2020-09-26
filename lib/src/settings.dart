@@ -1,4 +1,4 @@
-library box2d.settings;
+library forge2d.settings;
 
 import 'dart:math' as Math;
 
@@ -36,7 +36,7 @@ const double angularSlop = (2.0 / 180.0 * Math.pi);
 /// artifacts for vertex collision.
 const double polygonRadius = (2.0 * linearSlop);
 
-/// Maximum number of sub-steps per contact in continuous physics simulation.
+/// Maximum number of sub-steps per contact in continuous physiforge2d.settingsgs
 const int maxSubSteps = 8;
 
 // Dynamics

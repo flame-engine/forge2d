@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A particle group definition holds all the data needed to construct a particle group. You can
 /// safely re-use these definitions.

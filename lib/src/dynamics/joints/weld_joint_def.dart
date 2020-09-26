@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class WeldJointDef extends JointDef {
   /// The body2 angle minus body1 angle in the reference state (radians).

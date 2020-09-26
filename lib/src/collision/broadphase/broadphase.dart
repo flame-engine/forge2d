@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 abstract class BroadPhase {
   static const int NULL_PROXY = -1;

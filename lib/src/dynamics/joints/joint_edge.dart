@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// A joint edge is used to connect bodies and joints together
 /// in a joint graph where each body is a node and each joint

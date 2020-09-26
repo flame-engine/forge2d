@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 class Velocity {
   final Vector2 v = Vector2.zero();

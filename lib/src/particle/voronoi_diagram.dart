@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 abstract class VoronoiDiagramCallback {
   void call(int aTag, int bTag, int cTag);

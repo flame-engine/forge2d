@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// This is used to compute the current state of a contact manifold.
 class WorldManifold {

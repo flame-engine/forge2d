@@ -8,7 +8,7 @@ if [ "$TRAVIS_DART_VERSION" = "stable" ]; then
   $(dirname -- "$0")/ensure_dartfmt.sh
 fi
 
-dartanalyzer lib/box2d.dart
+dartanalyzer lib/forge2d.dart
 
 # Run the benchmark script as a simple sanity check
 dart --checked --error_on_bad_type --error_on_bad_override benchmark/bench2d.dart
