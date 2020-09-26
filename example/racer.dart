@@ -5,7 +5,6 @@ import 'dart:math';
 
 import 'demo.dart';
 import '../lib/forge2d.dart';
-import '../lib/src/math_utils.dart' as MathUtils;
 
 part 'racer/car.dart';
 part 'racer/control_state.dart';

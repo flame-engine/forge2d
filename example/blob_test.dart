@@ -3,7 +3,6 @@ library BlobTest;
 import 'dart:math' as Math;
 import 'demo.dart';
 import '../lib/forge2d.dart';
-import '../lib/src/math_utils.dart';
 
 class BlobTest extends Demo {
   /// Constructs a new BlobTest.
@@ -44,8 +43,7 @@ class BlobTest extends Demo {
     double nBodies = 20.0;
     double bodyRadius = 0.5;
     for (int i = 0; i < nBodies; ++i) {
-      double angle = translateAndScale(
-          i.toDouble(), 0.0, nBodies, 0.0, Math.pi * 2);
+      double angle = (i / nBodies) * Math.pi * 2;
       BodyDef bd = BodyDef();
       bd.fixedRotation = true;
 
