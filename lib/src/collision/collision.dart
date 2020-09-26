@@ -1280,7 +1280,7 @@ class EPCollider {
       tempx = vB.x - v2.x;
       tempy = vB.y - v2.y;
       double s2 = _n.x * tempx + _n.y * tempy;
-      double s = Math.min(s1, s2);
+      double s = math.min(s1, s2);
 
       if (s > radius) {
         // No collision

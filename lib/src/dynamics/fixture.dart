@@ -233,7 +233,7 @@ class Fixture {
 
     if (_proxies.length < childCount) {
       List<FixtureProxy> old = _proxies;
-      int newLen = Math.max(old.length * 2, childCount);
+      int newLen = math.max(old.length * 2, childCount);
       _proxies = List<FixtureProxy>(newLen);
       BufferUtils.arrayCopy(old, 0, _proxies, 0, old.length);
       for (int i = 0; i < newLen; i++) {

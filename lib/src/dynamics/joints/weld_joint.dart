@@ -132,7 +132,7 @@ class WeldJoint extends Joint {
       double C = aB - aA - _referenceAngle;
 
       // Frequency
-      double omega = 2.0 * Math.pi * _frequencyHz;
+      double omega = 2.0 * math.pi * _frequencyHz;
 
       // Damping coefficient
       double d = 2.0 * m * _dampingRatio * omega;

@@ -65,7 +65,7 @@ class EdgeShape extends Shape {
       }
     }
 
-    double d1 = Math.sqrt(dx * dx + dy * dy);
+    double d1 = math.sqrt(dx * dx + dy * dy);
     if (d1 > 0) {
       normalOut.x = 1 / d1 * dx;
       normalOut.y = 1 / d1 * dy;

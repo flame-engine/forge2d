@@ -152,7 +152,7 @@ class RopeJoint extends Joint {
 
     double impulse = -_mass * Cdot;
     double oldImpulse = _impulse;
-    _impulse = Math.min<double>(0.0, _impulse + impulse);
+    _impulse = math.min<double>(0.0, _impulse + impulse);
     impulse = _impulse - oldImpulse;
 
     double Px = impulse * _u.x;

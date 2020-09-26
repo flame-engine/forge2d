@@ -1000,7 +1000,7 @@ class World {
           // Beta is the fraction of the remaining portion of the .
           double beta = toiOutput.t;
           if (toiOutput.state == TOIOutputState.TOUCHING) {
-            alpha = Math.min(alpha0 + (1.0 - alpha0) * beta, 1.0);
+            alpha = math.min(alpha0 + (1.0 - alpha0) * beta, 1.0);
           } else {
             alpha = 1.0;
           }

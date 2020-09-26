@@ -1,6 +1,6 @@
 library FrictionJointTest;
 
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 import 'demo.dart';
 import '../lib/forge2d.dart';
@@ -51,7 +51,7 @@ class FrictionJointTest extends Demo {
 
   void _createBoxShapeAndFixture() {
     final PolygonShape boxShape = PolygonShape();
-    boxShape.setAsBox(3.0, 1.5, Vector2.zero(), Math.pi / 2);
+    boxShape.setAsBox(3.0, 1.5, Vector2.zero(), math.pi / 2);
 
     // Define fixture (links body and shape)
     _boxFixture = FixtureDef();

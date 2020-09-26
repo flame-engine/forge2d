@@ -536,9 +536,9 @@ class PrismaticJoint extends Joint {
       _impulse.add(df);
 
       if (_limitState == LimitState.AT_LOWER) {
-        _impulse.z = Math.max(_impulse.z, 0.0);
+        _impulse.z = math.max(_impulse.z, 0.0);
       } else if (_limitState == LimitState.AT_UPPER) {
-        _impulse.z = Math.min(_impulse.z, 0.0);
+        _impulse.z = math.min(_impulse.z, 0.0);
       }
 
       // f2(1:2) = invK(1:2,1:2) * (-Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3))) +
@@ -682,21 +682,21 @@ class PrismaticJoint extends Joint {
         C2 = translation
             .clamp(-Settings.maxLinearCorrection, Settings.maxLinearCorrection)
             .toDouble();
-        linearError = Math.max(linearError, translation.abs());
+        linearError = math.max(linearError, translation.abs());
         active = true;
       } else if (translation <= _lowerTranslation) {
         // Prevent large linear corrections and allow some slop.
         C2 = (translation - _lowerTranslation + Settings.linearSlop)
             .clamp(-Settings.maxLinearCorrection, 0.0)
             .toDouble();
-        linearError = Math.max(linearError, _lowerTranslation - translation);
+        linearError = math.max(linearError, _lowerTranslation - translation);
         active = true;
       } else if (translation >= _upperTranslation) {
         // Prevent large linear corrections and allow some slop.
         C2 = (translation - _upperTranslation - Settings.linearSlop)
             .clamp(0.0, Settings.maxLinearCorrection)
             .toDouble();
-        linearError = Math.max(linearError, translation - _upperTranslation);
+        linearError = math.max(linearError, translation - _upperTranslation);
         active = true;
       }
     }

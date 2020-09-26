@@ -1,6 +1,6 @@
 library forge2d.common;
 
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'dart:math';
 import 'vector_math.dart';
 

@@ -697,7 +697,7 @@ class Distance {
       ++_simplex.count;
     }
 
-    GJK_MAX_ITERS = Math.max(GJK_MAX_ITERS, iter);
+    GJK_MAX_ITERS = math.max(GJK_MAX_ITERS, iter);
 
     // Prepare output.
     _simplex.getWitnessPoints(output.pointA, output.pointB);
