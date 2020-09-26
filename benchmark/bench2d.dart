@@ -40,7 +40,7 @@ double percentile(List<double> values, double pc) {
 class Bench2d {
   final World world;
 
-  Bench2d() : world = World.withGravity(Vector2(0.0, -10.0));
+  Bench2d() : world = World(Vector2(0.0, -10.0));
 
   void initialize() {
     BodyDef bd = BodyDef();

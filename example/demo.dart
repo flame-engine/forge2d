@@ -61,7 +61,7 @@ abstract class Demo {
   Element worldStepTime;
 
   Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
-      : this.world = World.withGravity(gravity ??= Vector2(0.0, GRAVITY)),
+      : this.world = World(gravity ?? Vector2(0.0, GRAVITY)),
         _stopwatch = Stopwatch()..start() {
     querySelector("#title").innerHtml = name;
   }
