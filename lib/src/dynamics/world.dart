@@ -51,17 +51,10 @@ class World {
   /// Construct a world object.
   ///
   /// @param gravity the world gravity vector.
-  factory World.withGravity(Vector2 gravity) {
-    return World.withGravityAndStrategy(gravity, DynamicTree());
-  }
-
-  factory World.withGravityAndStrategy(
-      Vector2 gravity, BroadPhaseStrategy strategy) {
-    return World(gravity, DefaultBroadPhaseBuffer(strategy));
-  }
-
-  World(Vector2 gravity, BroadPhase broadPhase)
-      : _gravity = Vector2.copy(gravity) {
+  /// @param broadPhase what type of broad phase strategy that should be used.
+  World([Vector2 gravity, BroadPhase broadPhase])
+      : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
+    broadPhase ??= DefaultBroadPhaseBuffer(DynamicTree());
     _destructionListener = null;
     debugDraw = null;
 
