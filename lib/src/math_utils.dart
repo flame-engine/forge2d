@@ -8,10 +8,6 @@ Vector2 crossDblVec2(double s, Vector2 a) {
   return Vector2(-s * a.y, s * a.x);
 }
 
-bool vector2IsValid(Vector2 v) {
-  return !v.x.isNaN && !v.x.isInfinite && !v.y.isNaN && !v.y.isInfinite;
-}
-
 Vector2 matrix3Mul22(Matrix3 A, Vector2 v) {
   final y = A.entry(1, 0) * v.x + A.entry(1, 1) * v.y;
   final x = A.entry(0, 0) * v.x + A.entry(0, 1) * v.y;
