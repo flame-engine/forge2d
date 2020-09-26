@@ -7,8 +7,6 @@ const int INTEGER_MAX_VALUE = 0x3FFFFFFF;
 /// A "close to zero" float epsilon value for use
 const double EPSILON = 1.1920928955078125E-7;
 
-const int CONTACT_STACK_INIT_SIZE = 10;
-
 /// The maximum number of contact points between two convex shapes.
 const int maxManifoldPoints = 2;
 
@@ -46,7 +44,7 @@ const int maxTOIContacts = 32;
 
 /// A velocity threshold for elastic collisions. Any collision with a relative linear velocity
 /// below this threshold will be treated as inelastic.
-double velocityThreshold = 1.0;
+const double velocityThreshold = 1.0;
 
 /// The maximum linear position correction used when solving constraints. This helps to prevent
 /// overshoot.
@@ -69,7 +67,6 @@ const double maxRotationSquared = (maxRotation * maxRotation);
 /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so that
 /// overlap is removed in one time step. However using values close to 1 often lead to overshoot.
 const double baumgarte = 0.2;
-const double toiBaugarte = 0.75;
 
 // Sleep
 
@@ -85,7 +82,7 @@ const double angularSleepTolerance = (2.0 / 180.0 * Math.pi);
 // Particle
 
 /// A symbolic constant that stands for particle allocation error.
-const int invalidParticleIndex = (-1);
+const int invalidParticleIndex = -1;
 
 /// The standard distance between particles, divided by the particle radius.
 const double particleStride = 0.75;
