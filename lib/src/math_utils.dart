@@ -4,22 +4,8 @@ import 'dart:math' as Math;
 
 import 'vector_math.dart';
 
-Vector2 clampVec2(final Vector2 a, final Vector2 low, final Vector2 high) {
-  return Vector2(
-    Math.max(low.x, Math.min(a.x, high.x)),
-    Math.max(low.y, Math.min(a.y, high.y)),
-  );
-}
-
 Vector2 crossDblVec2(double s, Vector2 a) {
   return Vector2(-s * a.y, s * a.x);
-}
-
-bool vector2Equals(Vector2 a, Vector2 b) {
-  if ((a == null) || (b == null)) return false;
-  if (identical(a, b)) return true;
-  if (a is! Vector2 || b is! Vector2) return false;
-  return ((a.x == b.x) && (a.y == b.y));
 }
 
 bool vector2IsValid(Vector2 v) {
