@@ -770,8 +770,8 @@ class ParticleSystem {
           pair.indexB = b;
           pair.flags = contact.flags;
           pair.strength = groupDef.strength;
-          pair.distance = MathUtils.distance(
-              positionBuffer.data[a], positionBuffer.data[b]);
+          pair.distance =
+              positionBuffer.data[a].distanceTo(positionBuffer.data[b]);
           pairCount++;
         }
       }
@@ -837,8 +837,8 @@ class ParticleSystem {
           pair.indexB = b;
           pair.flags = contact.flags;
           pair.strength = Math.min(groupA._strength, groupB._strength);
-          pair.distance = MathUtils.distance(
-              positionBuffer.data[a], positionBuffer.data[b]);
+          pair.distance =
+              positionBuffer.data[a].distanceTo(positionBuffer.data[b]);
           pairCount++;
         }
       }

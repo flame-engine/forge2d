@@ -4,37 +4,11 @@ import 'dart:math' as Math;
 
 import 'vector_math.dart';
 
-const double TWOPI = Math.pi * 2.0;
-
-double distanceSquared(Vector2 v1, Vector2 v2) => v1.distanceToSquared(v2);
-
-double distance(Vector2 v1, Vector2 v2) => v1.distanceTo(v2);
-
-/// Returns the closest value to 'a' that is in between 'low' and 'high'
-double clampDouble(final double a, final double low, final double high) =>
-    Math.max<double>(low, Math.min<double>(a, high));
-
 Vector2 clampVec2(final Vector2 a, final Vector2 low, final Vector2 high) {
   return Vector2(
     Math.max(low.x, Math.min(a.x, high.x)),
     Math.max(low.y, Math.min(a.y, high.y)),
   );
-}
-
-/// Given a value within the range specified by [fromMin] and [fromMax],
-/// returns a value with the same relative position in the range specified
-/// from [toMin] and [toMax]. For example, given a [val] of 2 in the
-/// "from range" of 0-4, and a "to range" of 10-20, would return 15.
-double translateAndScale(
-    double val, double fromMin, double fromMax, double toMin, double toMax) {
-  final double mult = (val - fromMin) / (fromMax - fromMin);
-  final double res = toMin + mult * (toMax - toMin);
-  return res;
-}
-
-bool approxEquals(num expected, num actual, [num tolerance = null]) {
-  tolerance ??= (expected / 1e4).abs();
-  return ((expected - actual).abs() <= tolerance);
 }
 
 Vector2 crossDblVec2(double s, Vector2 a) {
@@ -50,13 +24,6 @@ bool vector2Equals(Vector2 a, Vector2 b) {
 
 bool vector2IsValid(Vector2 v) {
   return !v.x.isNaN && !v.x.isInfinite && !v.y.isNaN && !v.y.isInfinite;
-}
-
-Vector3 matrix3Mul(Matrix3 A, Vector3 v) {
-  final x = v.x * A.entry(0, 0) + v.y * A.entry(0, 1) + v.z * A.entry(0, 2);
-  final y = v.x * A.entry(1, 0) + v.y * A.entry(1, 1) + v.z * A.entry(1, 2);
-  final z = v.x * A.entry(2, 0) + v.y * A.entry(2, 1) + v.z * A.entry(2, 2);
-  return Vector3(x, y, z);
 }
 
 Vector2 matrix3Mul22(Matrix3 A, Vector2 v) {

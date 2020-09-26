@@ -487,8 +487,9 @@ class PrismaticJoint extends Joint {
       double impulse = _motorMass * (_motorSpeed - Cdot);
       double oldImpulse = _motorImpulse;
       double maxImpulse = data.step.dt * _maxMotorForce;
-      _motorImpulse = MathUtils.clampDouble(
-          _motorImpulse + impulse, -maxImpulse, maxImpulse);
+      _motorImpulse = (_motorImpulse + impulse)
+          .clamp(-maxImpulse, maxImpulse)
+          .toDouble();
       impulse = _motorImpulse - oldImpulse;
 
       final Vector2 P = Vector2.zero();
@@ -678,24 +679,23 @@ class PrismaticJoint extends Joint {
       if ((_upperTranslation - _lowerTranslation).abs() <
           2.0 * Settings.linearSlop) {
         // Prevent large angular corrections
-        C2 = MathUtils.clampDouble(translation, -Settings.maxLinearCorrection,
-            Settings.maxLinearCorrection);
+        C2 = translation
+            .clamp(-Settings.maxLinearCorrection, Settings.maxLinearCorrection)
+            .toDouble();
         linearError = Math.max(linearError, translation.abs());
         active = true;
       } else if (translation <= _lowerTranslation) {
         // Prevent large linear corrections and allow some slop.
-        C2 = MathUtils.clampDouble(
-            translation - _lowerTranslation + Settings.linearSlop,
-            -Settings.maxLinearCorrection,
-            0.0);
+        C2 = (translation - _lowerTranslation + Settings.linearSlop)
+            .clamp(-Settings.maxLinearCorrection, 0.0)
+            .toDouble();
         linearError = Math.max(linearError, _lowerTranslation - translation);
         active = true;
       } else if (translation >= _upperTranslation) {
         // Prevent large linear corrections and allow some slop.
-        C2 = MathUtils.clampDouble(
-            translation - _upperTranslation - Settings.linearSlop,
-            0.0,
-            Settings.maxLinearCorrection);
+        C2 = (translation - _upperTranslation - Settings.linearSlop)
+            .clamp(0.0, Settings.maxLinearCorrection)
+            .toDouble();
         linearError = Math.max(linearError, translation - _upperTranslation);
         active = true;
       }

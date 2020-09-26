@@ -334,8 +334,9 @@ class ContactSolver {
 
         // Clamp the accumulated force
         final double maxFriction = friction * vcp.normalImpulse;
-        final double newImpulse = MathUtils.clampDouble(
-            vcp.tangentImpulse + lambda, -maxFriction, maxFriction);
+        final double newImpulse =
+            (vcp.tangentImpulse + lambda).clamp(-maxFriction, maxFriction)
+                .toDouble();
         lambda = newImpulse - vcp.tangentImpulse;
         vcp.tangentImpulse = newImpulse;
 
@@ -802,10 +803,8 @@ class ContactSolver {
         minSeparation = Math.min(minSeparation, separation);
 
         // Prevent large corrections and allow slop.
-        final double C = MathUtils.clampDouble(
-            Settings.baumgarte * (separation + Settings.linearSlop),
-            -Settings.maxLinearCorrection,
-            0.0);
+        final C = (Settings.baumgarte * (separation + Settings.linearSlop))
+            .clamp(-Settings.maxLinearCorrection, 0.0);
 
         // Compute the effective mass.
         final double rnA = rAx * normal.y - rAy * normal.x;
@@ -900,10 +899,9 @@ class ContactSolver {
         minSeparation = Math.min(minSeparation, separation);
 
         // Prevent large corrections and allow slop.
-        double C = MathUtils.clampDouble(
-            Settings.toiBaugarte * (separation + Settings.linearSlop),
-            -Settings.maxLinearCorrection,
-            0.0);
+
+        final C = (Settings.baumgarte * (separation + Settings.linearSlop))
+            .clamp(-Settings.maxLinearCorrection, 0.0);
 
         // Compute the effective mass.
         double rnA = rAx * normal.y - rAy * normal.x;

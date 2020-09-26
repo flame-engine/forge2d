@@ -226,9 +226,8 @@ class WeldJoint extends Joint {
         ..sub(temp);
       double Cdot2 = wB - wA;
 
-      final Vector3 Cdot = Vector3(Cdot1.x, Cdot1.y, Cdot2);
-      final Vector3 impulse = MathUtils.matrix3Mul(_mass, Cdot)..negate();
-
+      final Vector3 impulse =
+        Vector3(Cdot1.x, Cdot1.y, Cdot2)..applyMatrix3(_mass)..negate();
       _impulse.add(impulse);
 
       P.setValues(impulse.x, impulse.y);

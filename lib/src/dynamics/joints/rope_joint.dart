@@ -205,7 +205,7 @@ class RopeJoint extends Joint {
     double length = u.normalize();
     double c = length - _maxLength;
 
-    c = MathUtils.clampDouble(c, 0.0, Settings.maxLinearCorrection);
+    c = c.clamp(0.0, Settings.maxLinearCorrection).toDouble();
 
     double impulse = -_mass * c;
     double Px = impulse * u.x;

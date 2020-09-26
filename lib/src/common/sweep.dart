@@ -25,7 +25,7 @@ class Sweep {
   }
 
   void normalize() {
-    double d = MathUtils.TWOPI * (a0 / MathUtils.TWOPI).floor();
+    double d = pi * 2 * (a0 / pi * 2).floor();
     a0 -= d;
     a -= d;
   }

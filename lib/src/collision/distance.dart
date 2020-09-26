@@ -256,7 +256,7 @@ class _Simplex {
         return 0.0;
 
       case 2:
-        return MathUtils.distance(v1.w, v2.w);
+        return v1.w.distanceTo(v2.w);
 
       case 3:
         _case3
@@ -701,7 +701,7 @@ class Distance {
 
     // Prepare output.
     _simplex.getWitnessPoints(output.pointA, output.pointB);
-    output.distance = MathUtils.distance(output.pointA, output.pointB);
+    output.distance = output.pointA.distanceTo(output.pointB);
     output.iterations = iter;
 
     // Cache the simplex.

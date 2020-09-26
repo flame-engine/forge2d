@@ -192,8 +192,9 @@ class RevoluteJoint extends Joint {
       double impulse = -_motorMass * Cdot;
       double oldImpulse = _motorImpulse;
       double maxImpulse = data.step.dt * _maxMotorTorque;
-      _motorImpulse = MathUtils.clampDouble(
-          _motorImpulse + impulse, -maxImpulse, maxImpulse);
+      _motorImpulse = (_motorImpulse + impulse)
+          .clamp(-maxImpulse, maxImpulse)
+          .toDouble();
       impulse = _motorImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -328,8 +329,9 @@ class RevoluteJoint extends Joint {
 
       if (_limitState == LimitState.EQUAL) {
         // Prevent large angular corrections
-        double C = MathUtils.clampDouble(angle - _lowerAngle,
-            -Settings.maxAngularCorrection, Settings.maxAngularCorrection);
+        double C = (angle - _lowerAngle)
+            .clamp(-Settings.maxAngularCorrection, Settings.maxAngularCorrection)
+            .toDouble();
         limitImpulse = -_motorMass * C;
         angularError = C.abs();
       } else if (_limitState == LimitState.AT_LOWER) {
@@ -337,16 +339,18 @@ class RevoluteJoint extends Joint {
         angularError = -C;
 
         // Prevent large angular corrections and allow some slop.
-        C = MathUtils.clampDouble(
-            C + Settings.angularSlop, -Settings.maxAngularCorrection, 0.0);
+        C = (C + Settings.angularSlop)
+            .clamp(-Settings.maxAngularCorrection, 0.0)
+            .toDouble();
         limitImpulse = -_motorMass * C;
       } else if (_limitState == LimitState.AT_UPPER) {
         double C = angle - _upperAngle;
         angularError = C;
 
         // Prevent large angular corrections and allow some slop.
-        C = MathUtils.clampDouble(
-            C - Settings.angularSlop, 0.0, Settings.maxAngularCorrection);
+        C = (C - Settings.angularSlop)
+            .clamp(0.0, Settings.maxAngularCorrection)
+            .toDouble();
         limitImpulse = -_motorMass * C;
       }
 
