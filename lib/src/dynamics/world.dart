@@ -46,7 +46,6 @@ class World {
   Profile _profile;
 
   ParticleSystem _particleSystem;
-  final List<Body> _destroyBodies = List.empty();
 
   /// Construct a world object.
   ///
@@ -174,17 +173,13 @@ class World {
 
     return b;
   }
-  
-  void destroyBody(Body body) {
-    _destroyBodies.add(body);
-  }
 
   /// Destroys a rigid body given a definition. No reference to the definition is retained. This
   /// function is locked during callbacks.
   ///
   /// @warning This automatically deletes all associated shapes and joints.
   /// @warning This function is locked during callbacks.
-  void _destroyBody(Body body) {
+  void destroyBody(Body body) {
     assert(_bodyCount > 0);
     assert(isLocked() == false);
     if (isLocked()) {
@@ -462,10 +457,6 @@ class World {
     if ((_flags & CLEAR_FORCES) == CLEAR_FORCES) {
       clearForces();
     }
-
-    // Destroy all bodies that have been marked for destruction
-    _destroyBodies.forEach((body) => _destroyBody(body));
-    _destroyBodies.clear();
 
     _flags &= ~LOCKED;
 
