@@ -47,8 +47,8 @@ class AABB {
     if (dy < 0) {
       return false;
     }
-    return MathUtils.vector2IsValid(lowerBound) &&
-        MathUtils.vector2IsValid(upperBound);
+    return !lowerBound.isInfinite && !lowerBound.isNaN &&
+      !upperBound.isInfinite && !upperBound.isNaN;
   }
 
   /// Get the center of the AABB

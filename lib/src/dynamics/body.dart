@@ -57,8 +57,8 @@ class Body {
   Object userData;
 
   Body(final BodyDef bd, this.world) {
-    assert(MathUtils.vector2IsValid(bd.position));
-    assert(MathUtils.vector2IsValid(bd.linearVelocity));
+    assert(!bd.position.isInfinite && !bd.position.isNaN);
+    assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN);
     assert(bd.gravityScale >= 0.0);
     assert(bd.angularDamping >= 0.0);
     assert(bd.linearDamping >= 0.0);

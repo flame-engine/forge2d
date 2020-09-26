@@ -25,7 +25,7 @@ class MouseJoint extends Joint {
   final Vector2 _C = Vector2.zero();
 
   MouseJoint(MouseJointDef def) : super(def) {
-    assert(MathUtils.vector2IsValid(def.target));
+    assert(!def.target.isInfinite && !def.target.isNaN);
     assert(def.maxForce >= 0);
     assert(def.frequencyHz >= 0);
     assert(def.dampingRatio >= 0);
