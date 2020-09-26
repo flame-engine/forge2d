@@ -179,10 +179,10 @@ class DynamicTree implements BroadPhaseStrategy {
     final AABB segAABB = _aabb;
     tempx = (p2x - p1x) * maxFraction + p1x;
     tempy = (p2y - p1y) * maxFraction + p1y;
-    segAABB.lowerBound.x = Math.min(p1x, tempx);
-    segAABB.lowerBound.y = Math.min(p1y, tempy);
-    segAABB.upperBound.x = Math.max(p1x, tempx);
-    segAABB.upperBound.y = Math.max(p1y, tempy);
+    segAABB.lowerBound.x = math.min(p1x, tempx);
+    segAABB.lowerBound.y = math.min(p1y, tempy);
+    segAABB.upperBound.x = math.max(p1x, tempx);
+    segAABB.upperBound.y = math.max(p1y, tempy);
 
     nodeStackIndex = 0;
     nodeStack[nodeStackIndex++] = _root;
@@ -230,10 +230,10 @@ class DynamicTree implements BroadPhaseStrategy {
           maxFraction = value;
           tempx = (p2x - p1x) * maxFraction + p1x;
           tempy = (p2y - p1y) * maxFraction + p1y;
-          segAABB.lowerBound.x = Math.min(p1x, tempx);
-          segAABB.lowerBound.y = Math.min(p1y, tempy);
-          segAABB.upperBound.x = Math.max(p1x, tempx);
-          segAABB.upperBound.y = Math.max(p1y, tempy);
+          segAABB.lowerBound.x = math.min(p1x, tempx);
+          segAABB.lowerBound.y = math.min(p1y, tempy);
+          segAABB.upperBound.x = math.max(p1x, tempx);
+          segAABB.upperBound.y = math.max(p1y, tempy);
         }
       } else {
         if (nodeStack.length - nodeStackIndex - 2 <= 0) {
@@ -260,7 +260,7 @@ class DynamicTree implements BroadPhaseStrategy {
     }
     int height1 = _computeHeight(node.child1);
     int height2 = _computeHeight(node.child2);
-    return 1 + Math.max<int>(height1, height2);
+    return 1 + math.max<int>(height1, height2);
   }
 
   /// Validate this tree. For testing.
@@ -303,7 +303,7 @@ class DynamicTree implements BroadPhaseStrategy {
       DynamicTreeNode child1 = node.child1;
       DynamicTreeNode child2 = node.child2;
       int balance = (child2.height - child1.height).abs();
-      maxBalance = Math.max(maxBalance, balance);
+      maxBalance = math.max(maxBalance, balance);
     }
 
     return maxBalance;
@@ -380,7 +380,7 @@ class DynamicTree implements BroadPhaseStrategy {
       DynamicTreeNode parent = _allocateNode();
       parent.child1 = child1;
       parent.child2 = child2;
-      parent.height = 1 + Math.max<int>(child1.height, child2.height);
+      parent.height = 1 + math.max<int>(child1.height, child2.height);
       parent.aabb.combine2(child1.aabb, child2.aabb);
       parent.parent = null;
 
@@ -543,7 +543,7 @@ class DynamicTree implements BroadPhaseStrategy {
       assert(child1 != null);
       assert(child2 != null);
 
-      index.height = 1 + Math.max<int>(child1.height, child2.height);
+      index.height = 1 + math.max<int>(child1.height, child2.height);
       index.aabb.combine2(child1.aabb, child2.aabb);
 
       index = index.parent;
@@ -585,7 +585,7 @@ class DynamicTree implements BroadPhaseStrategy {
         DynamicTreeNode child2 = index.child2;
 
         index.aabb.combine2(child1.aabb, child2.aabb);
-        index.height = 1 + Math.max<int>(child1.height, child2.height);
+        index.height = 1 + math.max<int>(child1.height, child2.height);
 
         index = index.parent;
       }
@@ -654,8 +654,8 @@ class DynamicTree implements BroadPhaseStrategy {
         A.aabb.combine2(B.aabb, G.aabb);
         C.aabb.combine2(A.aabb, F.aabb);
 
-        A.height = 1 + Math.max<int>(B.height, G.height);
-        C.height = 1 + Math.max<int>(A.height, F.height);
+        A.height = 1 + math.max<int>(B.height, G.height);
+        C.height = 1 + math.max<int>(A.height, F.height);
       } else {
         C.child2 = iG;
         A.child2 = iF;
@@ -663,8 +663,8 @@ class DynamicTree implements BroadPhaseStrategy {
         A.aabb.combine2(B.aabb, F.aabb);
         C.aabb.combine2(A.aabb, G.aabb);
 
-        A.height = 1 + Math.max<int>(B.height, F.height);
-        C.height = 1 + Math.max<int>(A.height, G.height);
+        A.height = 1 + math.max<int>(B.height, F.height);
+        C.height = 1 + math.max<int>(A.height, G.height);
       }
 
       return iC;
@@ -704,8 +704,8 @@ class DynamicTree implements BroadPhaseStrategy {
         A.aabb.combine2(C.aabb, E.aabb);
         B.aabb.combine2(A.aabb, D.aabb);
 
-        A.height = 1 + Math.max<int>(C.height, E.height);
-        B.height = 1 + Math.max<int>(A.height, D.height);
+        A.height = 1 + math.max<int>(C.height, E.height);
+        B.height = 1 + math.max<int>(A.height, D.height);
       } else {
         B.child2 = iE;
         A.child1 = iD;
@@ -713,8 +713,8 @@ class DynamicTree implements BroadPhaseStrategy {
         A.aabb.combine2(C.aabb, D.aabb);
         B.aabb.combine2(A.aabb, E.aabb);
 
-        A.height = 1 + Math.max<int>(C.height, D.height);
-        B.height = 1 + Math.max<int>(A.height, E.height);
+        A.height = 1 + math.max<int>(C.height, D.height);
+        B.height = 1 + math.max<int>(A.height, E.height);
       }
 
       return iB;
@@ -774,7 +774,7 @@ class DynamicTree implements BroadPhaseStrategy {
     int height1 = child1.height;
     int height2 = child2.height;
     int height;
-    height = 1 + Math.max<int>(height1, height2);
+    height = 1 + math.max<int>(height1, height2);
     assert(node.height == height);
 
     AABB aabb = AABB();

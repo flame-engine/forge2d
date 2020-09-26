@@ -831,8 +831,8 @@ class Body {
 
   void synchronizeFixtures() {
     final Transform xf1 = _pxf;
-    xf1.q.s = Math.sin(_sweep.a0);
-    xf1.q.c = Math.cos(_sweep.a0);
+    xf1.q.s = math.sin(_sweep.a0);
+    xf1.q.c = math.cos(_sweep.a0);
     xf1.p.x = _sweep.c0.x -
         xf1.q.c * _sweep.localCenter.x +
         xf1.q.s * _sweep.localCenter.y;
@@ -846,8 +846,8 @@ class Body {
   }
 
   void synchronizeTransform() {
-    _transform.q.s = Math.sin(_sweep.a);
-    _transform.q.c = Math.cos(_sweep.a);
+    _transform.q.s = math.sin(_sweep.a);
+    _transform.q.c = math.cos(_sweep.a);
     Rot q = _transform.q;
     Vector2 v = _sweep.localCenter;
     _transform.p.x = _sweep.c.x - q.c * v.x + q.s * v.y;

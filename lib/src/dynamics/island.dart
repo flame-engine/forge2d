@@ -282,7 +282,7 @@ class Island {
       if (translationX * translationX + translationY * translationY >
           Settings.maxTranslationSquared) {
         double ratio = Settings.maxTranslation /
-            Math.sqrt(
+            math.sqrt(
                 translationX * translationX + translationY * translationY);
         v.x *= ratio;
         v.y *= ratio;
@@ -356,7 +356,7 @@ class Island {
           minSleepTime = 0.0;
         } else {
           b._sleepTime += h;
-          minSleepTime = Math.min(minSleepTime, b._sleepTime);
+          minSleepTime = math.min(minSleepTime, b._sleepTime);
         }
       }
 
@@ -433,7 +433,7 @@ class Island {
       if (translationX * translationX + translationY * translationY >
           Settings.maxTranslationSquared) {
         double ratio = Settings.maxTranslation /
-            Math.sqrt(
+            math.sqrt(
                 translationX * translationX + translationY * translationY);
         v.scale(ratio);
       }

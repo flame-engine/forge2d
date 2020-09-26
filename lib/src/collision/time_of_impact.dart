@@ -73,7 +73,7 @@ class TimeOfImpact {
     double totalRadius = proxyA.radius + proxyB.radius;
     // djm: whats with all these constants?
     double target =
-        Math.max(Settings.linearSlop, totalRadius - 3.0 * Settings.linearSlop);
+        math.max(Settings.linearSlop, totalRadius - 3.0 * Settings.linearSlop);
     double tolerance = 0.25 * Settings.linearSlop;
 
     assert(target > tolerance);
@@ -199,7 +199,7 @@ class TimeOfImpact {
           }
         }
 
-        toiMaxRootIters = Math.max(toiMaxRootIters, rootIterCount);
+        toiMaxRootIters = math.max(toiMaxRootIters, rootIterCount);
 
         ++pushBackIter;
 
@@ -224,7 +224,7 @@ class TimeOfImpact {
       }
     }
 
-    toiMaxIters = Math.max(toiMaxIters, iter);
+    toiMaxIters = math.max(toiMaxIters, iter);
   }
 } // Class TimeOfImpact.
 

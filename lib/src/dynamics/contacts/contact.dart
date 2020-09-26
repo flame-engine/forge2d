@@ -256,7 +256,7 @@ abstract class Contact {
   /// Friction mixing law. The idea is to allow either fixture to drive the restitution to zero. For
   /// example, anything slides on ice.
   static double mixFriction(double friction1, double friction2) {
-    return Math.sqrt(friction1 * friction2);
+    return math.sqrt(friction1 * friction2);
   }
 
   /// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface. For

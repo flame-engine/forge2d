@@ -49,7 +49,7 @@ class PolygonShape extends Shape {
       return;
     }
 
-    int n = Math.min(updatedCount, Settings.maxPolygonVertices);
+    int n = math.min(updatedCount, Settings.maxPolygonVertices);
 
     // Perform welding and copy vertices into local buffer.
     List<Vector2> ps = List<Vector2>(Settings.maxPolygonVertices);
@@ -332,7 +332,7 @@ class PolygonShape extends Shape {
           minDistance2 = distance2;
         }
       }
-      distance = Math.sqrt(minDistance2);
+      distance = math.sqrt(minDistance2);
       normalOut.x = xfqc * minDistanceX - xfqs * minDistanceY;
       normalOut.y = xfqs * minDistanceX + xfqc * minDistanceY;
       normalOut.normalize();

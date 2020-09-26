@@ -1,6 +1,6 @@
 library DominoTower;
 
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 import 'demo.dart';
 import '../lib/forge2d.dart';
@@ -37,7 +37,7 @@ class DominoTower extends Demo {
     fd.friction = DOMINO_FRICTION;
     fd.restitution = 0.65;
     bd.position = Vector2(x, y);
-    bd.angle = horizontal ? (Math.pi / 2.0) : 0.0;
+    bd.angle = horizontal ? (math.pi / 2.0) : 0.0;
     Body myBody = world.createBody(bd);
     myBody.createFixtureFromFixtureDef(fd);
     bodies.add(myBody);

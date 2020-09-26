@@ -174,7 +174,7 @@ class AABB {
       }
 
       // Pull the max down
-      tmax = Math.min(tmax, t2);
+      tmax = math.min(tmax, t2);
 
       if (tmin > tmax) {
         return false;
@@ -209,7 +209,7 @@ class AABB {
       }
 
       // Pull the max down
-      tmax = Math.min(tmax, t2);
+      tmax = math.min(tmax, t2);
 
       if (tmin > tmax) {
         return false;

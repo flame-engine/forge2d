@@ -45,7 +45,7 @@ class ContactSolver {
     if (_positionConstraints.length < _count) {
       List<ContactPositionConstraint> old = _positionConstraints;
       _positionConstraints =
-          List<ContactPositionConstraint>(Math.max(old.length * 2, _count));
+          List<ContactPositionConstraint>(math.max(old.length * 2, _count));
       BufferUtils.arrayCopy(old, 0, _positionConstraints, 0, old.length);
       for (int i = old.length; i < _positionConstraints.length; i++) {
         _positionConstraints[i] = ContactPositionConstraint();
@@ -55,7 +55,7 @@ class ContactSolver {
     if (_velocityConstraints.length < _count) {
       List<ContactVelocityConstraint> old = _velocityConstraints;
       _velocityConstraints =
-          List<ContactVelocityConstraint>(Math.max(old.length * 2, _count));
+          List<ContactVelocityConstraint>(math.max(old.length * 2, _count));
       BufferUtils.arrayCopy(old, 0, _velocityConstraints, 0, old.length);
       for (int i = old.length; i < _velocityConstraints.length; i++) {
         _velocityConstraints[i] = ContactVelocityConstraint();
@@ -800,7 +800,7 @@ class ContactSolver {
         double rBy = point.y - cB.y;
 
         // Track max constraint error.
-        minSeparation = Math.min(minSeparation, separation);
+        minSeparation = math.min(minSeparation, separation);
 
         // Prevent large corrections and allow slop.
         final C = (Settings.baumgarte * (separation + Settings.linearSlop))
@@ -896,7 +896,7 @@ class ContactSolver {
         double rBy = point.y - cB.y;
 
         // Track max constraint error.
-        minSeparation = Math.min(minSeparation, separation);
+        minSeparation = math.min(minSeparation, separation);
 
         // Prevent large corrections and allow slop.
 

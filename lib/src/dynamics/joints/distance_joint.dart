@@ -109,7 +109,7 @@ class DistanceJoint extends Joint {
       double C = length - _length;
 
       // Frequency
-      double omega = 2.0 * Math.pi * _frequencyHz;
+      double omega = 2.0 * math.pi * _frequencyHz;
 
       // Damping coefficient
       double d = 2.0 * _mass * _dampingRatio * omega;

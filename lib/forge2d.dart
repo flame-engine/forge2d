@@ -1,7 +1,7 @@
 library forge2d;
 
 import 'dart:collection';
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'src/buffer_utils.dart' as BufferUtils;

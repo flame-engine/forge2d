@@ -282,7 +282,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
           triad.indexB = b;
           triad.indexC = c;
           triad.flags = af | bf | cf;
-          triad.strength = Math.min(groupA._strength, groupB._strength);
+          triad.strength = math.min(groupA._strength, groupB._strength);
           final double midPointx = 1.0 / 3.0 * (pa.x + pb.x + pc.x);
           final double midPointy = 1.0 / 3.0 * (pa.y + pb.y + pc.y);
           triad.pa.x = pa.x - midPointx;
@@ -836,7 +836,7 @@ class ParticleSystem {
           pair.indexA = a;
           pair.indexB = b;
           pair.flags = contact.flags;
-          pair.strength = Math.min(groupA._strength, groupB._strength);
+          pair.strength = math.min(groupA._strength, groupB._strength);
           pair.distance =
               positionBuffer.data[a].distanceTo(positionBuffer.data[b]);
           pairCount++;
@@ -981,7 +981,7 @@ class ParticleSystem {
             contactBuffer, oldCapacity, newCapacity, allocParticleContact);
         contactCapacity = newCapacity;
       }
-      double invD = d2 != 0 ? Math.sqrt(1 / d2) : double.maxFinite;
+      double invD = d2 != 0 ? math.sqrt(1 / d2) : double.maxFinite;
       ParticleContact contact = contactBuffer[contactCount];
       contact.indexA = a;
       contact.indexB = b;
@@ -1131,7 +1131,7 @@ class ParticleSystem {
       if (v2 > criticalVelocytySquared) {
         double a = v2 == 0
             ? double.maxFinite
-            : Math.sqrt(criticalVelocytySquared / v2);
+            : math.sqrt(criticalVelocytySquared / v2);
         v.x *= a;
         v.y *= a;
       }
@@ -1209,9 +1209,9 @@ class ParticleSystem {
     for (int i = 0; i < count; i++) {
       double w = accumulationBuffer[i];
       double h = pressurePerWeight *
-          Math.max(
+          math.max(
               0.0,
-              Math.min(w, Settings.maxParticleWeight) -
+              math.min(w, Settings.maxParticleWeight) -
                   Settings.minParticleWeight);
       accumulationBuffer[i] = h;
     }
@@ -1370,7 +1370,7 @@ class ParticleSystem {
         double rs = oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
         double rc = oa.dot(pa) + ob.dot(pb) + oc.dot(pc);
         double r2 = rs * rs + rc * rc;
-        double invR = r2 == 0 ? double.maxFinite : Math.sqrt(1.0 / r2);
+        double invR = r2 == 0 ? double.maxFinite : math.sqrt(1.0 / r2);
         rs *= invR;
         rc *= invR;
         final double strength = elasticStrength_ * triad.strength;
@@ -1405,7 +1405,7 @@ class ParticleSystem {
         final double dx = pb.x - pa.x;
         final double dy = pb.y - pa.y;
         double r0 = pair.distance;
-        double r1 = Math.sqrt(dx * dx + dy * dy);
+        double r1 = math.sqrt(dx * dx + dy * dy);
         if (r1 == 0) r1 = double.maxFinite;
         double strength = springStrength_ * pair.strength;
         final double fx = strength * (r0 - r1) / r1 * dx;
@@ -1775,8 +1775,8 @@ class ParticleSystem {
       for (int i = group._firstIndex; i < group._lastIndex; i++) {
         j = newIndices[i];
         if (j >= 0) {
-          firstIndex = Math.min(firstIndex, j);
-          lastIndex = Math.max(lastIndex, j + 1);
+          firstIndex = math.min(firstIndex, j);
+          lastIndex = math.max(lastIndex, j + 1);
         } else {
           modified = true;
         }
@@ -2110,13 +2110,13 @@ class ParticleSystem {
     int firstProxy = _lowerBound(
         proxyBuffer,
         proxyCount,
-        computeTag(inverseDiameter * Math.min(point1.x, point2.x) - 1,
-            inverseDiameter * Math.min(point1.y, point2.y) - 1));
+        computeTag(inverseDiameter * math.min(point1.x, point2.x) - 1,
+            inverseDiameter * math.min(point1.y, point2.y) - 1));
     int lastProxy = _upperBound(
         proxyBuffer,
         proxyCount,
-        computeTag(inverseDiameter * Math.max(point1.x, point2.x) + 1,
-            inverseDiameter * Math.max(point1.y, point2.y) + 1));
+        computeTag(inverseDiameter * math.max(point1.x, point2.x) + 1,
+            inverseDiameter * math.max(point1.y, point2.y) + 1));
     double fraction = 1.0;
     // solving the following equation:
     // ((1-t)*point1+t*point2-position)^2=diameter^2
@@ -2134,7 +2134,7 @@ class ParticleSystem {
       double p2 = px * px + py * py;
       double determinant = pv * pv - v2 * (p2 - squaredDiameter);
       if (determinant >= 0) {
-        double sqrtDeterminant = Math.sqrt(determinant);
+        double sqrtDeterminant = math.sqrt(determinant);
         // find a solution between 0 and fraction
         double t = (-pv - sqrtDeterminant) / v2;
         if (t > fraction) {
@@ -2152,7 +2152,7 @@ class ParticleSystem {
         n.normalize();
         final Vector2 point = Vector2(point1.x + t * vx, point1.y + t * vy);
         double f = callback.reportParticle(i, point, n, t);
-        fraction = Math.min(fraction, f);
+        fraction = math.min(fraction, f);
         if (fraction <= 0) {
           break;
         }
