@@ -780,8 +780,8 @@ class DynamicTree implements BroadPhaseStrategy {
     AABB aabb = AABB();
     aabb.combine2(child1.aabb, child2.aabb);
 
-    assert(MathUtils.vector2Equals(aabb.lowerBound, node.aabb.lowerBound));
-    assert(MathUtils.vector2Equals(aabb.upperBound, node.aabb.upperBound));
+    assert(aabb.lowerBound == node.aabb.lowerBound);
+    assert(aabb.upperBound == node.aabb.upperBound);
 
     _validateMetrics(child1);
     _validateMetrics(child2);

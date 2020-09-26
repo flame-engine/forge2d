@@ -707,8 +707,8 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     AABB aabb = AABB();
     aabb.combine2(_aabb[child1], _aabb[child2]);
 
-    assert(MathUtils.vector2Equals(aabb.lowerBound, _aabb[node].lowerBound));
-    assert(MathUtils.vector2Equals(aabb.upperBound, _aabb[node].upperBound));
+    assert(aabb.lowerBound == _aabb[node].lowerBound);
+    assert(aabb.upperBound == _aabb[node].upperBound);
 
     _validateMetrics(child1);
     _validateMetrics(child2);
