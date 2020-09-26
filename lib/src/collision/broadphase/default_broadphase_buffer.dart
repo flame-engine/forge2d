@@ -5,7 +5,6 @@ part of forge2d;
 /// client to consume the new pairs and to track subsequent overlap.
 class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   final BroadPhaseStrategy _tree;
-  final int _mask32Bits = 4294967295; // 2^32-1
 
   int _proxyCount = 0;
 
@@ -13,16 +12,16 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   int _moveCapacity = 16;
   int _moveCount = 0;
 
-  List<int> _pairBuffer;
+  List<Pair> _pairBuffer;
   int _pairCapacity = 16;
   int _pairCount = 0;
 
   int _queryProxyId = BroadPhase.NULL_PROXY;
 
   DefaultBroadPhaseBuffer(BroadPhaseStrategy strategy) : _tree = strategy {
-    _pairBuffer = List<int>(_pairCapacity);
+    _pairBuffer = List<Pair>(_pairCapacity);
     for (int i = 0; i < _pairCapacity; i++) {
-      _pairBuffer[i] = 0;
+      _pairBuffer[i] = Pair();
     }
     _moveBuffer = BufferUtils.intList(_moveCapacity);
   }
@@ -111,17 +110,18 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     // Send the pairs back to the client.
     int i = 0;
     while (i < _pairCount) {
-      int primaryPair = _pairBuffer[i];
-      Object userDataA = _tree.getUserData(primaryPair >> 32);
-      Object userDataB = _tree.getUserData(primaryPair & _mask32Bits);
+      Pair primaryPair = _pairBuffer[i];
+      Object userDataA = _tree.getUserData(primaryPair.proxyIdA);
+      Object userDataB = _tree.getUserData(primaryPair.proxyIdB);
 
       callback.addPair(userDataA, userDataB);
       ++i;
 
       // Skip any duplicate pairs.
       while (i < _pairCount) {
-        int pair = _pairBuffer[i];
-        if (pair != primaryPair) {
+        Pair pair = _pairBuffer[i];
+        if (pair.proxyIdA != primaryPair.proxyIdA ||
+            pair.proxyIdB != primaryPair.proxyIdB) {
           break;
         }
         ++i;
@@ -178,19 +178,21 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
     // Grow the pair buffer as needed.
     if (_pairCount == _pairCapacity) {
-      List<int> oldBuffer = _pairBuffer;
+      List<Pair> oldBuffer = _pairBuffer;
       _pairCapacity *= 2;
-      _pairBuffer = List<int>(_pairCapacity);
+      _pairBuffer = List<Pair>(_pairCapacity);
       BufferUtils.arrayCopy(oldBuffer, 0, _pairBuffer, 0, oldBuffer.length);
       for (int i = oldBuffer.length; i < _pairCapacity; i++) {
-        _pairBuffer[i] = 0;
+        _pairBuffer[i] = Pair();
       }
     }
 
     if (proxyId < _queryProxyId) {
-      _pairBuffer[_pairCount] = (proxyId << 32) | _queryProxyId;
+      _pairBuffer[_pairCount].proxyIdA = proxyId;
+      _pairBuffer[_pairCount].proxyIdB = _queryProxyId;
     } else {
-      _pairBuffer[_pairCount] = (_queryProxyId << 32) | proxyId;
+      _pairBuffer[_pairCount].proxyIdA = _queryProxyId;
+      _pairBuffer[_pairCount].proxyIdB = proxyId;
     }
 
     ++_pairCount;
