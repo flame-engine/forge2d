@@ -4,7 +4,6 @@ import 'dart:html';
 import 'dart:math';
 
 import '../../forge2d.dart';
-import '../math_utils.dart' as MathUtils;
 
 class CanvasDraw extends DebugDraw {
   /// The canvas rendering context with which to draw.
