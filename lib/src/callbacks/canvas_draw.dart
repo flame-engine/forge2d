@@ -1,6 +1,7 @@
 library forge2d.callbacks.canvas_draw;
 
 import 'dart:html';
+import 'dart:math';
 
 import '../../forge2d.dart';
 import '../math_utils.dart' as MathUtils;
@@ -91,7 +92,7 @@ class CanvasDraw extends DebugDraw {
     center = getWorldToScreen(center);
 
     ctx.beginPath();
-    ctx.arc(center.x, center.y, radius, 0, MathUtils.TWOPI, true);
+    ctx.arc(center.x, center.y, radius, 0, pi * 2, true);
     ctx.closePath();
   }
 

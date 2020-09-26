@@ -41,7 +41,7 @@ class WorldManifold {
           pointB.x = (xfB.q.c * mp0p.x - xfB.q.s * mp0p.y) + xfB.p.x;
           pointB.y = (xfB.q.s * mp0p.x + xfB.q.c * mp0p.y) + xfB.p.y;
 
-          if (MathUtils.distanceSquared(pointA, pointB) >
+          if (pointA.distanceToSquared(pointB) >
               Settings.EPSILON * Settings.EPSILON) {
             normal.x = pointB.x - pointA.x;
             normal.y = pointB.y - pointA.y;

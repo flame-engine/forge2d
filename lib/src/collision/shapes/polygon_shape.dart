@@ -58,7 +58,7 @@ class PolygonShape extends Shape {
       Vector2 v = updatedVertices[i];
       bool unique = true;
       for (int j = 0; j < tempCount; ++j) {
-        if (MathUtils.distanceSquared(v, ps[j]) < 0.5 * Settings.linearSlop) {
+        if (v.distanceToSquared(ps[j]) < 0.5 * Settings.linearSlop) {
           unique = false;
           break;
         }
