@@ -525,12 +525,12 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              Vector2 dv1 = vB + MathUtils.crossDblVec2(wB, cp1rB)
+              Vector2 dv1 = vB + _crossDoubleVector2(wB, cp1rB)
                 ..sub(vA)
-                ..sub(MathUtils.crossDblVec2(wA, cp1rA));
-              Vector2 dv2 = vB + MathUtils.crossDblVec2(wB, cp2rB)
+                ..sub(_crossDoubleVector2(wA, cp1rA));
+              Vector2 dv2 = vB + _crossDoubleVector2(wB, cp2rB)
                 ..sub(vA)
-                ..sub(MathUtils.crossDblVec2(wA, cp2rA));
+                ..sub(_crossDoubleVector2(wA, cp2rA));
               // Compute normal velocity
               vn1 = dv1.dot(normal);
               vn2 = dv2.dot(normal);
@@ -598,9 +598,9 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              Vector2 dv1 = vB + MathUtils.crossDblVec2(wB, cp1rB)
+              Vector2 dv1 = vB + _crossDoubleVector2(wB, cp1rB)
                 ..sub(vA)
-                ..sub(MathUtils.crossDblVec2(wA, cp1rA));
+                ..sub(_crossDoubleVector2(wA, cp1rA));
               // Compute normal velocity
               vn1 = dv1.dot(normal);
 
@@ -666,9 +666,9 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              Vector2 dv2 = vB + MathUtils.crossDblVec2(wB, cp2rB)
+              Vector2 dv2 = vB + _crossDoubleVector2(wB, cp2rB)
                 ..sub(vA)
-                ..sub(MathUtils.crossDblVec2(wA, cp2rA));
+                ..sub(_crossDoubleVector2(wA, cp2rA));
               // Compute normal velocity
               vn2 = dv2.dot(normal);
 
@@ -930,6 +930,10 @@ class ContactSolver {
     // We can't expect minSeparation >= -_linearSlop because we don't
     // push the separation above -_linearSlop.
     return minSeparation >= -1.5 * Settings.linearSlop;
+  }
+
+  Vector2 _crossDoubleVector2(double s, Vector2 a) {
+    return Vector2(-s * a.y, s * a.x);
   }
 }
 
