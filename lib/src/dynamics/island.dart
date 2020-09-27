@@ -192,7 +192,7 @@ class Island {
   final ContactSolverDef _solverDef = ContactSolverDef();
 
   void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
-    double h = step.dt;
+    double dt = step.dt;
 
     // Integrate velocities and apply damping. Initialize the body state.
     for (int i = 0; i < _bodyCount; ++i) {
@@ -209,9 +209,9 @@ class Island {
 
       if (b._bodyType == BodyType.DYNAMIC) {
         // Integrate velocities.
-        v.x += h * (b._gravityScale * gravity.x + b._invMass * b._force.x);
-        v.y += h * (b._gravityScale * gravity.y + b._invMass * b._force.y);
-        w += h * b._invI * b._torque;
+        v.x += dt * (b._gravityScale * gravity.x + b._invMass * b._force.x);
+        v.y += dt * (b._gravityScale * gravity.y + b._invMass * b._force.y);
+        w += dt * b._invI * b._torque;
 
         // Apply damping.
         // ODE: dv/dt + c * v = 0
@@ -221,9 +221,9 @@ class Island {
         // v2 = exp(-c * dt) * v1
         // Pade approximation:
         // v2 = v1 * 1 / (1 + c * dt)
-        v.x *= 1.0 / (1.0 + h * b._linearDamping);
-        v.y *= 1.0 / (1.0 + h * b._linearDamping);
-        w *= 1.0 / (1.0 + h * b.angularDamping);
+        v.x *= 1.0 / (1.0 + dt * b._linearDamping);
+        v.y *= 1.0 / (1.0 + dt * b._linearDamping);
+        w *= 1.0 / (1.0 + dt * b.angularDamping);
       }
 
       _positions[i].c.x = c.x;
@@ -276,8 +276,8 @@ class Island {
       double w = _velocities[i].w;
 
       // Check for large velocities
-      double translationX = v.x * h;
-      double translationY = v.y * h;
+      double translationX = v.x * dt;
+      double translationY = v.y * dt;
 
       if (translationX * translationX + translationY * translationY >
           Settings.maxTranslationSquared) {
@@ -288,16 +288,16 @@ class Island {
         v.y *= ratio;
       }
 
-      double rotation = h * w;
+      double rotation = dt * w;
       if (rotation * rotation > Settings.maxRotationSquared) {
         double ratio = Settings.maxRotation / rotation.abs();
         w *= ratio;
       }
 
       // Integrate
-      c.x += h * v.x;
-      c.y += h * v.y;
-      a += h * w;
+      c.x += dt * v.x;
+      c.y += dt * v.y;
+      a += dt * w;
 
       _positions[i].a = a;
       _velocities[i].w = w;
@@ -351,11 +351,11 @@ class Island {
 
         if ((b._flags & Body.AUTO_SLEEP_FLAG) == 0 ||
             b._angularVelocity * b._angularVelocity > angTolSqr ||
-            b._linearVelocity.dot(b._linearVelocity) > linTolSqr) {
+            b._linearVelocity.length2 > linTolSqr) {
           b._sleepTime = 0.0;
           minSleepTime = 0.0;
         } else {
-          b._sleepTime += h;
+          b._sleepTime += dt;
           minSleepTime = math.min(minSleepTime, b._sleepTime);
         }
       }
