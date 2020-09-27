@@ -34,7 +34,7 @@ const double angularSlop = (2.0 / 180.0 * math.pi);
 /// artifacts for vertex collision.
 const double polygonRadius = (2.0 * linearSlop);
 
-/// Maximum number of sub-steps per contact in continuous physiforge2d.settingsgs
+/// Maximum number of sub-steps per contact in continuous physics simulation.
 const int maxSubSteps = 8;
 
 // Dynamics
