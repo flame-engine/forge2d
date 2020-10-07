@@ -1,7 +1,0 @@
-analyzer:
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
-linter:
-  rules:
-    - slash_for_doc_comments

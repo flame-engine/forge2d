@@ -8,6 +8,7 @@ jobs:
     container:
       image:  google/dart:latest
     steps:
+      - working-directory: forge2d
       - run: dart --version
       - run: pub get
       - run: ./scripts/lint.sh
