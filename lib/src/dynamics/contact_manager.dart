@@ -8,9 +8,7 @@ class ContactManager implements PairCallback {
   ContactFilter contactFilter;
   ContactListener contactListener;
 
-  final World _world;
-
-  ContactManager(this._world, BroadPhase broadPhase_) {
+  ContactManager(BroadPhase broadPhase_) {
     contactList = null;
     contactFilter = ContactFilter();
     contactListener = null;

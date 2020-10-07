@@ -74,7 +74,7 @@ class World {
 
     _invDt0 = 0.0;
 
-    _contactManager = ContactManager(this, broadPhase);
+    _contactManager = ContactManager(broadPhase);
     _profile = Profile();
 
     _particleSystem = ParticleSystem(this);
