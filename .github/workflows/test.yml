@@ -13,10 +13,7 @@ jobs:
       run: dart --version
     - name: Get dependencies
       run: pub get
-      working-directory: forge2d
     - name: Run linting
       run: ./scripts/lint.sh
-      working-directory: forge2d
     - name: Run sanity check build
       run: ./scripts/build.sh
-      working-directory: forge2d
