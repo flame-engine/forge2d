@@ -46,12 +46,9 @@ class Bench2d {
     BodyDef bd = BodyDef();
     Body ground = world.createBody(bd);
 
-    PolygonShape groundShape = PolygonShape()
-      ..setAsEdge(Vector2(-20.0, -30.0), Vector2(20.0, -30.0));
+    EdgeShape groundShape = EdgeShape()
+      ..set(Vector2(-40.0, -30.0), Vector2(40.0, -30.0));
     ground.createFixtureFromShape(groundShape, 0.0);
-    //EdgeShape groundShape = EdgeShape()
-    //  ..set(Vector2(-40.0, -30.0), Vector2(40.0, -30.0));
-    //ground.createFixtureFromShape(groundShape, 0.0);
 
     // add boxes
     const boxSize = .5;
@@ -75,8 +72,6 @@ class Bench2d {
 
       x.add(deltaX);
     }
-    // TODO: Why does some bodies sleep prematurely
-    world.setAllowSleep(false);
   }
 
   List<double> bench() {
