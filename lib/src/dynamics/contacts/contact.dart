@@ -94,7 +94,7 @@ abstract class Contact {
       return PolygonAndCircleContact(fB, fA);
     } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.EDGE) {
       return EdgeAndCircleContact(fB, indexB, fA, indexA);
-    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.POLYGON) {
+    } else if (typeA == ShapeType.EDGE && typeB == ShapeType.POLYGON) {
       return EdgeAndPolygonContact(fA, indexA, fB, indexB);
     } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.CHAIN) {
       return ChainAndCircleContact(fB, indexB, fA, indexA);
