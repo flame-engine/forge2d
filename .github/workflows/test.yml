@@ -1,0 +1,14 @@
+name: Test
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
+    steps:
+      - run: dart --version
+      - run: pub get
+      - run: ./scripts/lint.sh
+      - run: ./scripts/build.sh
