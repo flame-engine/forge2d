@@ -8,8 +8,15 @@ jobs:
     container:
       image:  google/dart:latest
     steps:
-      - working-directory: forge2d
-      - run: dart --version
-      - run: pub get
-      - run: ./scripts/lint.sh
-      - run: ./scripts/build.sh
+    - uses: actions/checkout@v1
+    - name: Check dart version
+      run: dart --version
+    - name: Get dependencies
+      run: pub get
+      working-directory: forge2d
+    - name: Run linting
+      run: ./scripts/lint.sh
+      working-directory: forge2d
+    - name: Run sanity check build
+      run: ./scripts/build.sh
+      working-directory: forge2d
