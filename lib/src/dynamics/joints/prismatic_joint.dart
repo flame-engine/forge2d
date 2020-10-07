@@ -487,9 +487,8 @@ class PrismaticJoint extends Joint {
       double impulse = _motorMass * (_motorSpeed - Cdot);
       double oldImpulse = _motorImpulse;
       double maxImpulse = data.step.dt * _maxMotorForce;
-      _motorImpulse = (_motorImpulse + impulse)
-          .clamp(-maxImpulse, maxImpulse)
-          .toDouble();
+      _motorImpulse =
+          (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _motorImpulse - oldImpulse;
 
       final Vector2 P = Vector2.zero();

@@ -334,9 +334,9 @@ class ContactSolver {
 
         // Clamp the accumulated force
         final double maxFriction = friction * vcp.normalImpulse;
-        final double newImpulse =
-            (vcp.tangentImpulse + lambda).clamp(-maxFriction, maxFriction)
-                .toDouble();
+        final double newImpulse = (vcp.tangentImpulse + lambda)
+            .clamp(-maxFriction, maxFriction)
+            .toDouble();
         lambda = newImpulse - vcp.tangentImpulse;
         vcp.tangentImpulse = newImpulse;
 

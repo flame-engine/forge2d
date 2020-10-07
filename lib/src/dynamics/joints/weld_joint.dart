@@ -204,11 +204,10 @@ class WeldJoint extends Joint {
         ..sub(vA)
         ..sub(temp);
 
-      final Vector2 impulse1 =
-        Vector2(
-          _mass.entry(1, 0) * Cdot1.x + _mass.entry(1, 1) * Cdot1.y,
-          _mass.entry(0, 0) * Cdot1.x + _mass.entry(0, 1) * Cdot1.y,
-        )..negate();
+      final Vector2 impulse1 = Vector2(
+        _mass.entry(1, 0) * Cdot1.x + _mass.entry(1, 1) * Cdot1.y,
+        _mass.entry(0, 0) * Cdot1.x + _mass.entry(0, 1) * Cdot1.y,
+      )..negate();
 
       _impulse.x += impulse1.x;
       _impulse.y += impulse1.y;
@@ -229,8 +228,9 @@ class WeldJoint extends Joint {
         ..sub(temp);
       double Cdot2 = wB - wA;
 
-      final Vector3 impulse =
-        Vector3(Cdot1.x, Cdot1.y, Cdot2)..applyMatrix3(_mass)..negate();
+      final Vector3 impulse = Vector3(Cdot1.x, Cdot1.y, Cdot2)
+        ..applyMatrix3(_mass)
+        ..negate();
       _impulse.add(impulse);
 
       P.setValues(impulse.x, impulse.y);
@@ -339,7 +339,6 @@ class WeldJoint extends Joint {
     return positionError <= Settings.linearSlop &&
         angularError <= Settings.angularSlop;
   }
-
 
   Matrix3 _matrix3GetInverse22(Matrix3 m) {
     double a = m.entry(0, 0),

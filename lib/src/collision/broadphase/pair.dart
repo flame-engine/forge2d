@@ -14,7 +14,9 @@ class Pair implements Comparable<Pair> {
     if (this.proxyIdA == pair2.proxyIdA) {
       return proxyIdB < pair2.proxyIdB
           ? -1
-          : proxyIdB == pair2.proxyIdB ? 0 : 1;
+          : proxyIdB == pair2.proxyIdB
+              ? 0
+              : 1;
     }
 
     return 1;

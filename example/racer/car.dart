@@ -99,8 +99,9 @@ class Car {
     }
     final double turnPerTimeStep = _turnSpeedPerSec * 1000 / time;
     final double angleNow = _flJoint.getJointAngle();
-    double angleToTurn =
-        (desiredAngle - angleNow).clamp(-turnPerTimeStep, turnPerTimeStep);
+    double angleToTurn = (desiredAngle - angleNow)
+        .clamp(-turnPerTimeStep, turnPerTimeStep)
+        .toDouble();
     final double angle = angleNow + angleToTurn;
     _flJoint.setLimits(angle, angle);
     _frJoint.setLimits(angle, angle);

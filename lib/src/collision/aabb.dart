@@ -47,8 +47,10 @@ class AABB {
     if (dy < 0) {
       return false;
     }
-    return !lowerBound.isInfinite && !lowerBound.isNaN &&
-      !upperBound.isInfinite && !upperBound.isNaN;
+    return !lowerBound.isInfinite &&
+        !lowerBound.isNaN &&
+        !upperBound.isInfinite &&
+        !upperBound.isNaN;
   }
 
   /// Get the center of the AABB
