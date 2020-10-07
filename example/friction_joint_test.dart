@@ -3,7 +3,7 @@ library FrictionJointTest;
 import 'dart:math' as math;
 
 import 'demo.dart';
-import '../lib/forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class FrictionJointTest extends Demo {
   FrictionJointTest() : super("FrictionJoint test");

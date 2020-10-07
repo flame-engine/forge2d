@@ -4,7 +4,7 @@ import 'dart:html' hide Body;
 import 'dart:math';
 
 import 'demo.dart';
-import '../lib/forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 part 'racer/car.dart';
 part 'racer/control_state.dart';

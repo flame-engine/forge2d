@@ -3,7 +3,7 @@ library DominoTower;
 import 'dart:math' as math;
 
 import 'demo.dart';
-import '../lib/forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class DominoTower extends Demo {
   static const double DOMINO_WIDTH = .2;

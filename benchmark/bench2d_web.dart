@@ -1,6 +1,6 @@
 import 'dart:html';
 
-import '../lib/forge2d_browser.dart';
+import 'package:forge2d/forge2d_browser.dart';
 
 import 'bench2d.dart';
 

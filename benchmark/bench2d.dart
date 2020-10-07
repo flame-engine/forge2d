@@ -1,4 +1,4 @@
-import '../lib/forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 void main() {
   Bench2d()
