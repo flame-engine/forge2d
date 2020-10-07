@@ -506,7 +506,7 @@ class ParticleSystem {
   static PsProxy allocPsProxy() => PsProxy();
 
   ParticleSystem(World world) {
-    world = world;
+    this.world = world;
 
     pressureStrength = 0.05;
     dampingStrength = 1.0;

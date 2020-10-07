@@ -387,6 +387,6 @@ class WeldJoint extends Joint {
     double ez_x = m2.entry(2, 0);
     double ez_y = m2.entry(2, 1);
     double ez_z = det * (a11 * a22 - a12 * a12);
-    Matrix3(ex_x, ex_y, ex_z, ey_x, ey_y, ey_z, ez_x, ez_y, ez_z);
+    return Matrix3(ex_x, ex_y, ex_z, ey_x, ey_y, ey_z, ez_x, ez_y, ez_z);
   }
 }
