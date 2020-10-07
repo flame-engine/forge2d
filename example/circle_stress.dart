@@ -3,7 +3,7 @@ library CircleStress;
 import 'dart:math' as math;
 import 'demo.dart';
 
-import '../lib/forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Scale of the viewport for this Demo.
 const double _MY_VIEWPORT_SCALE = 4.0;
