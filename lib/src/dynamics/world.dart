@@ -54,11 +54,6 @@ class World {
   World([Vector2 gravity, BroadPhase broadPhase])
       : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
     broadPhase ??= DefaultBroadPhaseBuffer(DynamicTree());
-    _destructionListener = null;
-    debugDraw = null;
-
-    bodyList = null;
-    _jointList = null;
 
     _bodyCount = 0;
     _jointCount = 0;
@@ -78,8 +73,6 @@ class World {
     _profile = Profile();
 
     _particleSystem = ParticleSystem(this);
-
-    //_initializeRegisters();
   }
 
   void setAllowSleep(bool flag) {
@@ -156,9 +149,6 @@ class World {
   /// @return
   Body createBody(BodyDef def) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return null;
-    }
     // TODO djm pooling
     Body b = Body(def, this);
 
@@ -182,9 +172,6 @@ class World {
   void destroyBody(Body body) {
     assert(_bodyCount > 0);
     assert(isLocked() == false);
-    if (isLocked()) {
-      return;
-    }
 
     // Delete the attached joints.
     JointEdge je = body._jointList;
@@ -251,9 +238,6 @@ class World {
   /// @warning This function is locked during callbacks.
   Joint createJoint(JointDef def) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return null;
-    }
 
     Joint j = Joint.create(this, def);
 
@@ -313,9 +297,6 @@ class World {
   /// @param joint
   void destroyJoint(Joint j) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return;
-    }
 
     bool collideConnected = j.getCollideConnected();
 
@@ -1348,11 +1329,7 @@ class World {
   /// @return the index of the particle.
   int createParticle(ParticleDef def) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return 0;
-    }
-    int p = _particleSystem.createParticle(def);
-    return p;
+    return _particleSystem.createParticle(def);
   }
 
   /// Destroy a particle. The particle is removed after the next step.
@@ -1394,9 +1371,6 @@ class World {
   int destroyParticlesInShapeFlag(
       Shape shape, Transform xf, bool callDestructionListener) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return 0;
-    }
     return _particleSystem.destroyParticlesInShape(
         shape, xf, callDestructionListener);
   }
@@ -1407,11 +1381,7 @@ class World {
   /// @warning This function is locked during callbacks.
   ParticleGroup createParticleGroup(ParticleGroupDef def) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return null;
-    }
-    ParticleGroup g = _particleSystem.createParticleGroup(def);
-    return g;
+    return _particleSystem.createParticleGroup(def);
   }
 
   /// Join two particle groups.
@@ -1421,9 +1391,6 @@ class World {
   /// @warning This function is locked during callbacks.
   void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return;
-    }
     _particleSystem.joinParticleGroups(groupA, groupB);
   }
 
@@ -1435,9 +1402,6 @@ class World {
   void destroyParticlesInGroupFlag(
       ParticleGroup group, bool callDestructionListener) {
     assert(isLocked() == false);
-    if (isLocked()) {
-      return;
-    }
     _particleSystem.destroyParticlesInGroup(group, callDestructionListener);
   }
 
