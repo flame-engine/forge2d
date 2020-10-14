@@ -11,7 +11,7 @@ typedef T AllocClosure<T>();
 
 class ParticleBufferInt {
   List<int> data;
-  int userSuppliedCapacity;
+  int userSuppliedCapacity = 0;
 }
 
 /// Connection between two particles
