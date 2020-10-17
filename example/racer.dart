@@ -71,11 +71,11 @@ class Racer extends Demo implements ContactListener {
 
     fixtureDef.userData = GroundArea(0.001, false);
     shape.setAsBox(27.0, 21.0, Vector2(-30.0, 30.0), radians(20.0));
-    _groundBody.createFixtureFromFixtureDef(fixtureDef);
+    _groundBody.createFixture(fixtureDef);
 
     fixtureDef.userData = GroundArea(0.2, false);
     shape.setAsBox(27.0, 15.0, Vector2(20.0, 40.0), radians(-40.0));
-    _groundBody.createFixtureFromFixtureDef(fixtureDef);
+    _groundBody.createFixture(fixtureDef);
   }
 
   void _createBoundary() {
@@ -94,19 +94,19 @@ class Racer extends Demo implements ContactListener {
     shape.setAsEdge(
         Vector2(-boundaryX, -boundaryY), Vector2(boundaryX, -boundaryY));
 
-    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixture(fixtureDef);
 
     shape.setAsEdge(
         Vector2(boundaryX, -boundaryY), Vector2(boundaryX, boundaryY));
-    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixture(fixtureDef);
 
     shape.setAsEdge(
         Vector2(boundaryX, boundaryY), Vector2(-boundaryX, boundaryY));
-    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixture(fixtureDef);
 
     shape.setAsEdge(
         Vector2(-boundaryX, boundaryY), Vector2(-boundaryX, -boundaryY));
-    boundaryBody.createFixtureFromFixtureDef(fixtureDef);
+    boundaryBody.createFixture(fixtureDef);
   }
 
   void _handleKeyDown(KeyboardEvent event) {

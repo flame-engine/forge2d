@@ -68,7 +68,7 @@ class FrictionJointTest extends Demo {
 
     // Create body and fixture from definitions
     final Body fallingBox = world.createBody(bodyDef);
-    fallingBox.createFixtureFromFixtureDef(_boxFixture);
+    fallingBox.createFixture(_boxFixture);
 
     // Add to list
     bodies.add(fallingBox);
@@ -82,7 +82,7 @@ class FrictionJointTest extends Demo {
 
     // Create body and fixture from definitions
     final Body fallingBox = world.createBody(bodyDef);
-    fallingBox.createFixtureFromFixtureDef(_boxFixture);
+    fallingBox.createFixture(_boxFixture);
 
     final FrictionJointDef frictionJointDef = FrictionJointDef();
     frictionJointDef.bodyA = fallingBox;
