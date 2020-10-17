@@ -136,10 +136,6 @@ class Body {
   Fixture createFixture(FixtureDef def) {
     assert(world.isLocked() == false);
 
-    if (world.isLocked() == true) {
-      return null;
-    }
-
     Fixture fixture = Fixture();
     fixture.create(this, def);
 
@@ -191,10 +187,6 @@ class Body {
   /// @warning This function is locked during callbacks.
   void destroyFixture(Fixture fixture) {
     assert(world.isLocked() == false);
-    if (world.isLocked() == true) {
-      return;
-    }
-
     assert(fixture._body == this);
 
     // Remove the fixture from this body's singly linked list.
@@ -262,10 +254,6 @@ class Body {
   /// @param angle the world rotation in radians.
   void setTransform(Vector2 position, double angle) {
     assert(world.isLocked() == false);
-    if (world.isLocked() == true) {
-      return;
-    }
-
     _transform.q.setAngle(angle);
     _transform.p.setFrom(position);
 
@@ -458,10 +446,6 @@ class Body {
   void setMassData(MassData massData) {
     // TODO_ERIN adjust linear velocity and torque to account for movement of center.
     assert(world.isLocked() == false);
-    if (world.isLocked() == true) {
-      return;
-    }
-
     if (_bodyType != BodyType.DYNAMIC) {
       return;
     }
@@ -627,10 +611,6 @@ class Body {
   /// @param type
   void setType(BodyType type) {
     assert(world.isLocked() == false);
-    if (world.isLocked() == true) {
-      return;
-    }
-
     if (_bodyType == type) {
       return;
     }
