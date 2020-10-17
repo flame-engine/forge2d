@@ -128,7 +128,7 @@ class ChainShape extends Shape {
 
   Shape clone() {
     ChainShape clone = ChainShape();
-    clone.createChain(_vertices, _count);
+    clone.createChain(_vertices);
     clone._prevVertex.setFrom(_prevVertex);
     clone._nextVertex.setFrom(_nextVertex);
     clone._hasPrevVertex = _hasPrevVertex;
@@ -152,25 +152,13 @@ class ChainShape extends Shape {
   /// Create a loop. This automatically adjusts connectivity.
   ///
   /// @param vertices an array of vertices, these are copied
-  /// @param count the vertex count
-  void createLoop(final List<Vector2> vertices, int count) {
+  void createLoop(final List<Vector2> vertices) {
     assert(_vertices == null && _count == 0);
-    assert(count >= 3);
-    _count = count + 1;
-    _vertices = List<Vector2>(_count);
-    for (int i = 1; i < count; i++) {
-      Vector2 v1 = vertices[i - 1];
-      Vector2 v2 = vertices[i];
-      // If the code crashes here, it means your vertices are too close together.
-      if (v1.distanceToSquared(v2) <
-          Settings.linearSlop * Settings.linearSlop) {
-        throw "Vertices of chain shape are too close together";
-      }
-    }
-    for (int i = 0; i < count; i++) {
-      _vertices[i] = Vector2.copy(vertices[i]);
-    }
-    _vertices[count] = Vector2.copy(_vertices[0]);
+    assert(vertices.length >= 3);
+    _count = vertices.length + 1;
+    _vertices = List.generate(_count, (i) => vertices[i].clone());
+    _validateDistances(_vertices);
+    _vertices.add(_vertices[0].clone());
     _prevVertex.setFrom(_vertices[_count - 2]);
     _nextVertex.setFrom(_vertices[1]);
     _hasPrevVertex = true;
@@ -180,27 +168,14 @@ class ChainShape extends Shape {
   /// Create a chain with isolated end vertices.
   ///
   /// @param vertices an array of vertices, these are copied
-  /// @param count the vertex count
-  void createChain(final List<Vector2> vertices, int count) {
+  void createChain(final List<Vector2> vertices) {
     assert(_vertices == null && _count == 0);
-    assert(count >= 2);
-    _count = count;
-    _vertices = List<Vector2>(_count);
-    for (int i = 1; i < _count; i++) {
-      Vector2 v1 = vertices[i - 1];
-      Vector2 v2 = vertices[i];
-      // If the code crashes here, it means your vertices are too close together.
-      if (v1.distanceToSquared(v2) <
-          Settings.linearSlop * Settings.linearSlop) {
-        throw "Vertices of chain shape are too close together";
-      }
-    }
-    for (int i = 0; i < _count; i++) {
-      _vertices[i] = Vector2.copy(vertices[i]);
-    }
+    assert(vertices.length >= 2);
+    _count = vertices.length;
+    _vertices = List.generate(_count, (i) => vertices[i].clone());
+    _validateDistances(_vertices);
     _hasPrevVertex = false;
     _hasNextVertex = false;
-
     _prevVertex.setZero();
     _nextVertex.setZero();
   }
@@ -215,5 +190,17 @@ class ChainShape extends Shape {
   void setNextVertex(final Vector2 nextVertex) {
     _nextVertex.setFrom(nextVertex);
     _hasNextVertex = true;
+  }
+
+  void _validateDistances(final List<Vector2> vertices) {
+    for (int i = 1; i < _count; i++) {
+      Vector2 v1 = vertices[i - 1];
+      Vector2 v2 = vertices[i];
+      // If the code crashes here, it means your vertices are too close together.
+      if (v1.distanceToSquared(v2) <
+          Settings.linearSlop * Settings.linearSlop) {
+        throw "Vertices of chain shape are too close together";
+      }
+    }
   }
 }

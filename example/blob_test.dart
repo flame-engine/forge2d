@@ -34,7 +34,7 @@ class BlobTest extends Demo {
       ground.createFixtureFromShape(sd);
     }
 
-    ConstantVolumeJointDef cvjd = ConstantVolumeJointDef();
+    ConstantVolumeJointDef jointDef = ConstantVolumeJointDef();
 
     double cx = 0.0;
     double cy = 10.0;
@@ -60,13 +60,13 @@ class BlobTest extends Demo {
       fd.density = 1.0;
       fd.filter.groupIndex = -2;
       body.createFixtureFromFixtureDef(fd);
-      cvjd.addBody(body);
+      jointDef.addBody(body);
     }
 
-    cvjd.frequencyHz = 10.0;
-    cvjd.dampingRatio = 1.0;
-    cvjd.collideConnected = false;
-    world.createJoint(cvjd);
+    jointDef.frequencyHz = 10.0;
+    jointDef.dampingRatio = 1.0;
+    jointDef.collideConnected = false;
+    world.createJoint(jointDef);
 
     BodyDef bd2 = BodyDef();
     bd2.type = BodyType.DYNAMIC;

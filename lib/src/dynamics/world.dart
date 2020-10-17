@@ -1253,7 +1253,6 @@ class World {
           }
         }
         break;
-
       case ShapeType.POLYGON:
         {
           final poly = fixture.getShape() as PolygonShape;
