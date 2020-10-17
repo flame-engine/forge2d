@@ -19,7 +19,7 @@ class DominoTest extends Demo {
       BodyDef bd = BodyDef();
       bd.position = Vector2(0.0, -10.0);
       final body = world.createBody(bd);
-      body.createFixtureFromFixtureDef(fd);
+      body.createFixture(fd);
       bodies.add(body);
     }
 
@@ -34,7 +34,7 @@ class DominoTest extends Demo {
         BodyDef bd = BodyDef();
         bd.position = Vector2(0.0, 5.0 + 5 * i);
         final body = world.createBody(bd);
-        body.createFixtureFromFixtureDef(fd);
+        body.createFixture(fd);
         bodies.add(body);
       }
     }
@@ -68,7 +68,7 @@ class DominoTest extends Demo {
             bd.angle = 0.0;
           }
           Body myBody = world.createBody(bd);
-          myBody.createFixtureFromFixtureDef(fd);
+          myBody.createFixture(fd);
           bodies.add(myBody);
         }
       }

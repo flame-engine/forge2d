@@ -133,7 +133,7 @@ class Body {
   ///
   /// @param def the fixture definition.
   /// @warning This function is locked during callbacks.
-  Fixture createFixtureFromFixtureDef(FixtureDef def) {
+  Fixture createFixture(FixtureDef def) {
     assert(world.isLocked() == false);
 
     if (world.isLocked() == true) {
@@ -179,7 +179,7 @@ class Body {
     _fixDef.shape = shape;
     _fixDef.density = density;
 
-    return createFixtureFromFixtureDef(_fixDef);
+    return createFixture(_fixDef);
   }
 
   /// Destroy a fixture. This removes the fixture from the broad-phase and destroys all contacts

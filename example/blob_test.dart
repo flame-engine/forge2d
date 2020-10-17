@@ -59,7 +59,7 @@ class BlobTest extends Demo {
       fd.shape = cd;
       fd.density = 1.0;
       fd.filter.groupIndex = -2;
-      body.createFixtureFromFixtureDef(fd);
+      body.createFixture(fd);
       jointDef.addBody(body);
     }
 

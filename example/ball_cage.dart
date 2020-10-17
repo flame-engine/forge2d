@@ -53,22 +53,22 @@ class BallCage extends Demo {
       circleBodyDef.position = Vector2(shiftX, START_Y);
       Body circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
-      circleBody.createFixtureFromFixtureDef(circleFixtureDef);
+      circleBody.createFixture(circleFixtureDef);
 
       circleBodyDef.position = Vector2(shiftX, borderLimitY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
-      circleBody.createFixtureFromFixtureDef(circleFixtureDef);
+      circleBody.createFixture(circleFixtureDef);
 
       circleBodyDef.position = Vector2(START_X, shiftY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
-      circleBody.createFixtureFromFixtureDef(circleFixtureDef);
+      circleBody.createFixture(circleFixtureDef);
 
       circleBodyDef.position = Vector2(borderLimitX, shiftY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
-      circleBody.createFixtureFromFixtureDef(circleFixtureDef);
+      circleBody.createFixture(circleFixtureDef);
     }
 
     // Create a bouncing ball.
@@ -89,7 +89,7 @@ class BallCage extends Demo {
     activeBodyDef.bullet = true;
     final activeBody = world.createBody(activeBodyDef);
     bodies.add(activeBody);
-    activeBody.createFixtureFromFixtureDef(activeFixtureDef);
+    activeBody.createFixture(activeFixtureDef);
   }
 }
 

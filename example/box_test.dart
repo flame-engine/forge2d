@@ -64,7 +64,7 @@ class BoxTest extends Demo {
 
     // Create body and fixture from definitions
     final Body fallingBox = world.createBody(bodyDef);
-    fallingBox.createFixtureFromFixtureDef(activeFixtureDef);
+    fallingBox.createFixture(activeFixtureDef);
 
     // Add to list
     bodies.add(fallingBox);

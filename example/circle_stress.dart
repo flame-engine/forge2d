@@ -42,7 +42,7 @@ class CircleStress extends Demo {
       final fd = FixtureDef();
       fd.shape = sd;
       fd.friction = 1.0;
-      b.createFixtureFromFixtureDef(fd);
+      b.createFixture(fd);
 
       // Walls
       sd.setAsBoxXY(3.0, 50.0);
@@ -80,7 +80,7 @@ class CircleStress extends Demo {
       bodies.add(topBody);
       fd.shape = sd;
       fd.friction = 1.0;
-      topBody.createFixtureFromFixtureDef(fd);
+      topBody.createFixture(fd);
     }
 
     {
@@ -108,7 +108,7 @@ class CircleStress extends Demo {
           ..friction = .1
           ..restitution = .9;
 
-        body.createFixtureFromFixtureDef(fd);
+        body.createFixture(fd);
       }
 
       body.setBullet(false);
@@ -141,7 +141,7 @@ class CircleStress extends Demo {
             ..position = Vector2(xPos, yPos);
           Body myBody = world.createBody(bod);
           bodies.add(myBody);
-          myBody.createFixtureFromFixtureDef(fd2);
+          myBody.createFixture(fd2);
         }
       }
     }

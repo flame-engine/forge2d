@@ -39,7 +39,7 @@ class DominoTower extends Demo {
     bd.position = Vector2(x, y);
     bd.angle = horizontal ? (math.pi / 2.0) : 0.0;
     Body myBody = world.createBody(bd);
-    myBody.createFixtureFromFixtureDef(fd);
+    myBody.createFixture(fd);
     bodies.add(myBody);
   }
 
@@ -73,7 +73,7 @@ class DominoTower extends Demo {
       bd.position = Vector2(30.0, 5.00);
       Body b = world.createBody(bd);
       bodies.add(b);
-      b.createFixtureFromFixtureDef(fd);
+      b.createFixture(fd);
       b.linearVelocity = Vector2(-25.0, -25.0);
       b.angularVelocity = 6.7;
 
@@ -81,7 +81,7 @@ class DominoTower extends Demo {
       bd.position = Vector2(-30.0, 25.0);
       b = world.createBody(bd);
       bodies.add(b);
-      b.createFixtureFromFixtureDef(fd);
+      b.createFixture(fd);
       b.linearVelocity = Vector2(35.0, -10.0);
       b.angularVelocity = -8.3;
     }
