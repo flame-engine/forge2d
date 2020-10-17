@@ -156,7 +156,7 @@ class ChainShape extends Shape {
     assert(_vertices == null && _count == 0);
     assert(vertices.length >= 3);
     _count = vertices.length + 1;
-    _vertices = List.generate(_count, (i) => vertices[i].clone());
+    _vertices = List.generate(_vertices.length, (i) => vertices[i].clone());
     _validateDistances(_vertices);
     _vertices.add(_vertices[0].clone());
     _prevVertex.setFrom(_vertices[_count - 2]);
