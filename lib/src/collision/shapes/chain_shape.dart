@@ -193,7 +193,7 @@ class ChainShape extends Shape {
   }
 
   void _validateDistances(final List<Vector2> vertices) {
-    for (int i = 1; i < _count; i++) {
+    for (int i = 1; i < vertices.length; i++) {
       Vector2 v1 = vertices[i - 1];
       Vector2 v2 = vertices[i];
       // If the code crashes here, it means your vertices are too close together.
