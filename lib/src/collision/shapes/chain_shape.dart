@@ -62,11 +62,11 @@ class ChainShape extends Shape {
   }
 
   double computeDistanceToOut(
-      Transform xf,
-      Vector2 p,
-      int childIndex,
-      Vector2 normalOut,
-      ) {
+    Transform xf,
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  ) {
     final EdgeShape edge = getChildEdge(childIndex);
     return edge.computeDistanceToOut(xf, p, 0, normalOut);
   }
@@ -152,7 +152,8 @@ class ChainShape extends Shape {
   /// @param vertices an array of vertices, these are copied
   void createLoop(final List<Vector2> vertices) {
     assert(_vertices != null && vertexCount == 0);
-    assert(vertices.length >= 3, "A loop can't be created with less than 3 vectors");
+    assert(vertices.length >= 3,
+        "A loop can't be created with less than 3 vectors");
     _vertices.addAll(vertices.map((Vector2 v) => v.clone()));
     _validateDistances(_vertices);
     _vertices.add(_vertices[0].clone());

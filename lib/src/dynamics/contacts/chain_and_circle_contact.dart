@@ -11,11 +11,11 @@ class ChainAndCircleContact extends Contact {
     final ChainShape chain = _fixtureA.getShape() as ChainShape;
     final EdgeShape edge = chain.getChildEdge(_indexA);
     World.collision.collideEdgeAndCircle(
-        manifold,
-        edge,
-        xfA,
-        _fixtureB.getShape() as CircleShape,
-        xfB,
+      manifold,
+      edge,
+      xfA,
+      _fixtureB.getShape() as CircleShape,
+      xfB,
     );
   }
 }
