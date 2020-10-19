@@ -9,11 +9,11 @@ class EdgeAndCircleContact extends Contact {
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     World.collision.collideEdgeAndCircle(
-        manifold,
-        _fixtureA.getShape() as EdgeShape,
-        xfA,
-        _fixtureB.getShape() as CircleShape,
-        xfB,
+      manifold,
+      _fixtureA.getShape() as EdgeShape,
+      xfA,
+      _fixtureB.getShape() as CircleShape,
+      xfB,
     );
   }
 }

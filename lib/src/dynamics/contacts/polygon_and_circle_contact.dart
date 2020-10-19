@@ -9,11 +9,11 @@ class PolygonAndCircleContact extends Contact {
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     World.collision.collidePolygonAndCircle(
-        manifold,
-        _fixtureA.getShape() as PolygonShape,
-        xfA,
-        _fixtureB.getShape() as CircleShape,
-        xfB,
+      manifold,
+      _fixtureA.getShape() as PolygonShape,
+      xfA,
+      _fixtureB.getShape() as CircleShape,
+      xfB,
     );
   }
 }

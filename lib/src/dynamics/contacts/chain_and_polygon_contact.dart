@@ -11,11 +11,11 @@ class ChainAndPolygonContact extends Contact {
     final ChainShape chain = _fixtureA.getShape() as ChainShape;
     final EdgeShape edge = chain.getChildEdge(_indexA);
     World.collision.collideEdgeAndPolygon(
-        manifold,
-        edge,
-        xfA,
-        _fixtureB.getShape() as PolygonShape,
-        xfB,
+      manifold,
+      edge,
+      xfA,
+      _fixtureB.getShape() as PolygonShape,
+      xfB,
     );
   }
 }
