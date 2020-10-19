@@ -257,9 +257,6 @@ class Fixture {
     _shape = null;
     _proxies = null;
     _next = null;
-
-    // TODO pool shapes
-    // TODO pool fixtures
   }
 
   // These support body activation/deactivation.

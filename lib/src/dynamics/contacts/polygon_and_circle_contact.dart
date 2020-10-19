@@ -13,6 +13,7 @@ class PolygonAndCircleContact extends Contact {
         _fixtureA.getShape() as PolygonShape,
         xfA,
         _fixtureB.getShape() as CircleShape,
-        xfB);
+        xfB,
+    );
   }
 }

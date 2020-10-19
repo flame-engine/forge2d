@@ -9,9 +9,7 @@ class ContactManager implements PairCallback {
   ContactListener contactListener;
 
   ContactManager(BroadPhase broadPhase_) {
-    contactList = null;
     contactFilter = ContactFilter();
-    contactListener = null;
     broadPhase = broadPhase_;
   }
 
@@ -86,9 +84,7 @@ class ContactManager implements PairCallback {
     // Insert into the world.
     c._prev = null;
     c._next = contactList;
-    if (contactList != null) {
-      contactList._prev = c;
-    }
+    contactList?._prev = c;
     contactList = c;
 
     // Connect to island graph.
@@ -110,9 +106,7 @@ class ContactManager implements PairCallback {
 
     c._nodeB.prev = null;
     c._nodeB.next = bodyB._contactList;
-    if (bodyB._contactList != null) {
-      bodyB._contactList.prev = c._nodeB;
-    }
+    bodyB._contactList?.prev = c._nodeB;
     bodyB._contactList = c._nodeB;
 
     // wake up the bodies
@@ -194,8 +188,8 @@ class ContactManager implements PairCallback {
     while (c != null) {
       Fixture fixtureA = c.fixtureA;
       Fixture fixtureB = c.fixtureB;
-      int indexA = c.getChildIndexA();
-      int indexB = c.getChildIndexB();
+      int indexA = c._indexA;
+      int indexB = c._indexB;
       Body bodyA = fixtureA.getBody();
       Body bodyB = fixtureB.getBody();
 
@@ -231,6 +225,11 @@ class ContactManager implements PairCallback {
         continue;
       }
 
+      //if(fixtureA._shape is ChainShape) {
+      //  print((fixtureA._shape as ChainShape).vertexCount);
+      //  print(indexA);
+      //  print(indexB);
+      //}
       int proxyIdA = fixtureA._proxies[indexA].proxyId;
       int proxyIdB = fixtureB._proxies[indexB].proxyId;
       bool overlap = broadPhase.testOverlap(proxyIdA, proxyIdB);

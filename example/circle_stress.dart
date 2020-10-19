@@ -84,6 +84,25 @@ class CircleStress extends Demo {
     }
 
     {
+      final ChainShape shape = ChainShape();
+      final List<Vector2> vertices =
+          List.generate(20, (i) => Vector2(i.toDouble(), i.toDouble() * i / 10));
+      shape.createChain(vertices);
+
+      final fixtureDef = FixtureDef()
+        ..shape = shape
+        ..restitution = 0.0
+        ..friction = 0.1;
+
+      final bodyDef = BodyDef()
+        ..position = Vector2.zero()
+        ..type = BodyType.STATIC;
+
+      final body = world.createBody(bodyDef)..createFixture(fixtureDef);
+      bodies.add(body);
+    }
+
+    {
       var bd = BodyDef()
         ..type = BodyType.DYNAMIC
         ..position = Vector2(0.0, 10.0);
@@ -119,7 +138,7 @@ class CircleStress extends Demo {
 
       RevoluteJointDef rjd = RevoluteJointDef()
         ..initialize(body, groundBody, body.position)
-        ..motorSpeed = math.pi
+        ..motorSpeed = -math.pi
         ..maxMotorTorque = 1000000.0
         ..enableMotor = true;
 
