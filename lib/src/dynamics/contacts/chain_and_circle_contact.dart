@@ -7,12 +7,15 @@ class ChainAndCircleContact extends Contact {
     assert(_fixtureB.getType() == ShapeType.CIRCLE);
   }
 
-  final EdgeShape _edge = EdgeShape();
-
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    final chain = _fixtureA.getShape() as ChainShape;
-    chain.getChildEdge(_edge, _indexA);
+    final ChainShape chain = _fixtureA.getShape() as ChainShape;
+    final EdgeShape edge = chain.getChildEdge(_indexA);
     World.collision.collideEdgeAndCircle(
-        manifold, _edge, xfA, _fixtureB.getShape() as CircleShape, xfB);
+        manifold,
+        edge,
+        xfA,
+        _fixtureB.getShape() as CircleShape,
+        xfB,
+    );
   }
 }

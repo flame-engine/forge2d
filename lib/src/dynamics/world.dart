@@ -1281,7 +1281,7 @@ class World {
       case ShapeType.CHAIN:
         {
           final chain = fixture.getShape() as ChainShape;
-          int count = chain._count;
+          int count = chain.vertexCount;
           List<Vector2> vertices = chain._vertices;
 
           v1.setFrom(Transform.mulVec2(xf, vertices[0]));

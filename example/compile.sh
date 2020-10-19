@@ -5,5 +5,6 @@ for f in *.dart; do
   if [ "$f" == "demo.dart" ] ; then
     continue;
   fi
-  dart2js -o $f.js $f
+  dart2js -o $f.js $f &
 done
+wait

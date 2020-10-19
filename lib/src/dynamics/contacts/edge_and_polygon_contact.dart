@@ -13,6 +13,7 @@ class EdgeAndPolygonContact extends Contact {
         _fixtureA.getShape() as EdgeShape,
         xfA,
         _fixtureB.getShape() as PolygonShape,
-        xfB);
+        xfB,
+    );
   }
 }

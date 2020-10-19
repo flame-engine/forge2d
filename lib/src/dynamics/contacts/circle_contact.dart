@@ -13,6 +13,7 @@ class CircleContact extends Contact {
         _fixtureA.getShape() as CircleShape,
         xfA,
         _fixtureB.getShape() as CircleShape,
-        xfB);
+        xfB,
+    );
   }
 }

@@ -5,33 +5,31 @@ part of forge2d;
 /// information is used to create smooth collisions. WARNING: The chain will not collide properly if
 /// there are self-intersections.
 class ChainShape extends Shape {
-  List<Vector2> _vertices;
-  int _count = 0;
+  final List<Vector2> _vertices = <Vector2>[];
+  int get vertexCount => _vertices.length;
   final Vector2 _prevVertex = Vector2.zero();
   final Vector2 _nextVertex = Vector2.zero();
   bool _hasPrevVertex = false;
   bool _hasNextVertex = false;
-
-  final EdgeShape _pool0 = EdgeShape();
 
   ChainShape() : super(ShapeType.CHAIN) {
     radius = Settings.polygonRadius;
   }
 
   void clear() {
-    _vertices = null;
-    _count = 0;
+    _vertices.clear();
   }
 
   int getChildCount() {
-    return _count - 1;
+    return vertexCount - 1;
   }
 
   /// Get a child edge.
-  void getChildEdge(EdgeShape edge, int index) {
-    assert(0 <= index && index < _count - 1);
-    edge.radius = radius;
+  EdgeShape getChildEdge(int index) {
+    assert(0 <= index && index < vertexCount - 1);
+    final EdgeShape edge = EdgeShape();
 
+    edge.radius = radius;
     final Vector2 v0 = _vertices[index + 0];
     final Vector2 v1 = _vertices[index + 1];
     edge.vertex1.x = v0.x;
@@ -50,7 +48,7 @@ class ChainShape extends Shape {
       edge.hasVertex0 = _hasPrevVertex;
     }
 
-    if (index < _count - 2) {
+    if (index < vertexCount - 2) {
       Vector2 v = _vertices[index + 2];
       edge.vertex3.x = v.x;
       edge.vertex3.y = v.y;
@@ -60,12 +58,16 @@ class ChainShape extends Shape {
       edge.vertex3.y = _nextVertex.y;
       edge.hasVertex3 = _hasNextVertex;
     }
+    return edge;
   }
 
   double computeDistanceToOut(
-      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
-    final EdgeShape edge = _pool0;
-    getChildEdge(edge, childIndex);
+      Transform xf,
+      Vector2 p,
+      int childIndex,
+      Vector2 normalOut,
+      ) {
+    final EdgeShape edge = getChildEdge(childIndex);
     return edge.computeDistanceToOut(xf, p, 0, normalOut);
   }
 
@@ -75,13 +77,13 @@ class ChainShape extends Shape {
 
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
-    assert(childIndex < _count);
+    assert(childIndex < vertexCount);
 
-    final EdgeShape edgeShape = _pool0;
+    final EdgeShape edgeShape = EdgeShape();
 
     int i1 = childIndex;
     int i2 = childIndex + 1;
-    if (i2 == _count) {
+    if (i2 == vertexCount) {
       i2 = 0;
     }
     Vector2 v = _vertices[i1];
@@ -95,13 +97,13 @@ class ChainShape extends Shape {
   }
 
   void computeAABB(AABB aabb, Transform xf, int childIndex) {
-    assert(childIndex < _count);
+    assert(childIndex < vertexCount);
     final Vector2 lower = aabb.lowerBound;
     final Vector2 upper = aabb.upperBound;
 
     int i1 = childIndex;
     int i2 = childIndex + 1;
-    if (i2 == _count) {
+    if (i2 == vertexCount) {
       i2 = 0;
     }
 
@@ -145,22 +147,17 @@ class ChainShape extends Shape {
     return _vertices[index].clone();
   }
 
-  int getVertexCount() {
-    return _vertices.length;
-  }
-
   /// Create a loop. This automatically adjusts connectivity.
   ///
   /// @param vertices an array of vertices, these are copied
   void createLoop(final List<Vector2> vertices) {
-    assert(_vertices == null && _count == 0);
-    assert(vertices.length >= 3);
-    _count = vertices.length + 1;
-    _vertices = List.generate(vertices.length, (i) => vertices[i].clone());
+    assert(_vertices != null && vertexCount == 0);
+    assert(vertices.length >= 3, "A loop can't be created with less than 3 vectors");
+    _vertices.addAll(vertices.map((Vector2 v) => v.clone()));
     _validateDistances(_vertices);
     _vertices.add(_vertices[0].clone());
-    _prevVertex.setFrom(_vertices[_count - 2]);
-    _nextVertex.setFrom(_vertices[1]);
+    prevVertex = _vertices[vertexCount - 2];
+    nextVertex = _vertices[1];
     _hasPrevVertex = true;
     _hasNextVertex = true;
   }
@@ -169,25 +166,24 @@ class ChainShape extends Shape {
   ///
   /// @param vertices an array of vertices, these are copied
   void createChain(final List<Vector2> vertices) {
-    assert(_vertices == null && _count == 0);
+    assert(_vertices != null && vertexCount == 0);
     assert(vertices.length >= 2);
-    _count = vertices.length;
-    _vertices = List.generate(_count, (i) => vertices[i].clone());
+    _vertices.addAll(vertices.map((Vector2 v) => v.clone()));
     _validateDistances(_vertices);
-    _hasPrevVertex = false;
-    _hasNextVertex = false;
     _prevVertex.setZero();
     _nextVertex.setZero();
+    _hasPrevVertex = false;
+    _hasNextVertex = false;
   }
 
   /// Establish connectivity to a vertex that precedes the first vertex. Don't call this for loops.
-  void setPrevVertex(final Vector2 prevVertex) {
+  set prevVertex(Vector2 prevVertex) {
     _prevVertex.setFrom(prevVertex);
     _hasPrevVertex = true;
   }
 
   /// Establish connectivity to a vertex that follows the last vertex. Don't call this for loops.
-  void setNextVertex(final Vector2 nextVertex) {
+  set nextVertex(Vector2 nextVertex) {
     _nextVertex.setFrom(nextVertex);
     _hasNextVertex = true;
   }
