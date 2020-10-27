@@ -76,7 +76,11 @@ class ChainShape extends Shape {
   }
 
   bool raycast(
-      RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
+    RayCastOutput output,
+    RayCastInput input,
+    Transform xf,
+    int childIndex,
+  ) {
     assert(childIndex < vertexCount);
 
     final EdgeShape edgeShape = EdgeShape();
