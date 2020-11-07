@@ -63,7 +63,7 @@ abstract class Demo {
   Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
       : world = World(gravity ?? Vector2(0.0, GRAVITY)),
         _stopwatch = Stopwatch()..start() {
-    world.setAllowSleep(false);
+    world.setAllowSleep(true);
     querySelector("#title").innerHtml = name;
   }
 
