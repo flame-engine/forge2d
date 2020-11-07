@@ -17,7 +17,7 @@ class ContactSolver {
   static const int INITIAL_NUM_CONSTRAINTS = 256;
 
   /// Ensure a reasonable condition number. for the block solver
-  static final double k_maxConditionNumber = 100.0;
+  static const double kMaxConditionNumber = 100.0;
 
   TimeStep _step;
   List<Position> _positions;
@@ -86,8 +86,8 @@ class ContactSolver {
       vc.friction = contact._friction;
       vc.restitution = contact._restitution;
       vc.tangentSpeed = contact._tangentSpeed;
-      vc.indexA = bodyA._islandIndex;
-      vc.indexB = bodyB._islandIndex;
+      vc.indexA = bodyA.islandIndex;
+      vc.indexB = bodyB.islandIndex;
       vc.invMassA = bodyA._invMass;
       vc.invMassB = bodyB._invMass;
       vc.invIA = bodyA._invI;
@@ -98,8 +98,8 @@ class ContactSolver {
       vc.normalMass.setZero();
 
       ContactPositionConstraint pc = _positionConstraints[i];
-      pc.indexA = bodyA._islandIndex;
-      pc.indexB = bodyB._islandIndex;
+      pc.indexA = bodyA.islandIndex;
+      pc.indexB = bodyB.islandIndex;
       pc.invMassA = bodyA._invMass;
       pc.invMassB = bodyB._invMass;
       pc.localCenterA.setFrom(bodyA._sweep.localCenter);
@@ -280,7 +280,7 @@ class ContactSolver {
         double k11 = mA + mB + iA * rn1A * rn1A + iB * rn1B * rn1B;
         double k22 = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
         double k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
-        if (k11 * k11 < k_maxConditionNumber * (k11 * k22 - k12 * k12)) {
+        if (k11 * k11 < kMaxConditionNumber * (k11 * k22 - k12 * k12)) {
           // K is safe to invert.
           vc.K.setValues(k11, k12, k12, k22);
           vc.normalMass.setFrom(vc.K);

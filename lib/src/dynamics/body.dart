@@ -14,7 +14,7 @@ class Body {
 
   int _flags = 0;
 
-  int _islandIndex = 0;
+  int islandIndex = 0;
 
   /// The body origin transform.
   final Transform _transform = Transform.zero();
@@ -33,8 +33,6 @@ class Body {
   double _torque = 0.0;
 
   final World world;
-  Body _prev;
-  Body _next;
 
   Fixture _fixtureList;
   int _fixtureCount = 0;
@@ -56,13 +54,12 @@ class Body {
   /// Use this to store your application specific data.
   Object userData;
 
-  Body(final BodyDef bd, this.world) {
-    assert(!bd.position.isInfinite && !bd.position.isNaN);
-    assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN);
-    assert(bd.gravityScale >= 0.0);
-    assert(bd.angularDamping >= 0.0);
-    assert(bd.linearDamping >= 0.0);
-
+  Body(final BodyDef bd, this.world)
+      : assert(!bd.position.isInfinite && !bd.position.isNaN),
+        assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
+        assert(bd.gravityScale >= 0.0),
+        assert(bd.angularDamping >= 0.0),
+        assert(bd.linearDamping >= 0.0) {
     _flags = 0;
 
     if (bd.bullet) {
@@ -93,8 +90,6 @@ class Body {
 
     _jointList = null;
     _contactList = null;
-    _prev = null;
-    _next = null;
 
     _linearVelocity.setFrom(bd.linearVelocity);
     _angularVelocity = bd.angularVelocity;
@@ -136,11 +131,11 @@ class Body {
   Fixture createFixture(FixtureDef def) {
     assert(world.isLocked() == false);
 
-    Fixture fixture = Fixture();
+    final Fixture fixture = Fixture();
     fixture.create(this, def);
 
     if ((_flags & ACTIVE_FLAG) == ACTIVE_FLAG) {
-      BroadPhase broadPhase = world._contactManager.broadPhase;
+      final BroadPhase broadPhase = world._contactManager.broadPhase;
       fixture.createProxies(broadPhase, _transform);
     }
 
@@ -192,7 +187,7 @@ class Body {
     // Remove the fixture from this body's singly linked list.
     assert(_fixtureCount > 0);
     Fixture node = _fixtureList;
-    Fixture last = null; // java change
+    Fixture last;
     bool found = false;
     while (node != null) {
       if (node == fixture) {
@@ -220,8 +215,8 @@ class Body {
       Contact c = edge.contact;
       edge = edge.next;
 
-      Fixture fixtureA = c.fixtureA;
-      Fixture fixtureB = c.fixtureB;
+      final Fixture fixtureA = c.fixtureA;
+      final Fixture fixtureB = c.fixtureB;
 
       if (fixture == fixtureA || fixture == fixtureB) {
         // This destroys the contact and removes it from
@@ -799,11 +794,6 @@ class Body {
   /// use ContactListener.
   ContactEdge getContactList() {
     return _contactList;
-  }
-
-  /// Get the next body in the world's body list.
-  Body getNext() {
-    return _next;
   }
 
   // djm pooling

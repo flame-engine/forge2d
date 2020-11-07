@@ -65,7 +65,7 @@ class MouseJoint extends Joint {
   }
 
   void initVelocityConstraints(final SolverData data) {
-    _indexB = _bodyB._islandIndex;
+    _indexB = _bodyB.islandIndex;
     _localCenterB.setFrom(_bodyB._sweep.localCenter);
     _invMassB = _bodyB._invMass;
     _invIB = _bodyB._invI;

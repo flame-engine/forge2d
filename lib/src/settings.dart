@@ -27,12 +27,12 @@ const double linearSlop = 0.005;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is chosen to be
 /// numerically significant, but visually insignificant.
-const double angularSlop = (2.0 / 180.0 * math.pi);
+const double angularSlop = 2.0 / 180.0 * math.pi;
 
 /// The radius of the polygon/edge shape skin. This should not be modified. Making this smaller
 /// means polygons will have and insufficient for continuous collision. Making it larger may create
 /// artifacts for vertex collision.
-const double polygonRadius = (2.0 * linearSlop);
+const double polygonRadius = 2.0 * linearSlop;
 
 /// Maximum number of sub-steps per contact in continuous physics simulation.
 const int maxSubSteps = 8;
@@ -52,17 +52,17 @@ const double maxLinearCorrection = 0.2;
 
 /// The maximum angular position correction used when solving constraints. This helps to prevent
 /// overshoot.
-const double maxAngularCorrection = (8.0 / 180.0 * math.pi);
+const double maxAngularCorrection = 8.0 / 180.0 * math.pi;
 
 /// The maximum linear velocity of a body. This limit is very large and is used to prevent
 /// numerical problems. You shouldn't need to adjust this.
 const double maxTranslation = 2.0;
-const double maxTranslationSquared = (maxTranslation * maxTranslation);
+const double maxTranslationSquared = maxTranslation * maxTranslation;
 
 /// The maximum angular velocity of a body. This limit is very large and is used to prevent
 /// numerical problems. You shouldn't need to adjust this.
-const double maxRotation = (0.5 * math.pi);
-const double maxRotationSquared = (maxRotation * maxRotation);
+const double maxRotation = 0.5 * math.pi;
+const double maxRotationSquared = maxRotation * maxRotation;
 
 /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so that
 /// overlap is removed in one time step. However using values close to 1 often lead to overshoot.
@@ -77,7 +77,7 @@ const double timeToSleep = 0.5;
 const double linearSleepTolerance = 0.01;
 
 /// A body cannot sleep if its angular velocity is above this tolerance.
-const double angularSleepTolerance = (2.0 / 180.0 * math.pi);
+const double angularSleepTolerance = 2.0 / 180.0 * math.pi;
 
 // Particle
 
@@ -95,7 +95,7 @@ const double maxParticleWeight = 5.0;
 
 /// The maximum distance between particles in a triad, divided by the particle radius.
 const int maxTriadDistance = 2;
-const int maxTriadDistanceSquared = (maxTriadDistance * maxTriadDistance);
+const int maxTriadDistanceSquared = maxTriadDistance * maxTriadDistance;
 
 /// The initial size of particle data buffers.
 const int minParticleBufferCapacity = 256;

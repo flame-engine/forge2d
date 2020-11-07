@@ -86,10 +86,10 @@ class ConstantVolumeJoint extends Joint {
     double area = 0.0;
     for (int i = 0; i < _bodies.length; ++i) {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      area += positions[_bodies[i]._islandIndex].c.x *
-              positions[_bodies[next]._islandIndex].c.y -
-          positions[_bodies[next]._islandIndex].c.x *
-              positions[_bodies[i]._islandIndex].c.y;
+      area += positions[_bodies[i].islandIndex].c.x *
+              positions[_bodies[next].islandIndex].c.y -
+          positions[_bodies[next].islandIndex].c.x *
+              positions[_bodies[i].islandIndex].c.y;
     }
     area *= .5;
     return area;
@@ -99,10 +99,10 @@ class ConstantVolumeJoint extends Joint {
     double perimeter = 0.0;
     for (int i = 0; i < _bodies.length; ++i) {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      double dx = positions[_bodies[next]._islandIndex].c.x -
-          positions[_bodies[i]._islandIndex].c.x;
-      double dy = positions[_bodies[next]._islandIndex].c.y -
-          positions[_bodies[i]._islandIndex].c.y;
+      double dx = positions[_bodies[next].islandIndex].c.x -
+          positions[_bodies[i].islandIndex].c.x;
+      double dy = positions[_bodies[next].islandIndex].c.y -
+          positions[_bodies[i].islandIndex].c.y;
       double dist = math.sqrt(dx * dx + dy * dy);
       if (dist < settings.EPSILON) {
         dist = 1.0;
@@ -130,8 +130,8 @@ class ConstantVolumeJoint extends Joint {
       if (normSqrd > settings.linearSlop * settings.linearSlop) {
         done = false;
       }
-      positions[_bodies[next]._islandIndex].c.x += delta.x;
-      positions[_bodies[next]._islandIndex].c.y += delta.y;
+      positions[_bodies[next].islandIndex].c.x += delta.x;
+      positions[_bodies[next].islandIndex].c.y += delta.y;
     }
 
     return done;
@@ -145,16 +145,16 @@ class ConstantVolumeJoint extends Joint {
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i] = Vector2.copy(positions[_bodies[next]._islandIndex].c);
-      d[i].sub(positions[_bodies[prev]._islandIndex].c);
+      d[i] = Vector2.copy(positions[_bodies[next].islandIndex].c);
+      d[i].sub(positions[_bodies[prev].islandIndex].c);
     }
 
     if (step.step.warmStarting) {
       _impulse *= step.step.dtRatio;
       for (int i = 0; i < _bodies.length; ++i) {
-        velocities[_bodies[i]._islandIndex].v.x +=
+        velocities[_bodies[i].islandIndex].v.x +=
             _bodies[i]._invMass * d[i].y * .5 * _impulse;
-        velocities[_bodies[i]._islandIndex].v.y +=
+        velocities[_bodies[i].islandIndex].v.y +=
             _bodies[i]._invMass * -d[i].x * .5 * _impulse;
       }
     } else {
@@ -177,17 +177,17 @@ class ConstantVolumeJoint extends Joint {
     for (int i = 0; i < _bodies.length; ++i) {
       final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i] = Vector2.copy(positions[_bodies[next]._islandIndex].c);
-      d[i].sub(positions[_bodies[prev]._islandIndex].c);
+      d[i] = Vector2.copy(positions[_bodies[next].islandIndex].c);
+      d[i].sub(positions[_bodies[prev].islandIndex].c);
       dotMassSum += (d[i].length2) / _bodies[i].mass;
-      crossMassSum += velocities[_bodies[i]._islandIndex].v.cross(d[i]);
+      crossMassSum += velocities[_bodies[i].islandIndex].v.cross(d[i]);
     }
     double lambda = -2.0 * crossMassSum / dotMassSum;
     _impulse += lambda;
     for (int i = 0; i < _bodies.length; ++i) {
-      velocities[_bodies[i]._islandIndex].v.x +=
+      velocities[_bodies[i].islandIndex].v.x +=
           _bodies[i]._invMass * d[i].y * .5 * lambda;
-      velocities[_bodies[i]._islandIndex].v.y +=
+      velocities[_bodies[i].islandIndex].v.y +=
           _bodies[i]._invMass * -d[i].x * .5 * lambda;
     }
   }

@@ -116,9 +116,8 @@ class Bench2d {
       linearVelocitySum = linearVelocitySum + b.linearVelocity;
       angularVelocitySum += b.angularVelocity;
     };
-    Body firstBody = world.bodyList;
-    print(firstBody);
-    world.forEachBody(checksum);
+    print(world.bodyList.first);
+    world.bodyList.forEach(checksum);
     print(
         "pos: $positionSum linVel $linearVelocitySum angVel $angularVelocitySum");
   }

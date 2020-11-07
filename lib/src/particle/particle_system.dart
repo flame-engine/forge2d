@@ -556,8 +556,13 @@ class ParticleSystem {
             depthBuffer, 0, internalAllocatedCapacity, capacity, true);
         colorBuffer.data = reallocateBuffer(
             colorBuffer, internalAllocatedCapacity, capacity, true);
-        groupBuffer = buffer_utils.reallocateBufferWithAllocDeferred(groupBuffer,
-            0, internalAllocatedCapacity, capacity, false, allocParticleGroup);
+        groupBuffer = buffer_utils.reallocateBufferWithAllocDeferred(
+            groupBuffer,
+            0,
+            internalAllocatedCapacity,
+            capacity,
+            false,
+            allocParticleGroup);
         userDataBuffer.data = reallocateBuffer(
             userDataBuffer, internalAllocatedCapacity, capacity, true);
         internalAllocatedCapacity = capacity;
