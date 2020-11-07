@@ -10,7 +10,7 @@ abstract class Demo {
   static const int WORLD_POOL_CONTAINER_SIZE = 10;
 
   /// All of the bodies in a simulation.
-  List<Body> bodies = List<Body>();
+  List<Body> bodies = <Body>[];
 
   /// The default canvas width and height.
   static const int CANVAS_WIDTH = 900;
@@ -61,8 +61,9 @@ abstract class Demo {
   Element worldStepTime;
 
   Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
-      : this.world = World(gravity ?? Vector2(0.0, GRAVITY)),
+      : world = World(gravity ?? Vector2(0.0, GRAVITY)),
         _stopwatch = Stopwatch()..start() {
+    world.setAllowSleep(false);
     querySelector("#title").innerHtml = name;
   }
 
@@ -91,7 +92,7 @@ abstract class Demo {
     ctx = canvas.context2D;
 
     // Create the viewport transform with the center at extents.
-    var extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    final Vector2 extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
     viewport = CanvasViewportTransform(extents, extents)
       ..scale = _viewportScale;
 
@@ -104,12 +105,14 @@ abstract class Demo {
     frameCount = 0;
     fpsCounter = querySelector("#fps-counter");
     worldStepTime = querySelector("#world-step-time");
-    Timer.periodic(Duration(seconds: 1), (Timer t) {
+    Timer.periodic(const Duration(seconds: 1), (Timer t) {
       fpsCounter.innerHtml = frameCount.toString();
       frameCount = 0;
     });
-    Timer.periodic(Duration(milliseconds: 200), (Timer t) {
-      if (elapsedUs == null) return;
+    Timer.periodic(const Duration(milliseconds: 200), (Timer t) {
+      if (elapsedUs == null) {
+        return;
+      }
       worldStepTime.innerHtml = "${elapsedUs / 1000} ms";
     });
   }

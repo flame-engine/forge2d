@@ -173,10 +173,10 @@ class GearJoint extends Joint {
   }
 
   void initVelocityConstraints(SolverData data) {
-    _indexA = _bodyA._islandIndex;
-    _indexB = _bodyB._islandIndex;
-    _indexC = _bodyC._islandIndex;
-    _indexD = _bodyD._islandIndex;
+    _indexA = _bodyA.islandIndex;
+    _indexB = _bodyB.islandIndex;
+    _indexC = _bodyC.islandIndex;
+    _indexD = _bodyD.islandIndex;
     _lcA.setFrom(_bodyA._sweep.localCenter);
     _lcB.setFrom(_bodyB._sweep.localCenter);
     _lcC.setFrom(_bodyC._sweep.localCenter);

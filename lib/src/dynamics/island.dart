@@ -338,13 +338,13 @@ class Island {
     if (allowSleep) {
       double minSleepTime = double.maxFinite;
 
-      final double linTolSqr =
+      const double linTolSqr =
           settings.linearSleepTolerance * settings.linearSleepTolerance;
-      final double angTolSqr =
+      const double angTolSqr =
           settings.angularSleepTolerance * settings.angularSleepTolerance;
 
       for (int i = 0; i < _bodyCount; ++i) {
-        Body b = _bodies[i];
+        final Body b = _bodies[i];
         if (b.getType() == BodyType.STATIC) {
           continue;
         }
@@ -472,7 +472,7 @@ class Island {
 
   void addBody(Body body) {
     assert(_bodyCount < _bodyCapacity);
-    body._islandIndex = _bodyCount;
+    body.islandIndex = _bodyCount;
     _bodies[_bodyCount] = body;
     ++_bodyCount;
   }

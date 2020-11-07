@@ -133,7 +133,8 @@ class DynamicTree implements BroadPhaseStrategy {
           if (nodeStack.length - nodeStackIndex - 2 <= 0) {
             List<DynamicTreeNode> newBuffer =
                 List<DynamicTreeNode>(nodeStack.length * 2);
-            buffer_utils.arrayCopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
+            buffer_utils.arrayCopy(
+                nodeStack, 0, newBuffer, 0, nodeStack.length);
             nodeStack = newBuffer;
           }
           nodeStack[nodeStackIndex++] = node.child1;

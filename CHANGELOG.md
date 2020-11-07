@@ -1,5 +1,10 @@
-### 1.0.0
+# CHANGELOG
+
+## [next]
 * Make code more like the dart standard and less C++
+
+
+## Old box2d.dart
 
 ### 0.4.6
 * Fix bug with torque not being modified from applyTorque

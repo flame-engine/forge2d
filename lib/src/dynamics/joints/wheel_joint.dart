@@ -161,8 +161,8 @@ class WheelJoint extends Joint {
   final Vector2 d = Vector2.zero();
 
   void initVelocityConstraints(SolverData data) {
-    _indexA = _bodyA._islandIndex;
-    _indexB = _bodyB._islandIndex;
+    _indexA = _bodyA.islandIndex;
+    _indexB = _bodyB.islandIndex;
     _localCenterA.setFrom(_bodyA._sweep.localCenter);
     _localCenterB.setFrom(_bodyB._sweep.localCenter);
     _invMassA = _bodyA._invMass;
