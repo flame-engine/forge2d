@@ -690,6 +690,7 @@ class Body {
         _sleepTime = 0.0;
       }
     } else {
+      print("A body was setAwake false");
       _flags &= ~AWAKE_FLAG;
       _sleepTime = 0.0;
       _linearVelocity.setZero();

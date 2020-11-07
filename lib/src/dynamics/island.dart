@@ -192,20 +192,20 @@ class Island {
   final ContactSolverDef _solverDef = ContactSolverDef();
 
   void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
-    double dt = step.dt;
+    final double dt = step.dt;
 
     // Integrate velocities and apply damping. Initialize the body state.
     for (int i = 0; i < _bodyCount; ++i) {
       final Body b = _bodies[i];
-      final Sweep bm_sweep = b._sweep;
-      final Vector2 c = bm_sweep.c;
-      double a = bm_sweep.a;
+      final Sweep bmSweep = b._sweep;
+      final Vector2 c = bmSweep.c;
+      final double a = bmSweep.a;
       final Vector2 v = b._linearVelocity;
       double w = b._angularVelocity;
 
       // Store positions for continuous collision.
-      bm_sweep.c0.setFrom(bm_sweep.c);
-      bm_sweep.a0 = bm_sweep.a;
+      bmSweep.c0.setFrom(bmSweep.c);
+      bmSweep.a0 = bmSweep.a;
 
       if (b._bodyType == BodyType.DYNAMIC) {
         // Integrate velocities.
@@ -276,21 +276,21 @@ class Island {
       double w = _velocities[i].w;
 
       // Check for large velocities
-      double translationX = v.x * dt;
-      double translationY = v.y * dt;
+      final double translationX = v.x * dt;
+      final double translationY = v.y * dt;
 
       if (translationX * translationX + translationY * translationY >
           settings.maxTranslationSquared) {
-        double ratio = settings.maxTranslation /
+        final double ratio = settings.maxTranslation /
             math.sqrt(
                 translationX * translationX + translationY * translationY);
         v.x *= ratio;
         v.y *= ratio;
       }
 
-      double rotation = dt * w;
+      final double rotation = dt * w;
       if (rotation * rotation > settings.maxRotationSquared) {
-        double ratio = settings.maxRotation / rotation.abs();
+        final double ratio = settings.maxRotation / rotation.abs();
         w *= ratio;
       }
 
@@ -306,11 +306,11 @@ class Island {
     // Solve position constraints
     bool positionSolved = false;
     for (int i = 0; i < step.positionIterations; ++i) {
-      bool contactsOkay = _contactSolver.solvePositionConstraints();
+      final bool contactsOkay = _contactSolver.solvePositionConstraints();
 
       bool jointsOkay = true;
       for (int j = 0; j < _jointCount; ++j) {
-        bool jointOkay = _joints[j].solvePositionConstraints(_solverData);
+        final bool jointOkay = _joints[j].solvePositionConstraints(_solverData);
         jointsOkay = jointsOkay && jointOkay;
       }
 
@@ -323,7 +323,7 @@ class Island {
 
     // Copy state buffers back to the bodies
     for (int i = 0; i < _bodyCount; ++i) {
-      Body body = _bodies[i];
+      final Body body = _bodies[i];
       body._sweep.c.x = _positions[i].c.x;
       body._sweep.c.y = _positions[i].c.y;
       body._sweep.a = _positions[i].a;
@@ -351,7 +351,7 @@ class Island {
 
         if ((b._flags & Body.AUTO_SLEEP_FLAG) == 0 ||
             b._angularVelocity * b._angularVelocity > angTolSqr ||
-            b._linearVelocity.length2 > linTolSqr) {
+            b._linearVelocity.dot(b._linearVelocity) > linTolSqr) {
           b._sleepTime = 0.0;
           minSleepTime = 0.0;
         } else {
@@ -361,6 +361,7 @@ class Island {
       }
 
       if (minSleepTime >= settings.timeToSleep && positionSolved) {
+        print("Lets sleep shall we?");
         _bodies.forEach((b) => b?.setAwake(false));
       }
     }
@@ -392,7 +393,7 @@ class Island {
 
     // Solve position constraints.
     for (int i = 0; i < subStep.positionIterations; ++i) {
-      bool contactsOkay =
+      final bool contactsOkay =
           _toiContactSolver.solveTOIPositionConstraints(toiIndexA, toiIndexB);
       if (contactsOkay) {
         break;
@@ -418,36 +419,36 @@ class Island {
     // Don't store the TOI contact forces for warm starting
     // because they can be quite large.
 
-    double h = subStep.dt;
+    final double dt = subStep.dt;
 
     // Integrate positions
     for (int i = 0; i < _bodyCount; ++i) {
-      Vector2 c = _positions[i].c;
+      final Vector2 c = _positions[i].c;
       double a = _positions[i].a;
-      Vector2 v = _velocities[i].v;
+      final Vector2 v = _velocities[i].v;
       double w = _velocities[i].w;
 
       // Check for large velocities
-      double translationX = v.x * h;
-      double translationY = v.y * h;
+      final double translationX = v.x * dt;
+      final double translationY = v.y * dt;
       if (translationX * translationX + translationY * translationY >
           settings.maxTranslationSquared) {
-        double ratio = settings.maxTranslation /
+        final double ratio = settings.maxTranslation /
             math.sqrt(
                 translationX * translationX + translationY * translationY);
         v.scale(ratio);
       }
 
-      double rotation = h * w;
+      final double rotation = dt * w;
       if (rotation * rotation > settings.maxRotationSquared) {
-        double ratio = settings.maxRotation / rotation.abs();
+        final double ratio = settings.maxRotation / rotation.abs();
         w *= ratio;
       }
 
       // Integrate
-      c.x += v.x * h;
-      c.y += v.y * h;
-      a += h * w;
+      c.x += v.x * dt;
+      c.y += v.y * dt;
+      a += dt * w;
 
       _positions[i].c.x = c.x;
       _positions[i].c.y = c.y;
@@ -457,7 +458,7 @@ class Island {
       _velocities[i].w = w;
 
       // Sync bodies
-      Body body = _bodies[i];
+      final Body body = _bodies[i];
       body._sweep.c.x = c.x;
       body._sweep.c.y = c.y;
       body._sweep.a = a;
@@ -495,9 +496,9 @@ class Island {
     }
 
     for (int i = 0; i < _contactCount; ++i) {
-      Contact c = _contacts[i];
+      final Contact c = _contacts[i];
 
-      ContactVelocityConstraint vc = constraints[i];
+      final ContactVelocityConstraint vc = constraints[i];
       _impulse.count = vc.pointCount;
       for (int j = 0; j < vc.pointCount; ++j) {
         _impulse.normalImpulses[j] = vc.points[j].normalImpulse;
