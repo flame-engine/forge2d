@@ -6,7 +6,7 @@ import 'dart:typed_data';
 List<T> reallocateBufferWithAlloc<T>(
     List oldBuffer, int oldCapacity, int newCapacity, T alloc()) {
   assert(newCapacity > oldCapacity);
-  List<T> newBuffer = List<T>(newCapacity);
+  final List<T> newBuffer = List<T>(newCapacity);
   if (oldBuffer != null) {
     arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
@@ -24,7 +24,7 @@ List<T> reallocateBufferWithAlloc<T>(
 List<int> reallocateBufferInt(
     List<int> oldBuffer, int oldCapacity, int newCapacity) {
   assert(newCapacity > oldCapacity);
-  List<int> newBuffer = List<int>(newCapacity);
+  final List<int> newBuffer = List<int>(newCapacity);
   if (oldBuffer != null) {
     arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
@@ -38,7 +38,7 @@ List<int> reallocateBufferInt(
 Float64List reallocateBuffer(
     Float64List oldBuffer, int oldCapacity, int newCapacity) {
   assert(newCapacity > oldCapacity);
-  Float64List newBuffer = Float64List(newCapacity);
+  final Float64List newBuffer = Float64List(newCapacity);
   if (oldBuffer != null) {
     arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
   }
@@ -90,7 +90,7 @@ Float64List reallocateBufferFloat64Deferred(Float64List buffer,
 void rotate<T>(List<T> ray, int first, int newFirst, int last) {
   int next = newFirst;
   while (next != first) {
-    var temp = ray[first];
+    final temp = ray[first];
     ray[first] = ray[next];
     ray[next] = temp;
     first++;
@@ -114,7 +114,7 @@ void arrayCopy(List src, int srcPos, List dest, int destPos, int length) {
 // Replace Java's Arrays::sort.
 // TODO(srdjan): Make a version that does not require copying.
 void sort<T>(List<T> list, int fromPos, int toPos) {
-  List<T> temp = List.from(list.getRange(fromPos, toPos));
+  final List<T> temp = List.from(list.getRange(fromPos, toPos));
   temp.sort();
   list.setRange(fromPos, toPos, temp);
 }

@@ -36,6 +36,6 @@ class PulleyJointDef extends JointDef {
     Vector2 d2 = anchor2 - ga2;
     lengthB = d2.length;
     ratio = r;
-    assert(ratio > Settings.EPSILON);
+    assert(ratio > settings.EPSILON);
   }
 }

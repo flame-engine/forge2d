@@ -46,7 +46,7 @@ class ContactSolver {
       List<ContactPositionConstraint> old = _positionConstraints;
       _positionConstraints =
           List<ContactPositionConstraint>(math.max(old.length * 2, _count));
-      BufferUtils.arrayCopy(old, 0, _positionConstraints, 0, old.length);
+      buffer_utils.arrayCopy(old, 0, _positionConstraints, 0, old.length);
       for (int i = old.length; i < _positionConstraints.length; i++) {
         _positionConstraints[i] = ContactPositionConstraint();
       }
@@ -56,7 +56,7 @@ class ContactSolver {
       List<ContactVelocityConstraint> old = _velocityConstraints;
       _velocityConstraints =
           List<ContactVelocityConstraint>(math.max(old.length * 2, _count));
-      BufferUtils.arrayCopy(old, 0, _velocityConstraints, 0, old.length);
+      buffer_utils.arrayCopy(old, 0, _velocityConstraints, 0, old.length);
       for (int i = old.length; i < _velocityConstraints.length; i++) {
         _velocityConstraints[i] = ContactVelocityConstraint();
       }
@@ -263,7 +263,7 @@ class ContactSolver {
         double tempx = vB.x + -wB * vcprB.y - vA.x - (-wA * vcprA.y);
         double tempy = vB.y + wB * vcprB.x - vA.y - (wA * vcprA.x);
         double vRel = vcNormal.x * tempx + vcNormal.y * tempy;
-        if (vRel < -Settings.velocityThreshold) {
+        if (vRel < -settings.velocityThreshold) {
           vcp.velocityBias = -vc.restitution * vRel;
         }
       }
@@ -803,8 +803,8 @@ class ContactSolver {
         minSeparation = math.min(minSeparation, separation);
 
         // Prevent large corrections and allow slop.
-        final C = (Settings.baumgarte * (separation + Settings.linearSlop))
-            .clamp(-Settings.maxLinearCorrection, 0.0);
+        final C = (settings.baumgarte * (separation + settings.linearSlop))
+            .clamp(-settings.maxLinearCorrection, 0.0);
 
         // Compute the effective mass.
         final double rnA = rAx * normal.y - rAy * normal.x;
@@ -832,7 +832,7 @@ class ContactSolver {
 
     // We can't expect minSeparation >= -linearSlop because we don't
     // push the separation above -linearSlop.
-    return minSeparation >= -3.0 * Settings.linearSlop;
+    return minSeparation >= -3.0 * settings.linearSlop;
   }
 
   // Sequential position solver for position constraints.
@@ -900,8 +900,8 @@ class ContactSolver {
 
         // Prevent large corrections and allow slop.
 
-        final C = (Settings.baumgarte * (separation + Settings.linearSlop))
-            .clamp(-Settings.maxLinearCorrection, 0.0);
+        final C = (settings.baumgarte * (separation + settings.linearSlop))
+            .clamp(-settings.maxLinearCorrection, 0.0);
 
         // Compute the effective mass.
         double rnA = rAx * normal.y - rAy * normal.x;
@@ -929,7 +929,7 @@ class ContactSolver {
 
     // We can't expect minSeparation >= -_linearSlop because we don't
     // push the separation above -_linearSlop.
-    return minSeparation >= -1.5 * Settings.linearSlop;
+    return minSeparation >= -1.5 * settings.linearSlop;
   }
 
   Vector2 _crossDoubleVector2(double s, Vector2 a) {

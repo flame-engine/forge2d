@@ -94,7 +94,7 @@ class MouseJoint extends Joint {
     // gamma has units of inverse mass.
     // beta has units of inverse time.
     double h = data.step.dt;
-    assert(d + h * k > Settings.EPSILON);
+    assert(d + h * k > settings.EPSILON);
     _gamma = h * (d + h * k);
     if (_gamma != 0.0) {
       _gamma = 1.0 / _gamma;

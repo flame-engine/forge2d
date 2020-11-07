@@ -4,9 +4,9 @@ import 'dart:collection';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'src/buffer_utils.dart' as BufferUtils;
+import 'src/buffer_utils.dart' as buffer_utils;
 import 'src/common.dart';
-import 'src/settings.dart' as Settings;
+import 'src/settings.dart' as settings;
 import 'src/vector_math.dart';
 
 export 'src/common.dart';

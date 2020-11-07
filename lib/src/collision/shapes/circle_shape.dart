@@ -86,7 +86,7 @@ class CircleShape extends Shape {
     final double sigma = c * c - rr * b;
 
     // Check for negative discriminant and short segment.
-    if (sigma < 0.0 || rr < Settings.EPSILON) {
+    if (sigma < 0.0 || rr < settings.EPSILON) {
       return false;
     }
 

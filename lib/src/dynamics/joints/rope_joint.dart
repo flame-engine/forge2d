@@ -87,7 +87,7 @@ class RopeJoint extends Joint {
       _state = LimitState.INACTIVE;
     }
 
-    if (_length > Settings.linearSlop) {
+    if (_length > settings.linearSlop) {
       _u.scale(1.0 / _length);
     } else {
       _u.setZero();
@@ -205,7 +205,7 @@ class RopeJoint extends Joint {
     double length = u.normalize();
     double c = length - _maxLength;
 
-    c = c.clamp(0.0, Settings.maxLinearCorrection).toDouble();
+    c = c.clamp(0.0, settings.maxLinearCorrection).toDouble();
 
     double impulse = -_mass * c;
     double Px = impulse * u.x;
@@ -221,7 +221,7 @@ class RopeJoint extends Joint {
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return length - _maxLength < Settings.linearSlop;
+    return length - _maxLength < settings.linearSlop;
   }
 
   Vector2 getReactionForce(double inv_dt) {

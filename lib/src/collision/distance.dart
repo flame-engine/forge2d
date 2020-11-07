@@ -25,23 +25,23 @@ class SimplexCache {
   int count = 0;
 
   /// vertices on shape A
-  final List<int> indexA = BufferUtils.intList(3);
+  final List<int> indexA = buffer_utils.intList(3);
 
   /// vertices on shape B
-  final List<int> indexB = BufferUtils.intList(3);
+  final List<int> indexB = buffer_utils.intList(3);
 
   SimplexCache() {
-    indexA[0] = Settings.INTEGER_MAX_VALUE;
-    indexA[1] = Settings.INTEGER_MAX_VALUE;
-    indexA[2] = Settings.INTEGER_MAX_VALUE;
-    indexB[0] = Settings.INTEGER_MAX_VALUE;
-    indexB[1] = Settings.INTEGER_MAX_VALUE;
-    indexB[2] = Settings.INTEGER_MAX_VALUE;
+    indexA[0] = settings.INTEGER_MAX_VALUE;
+    indexA[1] = settings.INTEGER_MAX_VALUE;
+    indexA[2] = settings.INTEGER_MAX_VALUE;
+    indexB[0] = settings.INTEGER_MAX_VALUE;
+    indexB[1] = settings.INTEGER_MAX_VALUE;
+    indexB[2] = settings.INTEGER_MAX_VALUE;
   }
 
   void set(SimplexCache sc) {
-    BufferUtils.arrayCopy(sc.indexA, 0, indexA, 0, indexA.length);
-    BufferUtils.arrayCopy(sc.indexB, 0, indexB, 0, indexB.length);
+    buffer_utils.arrayCopy(sc.indexA, 0, indexA, 0, indexA.length);
+    buffer_utils.arrayCopy(sc.indexB, 0, indexB, 0, indexB.length);
     metric = sc.metric;
     count = sc.count;
   }
@@ -88,7 +88,7 @@ class _Simplex {
       double metric2 = getMetric();
       if (metric2 < 0.5 * metric1 ||
           2.0 * metric1 < metric2 ||
-          metric2 < Settings.EPSILON) {
+          metric2 < settings.EPSILON) {
         // Reset the simplex.
         count = 0;
       }
@@ -461,7 +461,7 @@ class DistanceProxy {
   final List<Vector2> buffer;
 
   DistanceProxy()
-      : vertices = List<Vector2>(Settings.maxPolygonVertices),
+      : vertices = List<Vector2>(settings.maxPolygonVertices),
         buffer = List<Vector2>(2) {
     for (int i = 0; i < vertices.length; i++) {
       vertices[i] = Vector2.zero();
@@ -567,8 +567,8 @@ class Distance {
   static int GJK_MAX_ITERS = 20;
 
   final _Simplex _simplex = _Simplex();
-  final List<int> _saveA = BufferUtils.intList(3);
-  final List<int> _saveB = BufferUtils.intList(3);
+  final List<int> _saveA = buffer_utils.intList(3);
+  final List<int> _saveB = buffer_utils.intList(3);
   final Vector2 _closestPoint = Vector2.zero();
   final Vector2 _d = Vector2.zero();
   final Vector2 _temp = Vector2.zero();
@@ -644,7 +644,7 @@ class Distance {
       _simplex.getSearchDirection(_d);
 
       // Ensure the search direction is numerically fit.
-      if (_d.length2 < Settings.EPSILON * Settings.EPSILON) {
+      if (_d.length2 < settings.EPSILON * settings.EPSILON) {
         // The origin is probably contained by a line segment
         // or triangle. Thus the shapes are overlapped.
 
@@ -712,7 +712,7 @@ class Distance {
       double rA = proxyA.radius;
       double rB = proxyB.radius;
 
-      if (output.distance > rA + rB && output.distance > Settings.EPSILON) {
+      if (output.distance > rA + rB && output.distance > settings.EPSILON) {
         // Shapes are still no overlapped.
         // Move the witness points to the outer surface.
         output.distance -= rA + rB;

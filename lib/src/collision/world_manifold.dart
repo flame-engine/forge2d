@@ -6,13 +6,13 @@ class WorldManifold {
   final Vector2 normal = Vector2.zero();
 
   /// World contact point (point of intersection)
-  final List<Vector2> points = List<Vector2>(Settings.maxManifoldPoints);
+  final List<Vector2> points = List<Vector2>(settings.maxManifoldPoints);
 
   /// A negative value indicates overlap, in meters.
-  final Float64List separations = Float64List(Settings.maxManifoldPoints);
+  final Float64List separations = Float64List(settings.maxManifoldPoints);
 
   WorldManifold() {
-    for (int i = 0; i < Settings.maxManifoldPoints; i++) {
+    for (int i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = Vector2.zero();
     }
   }
@@ -42,7 +42,7 @@ class WorldManifold {
           pointB.y = (xfB.q.s * mp0p.x + xfB.q.c * mp0p.y) + xfB.p.y;
 
           if (pointA.distanceToSquared(pointB) >
-              Settings.EPSILON * Settings.EPSILON) {
+              settings.EPSILON * settings.EPSILON) {
             normal.x = pointB.x - pointA.x;
             normal.y = pointB.y - pointA.y;
             normal.normalize();

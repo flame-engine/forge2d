@@ -336,8 +336,8 @@ class WeldJoint extends Joint {
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return positionError <= Settings.linearSlop &&
-        angularError <= Settings.angularSlop;
+    return positionError <= settings.linearSlop &&
+        angularError <= settings.angularSlop;
   }
 
   Matrix3 _matrix3GetInverse22(Matrix3 m) {

@@ -160,8 +160,8 @@ class UpdateBodyContactsCallback implements QueryCallback {
               int oldCapacity = system.bodyContactCapacity;
               int newCapacity = system.bodyContactCount != 0
                   ? 2 * system.bodyContactCount
-                  : Settings.minParticleBufferCapacity;
-              system.bodyContactBuffer = BufferUtils.reallocateBufferWithAlloc(
+                  : settings.minParticleBufferCapacity;
+              system.bodyContactBuffer = buffer_utils.reallocateBufferWithAlloc(
                   system.bodyContactBuffer,
                   oldCapacity,
                   newCapacity,
@@ -200,7 +200,7 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
     final double dcax = pc.x - pa.x;
     final double dcay = pc.y - pa.y;
     double maxDistanceSquared =
-        Settings.maxTriadDistanceSquared * system.squaredDiameter;
+        settings.maxTriadDistanceSquared * system.squaredDiameter;
     if (dabx * dabx + daby * daby < maxDistanceSquared &&
         dbcx * dbcx + dbcy * dbcy < maxDistanceSquared &&
         dcax * dcax + dcay * dcay < maxDistanceSquared) {
@@ -208,8 +208,8 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
         int oldCapacity = system.triadCapacity;
         int newCapacity = system.triadCount != 0
             ? 2 * system.triadCount
-            : Settings.minParticleBufferCapacity;
-        system.triadBuffer = BufferUtils.reallocateBufferWithAlloc(
+            : settings.minParticleBufferCapacity;
+        system.triadBuffer = buffer_utils.reallocateBufferWithAlloc(
             system.triadBuffer, oldCapacity, newCapacity, allocPsTriad);
         system.triadCapacity = newCapacity;
       }
@@ -264,7 +264,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
         final double dcax = pc.x - pa.x;
         final double dcay = pc.y - pa.y;
         double maxDistanceSquared =
-            Settings.maxTriadDistanceSquared * system.squaredDiameter;
+            settings.maxTriadDistanceSquared * system.squaredDiameter;
         if (dabx * dabx + daby * daby < maxDistanceSquared &&
             dbcx * dbcx + dbcy * dbcy < maxDistanceSquared &&
             dcax * dcax + dcay * dcay < maxDistanceSquared) {
@@ -272,8 +272,8 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
             int oldCapacity = system.triadCapacity;
             int newCapacity = system.triadCount != 0
                 ? 2 * system.triadCount
-                : Settings.minParticleBufferCapacity;
-            system.triadBuffer = BufferUtils.reallocateBufferWithAlloc(
+                : settings.minParticleBufferCapacity;
+            system.triadBuffer = buffer_utils.reallocateBufferWithAlloc(
                 system.triadBuffer, oldCapacity, newCapacity, allocPsTriad);
             system.triadCapacity = newCapacity;
           }
@@ -358,10 +358,10 @@ class SolveCollisionCallback implements QueryCallback {
             final Vector2 p = Vector2(
               (1 - output.fraction) * input.p1.x +
                   output.fraction * input.p2.x +
-                  Settings.linearSlop * output.normal.x,
+                  settings.linearSlop * output.normal.x,
               (1 - output.fraction) * input.p1.y +
                   output.fraction * input.p2.y +
-                  Settings.linearSlop * output.normal.y,
+                  settings.linearSlop * output.normal.y,
             );
 
             final double vx = step.inv_dt * (p.x - ap.x);
@@ -529,7 +529,7 @@ class ParticleSystem {
   int createParticle(ParticleDef def) {
     if (count >= internalAllocatedCapacity) {
       int capacity =
-          count != 0 ? 2 * count : Settings.minParticleBufferCapacity;
+          count != 0 ? 2 * count : settings.minParticleBufferCapacity;
       capacity = limitCapacity(capacity, maxCount);
       capacity = limitCapacity(capacity, flagsBuffer.userSuppliedCapacity);
       capacity = limitCapacity(capacity, positionBuffer.userSuppliedCapacity);
@@ -543,20 +543,20 @@ class ParticleSystem {
             positionBuffer, internalAllocatedCapacity, capacity, false);
         velocityBuffer.data = reallocateBuffer(
             velocityBuffer, internalAllocatedCapacity, capacity, false);
-        accumulationBuffer = BufferUtils.reallocateBufferFloat64Deferred(
+        accumulationBuffer = buffer_utils.reallocateBufferFloat64Deferred(
             accumulationBuffer, 0, internalAllocatedCapacity, capacity, false);
-        accumulation2Buffer = BufferUtils.reallocateBufferWithAllocDeferred(
+        accumulation2Buffer = buffer_utils.reallocateBufferWithAllocDeferred(
             accumulation2Buffer,
             0,
             internalAllocatedCapacity,
             capacity,
             true,
             allocVec2);
-        depthBuffer = BufferUtils.reallocateBufferFloat64Deferred(
+        depthBuffer = buffer_utils.reallocateBufferFloat64Deferred(
             depthBuffer, 0, internalAllocatedCapacity, capacity, true);
         colorBuffer.data = reallocateBuffer(
             colorBuffer, internalAllocatedCapacity, capacity, true);
-        groupBuffer = BufferUtils.reallocateBufferWithAllocDeferred(groupBuffer,
+        groupBuffer = buffer_utils.reallocateBufferWithAllocDeferred(groupBuffer,
             0, internalAllocatedCapacity, capacity, false, allocParticleGroup);
         userDataBuffer.data = reallocateBuffer(
             userDataBuffer, internalAllocatedCapacity, capacity, true);
@@ -564,7 +564,7 @@ class ParticleSystem {
       }
     }
     if (count >= internalAllocatedCapacity) {
-      return Settings.invalidParticleIndex;
+      return settings.invalidParticleIndex;
     }
     int index = count++;
     flagsBuffer.data[index] = def.flags;
@@ -588,8 +588,8 @@ class ParticleSystem {
     if (proxyCount >= proxyCapacity) {
       int oldCapacity = proxyCapacity;
       int newCapacity =
-          proxyCount != 0 ? 2 * proxyCount : Settings.minParticleBufferCapacity;
-      proxyBuffer = BufferUtils.reallocateBufferWithAlloc(
+          proxyCount != 0 ? 2 * proxyCount : settings.minParticleBufferCapacity;
+      proxyBuffer = buffer_utils.reallocateBufferWithAlloc(
           proxyBuffer, oldCapacity, newCapacity, allocPsProxy);
       proxyCapacity = newCapacity;
     }
@@ -601,7 +601,7 @@ class ParticleSystem {
   static List<T> reallocateBuffer<T>(ParticleBuffer<T> buffer, int oldCapacity,
       int newCapacity, bool deferred) {
     assert(newCapacity > oldCapacity);
-    return BufferUtils.reallocateBufferWithAllocDeferred<T>(
+    return buffer_utils.reallocateBufferWithAllocDeferred<T>(
         buffer.data,
         buffer.userSuppliedCapacity,
         oldCapacity,
@@ -613,7 +613,7 @@ class ParticleSystem {
   static List<int> reallocateBufferInt(ParticleBufferInt buffer,
       int oldCapacity, int newCapacity, bool deferred) {
     assert(newCapacity > oldCapacity);
-    return BufferUtils.reallocateBufferIntDeferred(buffer.data,
+    return buffer_utils.reallocateBufferIntDeferred(buffer.data,
         buffer.userSuppliedCapacity, oldCapacity, newCapacity, deferred);
   }
 
@@ -760,8 +760,8 @@ class ParticleSystem {
             int oldCapacity = pairCapacity;
             int newCapacity = pairCount != 0
                 ? 2 * pairCount
-                : Settings.minParticleBufferCapacity;
-            pairBuffer = BufferUtils.reallocateBufferWithAlloc(
+                : settings.minParticleBufferCapacity;
+            pairBuffer = buffer_utils.reallocateBufferWithAlloc(
                 pairBuffer, oldCapacity, newCapacity, allocPsPair);
             pairCapacity = newCapacity;
           }
@@ -827,8 +827,8 @@ class ParticleSystem {
             int oldCapacity = pairCapacity;
             int newCapacity = pairCount != 0
                 ? 2 * pairCount
-                : Settings.minParticleBufferCapacity;
-            pairBuffer = BufferUtils.reallocateBufferWithAlloc(
+                : settings.minParticleBufferCapacity;
+            pairBuffer = buffer_utils.reallocateBufferWithAlloc(
                 pairBuffer, oldCapacity, newCapacity, allocPsPair);
             pairCapacity = newCapacity;
           }
@@ -976,8 +976,8 @@ class ParticleSystem {
         int oldCapacity = contactCapacity;
         int newCapacity = contactCount != 0
             ? 2 * contactCount
-            : Settings.minParticleBufferCapacity;
-        contactBuffer = BufferUtils.reallocateBufferWithAlloc(
+            : settings.minParticleBufferCapacity;
+        contactBuffer = buffer_utils.reallocateBufferWithAlloc(
             contactBuffer, oldCapacity, newCapacity, allocParticleContact);
         contactCapacity = newCapacity;
       }
@@ -1000,7 +1000,7 @@ class ParticleSystem {
       Vector2 pos = positionBuffer.data[i];
       proxy.tag = computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
     }
-    BufferUtils.sort(proxyBuffer, 0, proxyCount);
+    buffer_utils.sort(proxyBuffer, 0, proxyCount);
     contactCount = 0;
     int c_index = 0;
     for (int i = 0; i < proxyCount; i++) {
@@ -1211,8 +1211,8 @@ class ParticleSystem {
       double h = pressurePerWeight *
           math.max(
               0.0,
-              math.min(w, Settings.maxParticleWeight) -
-                  Settings.minParticleWeight);
+              math.min(w, settings.maxParticleWeight) -
+                  settings.minParticleWeight);
       accumulationBuffer[i] = h;
     }
     // applies pressure between each particles in contact
@@ -1522,7 +1522,7 @@ class ParticleSystem {
 
   void solvePowder(final TimeStep step) {
     double powderStrength_ = powderStrength * getCriticalVelocity(step);
-    double minWeight = 1.0 - Settings.particleStride;
+    double minWeight = 1.0 - settings.particleStride;
     for (int k = 0; k < bodyContactCount; k++) {
       final ParticleBodyContact contact = bodyContactBuffer[k];
       int a = contact.index;
@@ -1626,7 +1626,7 @@ class ParticleSystem {
   void solveZombie() {
     // removes particles with zombie flag
     int newCount = 0;
-    List<int> newIndices = BufferUtils.intList(count);
+    List<int> newIndices = buffer_utils.intList(count);
     for (int i = 0; i < count; i++) {
       int flags = flagsBuffer.data[i];
       if ((flags & ParticleType.b2_zombieParticle) != 0) {
@@ -1636,7 +1636,7 @@ class ParticleSystem {
             destructionListener != null) {
           destructionListener.sayGoodbyeIndex(i);
         }
-        newIndices[i] = Settings.invalidParticleIndex;
+        newIndices[i] = settings.invalidParticleIndex;
       } else {
         newIndices[i] = newCount;
         if (i != newCount) {
@@ -1826,18 +1826,18 @@ class ParticleSystem {
     _newIndices.mid = mid;
     _newIndices.end = end;
 
-    BufferUtils.rotate(flagsBuffer.data, start, mid, end);
-    BufferUtils.rotate(positionBuffer.data, start, mid, end);
-    BufferUtils.rotate(velocityBuffer.data, start, mid, end);
-    BufferUtils.rotate(groupBuffer, start, mid, end);
+    buffer_utils.rotate(flagsBuffer.data, start, mid, end);
+    buffer_utils.rotate(positionBuffer.data, start, mid, end);
+    buffer_utils.rotate(velocityBuffer.data, start, mid, end);
+    buffer_utils.rotate(groupBuffer, start, mid, end);
     if (depthBuffer != null) {
-      BufferUtils.rotate(depthBuffer, start, mid, end);
+      buffer_utils.rotate(depthBuffer, start, mid, end);
     }
     if (colorBuffer.data != null) {
-      BufferUtils.rotate(colorBuffer.data, start, mid, end);
+      buffer_utils.rotate(colorBuffer.data, start, mid, end);
     }
     if (userDataBuffer.data != null) {
-      BufferUtils.rotate(userDataBuffer.data, start, mid, end);
+      buffer_utils.rotate(userDataBuffer.data, start, mid, end);
     }
 
     // update proxies
@@ -1932,7 +1932,7 @@ class ParticleSystem {
   }
 
   double getParticleStride() {
-    return Settings.particleStride * particleDiameter;
+    return settings.particleStride * particleDiameter;
   }
 
   double getParticleMass() {
