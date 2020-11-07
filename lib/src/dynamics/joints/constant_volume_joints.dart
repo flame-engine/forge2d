@@ -35,7 +35,7 @@ class ConstantVolumeJoint extends Joint {
     _targetLengths = Float64List(_bodies.length);
     for (int i = 0; i < _targetLengths.length; ++i) {
       final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
-      double dist = (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
+      final double dist = (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
       _targetLengths[i] = dist;
     }
     _targetVolume = getBodyArea();
@@ -65,6 +65,7 @@ class ConstantVolumeJoint extends Joint {
     }
   }
 
+  @override
   void destructor() {
     for (int i = 0; i < _distanceJoints.length; ++i) {
       _world.destroyJoint(_distanceJoints[i]);
@@ -99,9 +100,9 @@ class ConstantVolumeJoint extends Joint {
     double perimeter = 0.0;
     for (int i = 0; i < _bodies.length; ++i) {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      double dx = positions[_bodies[next].islandIndex].c.x -
+      final double dx = positions[_bodies[next].islandIndex].c.x -
           positions[_bodies[i].islandIndex].c.x;
-      double dy = positions[_bodies[next].islandIndex].c.y -
+      final double dy = positions[_bodies[next].islandIndex].c.y -
           positions[_bodies[i].islandIndex].c.y;
       double dist = math.sqrt(dx * dx + dy * dy);
       if (dist < settings.EPSILON) {
@@ -114,15 +115,15 @@ class ConstantVolumeJoint extends Joint {
 
     final Vector2 delta = Vector2.zero();
 
-    double deltaArea = _targetVolume - getSolverArea(positions);
-    double toExtrude = 0.5 * deltaArea / perimeter; // *relaxationFactor
+    final double deltaArea = _targetVolume - getSolverArea(positions);
+    final double toExtrude = 0.5 * deltaArea / perimeter; // *relaxationFactor
     // double sumdeltax = 0.0f;
     bool done = true;
     for (int i = 0; i < _bodies.length; ++i) {
       final int next = (i == _bodies.length - 1) ? 0 : i + 1;
       delta.setValues(toExtrude * (_normals[i].x + _normals[next].x),
           toExtrude * (_normals[i].y + _normals[next].y));
-      double normSqrd = delta.length2;
+      final double normSqrd = delta.length2;
       if (normSqrd >
           settings.maxLinearCorrection * settings.maxLinearCorrection) {
         delta.scale(settings.maxLinearCorrection / math.sqrt(normSqrd));
@@ -137,9 +138,10 @@ class ConstantVolumeJoint extends Joint {
     return done;
   }
 
+  @override
   void initVelocityConstraints(final SolverData step) {
-    List<Velocity> velocities = step.velocities;
-    List<Position> positions = step.positions;
+    final List<Velocity> velocities = step.velocities;
+    final List<Position> positions = step.positions;
     final List<Vector2> d = List<Vector2>(_bodies.length);
 
     for (int i = 0; i < _bodies.length; ++i) {
@@ -162,16 +164,18 @@ class ConstantVolumeJoint extends Joint {
     }
   }
 
+  @override
   bool solvePositionConstraints(SolverData step) {
     return _constrainEdges(step.positions);
   }
 
+  @override
   void solveVelocityConstraints(final SolverData step) {
     double crossMassSum = 0.0;
     double dotMassSum = 0.0;
 
-    List<Velocity> velocities = step.velocities;
-    List<Position> positions = step.positions;
+    final List<Velocity> velocities = step.velocities;
+    final List<Position> positions = step.positions;
     final List<Vector2> d = List<Vector2>(_bodies.length);
 
     for (int i = 0; i < _bodies.length; ++i) {
@@ -182,7 +186,7 @@ class ConstantVolumeJoint extends Joint {
       dotMassSum += (d[i].length2) / _bodies[i].mass;
       crossMassSum += velocities[_bodies[i].islandIndex].v.cross(d[i]);
     }
-    double lambda = -2.0 * crossMassSum / dotMassSum;
+    final double lambda = -2.0 * crossMassSum / dotMassSum;
     _impulse += lambda;
     for (int i = 0; i < _bodies.length; ++i) {
       velocities[_bodies[i].islandIndex].v.x +=
@@ -202,9 +206,9 @@ class ConstantVolumeJoint extends Joint {
 
   /// No-op
   @override
-  Vector2 getReactionForce(double inv_dt) => Vector2.zero();
+  Vector2 getReactionForce(double invDt) => Vector2.zero();
 
   /// No-op
   @override
-  double getReactionTorque(double inv_dt) => 0.0;
+  double getReactionTorque(double invDt) => 0.0;
 }

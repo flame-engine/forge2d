@@ -74,7 +74,7 @@ class World {
 
     _allowSleep = flag;
     if (_allowSleep == false) {
-      for(Body b in bodies) {
+      for (Body b in bodies) {
         b.setAwake(true);
       }
     }
@@ -468,7 +468,8 @@ class World {
         for (Fixture f = b.getFixtureList(); f != null; f = f.getNext()) {
           for (int i = 0; i < f._proxyCount; ++i) {
             final FixtureProxy proxy = f._proxies[i];
-            final AABB aabb = _contactManager.broadPhase.getFatAABB(proxy.proxyId);
+            final AABB aabb =
+                _contactManager.broadPhase.getFatAABB(proxy.proxyId);
             if (aabb != null) {
               final List<Vector2> vs = List<Vector2>(4);
               vs[0].setValues(aabb.lowerBound.x, aabb.lowerBound.y);
@@ -663,8 +664,7 @@ class World {
     }
 
     // Size the island for the worst case.
-    island.init(bodies.length, _contactManager.contactCount, joints.length,
-        _contactManager.contactListener);
+    island.init(_contactManager.contactListener);
 
     // Clear all the island flags.
     for (Body b in bodies) {
@@ -782,9 +782,9 @@ class World {
       island.solve(_profile, step, _gravity, _allowSleep);
 
       // Post solve cleanup.
-      for (int i = 0; i < island._bodyCount; ++i) {
+      for (BodyMeta bodyMeta in island._bodies) {
         // Allow static bodies to participate in other islands.
-        final Body b = island._bodies[i];
+        final Body b = bodyMeta.body;
         if (b.getType() == BodyType.STATIC) {
           b._flags &= ~Body.ISLAND_FLAG;
         }
@@ -824,9 +824,7 @@ class World {
   final Sweep backup2 = Sweep();
 
   void solveTOI(final TimeStep step) {
-    final Island island = toiIsland;
-    island.init(2 * settings.maxTOIContacts, settings.maxTOIContacts, 0,
-        _contactManager.contactListener);
+    final Island island = toiIsland..init(_contactManager.contactListener);
     if (_stepComplete) {
       for (Body b in bodies) {
         b._flags &= ~Body.ISLAND_FLAG;
@@ -994,14 +992,6 @@ class World {
         final Body body = tempBodies[i];
         if (body._bodyType == BodyType.DYNAMIC) {
           for (ContactEdge ce = body._contactList; ce != null; ce = ce.next) {
-            if (island._bodyCount == island._bodyCapacity) {
-              break;
-            }
-
-            if (island._contactCount == island._contactCapacity) {
-              break;
-            }
-
             final Contact contact = ce.contact;
 
             // Has this contact already been added to the island?
@@ -1077,8 +1067,8 @@ class World {
       island.solveTOI(subStep, bA.islandIndex, bB.islandIndex);
 
       // Reset island flags and synchronize broad-phase proxies.
-      for (int i = 0; i < island._bodyCount; ++i) {
-        final Body body = island._bodies[i];
+      for (BodyMeta bodyMeta in island._bodies) {
+        final Body body = bodyMeta.body;
         body._flags &= ~Body.ISLAND_FLAG;
 
         if (body._bodyType != BodyType.DYNAMIC) {
@@ -1201,7 +1191,8 @@ class World {
           final poly = fixture.getShape() as PolygonShape;
           final int vertexCount = poly.count;
           assert(vertexCount <= settings.maxPolygonVertices);
-          final List<Vector2> vertices = List<Vector2>(settings.maxPolygonVertices);
+          final List<Vector2> vertices =
+              List<Vector2>(settings.maxPolygonVertices);
 
           for (int i = 0; i < vertexCount; ++i) {
             vertices[i] = Transform.mulVec2(xf, poly.vertices[i]);

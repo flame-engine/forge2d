@@ -7,8 +7,8 @@ class ConstantVolumeJointDef extends JointDef {
   double frequencyHz = 0.0;
   double dampingRatio = 0.0;
 
-  List<Body> bodies = List<Body>();
-  List<DistanceJoint> joints;
+  List<Body> bodies = <Body>[];
+  List<DistanceJoint> joints = <DistanceJoint>[];
 
   ConstantVolumeJointDef() : super(JointType.CONSTANT_VOLUME) {
     collideConnected = false;
@@ -30,7 +30,6 @@ class ConstantVolumeJointDef extends JointDef {
   /// Adds a body and the pre-made distance joint. Should only be used for deserialization.
   void addBodyAndJoint(Body argBody, DistanceJoint argJoint) {
     addBody(argBody);
-    joints ??= List<DistanceJoint>();
     joints.add(argJoint);
   }
 }

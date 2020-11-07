@@ -19,7 +19,9 @@ part of forge2d;
 /// so that infinite forces are not generated.
 class RevoluteJoint extends Joint {
   // Solver shared
+  @override
   final Vector2 localAnchorA = Vector2.zero();
+  @override
   final Vector2 localAnchorB = Vector2.zero();
   final Vector3 _impulse = Vector3.zero();
   double _motorImpulse = 0.0;
@@ -62,6 +64,7 @@ class RevoluteJoint extends Joint {
     _enableMotor = def.enableMotor;
   }
 
+  @override
   void initVelocityConstraints(final SolverData data) {
     _indexA = _bodyA.islandIndex;
     _indexB = _bodyB.islandIndex;
@@ -73,13 +76,13 @@ class RevoluteJoint extends Joint {
     _invIB = _bodyB._invI;
 
     // Vec2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    Vector2 vA = data.velocities[_indexA].v;
+    final double aA = data.positions[_indexA].a;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
 
     // Vec2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
-    Vector2 vB = data.velocities[_indexB].v;
+    final double aB = data.positions[_indexB].a;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
     final Rot qA = Rot();
     final Rot qB = Rot();
@@ -98,22 +101,22 @@ class RevoluteJoint extends Joint {
       ..sub(_localCenterB);
     _rB.setFrom(Rot.mulVec2(qB, temp));
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
-    bool fixedRotation = (iA + iB == 0.0);
+    final bool fixedRotation = iA + iB == 0.0;
 
-    double ex_x = mA + mB + _rA.y * _rA.y * iA + _rB.y * _rB.y * iB;
-    double ey_x = -_rA.y * _rA.x * iA - _rB.y * _rB.x * iB;
-    double ez_x = -_rA.y * iA - _rB.y * iB;
-    double ex_y = _mass.entry(0, 1);
-    double ey_y = mA + mB + _rA.x * _rA.x * iA + _rB.x * _rB.x * iB;
-    double ez_y = _rA.x * iA + _rB.x * iB;
-    double ex_z = _mass.entry(0, 2);
-    double ey_z = _mass.entry(1, 2);
-    double ez_z = iA + iB;
+    final double exX = mA + mB + _rA.y * _rA.y * iA + _rB.y * _rB.y * iB;
+    final double eyX = -_rA.y * _rA.x * iA - _rB.y * _rB.x * iB;
+    final double ezX = -_rA.y * iA - _rB.y * iB;
+    final double exY = _mass.entry(0, 1);
+    final double eyY = mA + mB + _rA.x * _rA.x * iA + _rB.x * _rB.x * iB;
+    final double ezY = _rA.x * iA + _rB.x * iB;
+    final double exZ = _mass.entry(0, 2);
+    final double eyZ = _mass.entry(1, 2);
+    final double ezZ = iA + iB;
 
-    _mass.setValues(ex_x, ex_y, ex_z, ey_x, ey_y, ey_z, ez_x, ez_y, ez_z);
+    _mass.setValues(exX, exY, exZ, eyX, eyY, eyZ, ezX, ezY, ezZ);
 
     _motorMass = iA + iB;
     if (_motorMass > 0.0) {
@@ -125,7 +128,7 @@ class RevoluteJoint extends Joint {
     }
 
     if (_enableLimit && fixedRotation == false) {
-      double jointAngle = aB - aA - _referenceAngle;
+      final double jointAngle = aB - aA - _referenceAngle;
       if ((_upperAngle - _lowerAngle).abs() < 2.0 * settings.angularSlop) {
         _limitState = LimitState.EQUAL;
       } else if (jointAngle <= _lowerAngle) {
@@ -173,25 +176,26 @@ class RevoluteJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   void solveVelocityConstraints(final SolverData data) {
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
-    bool fixedRotation = (iA + iB == 0.0);
+    final bool fixedRotation = iA + iB == 0.0;
 
     // Solve motor constraint.
     if (_enableMotor &&
         _limitState != LimitState.EQUAL &&
         fixedRotation == false) {
-      double Cdot = wB - wA - _motorSpeed;
-      double impulse = -_motorMass * Cdot;
-      double oldImpulse = _motorImpulse;
-      double maxImpulse = data.step.dt * _maxMotorTorque;
+      final double cDot = wB - wA - _motorSpeed;
+      double impulse = -_motorMass * cDot;
+      final double oldImpulse = _motorImpulse;
+      final double maxImpulse = data.step.dt * _maxMotorTorque;
       _motorImpulse =
           (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _motorImpulse - oldImpulse;
@@ -205,33 +209,33 @@ class RevoluteJoint extends Joint {
     if (_enableLimit &&
         _limitState != LimitState.INACTIVE &&
         fixedRotation == false) {
-      final Vector2 Cdot1 = Vector2.zero();
-      final Vector3 Cdot = Vector3.zero();
+      final Vector2 cDot1 = Vector2.zero();
+      final Vector3 cDot = Vector3.zero();
 
       // Solve point-to-point constraint
       _rA.scaleOrthogonalInto(wA, temp);
-      _rB.scaleOrthogonalInto(wB, Cdot1);
-      Cdot1
+      _rB.scaleOrthogonalInto(wB, cDot1);
+      cDot1
         ..add(vB)
         ..sub(vA)
         ..sub(temp);
-      double Cdot2 = wB - wA;
-      Cdot.setValues(Cdot1.x, Cdot1.y, Cdot2);
+      final double cDot2 = wB - wA;
+      cDot.setValues(cDot1.x, cDot1.y, cDot2);
 
-      Vector3 impulse = Vector3.zero();
-      Matrix3.solve(_mass, impulse, Cdot);
+      final Vector3 impulse = Vector3.zero();
+      Matrix3.solve(_mass, impulse, cDot);
       impulse.negate();
 
       if (_limitState == LimitState.EQUAL) {
         _impulse.add(impulse);
       } else if (_limitState == LimitState.AT_LOWER) {
-        double newImpulse = _impulse.z + impulse.z;
+        final double newImpulse = _impulse.z + impulse.z;
         if (newImpulse < 0.0) {
           final Vector2 rhs = Vector2.zero();
           rhs
             ..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
             ..scale(_impulse.z)
-            ..sub(Cdot1);
+            ..sub(cDot1);
           Matrix3.solve2(_mass, temp, rhs);
           impulse.x = temp.x;
           impulse.y = temp.y;
@@ -243,13 +247,13 @@ class RevoluteJoint extends Joint {
           _impulse.add(impulse);
         }
       } else if (_limitState == LimitState.AT_UPPER) {
-        double newImpulse = _impulse.z + impulse.z;
+        final double newImpulse = _impulse.z + impulse.z;
         if (newImpulse > 0.0) {
           final Vector2 rhs = Vector2.zero();
           rhs
             ..setValues(_mass.entry(0, 2), _mass.entry(1, 2))
             ..scale(_impulse.z)
-            ..sub(Cdot1);
+            ..sub(cDot1);
           Matrix3.solve2(_mass, temp, rhs);
           impulse.x = temp.x;
           impulse.y = temp.y;
@@ -261,29 +265,29 @@ class RevoluteJoint extends Joint {
           _impulse.add(impulse);
         }
       }
-      final Vector2 P = Vector2.zero();
+      final Vector2 p = Vector2.zero();
 
-      P.setValues(impulse.x, impulse.y);
+      p.setValues(impulse.x, impulse.y);
 
-      vA.x -= mA * P.x;
-      vA.y -= mA * P.y;
-      wA -= iA * (_rA.cross(P) + impulse.z);
+      vA.x -= mA * p.x;
+      vA.y -= mA * p.y;
+      wA -= iA * (_rA.cross(p) + impulse.z);
 
-      vB.x += mB * P.x;
-      vB.y += mB * P.y;
-      wB += iB * (_rB.cross(P) + impulse.z);
+      vB.x += mB * p.x;
+      vB.y += mB * p.y;
+      wB += iB * (_rB.cross(p) + impulse.z);
     } else {
       // Solve point-to-point constraint
-      Vector2 Cdot = Vector2.zero();
-      Vector2 impulse = Vector2.zero();
+      final Vector2 cDot = Vector2.zero();
+      final Vector2 impulse = Vector2.zero();
 
       _rA.scaleOrthogonalInto(wA, temp);
-      _rB.scaleOrthogonalInto(wB, Cdot);
-      Cdot
+      _rB.scaleOrthogonalInto(wB, cDot);
+      cDot
         ..add(vB)
         ..sub(vA)
         ..sub(temp);
-      Matrix3.solve2(_mass, impulse, Cdot..negate());
+      Matrix3.solve2(_mass, impulse, cDot..negate());
 
       _impulse.x += impulse.x;
       _impulse.y += impulse.y;
@@ -303,12 +307,13 @@ class RevoluteJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   bool solvePositionConstraints(final SolverData data) {
     final Rot qA = Rot();
     final Rot qB = Rot();
-    Vector2 cA = data.positions[_indexA].c;
+    final Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
-    Vector2 cB = data.positions[_indexB].c;
+    final Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
 
     qA.setAngle(aA);
@@ -317,23 +322,23 @@ class RevoluteJoint extends Joint {
     double angularError = 0.0;
     double positionError = 0.0;
 
-    bool fixedRotation = (_invIA + _invIB == 0.0);
+    final bool fixedRotation = _invIA + _invIB == 0.0;
 
     // Solve angular limit constraint.
     if (_enableLimit &&
         _limitState != LimitState.INACTIVE &&
         fixedRotation == false) {
-      double angle = aB - aA - _referenceAngle;
+      final double angle = aB - aA - _referenceAngle;
       double limitImpulse = 0.0;
 
       if (_limitState == LimitState.EQUAL) {
         // Prevent large angular corrections
-        double C = (angle - _lowerAngle)
+        final double c = (angle - _lowerAngle)
             .clamp(
                 -settings.maxAngularCorrection, settings.maxAngularCorrection)
             .toDouble();
-        limitImpulse = -_motorMass * C;
-        angularError = C.abs();
+        limitImpulse = -_motorMass * c;
+        angularError = c.abs();
       } else if (_limitState == LimitState.AT_LOWER) {
         double C = angle - _lowerAngle;
         angularError = -C;
@@ -383,14 +388,14 @@ class RevoluteJoint extends Joint {
         ..sub(rA);
       positionError = temp.length;
 
-      double mA = _invMassA, mB = _invMassB;
-      double iA = _invIA, iB = _invIB;
+      final double mA = _invMassA, mB = _invMassB;
+      final double iA = _invIA, iB = _invIB;
 
       final Matrix2 K = Matrix2.zero();
-      double a11 = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
-      double a21 = -iA * rA.x * rA.y - iB * rB.x * rB.y;
-      double a12 = a21;
-      double a22 = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
+      final double a11 = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
+      final double a21 = -iA * rA.x * rA.y - iB * rB.x * rB.y;
+      final double a12 = a21;
+      final double a22 = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
 
       K.setValues(a11, a21, a12, a22);
       Matrix2.solve(K, impulse, temp);
@@ -416,12 +421,13 @@ class RevoluteJoint extends Joint {
   }
 
   @override
-  Vector2 getReactionForce(double inv_dt) {
-    return Vector2(_impulse.x, _impulse.y)..scale(inv_dt);
+  Vector2 getReactionForce(double invDt) {
+    return Vector2(_impulse.x, _impulse.y)..scale(invDt);
   }
 
-  double getReactionTorque(double inv_dt) {
-    return inv_dt * _impulse.z;
+  @override
+  double getReactionTorque(double invDt) {
+    return invDt * _impulse.z;
   }
 
   double getJointAngle() {
@@ -446,8 +452,8 @@ class RevoluteJoint extends Joint {
     _enableMotor = flag;
   }
 
-  double getMotorTorque(double inv_dt) {
-    return _motorImpulse * inv_dt;
+  double getMotorTorque(double invDt) {
+    return _motorImpulse * invDt;
   }
 
   void setMotorSpeed(final double speed) {
