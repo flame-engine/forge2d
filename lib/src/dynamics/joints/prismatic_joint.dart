@@ -124,7 +124,7 @@ class PrismaticJoint extends Joint {
   }
 
   @override
-  Vector2 getReactionForce(double inv_dt) {
+  Vector2 getReactionForce(double invDt) {
     Vector2 temp = Vector2.zero();
     temp
       ..setFrom(_axis)
@@ -132,12 +132,12 @@ class PrismaticJoint extends Joint {
     Vector2 out = Vector2.copy(_perp)
       ..scale(_impulse.x)
       ..add(temp)
-      ..scale(inv_dt);
+      ..scale(invDt);
     return out;
   }
 
-  double getReactionTorque(double inv_dt) {
-    return inv_dt * _impulse.y;
+  double getReactionTorque(double invDt) {
+    return invDt * _impulse.y;
   }
 
   /// Get the current joint translation, usually in meters.
@@ -296,10 +296,10 @@ class PrismaticJoint extends Joint {
 
   /// Get the current motor force, usually in N.
   ///
-  /// @param inv_dt
+  /// @param invDt
   /// @return
-  double getMotorForce(double inv_dt) {
-    return _motorImpulse * inv_dt;
+  double getMotorForce(double invDt) {
+    return _motorImpulse * invDt;
   }
 
   double getMaxMotorForce() {

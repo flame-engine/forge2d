@@ -155,13 +155,13 @@ class GearJoint extends Joint {
 
   /// Get the reaction force given the inverse time step. Unit is N.
   @override
-  Vector2 getReactionForce(double inv_dt) {
-    return Vector2.copy(_JvAC)..scale(_impulse)..scale(inv_dt);
+  Vector2 getReactionForce(double invDt) {
+    return Vector2.copy(_JvAC)..scale(_impulse)..scale(invDt);
   }
 
-  double getReactionTorque(double inv_dt) {
+  double getReactionTorque(double invDt) {
     double L = _impulse * _JwA;
-    return inv_dt * L;
+    return invDt * L;
   }
 
   void setRatio(double argRatio) {

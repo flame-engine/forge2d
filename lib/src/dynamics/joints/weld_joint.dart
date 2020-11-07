@@ -55,12 +55,12 @@ class WeldJoint extends Joint {
     return _referenceAngle;
   }
 
-  Vector2 getReactionForce(double inv_dt) {
-    return Vector2(_impulse.x, _impulse.y)..scale(inv_dt);
+  Vector2 getReactionForce(double invDt) {
+    return Vector2(_impulse.x, _impulse.y)..scale(invDt);
   }
 
-  double getReactionTorque(double inv_dt) {
-    return inv_dt * _impulse.z;
+  double getReactionTorque(double invDt) {
+    return invDt * _impulse.z;
   }
 
   void initVelocityConstraints(final SolverData data) {

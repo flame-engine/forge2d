@@ -364,8 +364,8 @@ class SolveCollisionCallback implements QueryCallback {
                   settings.linearSlop * output.normal.y,
             );
 
-            final double vx = step.inv_dt * (p.x - ap.x);
-            final double vy = step.inv_dt * (p.y - ap.y);
+            final double vx = step.invDt * (p.x - ap.x);
+            final double vy = step.invDt * (p.y - ap.y);
             av.x = vx;
             av.y = vy;
             final double particleMass = system.getParticleMass();
@@ -1343,10 +1343,10 @@ class ParticleSystem {
         _tempXf.q.setFrom(rotation);
         group._transform.set(Transform.mul(_tempXf, group._transform));
         final Transform velocityTransform = _tempXf2;
-        velocityTransform.p.x = step.inv_dt * _tempXf.p.x;
-        velocityTransform.p.y = step.inv_dt * _tempXf.p.y;
-        velocityTransform.q.s = step.inv_dt * _tempXf.q.s;
-        velocityTransform.q.c = step.inv_dt * (_tempXf.q.c - 1);
+        velocityTransform.p.x = step.invDt * _tempXf.p.x;
+        velocityTransform.p.y = step.invDt * _tempXf.p.y;
+        velocityTransform.q.s = step.invDt * _tempXf.q.s;
+        velocityTransform.q.c = step.invDt * (_tempXf.q.c - 1);
         for (int i = group._firstIndex; i < group._lastIndex; i++) {
           velocityBuffer.data[i].setFrom(
             Transform.mulVec2(velocityTransform, positionBuffer.data[i]),
@@ -1357,7 +1357,7 @@ class ParticleSystem {
   }
 
   void solveElastic(final TimeStep step) {
-    double elasticStrength_ = step.inv_dt * elasticStrength;
+    double elasticStrength_ = step.invDt * elasticStrength;
     for (int k = 0; k < triadCount; k++) {
       final PsTriad triad = triadBuffer[k];
       if ((triad.flags & ParticleType.b2_elasticParticle) != 0) {
@@ -1399,7 +1399,7 @@ class ParticleSystem {
   }
 
   void solveSpring(final TimeStep step) {
-    double springStrength_ = step.inv_dt * springStrength;
+    double springStrength_ = step.invDt * springStrength;
     for (int k = 0; k < pairCount; k++) {
       final PsPair pair = pairBuffer[k];
       if ((pair.flags & ParticleType.b2_springParticle) != 0) {
@@ -1575,7 +1575,7 @@ class ParticleSystem {
   void solveSolid(final TimeStep step) {
     // applies extra repulsive force from solid particle groups
     depthBuffer = requestParticleBufferFloat64(depthBuffer);
-    double ejectionStrength_ = step.inv_dt * ejectionStrength;
+    double ejectionStrength_ = step.invDt * ejectionStrength;
     for (int k = 0; k < contactCount; k++) {
       final ParticleContact contact = contactBuffer[k];
       int a = contact.indexA;
@@ -1924,7 +1924,7 @@ class ParticleSystem {
   }
 
   double getCriticalVelocity(final TimeStep step) {
-    return particleDiameter * step.inv_dt;
+    return particleDiameter * step.invDt;
   }
 
   double getCriticalVelocitySquared(final TimeStep step) {
