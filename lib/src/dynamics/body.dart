@@ -258,7 +258,7 @@ class Body {
     _sweep.c0.setFrom(_sweep.c);
     _sweep.a0 = _sweep.a;
 
-    BroadPhase broadPhase = world._contactManager.broadPhase;
+    final BroadPhase broadPhase = world._contactManager.broadPhase;
     for (Fixture f = _fixtureList; f != null; f = f._next) {
       f.synchronize(broadPhase, _transform, _transform);
     }
@@ -690,7 +690,6 @@ class Body {
         _sleepTime = 0.0;
       }
     } else {
-      print("A body was setAwake false");
       _flags &= ~AWAKE_FLAG;
       _sleepTime = 0.0;
       _linearVelocity.setZero();

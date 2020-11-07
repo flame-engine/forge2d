@@ -118,73 +118,48 @@ part of forge2d;
  However, we can compute sin+cos of the same angle fast.
  */
 
+// TODO: Refactor this later
+class BodyMeta {
+  final Body body;
+  final Velocity velocity = Velocity();
+  final Position position = Position();
+
+  BodyMeta(this.body);
+}
+
 /// This is an internal class.
 class Island {
   ContactListener _listener;
 
-  List<Body> _bodies;
+  List<BodyMeta> _bodies;
   List<Contact> _contacts;
   List<Joint> _joints;
 
-  List<Position> _positions;
-  List<Velocity> _velocities;
-
-  int _bodyCount = 0;
-  int _jointCount = 0;
-  int _contactCount = 0;
-
-  int _bodyCapacity = 0;
-  int _contactCapacity = 0;
-  int _jointCapacity = 0;
-
-  Island() {
-    _bodies = List<Body>(_bodyCapacity);
-    _contacts = List<Contact>(_contactCapacity);
-    _joints = List<Joint>(_jointCapacity);
-    _velocities = List<Velocity>(0);
-    _positions = List<Position>(0);
+  // TODO: Make this as efficient as it used to be
+  List<Position> get _positions {
+    return _bodies?.map((BodyMeta bodyMeta) => bodyMeta.position)?.toList() ??
+        <Position>[];
   }
 
-  void init(int bodyCapacity, int contactCapacity, int jointCapacity,
-      ContactListener listener) {
-    _bodyCapacity = bodyCapacity;
-    _contactCapacity = contactCapacity;
-    _jointCapacity = jointCapacity;
-    _bodyCount = 0;
-    _contactCount = 0;
-    _jointCount = 0;
+  List<Velocity> get _velocities {
+    return _bodies?.map((BodyMeta bodyMeta) => bodyMeta.velocity)?.toList() ??
+        <Velocity>[];
+  }
 
+  Island() {
+    _bodies = <BodyMeta>[];
+    _contacts = <Contact>[];
+    _joints = <Joint>[];
+  }
+
+  void init(ContactListener listener) {
     _listener = listener;
-
-    if (_bodyCapacity > _bodies.length) {
-      _bodies = List<Body>(_bodyCapacity);
-    }
-
-    if (_contactCapacity > _contacts.length) {
-      _contacts = List<Contact>(_contactCapacity);
-    }
-
-    if (_jointCapacity > _joints.length) {
-      _joints = List<Joint>(_jointCapacity);
-    }
-
-    if (_bodyCapacity > _velocities.length) {
-      _velocities = List.generate(_bodyCapacity,
-          (i) => _velocities.length > i ? _velocities[i] : Velocity(),
-          growable: false);
-    }
-
-    if (_bodyCapacity > _positions.length) {
-      _positions = List.generate(_bodyCapacity,
-          (i) => _positions.length > i ? _positions[i] : Position(),
-          growable: false);
-    }
   }
 
   void clear() {
-    _bodyCount = 0;
-    _contactCount = 0;
-    _jointCount = 0;
+    _bodies.clear();
+    _contacts.clear();
+    _joints.clear();
   }
 
   final ContactSolver _contactSolver = ContactSolver();
@@ -195,8 +170,8 @@ class Island {
     final double dt = step.dt;
 
     // Integrate velocities and apply damping. Initialize the body state.
-    for (int i = 0; i < _bodyCount; ++i) {
-      final Body b = _bodies[i];
+    for (BodyMeta bodyMeta in _bodies) {
+      final Body b = bodyMeta.body;
       final Sweep bmSweep = b._sweep;
       final Vector2 c = bmSweep.c;
       final double a = bmSweep.a;
@@ -226,12 +201,12 @@ class Island {
         w *= 1.0 / (1.0 + dt * b.angularDamping);
       }
 
-      _positions[i].c.x = c.x;
-      _positions[i].c.y = c.y;
-      _positions[i].a = a;
-      _velocities[i].v.x = v.x;
-      _velocities[i].v.y = v.y;
-      _velocities[i].w = w;
+      bodyMeta.position.c.x = c.x;
+      bodyMeta.position.c.y = c.y;
+      bodyMeta.position.a = a;
+      bodyMeta.velocity.v.x = v.x;
+      bodyMeta.velocity.v.y = v.y;
+      bodyMeta.velocity.w = w;
     }
 
     // Solver data
@@ -242,7 +217,7 @@ class Island {
     // Initialize velocity constraints.
     _solverDef.step = step;
     _solverDef.contacts = _contacts;
-    _solverDef.count = _contactCount;
+    _solverDef.count = _contacts.length;
     _solverDef.positions = _positions;
     _solverDef.velocities = _velocities;
 
@@ -253,13 +228,13 @@ class Island {
       _contactSolver.warmStart();
     }
 
-    for (int i = 0; i < _jointCount; ++i) {
-      _joints[i].initVelocityConstraints(_solverData);
+    for (Joint joint in _joints) {
+      joint.initVelocityConstraints(_solverData);
     }
 
     for (int i = 0; i < step.velocityIterations; ++i) {
-      for (int j = 0; j < _jointCount; ++j) {
-        _joints[j].solveVelocityConstraints(_solverData);
+      for (Joint joint in _joints) {
+        joint.solveVelocityConstraints(_solverData);
       }
 
       _contactSolver.solveVelocityConstraints();
@@ -269,11 +244,11 @@ class Island {
     _contactSolver.storeImpulses();
 
     // Integrate positions
-    for (int i = 0; i < _bodyCount; ++i) {
-      final Vector2 c = _positions[i].c;
-      double a = _positions[i].a;
-      final Vector2 v = _velocities[i].v;
-      double w = _velocities[i].w;
+    for (BodyMeta bodyMeta in _bodies) {
+      final Vector2 c = bodyMeta.position.c;
+      double a = bodyMeta.position.a;
+      final Vector2 v = bodyMeta.velocity.v;
+      double w = bodyMeta.velocity.w;
 
       // Check for large velocities
       final double translationX = v.x * dt;
@@ -299,8 +274,8 @@ class Island {
       c.y += dt * v.y;
       a += dt * w;
 
-      _positions[i].a = a;
-      _velocities[i].w = w;
+      bodyMeta.position.a = a;
+      bodyMeta.velocity.w = w;
     }
 
     // Solve position constraints
@@ -309,8 +284,8 @@ class Island {
       final bool contactsOkay = _contactSolver.solvePositionConstraints();
 
       bool jointsOkay = true;
-      for (int j = 0; j < _jointCount; ++j) {
-        final bool jointOkay = _joints[j].solvePositionConstraints(_solverData);
+      for (Joint joint in _joints) {
+        final bool jointOkay = joint.solvePositionConstraints(_solverData);
         jointsOkay = jointsOkay && jointOkay;
       }
 
@@ -322,14 +297,14 @@ class Island {
     }
 
     // Copy state buffers back to the bodies
-    for (int i = 0; i < _bodyCount; ++i) {
-      final Body body = _bodies[i];
-      body._sweep.c.x = _positions[i].c.x;
-      body._sweep.c.y = _positions[i].c.y;
-      body._sweep.a = _positions[i].a;
-      body._linearVelocity.x = _velocities[i].v.x;
-      body._linearVelocity.y = _velocities[i].v.y;
-      body._angularVelocity = _velocities[i].w;
+    for (BodyMeta bodyMeta in _bodies) {
+      final Body body = bodyMeta.body;
+      body._sweep.c.x = bodyMeta.position.c.x;
+      body._sweep.c.y = bodyMeta.position.c.y;
+      body._sweep.a = bodyMeta.position.a;
+      body._linearVelocity.x = bodyMeta.velocity.v.x;
+      body._linearVelocity.y = bodyMeta.velocity.v.y;
+      body._angularVelocity = bodyMeta.velocity.w;
       body.synchronizeTransform();
     }
 
@@ -343,8 +318,8 @@ class Island {
       const double angTolSqr =
           settings.angularSleepTolerance * settings.angularSleepTolerance;
 
-      for (int i = 0; i < _bodyCount; ++i) {
-        final Body b = _bodies[i];
+      for (BodyMeta bodyMeta in _bodies) {
+        final Body b = bodyMeta.body;
         if (b.getType() == BodyType.STATIC) {
           continue;
         }
@@ -361,8 +336,7 @@ class Island {
       }
 
       if (minSleepTime >= settings.timeToSleep && positionSolved) {
-        print("Lets sleep shall we?");
-        _bodies.forEach((b) => b?.setAwake(false));
+        _bodies.forEach((b) => b.body.setAwake(false));
       }
     }
   }
@@ -371,21 +345,23 @@ class Island {
   final ContactSolverDef _toiSolverDef = ContactSolverDef();
 
   void solveTOI(TimeStep subStep, int toiIndexA, int toiIndexB) {
-    assert(toiIndexA < _bodyCount);
-    assert(toiIndexB < _bodyCount);
+    assert(toiIndexA < _bodies.length);
+    assert(toiIndexB < _bodies.length);
 
     // Initialize the body state.
-    for (int i = 0; i < _bodyCount; ++i) {
-      _positions[i].c.x = _bodies[i]._sweep.c.x;
-      _positions[i].c.y = _bodies[i]._sweep.c.y;
-      _positions[i].a = _bodies[i]._sweep.a;
-      _velocities[i].v.x = _bodies[i]._linearVelocity.x;
-      _velocities[i].v.y = _bodies[i]._linearVelocity.y;
-      _velocities[i].w = _bodies[i]._angularVelocity;
+    for (BodyMeta bodyMeta in _bodies) {
+      final Body body = bodyMeta.body;
+      bodyMeta.position.c.x = body._sweep.c.x;
+      bodyMeta.position.c.y = body._sweep.c.y;
+      bodyMeta.position.a = body._sweep.a;
+      bodyMeta.velocity.v.x = body._linearVelocity.x;
+      bodyMeta.velocity.v.y = body._linearVelocity.y;
+      bodyMeta.velocity.w = body._angularVelocity;
     }
 
+    // TODO: Is this correct, since it is no longer a fixed list?
     _toiSolverDef.contacts = _contacts;
-    _toiSolverDef.count = _contactCount;
+    _toiSolverDef.count = _contacts.length;
     _toiSolverDef.step = subStep;
     _toiSolverDef.positions = _positions;
     _toiSolverDef.velocities = _velocities;
@@ -401,11 +377,11 @@ class Island {
     }
 
     // Leap of faith to new safe state.
-    _bodies[toiIndexA]._sweep.c0.x = _positions[toiIndexA].c.x;
-    _bodies[toiIndexA]._sweep.c0.y = _positions[toiIndexA].c.y;
-    _bodies[toiIndexA]._sweep.a0 = _positions[toiIndexA].a;
-    _bodies[toiIndexB]._sweep.c0.setFrom(_positions[toiIndexB].c);
-    _bodies[toiIndexB]._sweep.a0 = _positions[toiIndexB].a;
+    _bodies[toiIndexA].body._sweep.c0.x = _positions[toiIndexA].c.x;
+    _bodies[toiIndexA].body._sweep.c0.y = _positions[toiIndexA].c.y;
+    _bodies[toiIndexA].body._sweep.a0 = _positions[toiIndexA].a;
+    _bodies[toiIndexB].body._sweep.c0.setFrom(_positions[toiIndexB].c);
+    _bodies[toiIndexB].body._sweep.a0 = _positions[toiIndexB].a;
 
     // No warm starting is needed for TOI events because warm
     // starting impulses were applied in the discrete solver.
@@ -422,11 +398,13 @@ class Island {
     final double dt = subStep.dt;
 
     // Integrate positions
-    for (int i = 0; i < _bodyCount; ++i) {
-      final Vector2 c = _positions[i].c;
-      double a = _positions[i].a;
-      final Vector2 v = _velocities[i].v;
-      double w = _velocities[i].w;
+    for (BodyMeta bodyMeta in _bodies) {
+      final Position position = bodyMeta.position;
+      final Velocity velocity = bodyMeta.velocity;
+      final Vector2 c = position.c;
+      double a = position.a;
+      final Vector2 v = velocity.v;
+      double w = velocity.w;
 
       // Check for large velocities
       final double translationX = v.x * dt;
@@ -450,15 +428,15 @@ class Island {
       c.y += v.y * dt;
       a += dt * w;
 
-      _positions[i].c.x = c.x;
-      _positions[i].c.y = c.y;
-      _positions[i].a = a;
-      _velocities[i].v.x = v.x;
-      _velocities[i].v.y = v.y;
-      _velocities[i].w = w;
+      position.c.x = c.x;
+      position.c.y = c.y;
+      position.a = a;
+      velocity.v.x = v.x;
+      velocity.v.y = v.y;
+      velocity.w = w;
 
       // Sync bodies
-      final Body body = _bodies[i];
+      final Body body = bodyMeta.body;
       body._sweep.c.x = c.x;
       body._sweep.c.y = c.y;
       body._sweep.a = a;
@@ -472,20 +450,16 @@ class Island {
   }
 
   void addBody(Body body) {
-    assert(_bodyCount < _bodyCapacity);
-    body.islandIndex = _bodyCount;
-    _bodies[_bodyCount] = body;
-    ++_bodyCount;
+    body.islandIndex = _bodies.length;
+    _bodies.add(BodyMeta(body));
   }
 
   void addContact(Contact contact) {
-    assert(_contactCount < _contactCapacity);
-    _contacts[_contactCount++] = contact;
+    _contacts.add(contact);
   }
 
   void addJoint(Joint joint) {
-    assert(_jointCount < _jointCapacity);
-    _joints[_jointCount++] = joint;
+    _joints.add(joint);
   }
 
   final ContactImpulse _impulse = ContactImpulse();
@@ -495,8 +469,8 @@ class Island {
       return;
     }
 
-    for (int i = 0; i < _contactCount; ++i) {
-      final Contact c = _contacts[i];
+    for (int i = 0; i < _contacts.length; ++i) {
+      final Contact contact = _contacts[i];
 
       final ContactVelocityConstraint vc = constraints[i];
       _impulse.count = vc.pointCount;
@@ -505,7 +479,7 @@ class Island {
         _impulse.tangentImpulses[j] = vc.points[j].tangentImpulse;
       }
 
-      _listener.postSolve(c, _impulse);
+      _listener.postSolve(contact, _impulse);
     }
   }
 }
