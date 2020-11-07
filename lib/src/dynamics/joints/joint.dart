@@ -40,8 +40,6 @@ abstract class Joint {
   }
 
   final JointType _type;
-  Joint _prev;
-  Joint _next;
   JointEdge _edgeA;
   JointEdge _edgeB;
   Body _bodyA;
@@ -54,13 +52,10 @@ abstract class Joint {
   final Vector2 localAnchorB;
 
   Joint(JointDef def)
-      : localAnchorA = def.localAnchorA,
+      : assert(def.bodyA != def.bodyB),
+        localAnchorA = def.localAnchorA,
         localAnchorB = def.localAnchorB,
         _type = def.type {
-    assert(def.bodyA != def.bodyB);
-
-    _prev = null;
-    _next = null;
     _bodyA = def.bodyA;
     _bodyB = def.bodyB;
     _collideConnected = def.collideConnected;
@@ -112,18 +107,13 @@ abstract class Joint {
   ///
   /// @param inv_dt
   /// @return
-  Vector2 getReactionForce(double inv_dt);
+  Vector2 getReactionForce(double invDt);
 
   /// get the reaction torque on body2 in N*m.
   ///
   /// @param inv_dt
   /// @return
-  double getReactionTorque(double inv_dt);
-
-  /// get the next joint the world joint list.
-  Joint getNext() {
-    return _next;
-  }
+  double getReactionTorque(double invDt);
 
   /// Get collide connected. Note: modifying the collide connect flag won't work correctly because
   /// the flag is only checked when fixture AABBs begin to overlap.

@@ -18,16 +18,11 @@ class World {
   int _flags = 0;
 
   ContactManager _contactManager;
-  final List<Body> bodyList = <Body>[];
-  Joint _jointList;
-
-  int _bodyCount = 0;
-  int _jointCount = 0;
+  final List<Body> bodies = <Body>[];
+  final List<Joint> joints = <Joint>[];
 
   final Vector2 _gravity;
   bool _allowSleep = false;
-
-  // Body _groundBody;
 
   DestructionListener _destructionListener;
   ParticleDestructionListener _particleDestructionListener;
@@ -55,9 +50,6 @@ class World {
       : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
     broadPhase ??= DefaultBroadPhaseBuffer(DynamicTree());
 
-    _bodyCount = 0;
-    _jointCount = 0;
-
     _warmStarting = true;
     _continuousPhysics = true;
     _subStepping = false;
@@ -82,7 +74,7 @@ class World {
 
     _allowSleep = flag;
     if (_allowSleep == false) {
-      for(Body b in bodyList) {
+      for(Body b in bodies) {
         b.setAwake(true);
       }
     }
@@ -150,8 +142,7 @@ class World {
   Body createBody(BodyDef def) {
     assert(isLocked() == false);
     final Body body = Body(def, this);
-    bodyList.add(body);
-    ++_bodyCount;
+    bodies.add(body);
     return body;
   }
 
@@ -161,7 +152,7 @@ class World {
   /// @warning This automatically deletes all associated shapes and joints.
   /// @warning This function is locked during callbacks.
   void destroyBody(Body body) {
-    assert(_bodyCount > 0);
+    assert(bodies.isNotEmpty);
     assert(isLocked() == false);
 
     // Delete the attached joints.
@@ -204,8 +195,7 @@ class World {
     body._fixtureList = null;
     body._fixtureCount = 0;
 
-    bodyList.remove(body);
-    --_bodyCount;
+    bodies.remove(body);
   }
 
   /// create a joint to constrain bodies together. No reference to the definition is retained.
@@ -216,15 +206,7 @@ class World {
     assert(isLocked() == false);
 
     final Joint joint = Joint.create(this, def);
-
-    // Connect to the world list.
-    joint._prev = null;
-    joint._next = _jointList;
-    if (_jointList != null) {
-      _jointList._prev = joint;
-    }
-    _jointList = joint;
-    ++_jointCount;
+    joints.add(joint);
 
     // Connect to the bodies' doubly linked lists.
     joint._edgeA.joint = joint;
@@ -275,19 +257,7 @@ class World {
     assert(isLocked() == false);
 
     final bool collideConnected = j.getCollideConnected();
-
-    // Remove from the doubly linked list.
-    if (j._prev != null) {
-      j._prev._next = j._next;
-    }
-
-    if (j._next != null) {
-      j._next._prev = j._prev;
-    }
-
-    if (j == _jointList) {
-      _jointList = j._next;
-    }
+    joints.remove(j);
 
     // Disconnect from island graph.
     final Body bodyA = j.getBodyA();
@@ -331,8 +301,7 @@ class World {
 
     Joint.destroy(j);
 
-    assert(_jointCount > 0);
-    --_jointCount;
+    assert(joints.isNotEmpty);
 
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (collideConnected == false) {
@@ -426,7 +395,7 @@ class World {
   ///
   /// @see setAutoClearForces
   void clearForces() {
-    for (Body body in bodyList) {
+    for (Body body in bodies) {
       body._force.setZero();
       body._torque = 0.0;
     }
@@ -447,7 +416,7 @@ class World {
     final bool wireframe = (flags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
 
     if ((flags & DebugDraw.SHAPE_BIT) != 0) {
-      for (Body b in bodyList) {
+      for (Body b in bodies) {
         xf.set(b._transform);
         for (Fixture f = b.getFixtureList(); f != null; f = f.getNext()) {
           if (b.isActive() == false) {
@@ -472,9 +441,7 @@ class World {
     }
 
     if ((flags & DebugDraw.JOINT_BIT) != 0) {
-      for (Joint j = _jointList; j != null; j = j.getNext()) {
-        drawJoint(j);
-      }
+      joints.forEach(drawJoint);
     }
 
     if ((flags & DebugDraw.PAIR_BIT) != 0) {
@@ -493,7 +460,7 @@ class World {
     if ((flags & DebugDraw.AABB_BIT) != 0) {
       color.setFromRGBd(0.9, 0.3, 0.9);
 
-      for (Body b in bodyList) {
+      for (Body b in bodies) {
         if (b.isActive() == false) {
           continue;
         }
@@ -517,7 +484,7 @@ class World {
 
     if ((flags & DebugDraw.CENTER_OF_MASS_BIT) != 0) {
       final Color3i xfColor = Color3i(255, 0, 0);
-      for (Body b in bodyList) {
+      for (Body b in bodies) {
         xf.set(b._transform);
         xf.p.setFrom(b.worldCenter);
         debugDraw.drawTransform(xf, xfColor);
@@ -691,31 +658,31 @@ class World {
     _profile.solvePosition.startAccum();
 
     // update previous transforms
-    for (Body b in bodyList) {
+    for (Body b in bodies) {
       b._xf0.set(b._transform);
     }
 
     // Size the island for the worst case.
-    island.init(_bodyCount, _contactManager.contactCount, _jointCount,
+    island.init(bodies.length, _contactManager.contactCount, joints.length,
         _contactManager.contactListener);
 
     // Clear all the island flags.
-    for (Body b in bodyList) {
+    for (Body b in bodies) {
       b._flags &= ~Body.ISLAND_FLAG;
     }
     for (Contact c = _contactManager.contactList; c != null; c = c._next) {
       c._flags &= ~Contact.ISLAND_FLAG;
     }
-    for (Joint j = _jointList; j != null; j = j._next) {
+    for (Joint j in joints) {
       j._islandFlag = false;
     }
 
     // Build and simulate all awake islands.
-    final int stackSize = _bodyCount;
+    final int stackSize = bodies.length;
     if (stack.length < stackSize) {
       stack = List<Body>(stackSize);
     }
-    for (Body seed in bodyList) {
+    for (Body seed in bodies) {
       if ((seed._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
         continue;
       }
@@ -829,7 +796,7 @@ class World {
 
     broadphaseTimer.reset();
     // Synchronize fixtures, check for out of range bodies.
-    for (Body b in bodyList) {
+    for (Body b in bodies) {
       // If a body was not in an island then it did not move.
       if ((b._flags & Body.ISLAND_FLAG) == 0) {
         continue;
@@ -861,7 +828,7 @@ class World {
     island.init(2 * settings.maxTOIContacts, settings.maxTOIContacts, 0,
         _contactManager.contactListener);
     if (_stepComplete) {
-      for (Body b in bodyList) {
+      for (Body b in bodies) {
         b._flags &= ~Body.ISLAND_FLAG;
         b._sweep.alpha0 = 0.0;
       }
