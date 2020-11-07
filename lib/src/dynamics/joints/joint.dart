@@ -105,13 +105,13 @@ abstract class Joint {
 
   /// Get the reaction force on body2 at the joint anchor in Newtons.
   ///
-  /// @param inv_dt
+  /// @param invDt
   /// @return
   Vector2 getReactionForce(double invDt);
 
   /// get the reaction torque on body2 in N*m.
   ///
-  /// @param inv_dt
+  /// @param invDt
   /// @return
   double getReactionTorque(double invDt);
 

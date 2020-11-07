@@ -147,7 +147,7 @@ class RopeJoint extends Joint {
 
     // Predictive constraint.
     if (C < 0.0) {
-      Cdot += data.step.inv_dt * C;
+      Cdot += data.step.invDt * C;
     }
 
     double impulse = -_mass * Cdot;
@@ -224,11 +224,11 @@ class RopeJoint extends Joint {
     return length - _maxLength < settings.linearSlop;
   }
 
-  Vector2 getReactionForce(double inv_dt) {
-    return Vector2.copy(_u)..scale(inv_dt)..scale(_impulse);
+  Vector2 getReactionForce(double invDt) {
+    return Vector2.copy(_u)..scale(invDt)..scale(_impulse);
   }
 
-  double getReactionTorque(double inv_dt) {
+  double getReactionTorque(double invDt) {
     return 0.0;
   }
 

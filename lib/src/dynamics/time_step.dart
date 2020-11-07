@@ -6,9 +6,9 @@ class TimeStep {
   double dt = 0.0;
 
   /// inverse time step (0 if dt == 0).
-  double inv_dt = 0.0;
+  double invDt = 0.0;
 
-  /// dt * inv_dt0
+  /// dt * invDt0
   double dtRatio = 0.0;
 
   int velocityIterations = 0;

@@ -35,17 +35,17 @@ class DistanceJoint extends Joint {
 
   /// Get the reaction force given the inverse time step. Unit is N.
   @override
-  Vector2 getReactionForce(double inv_dt) {
+  Vector2 getReactionForce(double invDt) {
     return Vector2(
-      _impulse * _u.x * inv_dt,
-      _impulse * _u.y * inv_dt,
+      _impulse * _u.x * invDt,
+      _impulse * _u.y * invDt,
     );
   }
 
   /// Get the reaction torque given the inverse time step. Unit is N*m. This is always zero for a
   /// distance joint.
   @override
-  double getReactionTorque(double inv_dt) => 0.0;
+  double getReactionTorque(double invDt) => 0.0;
 
   void initVelocityConstraints(final SolverData data) {
     _indexA = _bodyA.islandIndex;

@@ -344,9 +344,9 @@ class World {
     step.velocityIterations = velocityIterations;
     step.positionIterations = positionIterations;
     if (dt > 0.0) {
-      step.inv_dt = 1.0 / dt;
+      step.invDt = 1.0 / dt;
     } else {
-      step.inv_dt = 0.0;
+      step.invDt = 0.0;
     }
 
     step.dtRatio = _invDt0 * dt;
@@ -377,7 +377,7 @@ class World {
     }
 
     if (step.dt > 0.0) {
-      _invDt0 = step.inv_dt;
+      _invDt0 = step.invDt;
     }
 
     if ((_flags & CLEAR_FORCES) == CLEAR_FORCES) {
@@ -1059,7 +1059,7 @@ class World {
       }
 
       subStep.dt = (1.0 - minAlpha) * step.dt;
-      subStep.inv_dt = 1.0 / subStep.dt;
+      subStep.invDt = 1.0 / subStep.dt;
       subStep.dtRatio = 1.0;
       subStep.positionIterations = 20;
       subStep.velocityIterations = step.velocityIterations;

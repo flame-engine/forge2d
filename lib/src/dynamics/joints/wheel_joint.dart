@@ -78,7 +78,7 @@ class WheelJoint extends Joint {
     _dampingRatio = def.dampingRatio;
   }
 
-  Vector2 getReactionForce(double inv_dt) {
+  Vector2 getReactionForce(double invDt) {
     final Vector2 temp = Vector2.zero();
     temp
       ..setFrom(_ay)
@@ -87,12 +87,12 @@ class WheelJoint extends Joint {
       ..setFrom(_ax)
       ..scale(_springImpulse)
       ..add(temp)
-      ..scale(inv_dt);
+      ..scale(invDt);
     return result;
   }
 
-  double getReactionTorque(double inv_dt) {
-    return inv_dt * _motorImpulse;
+  double getReactionTorque(double invDt) {
+    return invDt * _motorImpulse;
   }
 
   double getJointTranslation() {
@@ -150,8 +150,8 @@ class WheelJoint extends Joint {
     _maxMotorTorque = torque;
   }
 
-  double getMotorTorque(double inv_dt) {
-    return _motorImpulse * inv_dt;
+  double getMotorTorque(double invDt) {
+    return _motorImpulse * invDt;
   }
 
   // pooling

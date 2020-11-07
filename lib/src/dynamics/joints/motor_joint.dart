@@ -62,12 +62,12 @@ class MotorJoint extends Joint {
   }
 
   @override
-  Vector2 getReactionForce(double inv_dt) {
-    return Vector2.copy(_linearImpulse)..scale(inv_dt);
+  Vector2 getReactionForce(double invDt) {
+    return Vector2.copy(_linearImpulse)..scale(invDt);
   }
 
-  double getReactionTorque(double inv_dt) {
-    return _angularImpulse * inv_dt;
+  double getReactionTorque(double invDt) {
+    return _angularImpulse * invDt;
   }
 
   /// Set the target linear offset, in frame A, in meters.
@@ -227,7 +227,7 @@ class MotorJoint extends Joint {
     double iA = _invIA, iB = _invIB;
 
     double h = data.step.dt;
-    double inv_h = data.step.inv_dt;
+    double inv_h = data.step.invDt;
 
     final Vector2 temp = Vector2.zero();
 
