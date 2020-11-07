@@ -4,7 +4,7 @@ part of forge2d;
 /// approach infinity for rigid body collisions. These match up one-to-one with the contact points in
 /// b2Manifold.
 class ContactImpulse {
-  Float64List normalImpulses = Float64List(Settings.maxManifoldPoints);
-  Float64List tangentImpulses = Float64List(Settings.maxManifoldPoints);
+  Float64List normalImpulses = Float64List(settings.maxManifoldPoints);
+  Float64List tangentImpulses = Float64List(settings.maxManifoldPoints);
   int count = 0;
 }

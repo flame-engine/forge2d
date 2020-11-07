@@ -490,6 +490,6 @@ class GearJoint extends Joint {
     data.positions[_indexD].a = aD;
 
     // TODO_ERIN not implemented
-    return linearError < Settings.linearSlop;
+    return linearError < settings.linearSlop;
   }
 }

@@ -126,7 +126,7 @@ class RevoluteJoint extends Joint {
 
     if (_enableLimit && fixedRotation == false) {
       double jointAngle = aB - aA - _referenceAngle;
-      if ((_upperAngle - _lowerAngle).abs() < 2.0 * Settings.angularSlop) {
+      if ((_upperAngle - _lowerAngle).abs() < 2.0 * settings.angularSlop) {
         _limitState = LimitState.EQUAL;
       } else if (jointAngle <= _lowerAngle) {
         if (_limitState != LimitState.AT_LOWER) {
@@ -330,7 +330,7 @@ class RevoluteJoint extends Joint {
         // Prevent large angular corrections
         double C = (angle - _lowerAngle)
             .clamp(
-                -Settings.maxAngularCorrection, Settings.maxAngularCorrection)
+                -settings.maxAngularCorrection, settings.maxAngularCorrection)
             .toDouble();
         limitImpulse = -_motorMass * C;
         angularError = C.abs();
@@ -339,8 +339,8 @@ class RevoluteJoint extends Joint {
         angularError = -C;
 
         // Prevent large angular corrections and allow some slop.
-        C = (C + Settings.angularSlop)
-            .clamp(-Settings.maxAngularCorrection, 0.0)
+        C = (C + settings.angularSlop)
+            .clamp(-settings.maxAngularCorrection, 0.0)
             .toDouble();
         limitImpulse = -_motorMass * C;
       } else if (_limitState == LimitState.AT_UPPER) {
@@ -348,8 +348,8 @@ class RevoluteJoint extends Joint {
         angularError = C;
 
         // Prevent large angular corrections and allow some slop.
-        C = (C - Settings.angularSlop)
-            .clamp(0.0, Settings.maxAngularCorrection)
+        C = (C - settings.angularSlop)
+            .clamp(0.0, settings.maxAngularCorrection)
             .toDouble();
         limitImpulse = -_motorMass * C;
       }
@@ -407,8 +407,8 @@ class RevoluteJoint extends Joint {
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return positionError <= Settings.linearSlop &&
-        angularError <= Settings.angularSlop;
+    return positionError <= settings.linearSlop &&
+        angularError <= settings.angularSlop;
   }
 
   double getReferenceAngle() {

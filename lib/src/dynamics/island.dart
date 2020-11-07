@@ -280,8 +280,8 @@ class Island {
       double translationY = v.y * dt;
 
       if (translationX * translationX + translationY * translationY >
-          Settings.maxTranslationSquared) {
-        double ratio = Settings.maxTranslation /
+          settings.maxTranslationSquared) {
+        double ratio = settings.maxTranslation /
             math.sqrt(
                 translationX * translationX + translationY * translationY);
         v.x *= ratio;
@@ -289,8 +289,8 @@ class Island {
       }
 
       double rotation = dt * w;
-      if (rotation * rotation > Settings.maxRotationSquared) {
-        double ratio = Settings.maxRotation / rotation.abs();
+      if (rotation * rotation > settings.maxRotationSquared) {
+        double ratio = settings.maxRotation / rotation.abs();
         w *= ratio;
       }
 
@@ -339,9 +339,9 @@ class Island {
       double minSleepTime = double.maxFinite;
 
       final double linTolSqr =
-          Settings.linearSleepTolerance * Settings.linearSleepTolerance;
+          settings.linearSleepTolerance * settings.linearSleepTolerance;
       final double angTolSqr =
-          Settings.angularSleepTolerance * Settings.angularSleepTolerance;
+          settings.angularSleepTolerance * settings.angularSleepTolerance;
 
       for (int i = 0; i < _bodyCount; ++i) {
         Body b = _bodies[i];
@@ -360,7 +360,7 @@ class Island {
         }
       }
 
-      if (minSleepTime >= Settings.timeToSleep && positionSolved) {
+      if (minSleepTime >= settings.timeToSleep && positionSolved) {
         _bodies.forEach((b) => b?.setAwake(false));
       }
     }
@@ -431,16 +431,16 @@ class Island {
       double translationX = v.x * h;
       double translationY = v.y * h;
       if (translationX * translationX + translationY * translationY >
-          Settings.maxTranslationSquared) {
-        double ratio = Settings.maxTranslation /
+          settings.maxTranslationSquared) {
+        double ratio = settings.maxTranslation /
             math.sqrt(
                 translationX * translationX + translationY * translationY);
         v.scale(ratio);
       }
 
       double rotation = h * w;
-      if (rotation * rotation > Settings.maxRotationSquared) {
-        double ratio = Settings.maxRotation / rotation.abs();
+      if (rotation * rotation > settings.maxRotationSquared) {
+        double ratio = settings.maxRotation / rotation.abs();
         w *= ratio;
       }
 

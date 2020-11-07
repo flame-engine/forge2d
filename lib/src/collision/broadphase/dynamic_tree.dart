@@ -38,10 +38,10 @@ class DynamicTree implements BroadPhaseStrategy {
     int proxyId = node.id;
     // Fatten the aabb
     final AABB nodeAABB = node.aabb;
-    nodeAABB.lowerBound.x = aabb.lowerBound.x - Settings.aabbExtension;
-    nodeAABB.lowerBound.y = aabb.lowerBound.y - Settings.aabbExtension;
-    nodeAABB.upperBound.x = aabb.upperBound.x + Settings.aabbExtension;
-    nodeAABB.upperBound.y = aabb.upperBound.y + Settings.aabbExtension;
+    nodeAABB.lowerBound.x = aabb.lowerBound.x - settings.aabbExtension;
+    nodeAABB.lowerBound.y = aabb.lowerBound.y - settings.aabbExtension;
+    nodeAABB.upperBound.x = aabb.upperBound.x + settings.aabbExtension;
+    nodeAABB.upperBound.y = aabb.upperBound.y + settings.aabbExtension;
     node.userData = userData;
 
     _insertLeaf(proxyId);
@@ -78,14 +78,14 @@ class DynamicTree implements BroadPhaseStrategy {
     // Extend AABB
     final Vector2 lowerBound = nodeAABB.lowerBound;
     final Vector2 upperBound = nodeAABB.upperBound;
-    lowerBound.x = aabb.lowerBound.x - Settings.aabbExtension;
-    lowerBound.y = aabb.lowerBound.y - Settings.aabbExtension;
-    upperBound.x = aabb.upperBound.x + Settings.aabbExtension;
-    upperBound.y = aabb.upperBound.y + Settings.aabbExtension;
+    lowerBound.x = aabb.lowerBound.x - settings.aabbExtension;
+    lowerBound.y = aabb.lowerBound.y - settings.aabbExtension;
+    upperBound.x = aabb.upperBound.x + settings.aabbExtension;
+    upperBound.y = aabb.upperBound.y + settings.aabbExtension;
 
     // Predict AABB displacement.
-    final double dx = displacement.x * Settings.aabbMultiplier;
-    final double dy = displacement.y * Settings.aabbMultiplier;
+    final double dx = displacement.x * settings.aabbMultiplier;
+    final double dy = displacement.y * settings.aabbMultiplier;
     if (dx < 0.0) {
       lowerBound.x += dx;
     } else {
@@ -133,7 +133,7 @@ class DynamicTree implements BroadPhaseStrategy {
           if (nodeStack.length - nodeStackIndex - 2 <= 0) {
             List<DynamicTreeNode> newBuffer =
                 List<DynamicTreeNode>(nodeStack.length * 2);
-            BufferUtils.arrayCopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
+            buffer_utils.arrayCopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
             nodeStack = newBuffer;
           }
           nodeStack[nodeStackIndex++] = node.child1;
@@ -239,7 +239,7 @@ class DynamicTree implements BroadPhaseStrategy {
         if (nodeStack.length - nodeStackIndex - 2 <= 0) {
           List<DynamicTreeNode> newBuffer =
               List<DynamicTreeNode>(nodeStack.length * 2);
-          BufferUtils.arrayCopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
+          buffer_utils.arrayCopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
           nodeStack = newBuffer;
         }
         nodeStack[nodeStackIndex++] = node.child1;
@@ -333,7 +333,7 @@ class DynamicTree implements BroadPhaseStrategy {
 
   /// Build an optimal tree. Very expensive. For testing.
   void rebuildBottomUp() {
-    List<int> nodes = BufferUtils.intList(_nodeCount);
+    List<int> nodes = buffer_utils.intList(_nodeCount);
     int count = 0;
 
     // Build array of leaves. Free the rest.
@@ -404,7 +404,7 @@ class DynamicTree implements BroadPhaseStrategy {
       List<DynamicTreeNode> old = _nodes;
       _nodeCapacity *= 2;
       _nodes = List<DynamicTreeNode>(_nodeCapacity);
-      BufferUtils.arrayCopy(old, 0, _nodes, 0, old.length);
+      buffer_utils.arrayCopy(old, 0, _nodes, 0, old.length);
 
       // Build a linked list for the free list.
       for (int i = _nodeCapacity - 1; i >= _nodeCount; i--) {

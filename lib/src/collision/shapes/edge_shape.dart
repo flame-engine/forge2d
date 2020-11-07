@@ -18,7 +18,7 @@ class EdgeShape extends Shape {
   bool hasVertex3 = false;
 
   EdgeShape() : super(ShapeType.EDGE) {
-    radius = Settings.polygonRadius;
+    radius = settings.polygonRadius;
   }
 
   int getChildCount() {

@@ -40,23 +40,23 @@ class Manifold {
 
   /// creates a manifold with 0 points, with it's points array full of instantiated ManifoldPoints.
   Manifold()
-      : points = List<ManifoldPoint>(Settings.maxManifoldPoints),
+      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
         localNormal = Vector2.zero(),
         localPoint = Vector2.zero() {
-    for (int i = 0; i < Settings.maxManifoldPoints; i++) {
+    for (int i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = ManifoldPoint();
     }
   }
 
   /// Creates this manifold as a copy of the other
   Manifold.copy(Manifold other)
-      : points = List<ManifoldPoint>(Settings.maxManifoldPoints),
+      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
         localNormal = other.localNormal.clone(),
         localPoint = other.localPoint.clone(),
         pointCount = other.pointCount {
     type = other.type;
     // djm: this is correct now
-    for (int i = 0; i < Settings.maxManifoldPoints; i++) {
+    for (int i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = ManifoldPoint.copy(other.points[i]);
     }
   }

@@ -12,18 +12,18 @@ class PolygonShape extends Shape {
   /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
   /// active vertices.
   final List<Vector2> vertices = List<Vector2>.generate(
-      Settings.maxPolygonVertices, (i) => Vector2.zero());
+      settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
   /// active normals.
   final List<Vector2> normals = List<Vector2>.generate(
-      Settings.maxPolygonVertices, (i) => Vector2.zero());
+      settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// Number of active vertices in the shape.
   int count = 0;
 
   PolygonShape() : super(ShapeType.POLYGON) {
-    radius = Settings.polygonRadius;
+    radius = settings.polygonRadius;
   }
 
   Shape clone() {
@@ -43,22 +43,22 @@ class PolygonShape extends Shape {
   /// @warning the points may be re-ordered, even if they form a convex polygon.
   /// @warning collinear points are removed.
   void set(final List<Vector2> updatedVertices, final int updatedCount) {
-    assert(3 <= updatedCount && updatedCount <= Settings.maxPolygonVertices);
+    assert(3 <= updatedCount && updatedCount <= settings.maxPolygonVertices);
     if (updatedCount < 3) {
       setAsBoxXY(1.0, 1.0);
       return;
     }
 
-    int n = math.min(updatedCount, Settings.maxPolygonVertices);
+    int n = math.min(updatedCount, settings.maxPolygonVertices);
 
     // Perform welding and copy vertices into local buffer.
-    List<Vector2> ps = List<Vector2>(Settings.maxPolygonVertices);
+    List<Vector2> ps = List<Vector2>(settings.maxPolygonVertices);
     int tempCount = 0;
     for (int i = 0; i < n; ++i) {
       Vector2 v = updatedVertices[i];
       bool unique = true;
       for (int j = 0; j < tempCount; ++j) {
-        if (v.distanceToSquared(ps[j]) < 0.5 * Settings.linearSlop) {
+        if (v.distanceToSquared(ps[j]) < 0.5 * settings.linearSlop) {
           unique = false;
           break;
         }
@@ -91,7 +91,7 @@ class PolygonShape extends Shape {
       }
     }
 
-    List<int> hull = List<int>(Settings.maxPolygonVertices);
+    List<int> hull = List<int>(settings.maxPolygonVertices);
     int m = 0;
     int ih = i0;
 
@@ -146,7 +146,7 @@ class PolygonShape extends Shape {
         ..setFrom(vertices[i2])
         ..sub(vertices[i1]);
 
-      assert(edge.length2 > Settings.EPSILON * Settings.EPSILON);
+      assert(edge.length2 > settings.EPSILON * settings.EPSILON);
       edge.scaleOrthogonalInto(-1.0, normals[i]);
       normals[i].normalize();
     }
@@ -458,7 +458,7 @@ class PolygonShape extends Shape {
     }
 
     // Centroid
-    assert(area > Settings.EPSILON);
+    assert(area > settings.EPSILON);
     centroid.scale(1.0 / area);
   }
 
@@ -539,7 +539,7 @@ class PolygonShape extends Shape {
     massData.mass = density * area;
 
     // Center of mass
-    assert(area > Settings.EPSILON);
+    assert(area > settings.EPSILON);
     center.scale(1.0 / area);
     massData.center
       ..setFrom(center)

@@ -1,16 +1,25 @@
-### Examples for Dart Forge2D
+# Examples for Dart Forge2D
 
-Run:
+If you haven't used `webdev` before you might need to run:
+
 ```sh
-pub global run webdev build --output=example:build
+pub global activate webdev
 ```
 
-Either from the command line or from your IDE.
-
-Then run:
+And then you can run:
 ```sh
-pub global run webdev daemon example:53322 --launch-app=example/index.html
+pub global run webdev serve example:53322
 ```
+
+And open http://127.0.0.1:53322 in your browser.
+
+Since this is not running in release mode it will run a lot slower.
+If you want to run it in release mode you can run the following:
+```sh
+pub global run webdev build -r --output=example:build
+```
+
+and then open the `index.html` file in `forge2d/build/index.html`.
 
 ## Old way
 

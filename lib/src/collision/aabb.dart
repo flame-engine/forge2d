@@ -29,10 +29,10 @@ class AABB {
   /// Sets this object from the given object
   /// @param aabb the object to copy from
   void set(final AABB aabb) {
-    Vector2 v = aabb.lowerBound;
+    final Vector2 v = aabb.lowerBound;
     lowerBound.x = v.x;
     lowerBound.y = v.y;
-    Vector2 v1 = aabb.upperBound;
+    final Vector2 v1 = aabb.upperBound;
     upperBound.x = v1.x;
     upperBound.y = v1.y;
   }
@@ -148,7 +148,7 @@ class AABB {
       ..absolute();
 
     // x then y
-    if (absD.x < Settings.EPSILON) {
+    if (absD.x < settings.EPSILON) {
       // Parallel.
       if (p.x < lowerBound.x || upperBound.x < p.x) {
         return false;
@@ -183,15 +183,15 @@ class AABB {
       }
     }
 
-    if (absD.y < Settings.EPSILON) {
+    if (absD.y < settings.EPSILON) {
       // Parallel.
       if (p.y < lowerBound.y || upperBound.y < p.y) {
         return false;
       }
     } else {
-      double inv_d = 1.0 / d.y;
-      double t1 = (lowerBound.y - p.y) * inv_d;
-      double t2 = (upperBound.y - p.y) * inv_d;
+      final double invD = 1.0 / d.y;
+      double t1 = (lowerBound.y - p.y) * invD;
+      double t2 = (upperBound.y - p.y) * invD;
 
       // Sign of the normal vector.
       double s = -1.0;
@@ -246,7 +246,6 @@ class AABB {
   }
 
   String toString() {
-    final String s = "AABB[$lowerBound . $upperBound]";
-    return s;
+    return "AABB[$lowerBound . $upperBound]";
   }
 }

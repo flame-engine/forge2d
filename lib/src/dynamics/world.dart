@@ -882,7 +882,7 @@ class World {
 
   void solveTOI(final TimeStep step) {
     final Island island = toiIsland;
-    island.init(2 * Settings.maxTOIContacts, Settings.maxTOIContacts, 0,
+    island.init(2 * settings.maxTOIContacts, settings.maxTOIContacts, 0,
         _contactManager.contactListener);
     if (_stepComplete) {
       for (Body b = bodyList; b != null; b = b._next) {
@@ -911,7 +911,7 @@ class World {
         }
 
         // Prevent excessive sub-stepping.
-        if (c._toiCount > Settings.maxSubSteps) {
+        if (c._toiCount > settings.maxSubSteps) {
           continue;
         }
 
@@ -997,7 +997,7 @@ class World {
         }
       }
 
-      if (minContact == null || 1.0 - 10.0 * Settings.EPSILON < minAlpha) {
+      if (minContact == null || 1.0 - 10.0 * settings.EPSILON < minAlpha) {
         // No more TOI events. Done!
         _stepComplete = true;
         break;
@@ -1257,8 +1257,8 @@ class World {
         {
           final poly = fixture.getShape() as PolygonShape;
           int vertexCount = poly.count;
-          assert(vertexCount <= Settings.maxPolygonVertices);
-          List<Vector2> vertices = List<Vector2>(Settings.maxPolygonVertices);
+          assert(vertexCount <= settings.maxPolygonVertices);
+          List<Vector2> vertices = List<Vector2>(settings.maxPolygonVertices);
 
           for (int i = 0; i < vertexCount; ++i) {
             vertices[i] = Transform.mulVec2(xf, poly.vertices[i]);

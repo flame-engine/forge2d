@@ -13,7 +13,7 @@ class ChainShape extends Shape {
   bool _hasNextVertex = false;
 
   ChainShape() : super(ShapeType.CHAIN) {
-    radius = Settings.polygonRadius;
+    radius = settings.polygonRadius;
   }
 
   void clear() {
@@ -199,7 +199,7 @@ class ChainShape extends Shape {
       Vector2 v2 = vertices[i];
       // If the code crashes here, it means your vertices are too close together.
       if (v1.distanceToSquared(v2) <
-          Settings.linearSlop * Settings.linearSlop) {
+          settings.linearSlop * settings.linearSlop) {
         throw "Vertices of chain shape are too close together";
       }
     }

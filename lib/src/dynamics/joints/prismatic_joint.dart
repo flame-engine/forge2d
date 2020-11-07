@@ -405,7 +405,7 @@ class PrismaticJoint extends Joint {
     if (_enableLimit) {
       double jointTranslation = _axis.dot(d);
       if ((_upperTranslation - _lowerTranslation).abs() <
-          2.0 * Settings.linearSlop) {
+          2.0 * settings.linearSlop) {
         _limitState = LimitState.EQUAL;
       } else if (jointTranslation <= _lowerTranslation) {
         if (_limitState != LimitState.AT_LOWER) {
@@ -676,24 +676,24 @@ class PrismaticJoint extends Joint {
     if (_enableLimit) {
       double translation = axis.dot(d);
       if ((_upperTranslation - _lowerTranslation).abs() <
-          2.0 * Settings.linearSlop) {
+          2.0 * settings.linearSlop) {
         // Prevent large angular corrections
         C2 = translation
-            .clamp(-Settings.maxLinearCorrection, Settings.maxLinearCorrection)
+            .clamp(-settings.maxLinearCorrection, settings.maxLinearCorrection)
             .toDouble();
         linearError = math.max(linearError, translation.abs());
         active = true;
       } else if (translation <= _lowerTranslation) {
         // Prevent large linear corrections and allow some slop.
-        C2 = (translation - _lowerTranslation + Settings.linearSlop)
-            .clamp(-Settings.maxLinearCorrection, 0.0)
+        C2 = (translation - _lowerTranslation + settings.linearSlop)
+            .clamp(-settings.maxLinearCorrection, 0.0)
             .toDouble();
         linearError = math.max(linearError, _lowerTranslation - translation);
         active = true;
       } else if (translation >= _upperTranslation) {
         // Prevent large linear corrections and allow some slop.
-        C2 = (translation - _upperTranslation - Settings.linearSlop)
-            .clamp(0.0, Settings.maxLinearCorrection)
+        C2 = (translation - _upperTranslation - settings.linearSlop)
+            .clamp(0.0, settings.maxLinearCorrection)
             .toDouble();
         linearError = math.max(linearError, translation - _upperTranslation);
         active = true;
@@ -756,7 +756,7 @@ class PrismaticJoint extends Joint {
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return linearError <= Settings.linearSlop &&
-        angularError <= Settings.angularSlop;
+    return linearError <= settings.linearSlop &&
+        angularError <= settings.angularSlop;
   }
 }

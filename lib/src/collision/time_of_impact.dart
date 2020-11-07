@@ -38,7 +38,7 @@ class TimeOfImpact {
   final Transform _xfB = Transform.zero();
   final DistanceOutput _distanceOutput = DistanceOutput();
   final SeparationFunction _fcn = SeparationFunction();
-  final List<int> _indexes = BufferUtils.intList(2);
+  final List<int> _indexes = buffer_utils.intList(2);
   final Sweep _sweepA = Sweep();
   final Sweep _sweepB = Sweep();
 
@@ -73,8 +73,8 @@ class TimeOfImpact {
     double totalRadius = proxyA.radius + proxyB.radius;
     // djm: whats with all these constants?
     double target =
-        math.max(Settings.linearSlop, totalRadius - 3.0 * Settings.linearSlop);
-    double tolerance = 0.25 * Settings.linearSlop;
+        math.max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
+    double tolerance = 0.25 * settings.linearSlop;
 
     assert(target > tolerance);
 
@@ -203,7 +203,7 @@ class TimeOfImpact {
 
         ++pushBackIter;
 
-        if (pushBackIter == Settings.maxPolygonVertices ||
+        if (pushBackIter == settings.maxPolygonVertices ||
             rootIterCount == MAX_ROOT_ITERATIONS) {
           break;
         }

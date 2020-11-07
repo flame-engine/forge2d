@@ -12,7 +12,7 @@ class VelocityConstraintPoint {
 
 class ContactVelocityConstraint {
   List<VelocityConstraintPoint> points =
-      List<VelocityConstraintPoint>(Settings.maxManifoldPoints);
+      List<VelocityConstraintPoint>(settings.maxManifoldPoints);
   final Vector2 normal = Vector2.zero();
   final Matrix2 normalMass = Matrix2.zero();
   final Matrix2 K = Matrix2.zero();

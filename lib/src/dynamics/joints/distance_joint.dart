@@ -90,7 +90,7 @@ class DistanceJoint extends Joint {
 
     // Handle singularity.
     double length = _u.length;
-    if (length > Settings.linearSlop) {
+    if (length > settings.linearSlop) {
       _u.x *= 1.0 / length;
       _u.y *= 1.0 / length;
     } else {
@@ -219,7 +219,7 @@ class DistanceJoint extends Joint {
 
     double length = u.normalize();
     final C = (length - _length)
-        .clamp(-Settings.maxLinearCorrection, Settings.maxLinearCorrection);
+        .clamp(-settings.maxLinearCorrection, settings.maxLinearCorrection);
 
     double impulse = -_mass * C;
     double Px = impulse * u.x;
@@ -235,6 +235,6 @@ class DistanceJoint extends Joint {
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return C.abs() < Settings.linearSlop;
+    return C.abs() < settings.linearSlop;
   }
 }

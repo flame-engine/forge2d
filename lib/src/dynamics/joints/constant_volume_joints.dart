@@ -104,7 +104,7 @@ class ConstantVolumeJoint extends Joint {
       double dy = positions[_bodies[next]._islandIndex].c.y -
           positions[_bodies[i]._islandIndex].c.y;
       double dist = math.sqrt(dx * dx + dy * dy);
-      if (dist < Settings.EPSILON) {
+      if (dist < settings.EPSILON) {
         dist = 1.0;
       }
       _normals[i].x = dy / dist;
@@ -124,10 +124,10 @@ class ConstantVolumeJoint extends Joint {
           toExtrude * (_normals[i].y + _normals[next].y));
       double normSqrd = delta.length2;
       if (normSqrd >
-          Settings.maxLinearCorrection * Settings.maxLinearCorrection) {
-        delta.scale(Settings.maxLinearCorrection / math.sqrt(normSqrd));
+          settings.maxLinearCorrection * settings.maxLinearCorrection) {
+        delta.scale(settings.maxLinearCorrection / math.sqrt(normSqrd));
       }
-      if (normSqrd > Settings.linearSlop * Settings.linearSlop) {
+      if (normSqrd > settings.linearSlop * settings.linearSlop) {
         done = false;
       }
       positions[_bodies[next]._islandIndex].c.x += delta.x;

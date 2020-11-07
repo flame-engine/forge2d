@@ -1,7 +1,7 @@
 part of forge2d;
 
 class ContactPositionConstraint {
-  List<Vector2> localPoints = List<Vector2>(Settings.maxManifoldPoints);
+  List<Vector2> localPoints = List<Vector2>(settings.maxManifoldPoints);
   final Vector2 localNormal = Vector2.zero();
   final Vector2 localPoint = Vector2.zero();
   int indexA = 0;
