@@ -7,6 +7,7 @@ class PolygonAndCircleContact extends Contact {
     assert(_fixtureB.getType() == ShapeType.CIRCLE);
   }
 
+  @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     World.collision.collidePolygonAndCircle(
       manifold,
