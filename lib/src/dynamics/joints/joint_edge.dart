@@ -7,14 +7,14 @@ part of forge2d;
 /// nodes, one for each attached body.
 class JointEdge {
   /// Provides quick access to the other body attached
-  Body other = null;
+  Body other;
 
   /// the joint
-  Joint joint = null;
+  Joint joint;
 
   /// the previous joint edge in the body's joint list
-  JointEdge prev = null;
+  JointEdge prev;
 
   /// the next joint edge in the body's joint list
-  JointEdge next = null;
+  JointEdge next;
 }

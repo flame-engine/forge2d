@@ -71,13 +71,14 @@ part of forge2d;
 /// and a joint motor to drive the motion or to model joint friction.
 class PrismaticJoint extends Joint {
   // Solver shared
+  @override
   final Vector2 localAnchorA;
+  @override
   final Vector2 localAnchorB;
   final Vector2 _localXAxisA;
   final Vector2 _localYAxisA;
   double _referenceAngle;
 
-  // TODO(srdjan): Make fields below private.
   final Vector3 _impulse = Vector3.zero();
   double _motorImpulse = 0.0;
   double _lowerTranslation = 0.0;
@@ -101,7 +102,7 @@ class PrismaticJoint extends Joint {
   final Vector2 _perp = Vector2.zero();
   double _s1 = 0.0, _s2 = 0.0;
   double _a1 = 0.0, _a2 = 0.0;
-  final Matrix3 _K = Matrix3.zero();
+  final Matrix3 _k = Matrix3.zero();
   double _motorMass =
       0.0; // effective mass for motor/limit translational constraint.
 
@@ -125,35 +126,36 @@ class PrismaticJoint extends Joint {
 
   @override
   Vector2 getReactionForce(double invDt) {
-    Vector2 temp = Vector2.zero();
+    final Vector2 temp = Vector2.zero();
     temp
       ..setFrom(_axis)
       ..scale(_motorImpulse + _impulse.z);
-    Vector2 out = Vector2.copy(_perp)
+    final Vector2 out = Vector2.copy(_perp)
       ..scale(_impulse.x)
       ..add(temp)
       ..scale(invDt);
     return out;
   }
 
+  @override
   double getReactionTorque(double invDt) {
     return invDt * _impulse.y;
   }
 
   /// Get the current joint translation, usually in meters.
   double getJointSpeed() {
-    Body bA = _bodyA;
-    Body bB = _bodyB;
+    final Body bA = _bodyA;
+    final Body bB = _bodyB;
 
-    Vector2 temp = Vector2.zero();
-    Vector2 rA = Vector2.zero();
-    Vector2 rB = Vector2.zero();
-    Vector2 p1 = Vector2.zero();
-    Vector2 p2 = Vector2.zero();
-    Vector2 d = Vector2.zero();
-    Vector2 axis = Vector2.zero();
-    Vector2 temp2 = Vector2.zero();
-    Vector2 temp3 = Vector2.zero();
+    final Vector2 temp = Vector2.zero();
+    final Vector2 rA = Vector2.zero();
+    final Vector2 rB = Vector2.zero();
+    final Vector2 p1 = Vector2.zero();
+    final Vector2 p2 = Vector2.zero();
+    final Vector2 d = Vector2.zero();
+    final Vector2 axis = Vector2.zero();
+    final Vector2 temp2 = Vector2.zero();
+    final Vector2 temp3 = Vector2.zero();
 
     temp
       ..setFrom(localAnchorA)
@@ -177,10 +179,10 @@ class PrismaticJoint extends Joint {
       ..sub(p1);
     axis.setFrom(Rot.mulVec2(bA._transform.q, _localXAxisA));
 
-    Vector2 vA = bA._linearVelocity;
-    Vector2 vB = bB._linearVelocity;
-    double wA = bA._angularVelocity;
-    double wB = bB._angularVelocity;
+    final Vector2 vA = bA._linearVelocity;
+    final Vector2 vB = bB._linearVelocity;
+    final double wA = bA._angularVelocity;
+    final double wB = bB._angularVelocity;
 
     axis.scaleOrthogonalInto(wA, temp);
     rB.scaleOrthogonalInto(wB, temp2);
@@ -190,18 +192,18 @@ class PrismaticJoint extends Joint {
       ..add(vB)
       ..sub(vA)
       ..sub(temp3);
-    double speed = d.dot(temp) + axis.dot(temp2);
+    final double speed = d.dot(temp) + axis.dot(temp2);
 
     return speed;
   }
 
   double getJointTranslation() {
-    Vector2 pA = Vector2.zero(), pB = Vector2.zero(), axis = Vector2.zero();
+    final Vector2 pA = Vector2.zero(), pB = Vector2.zero(), axis = Vector2.zero();
     pA.setFrom(_bodyA.getWorldPoint(localAnchorA));
     pB.setFrom(_bodyB.getWorldPoint(localAnchorB));
     axis.setFrom(_bodyA.getWorldVector(_localXAxisA));
     pB.sub(pA);
-    double translation = pB.dot(axis);
+    final double translation = pB.dot(axis);
     return translation;
   }
 
@@ -314,6 +316,7 @@ class PrismaticJoint extends Joint {
     return _localXAxisA;
   }
 
+  @override
   void initVelocityConstraints(final SolverData data) {
     _indexA = _bodyA.islandIndex;
     _indexB = _bodyB.islandIndex;
@@ -324,14 +327,14 @@ class PrismaticJoint extends Joint {
     _invIA = _bodyA._invI;
     _invIB = _bodyB._invI;
 
-    Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 cA = data.positions[_indexA].c;
+    final double aA = data.positions[_indexA].a;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
 
-    Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 cB = data.positions[_indexB].c;
+    final double aB = data.positions[_indexB].a;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
     final Rot qA = Rot();
@@ -359,8 +362,8 @@ class PrismaticJoint extends Joint {
       ..add(rB)
       ..sub(rA);
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
     // Compute motor Jacobian and effective mass.
     {
@@ -387,23 +390,23 @@ class PrismaticJoint extends Joint {
       _s1 = temp.cross(_perp);
       _s2 = rB.cross(_perp);
 
-      double k11 = mA + mB + iA * _s1 * _s1 + iB * _s2 * _s2;
-      double k12 = iA * _s1 + iB * _s2;
-      double k13 = iA * _s1 * _a1 + iB * _s2 * _a2;
+      final double k11 = mA + mB + iA * _s1 * _s1 + iB * _s2 * _s2;
+      final double k12 = iA * _s1 + iB * _s2;
+      final double k13 = iA * _s1 * _a1 + iB * _s2 * _a2;
       double k22 = iA + iB;
       if (k22 == 0.0) {
         // For bodies with fixed rotation.
         k22 = 1.0;
       }
-      double k23 = iA * _a1 + iB * _a2;
-      double k33 = mA + mB + iA * _a1 * _a1 + iB * _a2 * _a2;
+      final double k23 = iA * _a1 + iB * _a2;
+      final double k33 = mA + mB + iA * _a1 * _a1 + iB * _a2 * _a2;
 
-      _K.setValues(k11, k12, k13, k12, k22, k23, k13, k23, k33);
+      _k.setValues(k11, k12, k13, k12, k22, k23, k13, k23, k33);
     }
 
     // Compute motor and limit terms.
     if (_enableLimit) {
-      double jointTranslation = _axis.dot(d);
+      final double jointTranslation = _axis.dot(d);
       if ((_upperTranslation - _lowerTranslation).abs() <
           2.0 * settings.linearSlop) {
         _limitState = LimitState.EQUAL;
@@ -435,27 +438,27 @@ class PrismaticJoint extends Joint {
       _impulse.scale(data.step.dtRatio);
       _motorImpulse *= data.step.dtRatio;
 
-      final Vector2 P = Vector2.zero();
+      final Vector2 p = Vector2.zero();
       temp
         ..setFrom(_axis)
         ..scale(_motorImpulse + _impulse.z);
-      P
+      p
         ..setFrom(_perp)
         ..scale(_impulse.x)
         ..add(temp);
 
-      double LA =
+      final double lA =
           _impulse.x * _s1 + _impulse.y + (_motorImpulse + _impulse.z) * _a1;
-      double LB =
+      final double lB =
           _impulse.x * _s2 + _impulse.y + (_motorImpulse + _impulse.z) * _a2;
 
-      vA.x -= mA * P.x;
-      vA.y -= mA * P.y;
-      wA -= iA * LA;
+      vA.x -= mA * p.x;
+      vA.y -= mA * p.y;
+      wA -= iA * lA;
 
-      vB.x += mB * P.x;
-      vB.y += mB * P.y;
-      wB += iB * LB;
+      vB.x += mB * p.x;
+      vB.y += mB * p.y;
+      wB += iB * lB;
     } else {
       _impulse.setZero();
       _motorImpulse = 0.0;
@@ -467,14 +470,15 @@ class PrismaticJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   void solveVelocityConstraints(final SolverData data) {
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
     final Vector2 temp = Vector2.zero();
 
@@ -483,10 +487,10 @@ class PrismaticJoint extends Joint {
       temp
         ..setFrom(vB)
         ..sub(vA);
-      double Cdot = _axis.dot(temp) + _a2 * wB - _a1 * wA;
-      double impulse = _motorMass * (_motorSpeed - Cdot);
-      double oldImpulse = _motorImpulse;
-      double maxImpulse = data.step.dt * _maxMotorForce;
+      final double cDot = _axis.dot(temp) + _a2 * wB - _a1 * wA;
+      double impulse = _motorMass * (_motorSpeed - cDot);
+      final double oldImpulse = _motorImpulse;
+      final double maxImpulse = data.step.dt * _maxMotorForce;
       _motorImpulse =
           (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _motorImpulse - oldImpulse;
@@ -495,41 +499,34 @@ class PrismaticJoint extends Joint {
       P
         ..setFrom(_axis)
         ..scale(impulse);
-      double LA = impulse * _a1;
-      double LB = impulse * _a2;
+      final double lA = impulse * _a1;
+      final double lB = impulse * _a2;
 
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
-      wA -= iA * LA;
+      wA -= iA * lA;
 
       vB.x += mB * P.x;
       vB.y += mB * P.y;
-      wB += iB * LB;
+      wB += iB * lB;
     }
 
-    final Vector2 Cdot1 = Vector2.zero();
+    final Vector2 cDot1 = Vector2.zero();
     temp
       ..setFrom(vB)
       ..sub(vA);
-    Cdot1.x = _perp.dot(temp) + _s2 * wB - _s1 * wA;
-    Cdot1.y = wB - wA;
+    cDot1.x = _perp.dot(temp) + _s2 * wB - _s1 * wA;
+    cDot1.y = wB - wA;
 
     if (_enableLimit && _limitState != LimitState.INACTIVE) {
       // Solve prismatic and limit constraint in block form.
-      double Cdot2;
-      temp
-        ..setFrom(vB)
-        ..sub(vA);
-      Cdot2 = _axis.dot(temp) + _a2 * wB - _a1 * wA;
-
-      final Vector3 Cdot = Vector3.zero();
-      Cdot.setValues(Cdot1.x, Cdot1.y, Cdot2);
-
+      final double cDot2 = _axis.dot(vB - vA) + _a2 * wB - _a1 * wA;
+      final Vector3 cDot = Vector3(cDot1.x, cDot1.y, cDot2);
       final Vector3 f1 = Vector3.zero();
       final Vector3 df = Vector3.zero();
 
       f1.setFrom(_impulse);
-      Matrix3.solve(_K, df, Cdot..negate());
+      Matrix3.solve(_k, df, cDot..negate());
 
       // Cdot.negateLocal(); not used anymore
       _impulse.add(df);
@@ -546,14 +543,14 @@ class PrismaticJoint extends Joint {
       final Vector2 f2r = Vector2.zero();
 
       temp
-        ..setValues(_K.entry(0, 2), _K.entry(1, 2))
+        ..setValues(_k.entry(0, 2), _k.entry(1, 2))
         ..scale(_impulse.z - f1.z);
       b
-        ..setFrom(Cdot1)
+        ..setFrom(cDot1)
         ..negate()
         ..sub(temp);
 
-      Matrix3.solve2(_K, f2r, b);
+      Matrix3.solve2(_k, f2r, b);
       f2r.add(Vector2(f1.x, f1.y));
       _impulse.x = f2r.x;
       _impulse.y = f2r.y;
@@ -571,39 +568,39 @@ class PrismaticJoint extends Joint {
         ..scale(df.x)
         ..add(temp);
 
-      double LA = df.x * _s1 + df.y + df.z * _a1;
-      double LB = df.x * _s2 + df.y + df.z * _a2;
+      final double lA = df.x * _s1 + df.y + df.z * _a1;
+      final double lB = df.x * _s2 + df.y + df.z * _a2;
 
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
-      wA -= iA * LA;
+      wA -= iA * lA;
 
       vB.x += mB * P.x;
       vB.y += mB * P.y;
-      wB += iB * LB;
+      wB += iB * lB;
     } else {
       // Limit is inactive, just solve the prismatic constraint in block form.
       final Vector2 df = Vector2.zero();
-      Matrix3.solve2(_K, df, Cdot1..negate());
-      Cdot1.negate();
+      Matrix3.solve2(_k, df, cDot1..negate());
+      cDot1.negate();
 
       _impulse.x += df.x;
       _impulse.y += df.y;
 
-      final Vector2 P = Vector2.zero();
-      P
+      final Vector2 p = Vector2.zero();
+      p
         ..setFrom(_perp)
         ..scale(df.x);
-      double LA = df.x * _s1 + df.y;
-      double LB = df.x * _s2 + df.y;
+      final double lA = df.x * _s1 + df.y;
+      final double lB = df.x * _s2 + df.y;
 
-      vA.x -= mA * P.x;
-      vA.y -= mA * P.y;
-      wA -= iA * LA;
+      vA.x -= mA * p.x;
+      vA.y -= mA * p.y;
+      wA -= iA * lA;
 
-      vB.x += mB * P.x;
-      vB.y += mB * P.y;
-      wB += iB * LB;
+      vB.x += mB * p.x;
+      vB.y += mB * p.y;
+      wB += iB * lB;
     }
 
     // data.velocities[_indexA].v.set(vA);
@@ -612,6 +609,7 @@ class PrismaticJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   bool solvePositionConstraints(final SolverData data) {
     final Rot qA = Rot();
     final Rot qB = Rot();
@@ -621,20 +619,20 @@ class PrismaticJoint extends Joint {
     final Vector2 axis = Vector2.zero();
     final Vector2 perp = Vector2.zero();
     final Vector2 temp = Vector2.zero();
-    final Vector2 C1 = Vector2.zero();
+    final Vector2 c1 = Vector2.zero();
 
     final Vector3 impulse = Vector3.zero();
 
-    Vector2 cA = data.positions[_indexA].c;
+    final Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
-    Vector2 cB = data.positions[_indexB].c;
+    final Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
 
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
     // Compute fresh Jacobians
     temp
@@ -652,47 +650,47 @@ class PrismaticJoint extends Joint {
       ..sub(rA);
 
     axis.setFrom(Rot.mulVec2(qA, _localXAxisA));
-    double a1 = (temp
+    final double a1 = (temp
           ..setFrom(d)
           ..add(rA))
         .cross(axis);
-    double a2 = rB.cross(axis);
+    final double a2 = rB.cross(axis);
     perp.setFrom(Rot.mulVec2(qA, _localYAxisA));
 
-    double s1 = (temp
+    final double s1 = (temp
           ..setFrom(d)
           ..add(rA))
         .cross(perp);
-    double s2 = rB.cross(perp);
+    final double s2 = rB.cross(perp);
 
-    C1.x = perp.dot(d);
-    C1.y = aB - aA - _referenceAngle;
+    c1.x = perp.dot(d);
+    c1.y = aB - aA - _referenceAngle;
 
-    double linearError = C1.x.abs();
-    double angularError = C1.y.abs();
+    double linearError = c1.x.abs();
+    final double angularError = c1.y.abs();
 
     bool active = false;
-    double C2 = 0.0;
+    double c2 = 0.0;
     if (_enableLimit) {
-      double translation = axis.dot(d);
+      final double translation = axis.dot(d);
       if ((_upperTranslation - _lowerTranslation).abs() <
           2.0 * settings.linearSlop) {
         // Prevent large angular corrections
-        C2 = translation
+        c2 = translation
             .clamp(-settings.maxLinearCorrection, settings.maxLinearCorrection)
             .toDouble();
         linearError = math.max(linearError, translation.abs());
         active = true;
       } else if (translation <= _lowerTranslation) {
         // Prevent large linear corrections and allow some slop.
-        C2 = (translation - _lowerTranslation + settings.linearSlop)
+        c2 = (translation - _lowerTranslation + settings.linearSlop)
             .clamp(-settings.maxLinearCorrection, 0.0)
             .toDouble();
         linearError = math.max(linearError, _lowerTranslation - translation);
         active = true;
       } else if (translation >= _upperTranslation) {
         // Prevent large linear corrections and allow some slop.
-        C2 = (translation - _upperTranslation - settings.linearSlop)
+        c2 = (translation - _upperTranslation - settings.linearSlop)
             .clamp(0.0, settings.maxLinearCorrection)
             .toDouble();
         linearError = math.max(linearError, translation - _upperTranslation);
@@ -701,57 +699,54 @@ class PrismaticJoint extends Joint {
     }
 
     if (active) {
-      double k11 = mA + mB + iA * s1 * s1 + iB * s2 * s2;
-      double k12 = iA * s1 + iB * s2;
-      double k13 = iA * s1 * a1 + iB * s2 * a2;
+      final double k11 = mA + mB + iA * s1 * s1 + iB * s2 * s2;
+      final double k12 = iA * s1 + iB * s2;
+      final double k13 = iA * s1 * a1 + iB * s2 * a2;
       double k22 = iA + iB;
       if (k22 == 0.0) {
         // For fixed rotation
         k22 = 1.0;
       }
-      double k23 = iA * a1 + iB * a2;
-      double k33 = mA + mB + iA * a1 * a1 + iB * a2 * a2;
+      final double k23 = iA * a1 + iB * a2;
+      final double k33 = mA + mB + iA * a1 * a1 + iB * a2 * a2;
 
-      final Matrix3 K = Matrix3.zero();
-      K.setValues(k11, k12, k13, k12, k22, k23, k13, k23, k33);
+      final Matrix3 k = Matrix3.zero();
+      k.setValues(k11, k12, k13, k12, k22, k23, k13, k23, k33);
 
-      final Vector3 C = Vector3.zero();
-      C.x = C1.x;
-      C.y = C1.y;
-      C.z = C2;
+      final Vector3 c = Vector3.zero();
+      c.x = c1.x;
+      c.y = c1.y;
+      c.z = c2;
 
-      Matrix3.solve(K, impulse, C..negate());
+      Matrix3.solve(k, impulse, c..negate());
     } else {
-      double k11 = mA + mB + iA * s1 * s1 + iB * s2 * s2;
-      double k12 = iA * s1 + iB * s2;
-      double k22 = iA + iB;
-      if (k22 == 0.0) {
-        k22 = 1.0;
-      }
+      final double k11 = mA + mB + iA * s1 * s1 + iB * s2 * s2;
+      final double k12 = iA * s1 + iB * s2;
+      final double k22 = iA + iB == 0.0 ? 1.0 : iA + iB;
 
-      final Matrix2 K = Matrix2.zero();
+      final Matrix2 k = Matrix2.zero();
 
-      K.setValues(k11, k12, k12, k22);
+      k.setValues(k11, k12, k12, k22);
       // temp is impulse1
-      Matrix2.solve(K, temp, C1..negate());
-      C1.negate();
+      Matrix2.solve(k, temp, c1..negate());
+      c1.negate();
 
       impulse.x = temp.x;
       impulse.y = temp.y;
       impulse.z = 0.0;
     }
 
-    double Px = impulse.x * perp.x + impulse.z * axis.x;
-    double Py = impulse.x * perp.y + impulse.z * axis.y;
-    double LA = impulse.x * s1 + impulse.y + impulse.z * a1;
-    double LB = impulse.x * s2 + impulse.y + impulse.z * a2;
+    final double pX = impulse.x * perp.x + impulse.z * axis.x;
+    final double pY = impulse.x * perp.y + impulse.z * axis.y;
+    final double lA = impulse.x * s1 + impulse.y + impulse.z * a1;
+    final double lB = impulse.x * s2 + impulse.y + impulse.z * a2;
 
-    cA.x -= mA * Px;
-    cA.y -= mA * Py;
-    aA -= iA * LA;
-    cB.x += mB * Px;
-    cB.y += mB * Py;
-    aB += iB * LB;
+    cA.x -= mA * pX;
+    cA.y -= mA * pY;
+    aA -= iA * lA;
+    cB.x += mB * pX;
+    cB.y += mB * pY;
+    aB += iB * lB;
 
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;

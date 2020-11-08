@@ -8,8 +8,7 @@ class JointDef {
   /// The local anchor point relative to body2's origin.
   final Vector2 localAnchorB = Vector2.zero();
 
-  JointDef(JointType type) {
-    this.type = type;
+  JointDef(this.type) {
     collideConnected = false;
   }
 
