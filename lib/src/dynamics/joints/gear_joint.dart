@@ -393,7 +393,7 @@ class GearJoint extends Joint {
     double mass = 0.0;
 
     if (_typeA == JointType.REVOLUTE) {
-       jvBC.setZero();
+      jvBC.setZero();
       jwA = 1.0;
       jwC = 1.0;
       mass += _iA + _iC;
@@ -404,7 +404,7 @@ class GearJoint extends Joint {
       final Vector2 rA = Vector2.zero();
       final Vector2 pC = Vector2.zero();
       final Vector2 pA = Vector2.zero();
-       jvBC.setFrom(Rot.mulVec2(qC, _localAxisC));
+      jvBC.setFrom(Rot.mulVec2(qC, _localAxisC));
       temp
         ..setFrom(_localAnchorC)
         ..sub(_lcC);
@@ -413,8 +413,8 @@ class GearJoint extends Joint {
         ..setFrom(localAnchorA)
         ..sub(_lcA);
       rA.setFrom(Rot.mulVec2(qA, temp));
-      jwC = rC.cross( jvBC);
-      jwA = rA.cross( jvBC);
+      jwC = rC.cross(jvBC);
+      jwA = rA.cross(jvBC);
       mass += _mC + _mA + _iC * jwC * jwC + _iA * jwA * jwA;
 
       pC
@@ -475,16 +475,16 @@ class GearJoint extends Joint {
       impulse = -c / mass;
     }
 
-    cA.x += (_mA * impulse) *  jvBC.x;
-    cA.y += (_mA * impulse) *  jvBC.y;
+    cA.x += (_mA * impulse) * jvBC.x;
+    cA.y += (_mA * impulse) * jvBC.y;
     aA += _iA * impulse * jwA;
 
     cB.x += (_mB * impulse) * jvBD.x;
     cB.y += (_mB * impulse) * jvBD.y;
     aB += _iB * impulse * jwB;
 
-    cC.x -= (_mC * impulse) *  jvBC.x;
-    cC.y -= (_mC * impulse) *  jvBC.y;
+    cC.x -= (_mC * impulse) * jvBC.x;
+    cC.y -= (_mC * impulse) * jvBC.y;
     aC -= _iC * impulse * jwC;
 
     cD.x -= (_mD * impulse) * jvBD.x;

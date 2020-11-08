@@ -24,14 +24,12 @@ class MouseJoint extends Joint {
   final Matrix2 _mass = Matrix2.zero();
   final Vector2 _c = Vector2.zero();
 
-  MouseJoint(MouseJointDef def) :
-    assert(!def.target.isInfinite && !def.target.isNaN),
-    assert(def.maxForce >= 0),
-    assert(def.frequencyHz >= 0),
-    assert(def.dampingRatio >= 0),
-    super(def)
-  {
-
+  MouseJoint(MouseJointDef def)
+      : assert(!def.target.isInfinite && !def.target.isNaN),
+        assert(def.maxForce >= 0),
+        assert(def.frequencyHz >= 0),
+        assert(def.dampingRatio >= 0),
+        super(def) {
     _targetA.setFrom(def.target);
     localAnchorB.setFrom(Transform.mulTransVec2(_bodyB._transform, _targetA));
 

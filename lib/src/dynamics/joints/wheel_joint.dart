@@ -333,7 +333,8 @@ class WheelJoint extends Joint {
             ..sub(vA)) +
           _sBx * wB -
           _sAx * wA;
-      final double impulse = -_springMass * (cDot + _bias + _gamma * _springImpulse);
+      final double impulse =
+          -_springMass * (cDot + _bias + _gamma * _springImpulse);
       _springImpulse += impulse;
 
       p.x = impulse * _ax.x;
