@@ -198,7 +198,9 @@ class PrismaticJoint extends Joint {
   }
 
   double getJointTranslation() {
-    final Vector2 pA = Vector2.zero(), pB = Vector2.zero(), axis = Vector2.zero();
+    final Vector2 pA = Vector2.zero(),
+        pB = Vector2.zero(),
+        axis = Vector2.zero();
     pA.setFrom(_bodyA.getWorldPoint(localAnchorA));
     pB.setFrom(_bodyB.getWorldPoint(localAnchorB));
     axis.setFrom(_bodyA.getWorldVector(_localXAxisA));

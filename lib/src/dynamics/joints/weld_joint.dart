@@ -371,9 +371,12 @@ class WeldJoint extends Joint {
 
   /// Returns the zero matrix if singular.
   Matrix3 _matrix3GetSymInverse33(Matrix3 m, Matrix3 m2) {
-    final double bx = m.entry(1, 1) * m.entry(2, 2) - m.entry(2, 1) * m.entry(1, 2);
-    final double by = m.entry(2, 1) * m.entry(0, 2) - m.entry(0, 1) * m.entry(2, 2);
-    final double bz = m.entry(0, 1) * m.entry(1, 2) - m.entry(1, 1) * m.entry(0, 2);
+    final double bx =
+        m.entry(1, 1) * m.entry(2, 2) - m.entry(2, 1) * m.entry(1, 2);
+    final double by =
+        m.entry(2, 1) * m.entry(0, 2) - m.entry(0, 1) * m.entry(2, 2);
+    final double bz =
+        m.entry(0, 1) * m.entry(1, 2) - m.entry(1, 1) * m.entry(0, 2);
     double det = m.entry(0, 0) * bx + m.entry(1, 0) * by + m.entry(2, 0) * bz;
     if (det != 0.0) {
       det = 1.0 / det;

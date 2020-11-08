@@ -35,7 +35,8 @@ class ConstantVolumeJoint extends Joint {
     _targetLengths = Float64List(_bodies.length);
     for (int i = 0; i < _targetLengths.length; ++i) {
       final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
-      final double dist = (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
+      final double dist =
+          (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
       _targetLengths[i] = dist;
     }
     _targetVolume = getBodyArea();
