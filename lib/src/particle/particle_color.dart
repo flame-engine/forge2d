@@ -32,7 +32,7 @@ class ParticleColor {
     _data[3] = 50;
   }
 
-  ParticleColor.RGBA(int r, int g, int b, int a) {
+  ParticleColor.rgba(int r, int g, int b, int a) {
     setRGBA(r, g, b, a);
   }
 

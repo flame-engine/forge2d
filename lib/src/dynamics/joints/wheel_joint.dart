@@ -353,7 +353,7 @@ class WheelJoint extends Joint {
 
     // Solve rotational motor constraint
     {
-      double cDot = wB - wA - _motorSpeed;
+      final double cDot = wB - wA - _motorSpeed;
       double impulse = -_motorMass * cDot;
 
       final double oldImpulse = _motorImpulse;

@@ -1,4 +1,4 @@
-library CircleStress;
+library circle_stress;
 
 import 'dart:math' as math;
 import 'demo.dart';
@@ -19,13 +19,14 @@ class CircleStress extends Demo {
   CircleStress() : super("Circle stress");
 
   /// Creates all bodies.
+  @override
   void initialize() {
     {
       final bd = BodyDef();
       final ground = world.createBody(bd);
       bodies.add(ground);
 
-      PolygonShape shape = PolygonShape();
+      final PolygonShape shape = PolygonShape();
       shape.setAsEdge(Vector2(-40.0, 0.0), Vector2(40.0, 0.0));
       ground.createFixtureFromShape(shape);
     }
@@ -48,23 +49,23 @@ class CircleStress extends Demo {
       sd.setAsBoxXY(3.0, 50.0);
       final wallDef = BodyDef();
       wallDef.position = Vector2(45.0, 25.0);
-      var rightWall = world.createBody(wallDef);
+      final Body rightWall = world.createBody(wallDef);
       bodies.add(rightWall);
       rightWall.createFixtureFromShape(sd);
       wallDef.position = Vector2(-45.0, 25.0);
-      var leftWall = world.createBody(wallDef);
+      final Body leftWall = world.createBody(wallDef);
       bodies.add(leftWall);
       leftWall.createFixtureFromShape(sd);
 
       // Corners
       final cornerDef = BodyDef();
       sd.setAsBoxXY(20.0, 3.0);
-      cornerDef.angle = (-math.pi / 4.0);
+      cornerDef.angle = -math.pi / 4.0;
       cornerDef.position = Vector2(-35.0, 8.0);
       Body myBod = world.createBody(cornerDef);
       bodies.add(myBod);
       myBod.createFixtureFromShape(sd);
-      cornerDef.angle = (math.pi / 4.0);
+      cornerDef.angle = math.pi / 4.0;
       cornerDef.position = Vector2(35.0, 8.0);
       myBod = world.createBody(cornerDef);
       bodies.add(myBod);
@@ -72,7 +73,7 @@ class CircleStress extends Demo {
 
       // top
       sd.setAsBoxXY(50.0, 10.0);
-      var topDef = BodyDef()
+      final BodyDef topDef = BodyDef()
         ..type = BodyType.STATIC
         ..angle = 0.0
         ..position = Vector2(0.0, 75.0);
@@ -103,25 +104,25 @@ class CircleStress extends Demo {
     }
 
     {
-      var bd = BodyDef()
+      final BodyDef bd = BodyDef()
         ..type = BodyType.DYNAMIC
         ..position = Vector2(0.0, 10.0);
-      int numPieces = 5;
-      double radius = 6.0;
-      var body = world.createBody(bd);
+      const int numPieces = 5;
+      const double radius = 6.0;
+      final Body body = world.createBody(bd);
       bodies.add(body);
 
       for (int i = 0; i < numPieces; i++) {
-        double xPos =
+        final double xPos =
             radius * math.cos(2 * math.pi * (i / numPieces.toDouble()));
-        double yPos =
+        final double yPos =
             radius * math.sin(2 * math.pi * (i / numPieces.toDouble()));
 
-        var cd = CircleShape()
+        final CircleShape cd = CircleShape()
           ..radius = 1.2
           ..position.setValues(xPos, yPos);
 
-        final fd = FixtureDef()
+        final FixtureDef fd = FixtureDef()
           ..shape = cd
           ..density = 25.0
           ..friction = .1
@@ -133,10 +134,10 @@ class CircleStress extends Demo {
       body.setBullet(false);
 
       // Create an empty ground body.
-      var bodyDef = BodyDef();
-      var groundBody = world.createBody(bodyDef);
+      final BodyDef bodyDef = BodyDef();
+      final Body groundBody = world.createBody(bodyDef);
 
-      RevoluteJointDef rjd = RevoluteJointDef()
+      final RevoluteJointDef rjd = RevoluteJointDef()
         ..initialize(body, groundBody, body.position)
         ..motorSpeed = -math.pi
         ..maxMotorTorque = 1000000.0
@@ -146,21 +147,21 @@ class CircleStress extends Demo {
 
       for (int j = 0; j < COLUMNS; j++) {
         for (int i = 0; i < LOAD_SIZE; i++) {
-          CircleShape circ = CircleShape()
+          final CircleShape circleShape = CircleShape()
             ..radius = 1.0 + (i % 2 == 0 ? 1.0 : -1.0) * .5 * .75;
-          var fd2 = FixtureDef()
-            ..shape = circ
-            ..density = circ.radius * 1.5
+          final FixtureDef fd2 = FixtureDef()
+            ..shape = circleShape
+            ..density = circleShape.radius * 1.5
             ..friction = 0.5
             ..restitution = 0.7;
-          double xPos = -39.0 + 2 * i;
-          double yPos = 50.0 + j;
-          var bod = BodyDef()
+          final double xPos = -39.0 + 2 * i;
+          final double yPos = 50.0 + j;
+          final BodyDef bodyDef = BodyDef()
             ..type = BodyType.DYNAMIC
             ..position = Vector2(xPos, yPos);
-          Body myBody = world.createBody(bod);
-          bodies.add(myBody);
-          myBody.createFixture(fd2);
+          final Body body = world.createBody(bodyDef);
+          bodies.add(body);
+          body.createFixture(fd2);
         }
       }
     }

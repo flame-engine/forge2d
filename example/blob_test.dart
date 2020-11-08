@@ -1,4 +1,4 @@
-library BlobTest;
+library blob_test;
 
 import 'dart:math' as math;
 import 'demo.dart';
@@ -16,13 +16,14 @@ class BlobTest extends Demo {
     blob.runAnimation();
   }
 
+  @override
   void initialize() {
     Body ground;
     {
-      PolygonShape sd = PolygonShape();
+      final PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(50.0, 0.4);
 
-      BodyDef bd = BodyDef();
+      final BodyDef bd = BodyDef();
       bd.position.setValues(0.0, 0.0);
       assert(world != null);
       ground = world.createBody(bd);
@@ -34,27 +35,27 @@ class BlobTest extends Demo {
       ground.createFixtureFromShape(sd);
     }
 
-    ConstantVolumeJointDef jointDef = ConstantVolumeJointDef();
+    final ConstantVolumeJointDef jointDef = ConstantVolumeJointDef();
 
-    double cx = 0.0;
-    double cy = 10.0;
-    double rx = 5.0;
-    double ry = 5.0;
-    double nBodies = 20.0;
-    double bodyRadius = 0.5;
+    const double cx = 0.0;
+    const double cy = 10.0;
+    const double rx = 5.0;
+    const double ry = 5.0;
+    const double nBodies = 20.0;
+    const double bodyRadius = 0.5;
     for (int i = 0; i < nBodies; ++i) {
-      double angle = (i / nBodies) * math.pi * 2;
-      BodyDef bd = BodyDef();
+      final double angle = (i / nBodies) * math.pi * 2;
+      final BodyDef bd = BodyDef();
       bd.fixedRotation = true;
 
-      double x = cx + rx * math.sin(angle);
-      double y = cy + ry * math.cos(angle);
+      final double x = cx + rx * math.sin(angle);
+      final double y = cy + ry * math.cos(angle);
       bd.position.setFrom(Vector2(x, y));
       bd.type = BodyType.DYNAMIC;
-      Body body = world.createBody(bd);
+      final Body body = world.createBody(bd);
 
-      FixtureDef fd = FixtureDef();
-      CircleShape cd = CircleShape();
+      final FixtureDef fd = FixtureDef();
+      final CircleShape cd = CircleShape();
       cd.radius = bodyRadius;
       fd.shape = cd;
       fd.density = 1.0;
@@ -68,12 +69,12 @@ class BlobTest extends Demo {
     jointDef.collideConnected = false;
     world.createJoint(jointDef);
 
-    BodyDef bd2 = BodyDef();
+    final BodyDef bd2 = BodyDef();
     bd2.type = BodyType.DYNAMIC;
-    PolygonShape psd = PolygonShape();
+    final PolygonShape psd = PolygonShape();
     psd.setAsBox(3.0, 1.5, Vector2(cx, cy + 15.0), 0.0);
     bd2.position = Vector2(cx, cy + 15.0);
-    Body fallingBox = world.createBody(bd2);
+    final Body fallingBox = world.createBody(bd2);
     fallingBox.createFixtureFromShape(psd, 1.0);
   }
 }

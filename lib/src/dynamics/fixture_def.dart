@@ -5,7 +5,7 @@ part of forge2d;
 class FixtureDef {
   /// The shape, this must be set. The shape will be cloned, so you can create the shape on the
   /// stack.
-  Shape shape = null;
+  Shape shape;
 
   /// Use this to store application specific fixture data.
   Object userData;

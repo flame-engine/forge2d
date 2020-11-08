@@ -1140,7 +1140,7 @@ class World {
 
   // NOTE this corresponds to the liquid test, so the debugdraw can draw
   // the liquid particles correctly. They should be the same.
-  static int LIQUID_INT = 1234598372;
+  static const int LIQUID_INT = 1234598372;
   double liquidLength = .12;
   double averageLinearVel = -1.0;
   final Vector2 liquidOffset = Vector2.zero();

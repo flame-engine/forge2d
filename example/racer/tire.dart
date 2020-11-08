@@ -3,14 +3,14 @@ part of racer;
 class Tire {
   Tire(World world, this._maxForwardSpeed, this._maxBackwardSpeed,
       this._maxDriveForce, this._maxLateralImpulse) {
-    BodyDef def = BodyDef();
+    final BodyDef def = BodyDef();
     def.type = BodyType.DYNAMIC;
     _body = world.createBody(def);
     _body.userData = "Tire";
 
-    PolygonShape polygonShape = PolygonShape();
+    final PolygonShape polygonShape = PolygonShape();
     polygonShape.setAsBoxXY(0.5, 1.25);
-    Fixture fixture = _body.createFixtureFromShape(polygonShape, 1.0);
+    final Fixture fixture = _body.createFixtureFromShape(polygonShape, 1.0);
     fixture.userData = this;
 
     _currentTraction = 1.0;
@@ -39,7 +39,7 @@ class Tire {
     _body.applyAngularImpulse(
         0.1 * _currentTraction * _body.getInertia() * (-_body.angularVelocity));
 
-    Vector2 currentForwardNormal = _forwardVelocity;
+    final Vector2 currentForwardNormal = _forwardVelocity;
     final double currentForwardSpeed = currentForwardNormal.length;
     currentForwardNormal.normalize();
     final double dragForceMagnitude = -2 * currentForwardSpeed;
@@ -61,7 +61,8 @@ class Tire {
         return;
     }
 
-    Vector2 currentForwardNormal = _body.getWorldVector(Vector2(0.0, 1.0));
+    final Vector2 currentForwardNormal =
+        _body.getWorldVector(Vector2(0.0, 1.0));
     final double currentSpeed = _forwardVelocity.dot(currentForwardNormal);
     double force = 0.0;
     if (desiredSpeed < currentSpeed) {
@@ -118,7 +119,7 @@ class Tire {
   final double _maxDriveForce;
   final double _maxLateralImpulse;
   double _currentTraction;
-  final Set<GroundArea> _groundAreas = Set<GroundArea>();
+  final Set<GroundArea> _groundAreas = <GroundArea>{};
 
   // Cached Vectors to reduce unnecessary object creation.
   final Vector2 _worldLeft = Vector2(1.0, 0.0);

@@ -1,4 +1,4 @@
-library FrictionJointTest;
+library friction_joint_test;
 
 import 'dart:math' as math;
 
@@ -17,6 +17,7 @@ class FrictionJointTest extends Demo {
     test.runAnimation();
   }
 
+  @override
   void initialize() {
     assert(null != world);
 
