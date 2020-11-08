@@ -71,7 +71,7 @@ class MouseJoint extends Joint {
     _indexB = _bodyB.islandIndex;
     _localCenterB.setFrom(_bodyB._sweep.localCenter);
     _invMassB = _bodyB._invMass;
-    _invIB = _bodyB._invI;
+    _invIB = _bodyB.inverseInertia;
 
     final Vector2 cB = data.positions[_indexB].c;
     final double aB = data.positions[_indexB].a;

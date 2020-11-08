@@ -671,7 +671,7 @@ class World {
       b._flags &= ~Body.ISLAND_FLAG;
     }
     for (Contact c = _contactManager.contactList; c != null; c = c._next) {
-      c._flags &= ~Contact.ISLAND_FLAG;
+      c.flags &= ~Contact.ISLAND_FLAG;
     }
     for (Joint j in joints) {
       j._islandFlag = false;
@@ -723,7 +723,7 @@ class World {
           final Contact contact = ce.contact;
 
           // Has this contact already been added to an island?
-          if ((contact._flags & Contact.ISLAND_FLAG) == Contact.ISLAND_FLAG) {
+          if ((contact.flags & Contact.ISLAND_FLAG) == Contact.ISLAND_FLAG) {
             continue;
           }
 
@@ -740,7 +740,7 @@ class World {
           }
 
           island.addContact(contact);
-          contact._flags |= Contact.ISLAND_FLAG;
+          contact.flags |= Contact.ISLAND_FLAG;
 
           final Body other = ce.other;
 
@@ -833,9 +833,9 @@ class World {
 
       for (Contact c = _contactManager.contactList; c != null; c = c._next) {
         // Invalidate TOI
-        c._flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
-        c._toiCount = 0;
-        c._toi = 1.0;
+        c.flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
+        c.toiCount = 0;
+        c.toi = 1.0;
       }
     }
 
@@ -852,14 +852,14 @@ class World {
         }
 
         // Prevent excessive sub-stepping.
-        if (c._toiCount > settings.maxSubSteps) {
+        if (c.toiCount > settings.maxSubSteps) {
           continue;
         }
 
         double alpha = 1.0;
-        if ((c._flags & Contact.TOI_FLAG) != 0) {
+        if ((c.flags & Contact.TOI_FLAG) != 0) {
           // This contact has a valid cached TOI.
-          alpha = c._toi;
+          alpha = c.toi;
         } else {
           final Fixture fA = c.fixtureA;
           final Fixture fB = c.fixtureB;
@@ -927,8 +927,8 @@ class World {
             alpha = 1.0;
           }
 
-          c._toi = alpha;
-          c._flags |= Contact.TOI_FLAG;
+          c.toi = alpha;
+          c.flags |= Contact.TOI_FLAG;
         }
 
         if (alpha < minAlpha) {
@@ -958,8 +958,8 @@ class World {
 
       // The TOI contact likely has some new contact points.
       minContact.update(_contactManager.contactListener);
-      minContact._flags &= ~Contact.TOI_FLAG;
-      ++minContact._toiCount;
+      minContact.flags &= ~Contact.TOI_FLAG;
+      ++minContact.toiCount;
 
       // Is the contact solid?
       if (minContact.isEnabled() == false || minContact.isTouching() == false) {
@@ -983,7 +983,7 @@ class World {
 
       bA._flags |= Body.ISLAND_FLAG;
       bB._flags |= Body.ISLAND_FLAG;
-      minContact._flags |= Contact.ISLAND_FLAG;
+      minContact.flags |= Contact.ISLAND_FLAG;
 
       // Get contacts on bodyA and bodyB.
       tempBodies[0] = bA;
@@ -995,7 +995,7 @@ class World {
             final Contact contact = ce.contact;
 
             // Has this contact already been added to the island?
-            if ((contact._flags & Contact.ISLAND_FLAG) != 0) {
+            if ((contact.flags & Contact.ISLAND_FLAG) != 0) {
               continue;
             }
 
@@ -1038,7 +1038,7 @@ class World {
             }
 
             // Add the contact to the island
-            contact._flags |= Contact.ISLAND_FLAG;
+            contact.flags |= Contact.ISLAND_FLAG;
             island.addContact(contact);
 
             // Has the other body already been added to the island?
@@ -1079,7 +1079,7 @@ class World {
 
         // Invalidate all contact TOIs on this displaced body.
         for (ContactEdge ce = body._contactList; ce != null; ce = ce.next) {
-          ce.contact._flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
+          ce.contact.flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
         }
       }
 

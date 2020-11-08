@@ -172,8 +172,8 @@ class WheelJoint extends Joint {
     _localCenterB.setFrom(_bodyB._sweep.localCenter);
     _invMassA = _bodyA._invMass;
     _invMassB = _bodyB._invMass;
-    _invIA = _bodyA._invI;
-    _invIB = _bodyB._invI;
+    _invIA = _bodyA.inverseInertia;
+    _invIB = _bodyB.inverseInertia;
 
     final double mA = _invMassA, mB = _invMassB;
     final double iA = _invIA, iB = _invIB;

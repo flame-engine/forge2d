@@ -19,7 +19,7 @@ abstract class Contact {
 
   static const int TOI_FLAG = 0x0020;
 
-  int _flags = 0;
+  int flags = 0;
 
   // World pool and list pointers.
   Contact _prev;
@@ -29,51 +29,33 @@ abstract class Contact {
   final ContactEdge _nodeA = ContactEdge();
   final ContactEdge _nodeB = ContactEdge();
 
-  Fixture _fixtureA;
-  Fixture _fixtureB;
+  final Fixture _fixtureA;
+  final Fixture _fixtureB;
 
-  int _indexA = 0;
-  int _indexB = 0;
+  final int _indexA;
+  final int _indexB;
 
   final Manifold _manifold = Manifold();
 
-  int _toiCount = 0;
-  final double _toi = 0.0;
+  int toiCount = 0;
+  double toi = 0.0;
 
   double _friction = 0.0;
   double _restitution = 0.0;
 
-  double _tangentSpeed = 0.0;
+  double tangentSpeed = 0.0;
 
-  Contact(Fixture fA, int indexA, Fixture fB, int indexB) {
-    _flags = ENABLED_FLAG;
-
-    _fixtureA = fA;
-    _fixtureB = fB;
-
-    _indexA = indexA;
-    _indexB = indexB;
-
+  Contact(this._fixtureA, this._indexA, this._fixtureB, this._indexB) {
+    flags = ENABLED_FLAG;
     _manifold.pointCount = 0;
-
-    _prev = null;
-    _next = null;
-
-    _nodeA.contact = null;
-    _nodeA.prev = null;
-    _nodeA.next = null;
-    _nodeA.other = null;
-
-    _nodeB.contact = null;
-    _nodeB.prev = null;
-    _nodeB.next = null;
-    _nodeB.other = null;
-
-    _toiCount = 0;
-    _friction = Contact.mixFriction(fA._friction, fB._friction);
-    _restitution = Contact.mixRestitution(fA._restitution, fB._restitution);
-
-    _tangentSpeed = 0.0;
+    _friction = Contact.mixFriction(
+      _fixtureA._friction,
+      _fixtureB._friction,
+    );
+    _restitution = Contact.mixRestitution(
+      _fixtureA._restitution,
+      _fixtureB._restitution,
+    );
   }
 
   static Contact init(Fixture fA, int indexA, Fixture fB, int indexB) {
@@ -124,22 +106,22 @@ abstract class Contact {
 
   /// Is this contact touching
   bool isTouching() {
-    return (_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+    return (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
   }
 
   /// Enable/disable this contact. This can be used inside the pre-solve contact listener. The
   /// contact is only disabled for the current time step (or sub-step in continuous collisions).
   void setEnabled(bool flag) {
     if (flag) {
-      _flags |= ENABLED_FLAG;
+      flags |= ENABLED_FLAG;
     } else {
-      _flags &= ~ENABLED_FLAG;
+      flags &= ~ENABLED_FLAG;
     }
   }
 
   /// Has this contact been disabled?
   bool isEnabled() {
-    return (_flags & ENABLED_FLAG) == ENABLED_FLAG;
+    return (flags & ENABLED_FLAG) == ENABLED_FLAG;
   }
 
   /// Get the next contact in the world's contact list.
@@ -174,7 +156,7 @@ abstract class Contact {
 
   /// Flag this contact for filtering. Filtering will occur the next time step.
   void flagForFiltering() {
-    _flags |= FILTER_FLAG;
+    flags |= FILTER_FLAG;
   }
 
   // djm pooling
@@ -184,10 +166,10 @@ abstract class Contact {
     _oldManifold.set(_manifold);
 
     // Re-enable this contact.
-    _flags |= ENABLED_FLAG;
+    flags |= ENABLED_FLAG;
 
     bool touching = false;
-    final bool wasTouching = (_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+    final bool wasTouching = (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
     final bool sensorA = _fixtureA.isSensor();
     final bool sensorB = _fixtureB.isSensor();
@@ -236,9 +218,9 @@ abstract class Contact {
     }
 
     if (touching) {
-      _flags |= TOUCHING_FLAG;
+      flags |= TOUCHING_FLAG;
     } else {
-      _flags &= ~TOUCHING_FLAG;
+      flags &= ~TOUCHING_FLAG;
     }
 
     if (listener == null) {

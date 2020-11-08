@@ -43,7 +43,7 @@ class Body {
   double _mass = 0.0, _invMass = 0.0;
 
   // Rotational inertia about the center of mass.
-  double _I = 0.0, _invI = 0.0;
+  double inertia = 0.0, inverseInertia = 0.0;
 
   double _linearDamping = 0.0;
   double angularDamping = 0.0;
@@ -112,8 +112,8 @@ class Body {
       _invMass = 0.0;
     }
 
-    _I = 0.0;
-    _invI = 0.0;
+    inertia = 0.0;
+    inverseInertia = 0.0;
 
     userData = bd.userData;
 
@@ -212,7 +212,7 @@ class Body {
     // Destroy any contacts associated with the fixture.
     ContactEdge edge = _contactList;
     while (edge != null) {
-      Contact c = edge.contact;
+      final Contact c = edge.contact;
       edge = edge.next;
 
       final Fixture fixtureA = c.fixtureA;
@@ -226,7 +226,7 @@ class Body {
     }
 
     if ((_flags & ACTIVE_FLAG) == ACTIVE_FLAG) {
-      BroadPhase broadPhase = world._contactManager.broadPhase;
+      final BroadPhase broadPhase = world._contactManager.broadPhase;
       fixture.destroyProxies(broadPhase);
     }
 
@@ -283,7 +283,7 @@ class Body {
   /// Set the linear velocity of the center of mass.
   ///
   /// @param v the new linear velocity of the center of mass.
-  void set linearVelocity(Vector2 v) {
+  set linearVelocity(Vector2 v) {
     if (_bodyType == BodyType.STATIC) {
       return;
     }
@@ -304,7 +304,7 @@ class Body {
   /// Set the angular velocity.
   ///
   /// @param omega the new angular velocity in radians/second.
-  void set angularVelocity(double w) {
+  set angularVelocity(double w) {
     if (_bodyType == BodyType.STATIC) {
       return;
     }
@@ -388,7 +388,7 @@ class Body {
     _linearVelocity.x += impulse.x * _invMass;
     _linearVelocity.y += impulse.y * _invMass;
 
-    _angularVelocity += _invI *
+    _angularVelocity += inverseInertia *
         ((point.x - _sweep.c.x) * impulse.y -
             (point.y - _sweep.c.y) * impulse.x);
   }
@@ -404,7 +404,7 @@ class Body {
     if (isAwake() == false) {
       setAwake(true);
     }
-    _angularVelocity += _invI * impulse;
+    _angularVelocity += inverseInertia * impulse;
   }
 
   /// Get the total mass of the body.
@@ -416,7 +416,7 @@ class Body {
   ///
   /// @return the rotational inertia, usually in kg-m^2.
   double getInertia() {
-    return _I +
+    return inertia +
         _mass *
             (_sweep.localCenter.x * _sweep.localCenter.x +
                 _sweep.localCenter.y * _sweep.localCenter.y);
@@ -428,7 +428,7 @@ class Body {
   MassData getMassData() {
     return MassData()
       ..mass = _mass
-      ..I = _I + getInertia()
+      ..I = inertia + getInertia()
       ..center.x = _sweep.localCenter.x
       ..center.y = _sweep.localCenter.y;
   }
@@ -446,8 +446,8 @@ class Body {
     }
 
     _invMass = 0.0;
-    _I = 0.0;
-    _invI = 0.0;
+    inertia = 0.0;
+    inverseInertia = 0.0;
 
     _mass = massData.mass;
     if (_mass <= 0.0) {
@@ -457,9 +457,9 @@ class Body {
     _invMass = 1.0 / _mass;
 
     if (massData.I > 0.0 && (_flags & FIXED_ROTATION_FLAG) == 0.0) {
-      _I = massData.I - _mass * massData.center.dot(massData.center);
-      assert(_I > 0.0);
-      _invI = 1.0 / _I;
+      inertia = massData.I - _mass * massData.center.dot(massData.center);
+      assert(inertia > 0.0);
+      inverseInertia = 1.0 / inertia;
     }
 
     // Move center of mass.
@@ -483,8 +483,8 @@ class Body {
     // Compute mass data from shapes. Each shape has its own density.
     _mass = 0.0;
     _invMass = 0.0;
-    _I = 0.0;
-    _invI = 0.0;
+    inertia = 0.0;
+    inverseInertia = 0.0;
     _sweep.localCenter.setZero();
 
     // Static and kinematic bodies have zero mass.
@@ -509,7 +509,7 @@ class Body {
       _mass += massData.mass;
       (temp..setFrom(massData.center)).scale(massData.mass);
       localCenter.add(temp);
-      _I += massData.I;
+      inertia += massData.I;
     }
 
     // Compute center of mass.
@@ -522,18 +522,18 @@ class Body {
       _invMass = 1.0;
     }
 
-    if (_I > 0.0 && (_flags & FIXED_ROTATION_FLAG) == 0.0) {
+    if (inertia > 0.0 && (_flags & FIXED_ROTATION_FLAG) == 0.0) {
       // Center the inertia about the center of mass.
-      _I -= _mass * localCenter.dot(localCenter);
-      assert(_I > 0.0);
-      _invI = 1.0 / _I;
+      inertia -= _mass * localCenter.dot(localCenter);
+      assert(inertia > 0.0);
+      inverseInertia = 1.0 / inertia;
     } else {
-      _I = 0.0;
-      _invI = 0.0;
+      inertia = 0.0;
+      inverseInertia = 0.0;
     }
 
     // Move center of mass.
-    Vector2 oldCenter = Vector2.copy(_sweep.c);
+    final Vector2 oldCenter = Vector2.copy(_sweep.c);
     _sweep.localCenter.setFrom(localCenter);
     _sweep.c0.setFrom(Transform.mulVec2(_transform, _sweep.localCenter));
     _sweep.c.setFrom(_sweep.c0);
@@ -630,16 +630,16 @@ class Body {
     // Delete the attached contacts.
     ContactEdge ce = _contactList;
     while (ce != null) {
-      ContactEdge ce0 = ce;
+      final ContactEdge ce0 = ce;
       ce = ce.next;
       world._contactManager.destroy(ce0.contact);
     }
     _contactList = null;
 
     // Touch the proxies so that new contacts will be created (when appropriate)
-    BroadPhase broadPhase = world._contactManager.broadPhase;
+    final BroadPhase broadPhase = world._contactManager.broadPhase;
     for (Fixture f = _fixtureList; f != null; f = f._next) {
-      int proxyCount = f._proxyCount;
+      final int proxyCount = f._proxyCount;
       for (int i = 0; i < proxyCount; ++i) {
         broadPhase.touchProxy(f._proxies[i].proxyId);
       }
@@ -725,7 +725,7 @@ class Body {
       _flags |= ACTIVE_FLAG;
 
       // Create all proxies.
-      BroadPhase broadPhase = world._contactManager.broadPhase;
+      final BroadPhase broadPhase = world._contactManager.broadPhase;
       for (Fixture f = _fixtureList; f != null; f = f._next) {
         f.createProxies(broadPhase, _transform);
       }
@@ -735,7 +735,7 @@ class Body {
       _flags &= ~ACTIVE_FLAG;
 
       // Destroy all proxies.
-      BroadPhase broadPhase = world._contactManager.broadPhase;
+      final BroadPhase broadPhase = world._contactManager.broadPhase;
       for (Fixture f = _fixtureList; f != null; f = f._next) {
         f.destroyProxies(broadPhase);
       }
@@ -743,7 +743,7 @@ class Body {
       // Destroy the attached contacts.
       ContactEdge ce = _contactList;
       while (ce != null) {
-        ContactEdge ce0 = ce;
+        final ContactEdge ce0 = ce;
         ce = ce.next;
         world._contactManager.destroy(ce0.contact);
       }
@@ -818,8 +818,8 @@ class Body {
   void synchronizeTransform() {
     _transform.q.s = math.sin(_sweep.a);
     _transform.q.c = math.cos(_sweep.a);
-    Rot q = _transform.q;
-    Vector2 v = _sweep.localCenter;
+    final Rot q = _transform.q;
+    final Vector2 v = _sweep.localCenter;
     _transform.p.x = _sweep.c.x - q.c * v.x + q.s * v.y;
     _transform.p.y = _sweep.c.y - q.s * v.x - q.c * v.y;
   }
@@ -857,7 +857,8 @@ class Body {
     (_transform.p..scale(-1.0)).add(_sweep.c);
   }
 
+  @override
   String toString() {
-    return "Body[pos: ${position} linVel: ${linearVelocity} angVel: ${angularVelocity}]";
+    return "Body[pos: $position linVel: $linearVelocity angVel: $angularVelocity]";
   }
 }
