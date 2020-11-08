@@ -11,8 +11,12 @@ class VelocityConstraintPoint {
 }
 
 class ContactVelocityConstraint {
-  List<VelocityConstraintPoint> points =
-      List<VelocityConstraintPoint>(settings.maxManifoldPoints);
+  final List<VelocityConstraintPoint> points =
+      List<VelocityConstraintPoint>.generate(
+    settings.maxManifoldPoints,
+    (_) => VelocityConstraintPoint(),
+  );
+
   final Vector2 normal = Vector2.zero();
   final Matrix2 normalMass = Matrix2.zero();
   final Matrix2 K = Matrix2.zero();
@@ -25,10 +29,4 @@ class ContactVelocityConstraint {
   double tangentSpeed = 0.0;
   int pointCount = 0;
   int contactIndex = 0;
-
-  ContactVelocityConstraint() {
-    for (int i = 0; i < points.length; i++) {
-      points[i] = VelocityConstraintPoint();
-    }
-  }
 }

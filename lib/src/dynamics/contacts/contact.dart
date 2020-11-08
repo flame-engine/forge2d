@@ -7,17 +7,17 @@ part of forge2d;
 abstract class Contact {
   // Flags stored in _flags
   // Used when crawling contact graph when forming islands.
-  static final int ISLAND_FLAG = 0x0001;
+  static const int ISLAND_FLAG = 0x0001;
   // Set when the shapes are touching.
-  static final int TOUCHING_FLAG = 0x0002;
+  static const int TOUCHING_FLAG = 0x0002;
   // This contact can be disabled (by user)
-  static final int ENABLED_FLAG = 0x0004;
+  static const int ENABLED_FLAG = 0x0004;
   // This contact needs filtering because a fixture filter was changed.
-  static final int FILTER_FLAG = 0x0008;
+  static const int FILTER_FLAG = 0x0008;
   // This bullet contact had a TOI event
-  static final int BULLET_HIT_FLAG = 0x0010;
+  static const int BULLET_HIT_FLAG = 0x0010;
 
-  static final int TOI_FLAG = 0x0020;
+  static const int TOI_FLAG = 0x0020;
 
   int _flags = 0;
 
@@ -26,8 +26,8 @@ abstract class Contact {
   Contact _next;
 
   // Nodes for connecting bodies.
-  ContactEdge _nodeA = ContactEdge();
-  ContactEdge _nodeB = ContactEdge();
+  final ContactEdge _nodeA = ContactEdge();
+  final ContactEdge _nodeB = ContactEdge();
 
   Fixture _fixtureA;
   Fixture _fixtureB;
@@ -38,7 +38,7 @@ abstract class Contact {
   final Manifold _manifold = Manifold();
 
   int _toiCount = 0;
-  double _toi = 0.0;
+  final double _toi = 0.0;
 
   double _friction = 0.0;
   double _restitution = 0.0;
@@ -81,13 +81,13 @@ abstract class Contact {
     // order the arguments should come in the different contact classes.
     // { CIRCLE, EDGE, POLYGON, CHAIN }
     /// TODO.spydon: Clean this mess up.
-    ShapeType typeA =
+    final ShapeType typeA =
         fA.getType().index < fB.getType().index ? fA.getType() : fB.getType();
-    ShapeType typeB = fA.getType() == typeA ? fB.getType() : fA.getType();
-    int indexTemp = indexA;
+    final ShapeType typeB = fA.getType() == typeA ? fB.getType() : fA.getType();
+    final int indexTemp = indexA;
     indexA = fA.getType() == typeA ? indexA : indexB;
     indexB = fB.getType() == typeB ? indexB : indexTemp;
-    Fixture temp = fA;
+    final Fixture temp = fA;
     fA = fA.getType() == typeA ? fA : fB;
     fB = fB.getType() == typeB ? fB : temp;
 
@@ -187,20 +187,20 @@ abstract class Contact {
     _flags |= ENABLED_FLAG;
 
     bool touching = false;
-    bool wasTouching = (_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+    final bool wasTouching = (_flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
-    bool sensorA = _fixtureA.isSensor();
-    bool sensorB = _fixtureB.isSensor();
-    bool sensor = sensorA || sensorB;
+    final bool sensorA = _fixtureA.isSensor();
+    final bool sensorB = _fixtureB.isSensor();
+    final bool sensor = sensorA || sensorB;
 
-    Body bodyA = _fixtureA.getBody();
-    Body bodyB = _fixtureB.getBody();
-    Transform xfA = bodyA._transform;
-    Transform xfB = bodyB._transform;
+    final Body bodyA = _fixtureA.getBody();
+    final Body bodyB = _fixtureB.getBody();
+    final Transform xfA = bodyA._transform;
+    final Transform xfB = bodyB._transform;
 
     if (sensor) {
-      Shape shapeA = _fixtureA.getShape();
-      Shape shapeB = _fixtureB.getShape();
+      final Shape shapeA = _fixtureA.getShape();
+      final Shape shapeB = _fixtureB.getShape();
       touching = World.collision
           .testOverlap(shapeA, _indexA, shapeB, _indexB, xfA, xfB);
 
@@ -213,13 +213,13 @@ abstract class Contact {
       // Match old contact ids to new contact ids and copy the
       // stored impulses to warm start the solver.
       for (int i = 0; i < _manifold.pointCount; ++i) {
-        ManifoldPoint mp2 = _manifold.points[i];
+        final ManifoldPoint mp2 = _manifold.points[i];
         mp2.normalImpulse = 0.0;
         mp2.tangentImpulse = 0.0;
-        ContactID id2 = mp2.id;
+        final ContactID id2 = mp2.id;
 
         for (int j = 0; j < _oldManifold.pointCount; ++j) {
-          ManifoldPoint mp1 = _oldManifold.points[j];
+          final ManifoldPoint mp1 = _oldManifold.points[j];
 
           if (mp1.id.isEqual(id2)) {
             mp2.normalImpulse = mp1.normalImpulse;
@@ -265,7 +265,7 @@ abstract class Contact {
   }
 
   /// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface. For
-  /// example, a superball bounces on anything.
+  /// example, a super ball bounces on anything.
   static double mixRestitution(double restitution1, double restitution2) {
     return restitution1 > restitution2 ? restitution1 : restitution2;
   }

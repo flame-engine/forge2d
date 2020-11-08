@@ -7,6 +7,7 @@ class ChainAndCircleContact extends Contact {
     assert(_fixtureB.getType() == ShapeType.CIRCLE);
   }
 
+  @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     final ChainShape chain = _fixtureA.getShape() as ChainShape;
     final EdgeShape edge = chain.getChildEdge(_indexA);
