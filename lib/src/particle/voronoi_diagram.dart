@@ -7,6 +7,10 @@ abstract class VoronoiDiagramCallback {
 class VoronoiGenerator {
   final Vector2 center = Vector2.zero();
   int tag = 0;
+
+  VoronoiGenerator(Vector2 center, this.tag) {
+    this.center.setFrom(center);
+  }
 }
 
 class VoronoiDiagramTask {
@@ -26,16 +30,12 @@ class VoronoiDiagramTask {
 }
 
 class VoronoiDiagram {
-  List<VoronoiGenerator> _generatorBuffer;
-  int _generatorCount = 0;
+  final List<VoronoiGenerator> generators = <VoronoiGenerator>[];
   int _countX = 0, _countY = 0;
   // The diagram is an array of "pointers".
   List<VoronoiGenerator> _diagram;
 
-  VoronoiDiagram(int generatorCapacity) {
-    _generatorBuffer =
-        List<VoronoiGenerator>.filled(generatorCapacity, VoronoiGenerator());
-  }
+  VoronoiDiagram();
 
   void getNodes(VoronoiDiagramCallback callback) {
     for (int y = 0; y < _countY - 1; y++) {
@@ -58,10 +58,7 @@ class VoronoiDiagram {
   }
 
   void addGenerator(Vector2 center, int tag) {
-    final VoronoiGenerator g = _generatorBuffer[_generatorCount++];
-    g.center.x = center.x;
-    g.center.y = center.y;
-    g.tag = tag;
+    generators.add(VoronoiGenerator(center, tag));
   }
 
   final Vector2 _lower = Vector2.zero();
@@ -76,8 +73,7 @@ class VoronoiDiagram {
     _lower.y = double.maxFinite;
     _upper.x = -double.maxFinite;
     _upper.y = -double.maxFinite;
-    for (int k = 0; k < _generatorCount; k++) {
-      final VoronoiGenerator g = _generatorBuffer[k];
+    for (VoronoiGenerator g in generators) {
       Vector2.min(_lower, g.center, _lower);
       Vector2.max(_upper, g.center, _upper);
     }
@@ -85,10 +81,8 @@ class VoronoiDiagram {
     _countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
     _diagram = List<VoronoiGenerator>(_countX * _countY);
     _queue.clear();
-    for (int k = 0; k < _generatorCount; k++) {
-      final VoronoiGenerator g = _generatorBuffer[k];
-      g.center.x = inverseRadius * (g.center.x - _lower.x);
-      g.center.y = inverseRadius * (g.center.y - _lower.y);
+    for (VoronoiGenerator g in generators) {
+      g.center.setFrom((g.center - _lower)..scale(inverseRadius));
       final int x = math.max(0, math.min(g.center.x.toInt(), _countX - 1));
       final int y = math.max(0, math.min(g.center.y.toInt(), _countY - 1));
       _queue.addFirst(VoronoiDiagramTask(x, y, x + y * _countX, g));
