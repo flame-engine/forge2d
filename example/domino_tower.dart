@@ -1,4 +1,4 @@
-library DominoTower;
+library domino_tower;
 
 import 'dart:math' as math;
 
@@ -27,30 +27,31 @@ class DominoTower extends Demo {
   }
 
   void makeDomino(double x, double y, bool horizontal) {
-    PolygonShape sd = PolygonShape();
+    final PolygonShape sd = PolygonShape();
     sd.setAsBoxXY(.5 * DOMINO_WIDTH, .5 * DOMINO_HEIGHT);
-    FixtureDef fd = FixtureDef();
+    final FixtureDef fd = FixtureDef();
     fd.shape = sd;
     fd.density = dominoDensity;
-    BodyDef bd = BodyDef();
+    final BodyDef bd = BodyDef();
     bd.type = BodyType.DYNAMIC;
     fd.friction = DOMINO_FRICTION;
     fd.restitution = 0.65;
     bd.position = Vector2(x, y);
     bd.angle = horizontal ? (math.pi / 2.0) : 0.0;
-    Body myBody = world.createBody(bd);
-    myBody.createFixture(fd);
-    bodies.add(myBody);
+    final Body body = world.createBody(bd);
+    body.createFixture(fd);
+    bodies.add(body);
   }
 
   /// Sets up the dominoes.
+  @override
   void initialize() {
     // Create the floor.
     {
-      PolygonShape sd = PolygonShape();
+      final PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
 
-      BodyDef bd = BodyDef();
+      final BodyDef bd = BodyDef();
       bd.position = Vector2(0.0, -10.0);
       final body = world.createBody(bd);
       body.createFixtureFromShape(sd);
@@ -60,11 +61,11 @@ class DominoTower extends Demo {
     {
       dominoDensity = 10.0;
       // Make bullet
-      PolygonShape sd = PolygonShape();
+      final PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(.7, .7);
-      FixtureDef fd = FixtureDef();
+      final FixtureDef fd = FixtureDef();
       fd.density = 35.0;
-      BodyDef bd = BodyDef();
+      final BodyDef bd = BodyDef();
       bd.type = BodyType.DYNAMIC;
       fd.shape = sd;
       fd.friction = 0.0;
@@ -100,10 +101,12 @@ class DominoTower extends Demo {
 
       // Make 'I's
       for (int j = 1; j < BASE_COUNT; ++j) {
-        if (j > 3) dominoDensity *= .8;
+        if (j > 3) {
+          dominoDensity *= .8;
+        }
 
         // The y at the center of the I structure.
-        double currY =
+        final double currY =
             DOMINO_HEIGHT * .5 + (DOMINO_HEIGHT + 2 * DOMINO_WIDTH) * .99 * j;
 
         for (int i = 0; i < BASE_COUNT - j; ++i) {

@@ -23,6 +23,7 @@ class Racer extends Demo implements ContactListener {
 
   Racer() : super("Racer", Vector2.zero(), 2.5);
 
+  @override
   void initialize() {
     _createGround();
     _createBoundary();
@@ -38,6 +39,7 @@ class Racer extends Demo implements ContactListener {
     world.setContactListener(this);
   }
 
+  @override
   void step(num time) {
     _car.update(time - _lastTime, _controlState);
     _lastTime = time;
@@ -45,27 +47,31 @@ class Racer extends Demo implements ContactListener {
   }
 
   // ContactListener overrides.
+  @override
   void beginContact(Contact contact) {
     _handleContact(contact, true);
   }
 
+  @override
   void endContact(Contact contact) {
     _handleContact(contact, false);
   }
 
+  @override
   void preSolve(Contact contact, Manifold oldManifold) {}
+  @override
   void postSolve(Contact contact, ContactImpulse impulse) {}
 
   double radians(double deg) => deg * (pi / 180.0);
 
   void _createGround() {
-    BodyDef def = BodyDef();
+    final BodyDef def = BodyDef();
     _groundBody = world.createBody(def);
     _groundBody.userData = "Ground";
 
-    PolygonShape shape = PolygonShape();
+    final PolygonShape shape = PolygonShape();
 
-    FixtureDef fixtureDef = FixtureDef();
+    final FixtureDef fixtureDef = FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.isSensor = true;
 
@@ -79,17 +85,17 @@ class Racer extends Demo implements ContactListener {
   }
 
   void _createBoundary() {
-    BodyDef def = BodyDef();
-    Body boundaryBody = world.createBody(def);
+    final BodyDef def = BodyDef();
+    final Body boundaryBody = world.createBody(def);
     boundaryBody.userData = "Boundary";
 
-    PolygonShape shape = PolygonShape();
+    final PolygonShape shape = PolygonShape();
 
-    FixtureDef fixtureDef = FixtureDef();
+    final FixtureDef fixtureDef = FixtureDef();
     fixtureDef.shape = shape;
 
-    final double boundaryX = 150.0;
-    final double boundaryY = 100.0;
+    const double boundaryX = 150.0;
+    const double boundaryY = 100.0;
 
     shape.setAsEdge(
         Vector2(-boundaryX, -boundaryY), Vector2(boundaryX, -boundaryY));

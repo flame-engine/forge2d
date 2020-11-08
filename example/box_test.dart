@@ -1,4 +1,4 @@
-library BoxTest;
+library box_test;
 
 import 'dart:math' as math;
 import 'demo.dart';
@@ -17,6 +17,7 @@ class BoxTest extends Demo {
     boxTest.runAnimation();
   }
 
+  @override
   void initialize() {
     assert(null != world);
     _createGround();

@@ -1,4 +1,4 @@
-library DominoTest;
+library domino_test;
 
 import 'demo.dart';
 
@@ -8,15 +8,16 @@ import 'package:forge2d/forge2d.dart';
 class DominoTest extends Demo {
   DominoTest() : super("Domino test");
 
+  @override
   void initialize() {
     {
       // Floor
-      FixtureDef fd = FixtureDef();
-      PolygonShape sd = PolygonShape();
+      final FixtureDef fd = FixtureDef();
+      final PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
       fd.shape = sd;
 
-      BodyDef bd = BodyDef();
+      final BodyDef bd = BodyDef();
       bd.position = Vector2(0.0, -10.0);
       final body = world.createBody(bd);
       body.createFixture(fd);
@@ -26,12 +27,12 @@ class DominoTest extends Demo {
     {
       // Platforms
       for (int i = 0; i < 4; i++) {
-        FixtureDef fd = FixtureDef();
-        PolygonShape sd = PolygonShape();
+        final FixtureDef fd = FixtureDef();
+        final PolygonShape sd = PolygonShape();
         sd.setAsBoxXY(15.0, 0.125);
         fd.shape = sd;
 
-        BodyDef bd = BodyDef();
+        final BodyDef bd = BodyDef();
         bd.position = Vector2(0.0, 5.0 + 5 * i);
         final body = world.createBody(bd);
         body.createFixture(fd);
@@ -41,17 +42,17 @@ class DominoTest extends Demo {
 
     // Dominoes
     {
-      FixtureDef fd = FixtureDef();
-      PolygonShape sd = PolygonShape();
+      final FixtureDef fd = FixtureDef();
+      final PolygonShape sd = PolygonShape();
       sd.setAsBoxXY(0.125, 2.0);
       fd.shape = sd;
       fd.density = 25.0;
 
-      BodyDef bd = BodyDef();
+      final BodyDef bd = BodyDef();
       bd.type = BodyType.DYNAMIC;
 
-      double friction = .5;
-      int numPerRow = 25;
+      const double friction = .5;
+      const int numPerRow = 25;
 
       for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < numPerRow; j++) {
@@ -67,9 +68,9 @@ class DominoTest extends Demo {
           } else {
             bd.angle = 0.0;
           }
-          Body myBody = world.createBody(bd);
-          myBody.createFixture(fd);
-          bodies.add(myBody);
+          final Body body = world.createBody(bd);
+          body.createFixture(fd);
+          bodies.add(body);
         }
       }
     }

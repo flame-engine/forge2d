@@ -1,4 +1,4 @@
-library BallCage;
+library ball_cage;
 
 import 'package:forge2d/forge2d.dart';
 
@@ -26,6 +26,7 @@ class BallCage extends Demo {
     cage.runAnimation();
   }
 
+  @override
   void initialize() {
     // Define the circle shape.
     final circleShape = CircleShape();
@@ -40,13 +41,13 @@ class BallCage extends Demo {
     // Create a body def.
     final circleBodyDef = BodyDef();
 
-    int maxShapeinRow = 10;
+    const int maxShapeInRow = 10;
     final double borderLimitX =
-        START_X + maxShapeinRow * 2 * circleShape.radius;
+        START_X + maxShapeInRow * 2 * circleShape.radius;
     final double borderLimitY =
-        START_Y + maxShapeinRow * 2 * circleShape.radius;
+        START_Y + maxShapeInRow * 2 * circleShape.radius;
 
-    for (int i = 0; i < maxShapeinRow; i++) {
+    for (int i = 0; i < maxShapeInRow; i++) {
       final double shiftX = START_X + circleShape.radius * 2 * i;
       final double shiftY = START_Y + circleShape.radius * 2 * i;
 

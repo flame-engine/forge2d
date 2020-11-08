@@ -27,8 +27,9 @@ abstract class DebugDraw {
   int drawFlags = SHAPE_BIT;
   ViewportTransform viewportTransform;
 
-  DebugDraw.zero();
   DebugDraw(this.viewportTransform);
+
+  DebugDraw.zero();
 
   void setViewportTransform(ViewportTransform viewportTransform) {
     this.viewportTransform = viewportTransform;
