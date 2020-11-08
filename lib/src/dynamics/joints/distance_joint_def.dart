@@ -30,7 +30,7 @@ class DistanceJointDef extends JointDef {
     bodyB = b2;
     localAnchorA.setFrom(bodyA.getLocalPoint(anchor1));
     localAnchorB.setFrom(bodyB.getLocalPoint(anchor2));
-    Vector2 d = anchor2 - anchor1;
+    final Vector2 d = anchor2 - anchor1;
     length = d.length;
   }
 }

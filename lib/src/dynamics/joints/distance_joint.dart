@@ -47,6 +47,7 @@ class DistanceJoint extends Joint {
   @override
   double getReactionTorque(double invDt) => 0.0;
 
+  @override
   void initVelocityConstraints(final SolverData data) {
     _indexA = _bodyA.islandIndex;
     _indexB = _bodyB.islandIndex;
@@ -57,14 +58,14 @@ class DistanceJoint extends Joint {
     _invIA = _bodyA._invI;
     _invIB = _bodyB._invI;
 
-    Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 cA = data.positions[_indexA].c;
+    final double aA = data.positions[_indexA].a;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
 
-    Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 cB = data.positions[_indexB].c;
+    final double aB = data.positions[_indexB].a;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
     final Rot qA = Rot();
@@ -89,7 +90,7 @@ class DistanceJoint extends Joint {
       ..sub(_rA);
 
     // Handle singularity.
-    double length = _u.length;
+    final double length = _u.length;
     if (length > settings.linearSlop) {
       _u.x *= 1.0 / length;
       _u.y *= 1.0 / length;
@@ -97,8 +98,8 @@ class DistanceJoint extends Joint {
       _u.setValues(0.0, 0.0);
     }
 
-    double crAu = _rA.cross(_u);
-    double crBu = _rB.cross(_u);
+    final double crAu = _rA.cross(_u);
+    final double crBu = _rB.cross(_u);
     double invMass =
         _invMassA + _invIA * crAu * crAu + _invMassB + _invIB * crBu * crBu;
 
@@ -106,22 +107,22 @@ class DistanceJoint extends Joint {
     _mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
 
     if (_frequencyHz > 0.0) {
-      double C = length - _length;
+      final double c = length - _length;
 
       // Frequency
-      double omega = 2.0 * math.pi * _frequencyHz;
+      final double omega = 2.0 * math.pi * _frequencyHz;
 
       // Damping coefficient
-      double d = 2.0 * _mass * _dampingRatio * omega;
+      final double d = 2.0 * _mass * _dampingRatio * omega;
 
       // Spring stiffness
-      double k = _mass * omega * omega;
+      final double k = _mass * omega * omega;
 
       // magic formulas
-      double h = data.step.dt;
-      _gamma = h * (d + h * k);
+      final double dt = data.step.dt;
+      _gamma = dt * (d + dt * k);
       _gamma = _gamma != 0.0 ? 1.0 / _gamma : 0.0;
-      _bias = C * h * k * _gamma;
+      _bias = c * dt * k * _gamma;
 
       invMass += _gamma;
       _mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
@@ -133,18 +134,15 @@ class DistanceJoint extends Joint {
       // Scale the impulse to support a variable time step.
       _impulse *= data.step.dtRatio;
 
-      Vector2 P = Vector2.zero();
-      P
-        ..setFrom(_u)
-        ..scale(_impulse);
+      final Vector2 p = Vector2.copy(_u)..scale(_impulse);
 
-      vA.x -= _invMassA * P.x;
-      vA.y -= _invMassA * P.y;
-      wA -= _invIA * _rA.cross(P);
+      vA.x -= _invMassA * p.x;
+      vA.y -= _invMassA * p.y;
+      wA -= _invIA * _rA.cross(p);
 
-      vB.x += _invMassB * P.x;
-      vB.y += _invMassB * P.y;
-      wB += _invIB * _rB.cross(P);
+      vB.x += _invMassB * p.x;
+      vB.y += _invMassB * p.y;
+      wB += _invIB * _rB.cross(p);
     } else {
       _impulse = 0.0;
     }
@@ -152,10 +150,11 @@ class DistanceJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   void solveVelocityConstraints(final SolverData data) {
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
     final Vector2 vpA = Vector2.zero();
@@ -166,25 +165,26 @@ class DistanceJoint extends Joint {
     vpA.add(vA);
     _rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
-    double Cdot = _u.dot(vpB..sub(vpA));
+    final double cDot = _u.dot(vpB..sub(vpA));
 
-    double impulse = -_mass * (Cdot + _bias + _gamma * _impulse);
+    final double impulse = -_mass * (cDot + _bias + _gamma * _impulse);
     _impulse += impulse;
 
-    double Px = impulse * _u.x;
-    double Py = impulse * _u.y;
+    final double pX = impulse * _u.x;
+    final double pY = impulse * _u.y;
 
-    vA.x -= _invMassA * Px;
-    vA.y -= _invMassA * Py;
-    wA -= _invIA * (_rA.x * Py - _rA.y * Px);
-    vB.x += _invMassB * Px;
-    vB.y += _invMassB * Py;
-    wB += _invIB * (_rB.x * Py - _rB.y * Px);
+    vA.x -= _invMassA * pX;
+    vA.y -= _invMassA * pY;
+    wA -= _invIA * (_rA.x * pY - _rA.y * pX);
+    vB.x += _invMassB * pX;
+    vB.y += _invMassB * pY;
+    wB += _invIB * (_rB.x * pY - _rB.y * pX);
 
     data.velocities[_indexA].w = wA;
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   bool solvePositionConstraints(final SolverData data) {
     if (_frequencyHz > 0.0) {
       return true;
@@ -195,9 +195,9 @@ class DistanceJoint extends Joint {
     final Vector2 rB = Vector2.zero();
     final Vector2 u = Vector2.zero();
 
-    Vector2 cA = data.positions[_indexA].c;
+    final Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
-    Vector2 cB = data.positions[_indexB].c;
+    final Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
 
     qA.setAngle(aA);
@@ -217,20 +217,20 @@ class DistanceJoint extends Joint {
       ..sub(cA)
       ..sub(rA);
 
-    double length = u.normalize();
+    final double length = u.normalize();
     final C = (length - _length)
         .clamp(-settings.maxLinearCorrection, settings.maxLinearCorrection);
 
-    double impulse = -_mass * C;
-    double Px = impulse * u.x;
-    double Py = impulse * u.y;
+    final double impulse = -_mass * C;
+    final double pX = impulse * u.x;
+    final double pY = impulse * u.y;
 
-    cA.x -= _invMassA * Px;
-    cA.y -= _invMassA * Py;
-    aA -= _invIA * (rA.x * Py - rA.y * Px);
-    cB.x += _invMassB * Px;
-    cB.y += _invMassB * Py;
-    aB += _invIB * (rB.x * Py - rB.y * Px);
+    cA.x -= _invMassA * pX;
+    cA.y -= _invMassA * pY;
+    aA -= _invIA * (rA.x * pY - rA.y * pX);
+    cB.x += _invMassB * pX;
+    cB.y += _invMassB * pY;
+    aB += _invIB * (rB.x * pY - rB.y * pX);
 
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;

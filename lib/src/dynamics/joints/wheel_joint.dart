@@ -26,7 +26,9 @@ class WheelJoint extends Joint {
   double _dampingRatio = 0.0;
 
   // Solver shared
+  @override
   final Vector2 localAnchorA = Vector2.zero();
+  @override
   final Vector2 localAnchorB = Vector2.zero();
   final Vector2 _localXAxisA = Vector2.zero();
   final Vector2 _localYAxisA = Vector2.zero();
@@ -78,6 +80,7 @@ class WheelJoint extends Joint {
     _dampingRatio = def.dampingRatio;
   }
 
+  @override
   Vector2 getReactionForce(double invDt) {
     final Vector2 temp = Vector2.zero();
     temp
@@ -91,23 +94,24 @@ class WheelJoint extends Joint {
     return result;
   }
 
+  @override
   double getReactionTorque(double invDt) {
     return invDt * _motorImpulse;
   }
 
   double getJointTranslation() {
-    Body b1 = _bodyA;
-    Body b2 = _bodyB;
+    final Body b1 = _bodyA;
+    final Body b2 = _bodyB;
 
-    Vector2 p1 = Vector2.zero();
-    Vector2 p2 = Vector2.zero();
-    Vector2 axis = Vector2.zero();
+    final Vector2 p1 = Vector2.zero();
+    final Vector2 p2 = Vector2.zero();
+    final Vector2 axis = Vector2.zero();
     p1.setFrom(b1.getWorldPoint(localAnchorA));
     p2.setFrom(b2.getWorldPoint(localAnchorA));
     p2.sub(p1);
     axis.setFrom(b1.getWorldVector(_localXAxisA));
 
-    double translation = p2.dot(axis);
+    final double translation = p2.dot(axis);
     return translation;
   }
 
@@ -160,6 +164,7 @@ class WheelJoint extends Joint {
   final Vector2 rB = Vector2.zero();
   final Vector2 d = Vector2.zero();
 
+  @override
   void initVelocityConstraints(SolverData data) {
     _indexA = _bodyA.islandIndex;
     _indexB = _bodyB.islandIndex;
@@ -170,17 +175,17 @@ class WheelJoint extends Joint {
     _invIA = _bodyA._invI;
     _invIB = _bodyB._invI;
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
-    Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 cA = data.positions[_indexA].c;
+    final double aA = data.positions[_indexA].a;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
 
-    Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 cB = data.positions[_indexB].c;
+    final double aB = data.positions[_indexB].a;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
     final Rot qA = Rot();
@@ -234,30 +239,30 @@ class WheelJoint extends Joint {
           .cross(_ax);
       _sBx = rB.cross(_ax);
 
-      double invMass = mA + mB + iA * _sAx * _sAx + iB * _sBx * _sBx;
+      final double invMass = mA + mB + iA * _sAx * _sAx + iB * _sBx * _sBx;
 
       if (invMass > 0.0) {
         _springMass = 1.0 / invMass;
 
-        double C = d.dot(_ax);
+        final double c = d.dot(_ax);
 
         // Frequency
-        double omega = 2.0 * math.pi * _frequencyHz;
+        final double omega = 2.0 * math.pi * _frequencyHz;
 
         // Damping coefficient
-        double dd = 2.0 * _springMass * _dampingRatio * omega;
+        final double dd = 2.0 * _springMass * _dampingRatio * omega;
 
         // Spring stiffness
-        double k = _springMass * omega * omega;
+        final double k = _springMass * omega * omega;
 
         // magic formulas
-        double h = data.step.dt;
-        _gamma = h * (dd + h * k);
+        final double dt = data.step.dt;
+        _gamma = dt * (dd + dt * k);
         if (_gamma > 0.0) {
           _gamma = 1.0 / _gamma;
         }
 
-        _bias = C * h * k * _gamma;
+        _bias = c * dt * k * _gamma;
 
         _springMass = invMass + _gamma;
         if (_springMass > 0.0) {
@@ -280,24 +285,24 @@ class WheelJoint extends Joint {
     }
 
     if (data.step.warmStarting) {
-      final Vector2 P = Vector2.zero();
+      final Vector2 p = Vector2.zero();
       // Account for variable time step.
       _impulse *= data.step.dtRatio;
       _springImpulse *= data.step.dtRatio;
       _motorImpulse *= data.step.dtRatio;
 
-      P.x = _impulse * _ay.x + _springImpulse * _ax.x;
-      P.y = _impulse * _ay.y + _springImpulse * _ax.y;
-      double LA = _impulse * _sAy + _springImpulse * _sAx + _motorImpulse;
-      double LB = _impulse * _sBy + _springImpulse * _sBx + _motorImpulse;
+      p.x = _impulse * _ay.x + _springImpulse * _ax.x;
+      p.y = _impulse * _ay.y + _springImpulse * _ax.y;
+      final double lA = _impulse * _sAy + _springImpulse * _sAx + _motorImpulse;
+      final double lB = _impulse * _sBy + _springImpulse * _sBx + _motorImpulse;
 
-      vA.x -= _invMassA * P.x;
-      vA.y -= _invMassA * P.y;
-      wA -= _invIA * LA;
+      vA.x -= _invMassA * p.x;
+      vA.y -= _invMassA * p.y;
+      wA -= _invIA * lA;
 
-      vB.x += _invMassB * P.x;
-      vB.y += _invMassB * P.y;
-      wB += _invIB * LB;
+      vB.x += _invMassB * p.x;
+      vB.y += _invMassB * p.y;
+      wB += _invIB * lB;
     } else {
       _impulse = 0.0;
       _springImpulse = 0.0;
@@ -308,49 +313,50 @@ class WheelJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   void solveVelocityConstraints(SolverData data) {
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
     final Vector2 temp = Vector2.zero();
-    final Vector2 P = Vector2.zero();
+    final Vector2 p = Vector2.zero();
 
     // Solve spring constraint
     {
-      double Cdot = _ax.dot(temp
+      final double cDot = _ax.dot(temp
             ..setFrom(vB)
             ..sub(vA)) +
           _sBx * wB -
           _sAx * wA;
-      double impulse = -_springMass * (Cdot + _bias + _gamma * _springImpulse);
+      final double impulse = -_springMass * (cDot + _bias + _gamma * _springImpulse);
       _springImpulse += impulse;
 
-      P.x = impulse * _ax.x;
-      P.y = impulse * _ax.y;
-      double LA = impulse * _sAx;
-      double LB = impulse * _sBx;
+      p.x = impulse * _ax.x;
+      p.y = impulse * _ax.y;
+      final double lA = impulse * _sAx;
+      final double lB = impulse * _sBx;
 
-      vA.x -= mA * P.x;
-      vA.y -= mA * P.y;
-      wA -= iA * LA;
+      vA.x -= mA * p.x;
+      vA.y -= mA * p.y;
+      wA -= iA * lA;
 
-      vB.x += mB * P.x;
-      vB.y += mB * P.y;
-      wB += iB * LB;
+      vB.x += mB * p.x;
+      vB.y += mB * p.y;
+      wB += iB * lB;
     }
 
     // Solve rotational motor constraint
     {
-      double Cdot = wB - wA - _motorSpeed;
-      double impulse = -_motorMass * Cdot;
+      double cDot = wB - wA - _motorSpeed;
+      double impulse = -_motorMass * cDot;
 
-      double oldImpulse = _motorImpulse;
-      double maxImpulse = data.step.dt * _maxMotorTorque;
+      final double oldImpulse = _motorImpulse;
+      final double maxImpulse = data.step.dt * _maxMotorTorque;
       _motorImpulse =
           (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _motorImpulse - oldImpulse;
@@ -361,26 +367,26 @@ class WheelJoint extends Joint {
 
     // Solve point to line constraint
     {
-      double Cdot = _ay.dot(temp
+      final double cDot = _ay.dot(temp
             ..setFrom(vB)
             ..sub(vA)) +
           _sBy * wB -
           _sAy * wA;
-      double impulse = -_mass * Cdot;
+      final double impulse = -_mass * cDot;
       _impulse += impulse;
 
-      P.x = impulse * _ay.x;
-      P.y = impulse * _ay.y;
-      double LA = impulse * _sAy;
-      double LB = impulse * _sBy;
+      p.x = impulse * _ay.x;
+      p.y = impulse * _ay.y;
+      final double lA = impulse * _sAy;
+      final double lB = impulse * _sBy;
 
-      vA.x -= mA * P.x;
-      vA.y -= mA * P.y;
-      wA -= iA * LA;
+      vA.x -= mA * p.x;
+      vA.y -= mA * p.y;
+      wA -= iA * lA;
 
-      vB.x += mB * P.x;
-      vB.y += mB * P.y;
-      wB += iB * LB;
+      vB.x += mB * p.x;
+      vB.y += mB * p.y;
+      wB += iB * lB;
     }
 
     // data.velocities[_indexA].v = vA;
@@ -389,10 +395,11 @@ class WheelJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   bool solvePositionConstraints(SolverData data) {
-    Vector2 cA = data.positions[_indexA].c;
+    final Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
-    Vector2 cB = data.positions[_indexB].c;
+    final Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
 
     final Rot qA = Rot();
@@ -417,43 +424,35 @@ class WheelJoint extends Joint {
       ..add(rB)
       ..sub(rA);
 
-    Vector2 ay = Vector2.zero();
-    ay.setFrom(Rot.mulVec2(qA, _localYAxisA));
-
-    double sAy = (temp
+    final Vector2 ay = Vector2.copy(Rot.mulVec2(qA, _localYAxisA));
+    final double sAy = (temp
           ..setFrom(d)
           ..add(rA))
         .cross(ay);
-    double sBy = rB.cross(ay);
+    final double sBy = rB.cross(ay);
 
-    double C = d.dot(ay);
+    final double c = d.dot(ay);
 
-    double k =
+    final double k =
         _invMassA + _invMassB + _invIA * _sAy * _sAy + _invIB * _sBy * _sBy;
 
-    double impulse;
-    if (k != 0.0) {
-      impulse = -C / k;
-    } else {
-      impulse = 0.0;
-    }
+    final double impulse = k != 0.0 ? -c / k : 0.0;
+    final Vector2 p = Vector2.zero();
+    p.x = impulse * ay.x;
+    p.y = impulse * ay.y;
+    final double lA = impulse * sAy;
+    final double lB = impulse * sBy;
 
-    final Vector2 P = Vector2.zero();
-    P.x = impulse * ay.x;
-    P.y = impulse * ay.y;
-    double LA = impulse * sAy;
-    double LB = impulse * sBy;
-
-    cA.x -= _invMassA * P.x;
-    cA.y -= _invMassA * P.y;
-    aA -= _invIA * LA;
-    cB.x += _invMassB * P.x;
-    cB.y += _invMassB * P.y;
-    aB += _invIB * LB;
+    cA.x -= _invMassA * p.x;
+    cA.y -= _invMassA * p.y;
+    aA -= _invIA * lA;
+    cB.x += _invMassB * p.x;
+    cB.y += _invMassB * p.y;
+    aB += _invIB * lB;
 
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return C.abs() <= settings.linearSlop;
+    return c.abs() <= settings.linearSlop;
   }
 }

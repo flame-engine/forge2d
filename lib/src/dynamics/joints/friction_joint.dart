@@ -34,6 +34,7 @@ class FrictionJoint extends Joint {
     return Vector2.copy(_linearImpulse)..scale(invDt);
   }
 
+  @override
   double getReactionTorque(double invDt) {
     return invDt * _angularImpulse;
   }
@@ -56,8 +57,7 @@ class FrictionJoint extends Joint {
     return _maxTorque;
   }
 
-  /// @see org.jbox2d.dynamics.joints.Joint#initVelocityConstraints(org.jbox2d.dynamics.TimeStep)
-
+  @override
   void initVelocityConstraints(final SolverData data) {
     _indexA = _bodyA.islandIndex;
     _indexB = _bodyB.islandIndex;
@@ -68,12 +68,12 @@ class FrictionJoint extends Joint {
     _invIA = _bodyA._invI;
     _invIB = _bodyB._invI;
 
-    double aA = data.positions[_indexA].a;
-    Vector2 vA = data.velocities[_indexA].v;
+    final double aA = data.positions[_indexA].a;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
 
-    double aB = data.positions[_indexB].a;
-    Vector2 vB = data.velocities[_indexB].v;
+    final double aB = data.positions[_indexB].a;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
     final Vector2 temp = Vector2.zero();
@@ -93,14 +93,14 @@ class FrictionJoint extends Joint {
       ..sub(_localCenterB);
     _rB.setFrom(Rot.mulVec2(qB, temp));
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
     final Matrix2 K = Matrix2.zero();
-    double a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
-    double a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
-    double a12 = a21;
-    double a22 = mA + mB + iA * _rA.x * _rA.x + iB * _rB.x * _rB.x;
+    final double a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
+    final double a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
+    final double a12 = a21;
+    final double a22 = mA + mB + iA * _rA.x * _rA.x + iB * _rB.x * _rB.x;
 
     K.setValues(a11, a12, a21, a22);
     _linearMass.setFrom(K);
@@ -141,24 +141,25 @@ class FrictionJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   void solveVelocityConstraints(final SolverData data) {
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
-    double h = data.step.dt;
+    final double dt = data.step.dt;
 
     // Solve angular friction
     {
-      double Cdot = wB - wA;
-      double impulse = -_angularMass * Cdot;
+      final double cDot = wB - wA;
+      double impulse = -_angularMass * cDot;
 
-      double oldImpulse = _angularImpulse;
-      double maxImpulse = h * _maxTorque;
+      final double oldImpulse = _angularImpulse;
+      final double maxImpulse = dt * _maxTorque;
       _angularImpulse =
           (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _angularImpulse - oldImpulse;
@@ -169,25 +170,25 @@ class FrictionJoint extends Joint {
 
     // Solve linear friction
     {
-      final Vector2 Cdot = Vector2.zero();
+      final Vector2 cDot = Vector2.zero();
       final Vector2 temp = Vector2.zero();
 
       _rA.scaleOrthogonalInto(wA, temp);
-      _rB.scaleOrthogonalInto(wB, Cdot);
-      Cdot
+      _rB.scaleOrthogonalInto(wB, cDot);
+      cDot
         ..add(vB)
         ..sub(vA)
         ..sub(temp);
 
       final Vector2 impulse = Vector2.zero();
-      _linearMass.transformed(Cdot, impulse);
+      _linearMass.transformed(cDot, impulse);
       impulse.negate();
 
       final Vector2 oldImpulse = Vector2.zero();
       oldImpulse.setFrom(_linearImpulse);
       _linearImpulse.add(impulse);
 
-      double maxImpulse = h * _maxForce;
+      final double maxImpulse = dt * _maxForce;
 
       if (_linearImpulse.length2 > maxImpulse * maxImpulse) {
         _linearImpulse.normalize();
@@ -218,6 +219,7 @@ class FrictionJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   bool solvePositionConstraints(final SolverData data) {
     return true;
   }

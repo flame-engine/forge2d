@@ -31,9 +31,9 @@ class PulleyJointDef extends JointDef {
     groundAnchorB = ga2;
     localAnchorA.setFrom(bodyA.getLocalPoint(anchor1));
     localAnchorB.setFrom(bodyB.getLocalPoint(anchor2));
-    Vector2 d1 = anchor1 - ga1;
+    final Vector2 d1 = anchor1 - ga1;
     lengthA = d1.length;
-    Vector2 d2 = anchor2 - ga2;
+    final Vector2 d2 = anchor2 - ga2;
     lengthB = d2.length;
     ratio = r;
     assert(ratio > settings.EPSILON);
