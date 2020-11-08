@@ -86,8 +86,8 @@ part 'src/dynamics/contacts/polygon_contact.dart';
 part 'src/dynamics/contacts/position.dart';
 part 'src/dynamics/contacts/velocity.dart';
 
-part 'src/dynamics/joints/constant_volume_joints.dart';
-part 'src/dynamics/joints/constant_volume_joints_def.dart';
+part 'src/dynamics/joints/constant_volume_joint.dart';
+part 'src/dynamics/joints/constant_volume_joint_def.dart';
 part 'src/dynamics/joints/distance_joint.dart';
 part 'src/dynamics/joints/distance_joint_def.dart';
 part 'src/dynamics/joints/friction_joint.dart';

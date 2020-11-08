@@ -8,7 +8,7 @@ class ConstantVolumeJointDef extends JointDef {
   double dampingRatio = 0.0;
 
   List<Body> bodies = <Body>[];
-  List<DistanceJoint> joints = <DistanceJoint>[];
+  List<DistanceJoint> joints;
 
   ConstantVolumeJointDef() : super(JointType.CONSTANT_VOLUME) {
     collideConnected = false;

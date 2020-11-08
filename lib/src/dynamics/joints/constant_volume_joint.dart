@@ -42,7 +42,9 @@ class ConstantVolumeJoint extends Joint {
     _targetVolume = getBodyArea();
 
     if (def.joints != null && def.joints.length != def.bodies.length) {
-      throw "Incorrect joint definition.  Joints have to correspond to the _bodies";
+      print(def.joints.length);
+      print(def.bodies.length);
+      throw "Incorrect joint definition. Joints have to correspond to the _bodies";
     }
     if (def.joints == null) {
       final DistanceJointDef djd = DistanceJointDef();
