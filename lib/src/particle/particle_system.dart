@@ -1784,8 +1784,7 @@ class ParticleSystem {
         group._firstIndex = firstIndex;
         group._lastIndex = lastIndex;
         if (modified) {
-          if ((group._groupFlags & ParticleGroupType.rigidParticleGroup) !=
-              0) {
+          if ((group._groupFlags & ParticleGroupType.rigidParticleGroup) != 0) {
             group._toBeSplit = true;
           }
         }

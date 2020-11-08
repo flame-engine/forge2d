@@ -16,6 +16,7 @@ class Sweep {
   /// Fraction of the current time step in the range [0,1] c0 and a0 are the positions at alpha0.
   double alpha0 = 0.0;
 
+  @override
   String toString() {
     String s = "Sweep:\nlocalCenter: $localCenter\n";
     s += "c0: $c0, c: $c\n";
@@ -25,7 +26,7 @@ class Sweep {
   }
 
   void normalize() {
-    double d = pi * 2 * (a0 / pi * 2).floor();
+    final double d = pi * 2 * (a0 / pi * 2).floor();
     a0 -= d;
     a -= d;
   }
@@ -51,7 +52,7 @@ class Sweep {
     // xf->q.Set(angle);
     xf.p.x = (1.0 - beta) * c0.x + beta * c.x;
     xf.p.y = (1.0 - beta) * c0.y + beta * c.y;
-    double angle = (1.0 - beta) * a0 + beta * a;
+    final double angle = (1.0 - beta) * a0 + beta * a;
     xf.q.setAngle(angle);
 
     // Shift to origin
@@ -70,7 +71,7 @@ class Sweep {
     // c0 += beta * (c - c0);
     // a0 += beta * (a - a0);
     // alpha0 = alpha;
-    double beta = (alpha - alpha0) / (1.0 - alpha0);
+    final double beta = (alpha - alpha0) / (1.0 - alpha0);
     c0.x += beta * (c.x - c0.x);
     c0.y += beta * (c.y - c0.y);
     a0 += beta * (a - a0);
