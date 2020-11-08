@@ -9,9 +9,9 @@ class CanvasDraw extends DebugDraw {
   /// The canvas rendering context with which to draw.
   final CanvasRenderingContext2D ctx;
 
-  CanvasDraw(ViewportTransform viewport, this.ctx) : super(viewport) {
-    assert(null != viewport && null != ctx);
-  }
+  CanvasDraw(ViewportTransform viewport, this.ctx)
+      : assert(null != viewport && null != ctx),
+        super(viewport);
 
   /// Draw a closed polygon provided in CCW order. WARNING: This mutates
   /// [vertices].

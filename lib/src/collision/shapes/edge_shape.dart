@@ -21,6 +21,7 @@ class EdgeShape extends Shape {
     radius = settings.polygonRadius;
   }
 
+  @override
   int getChildCount() {
     return 1;
   }
@@ -31,6 +32,7 @@ class EdgeShape extends Shape {
     hasVertex0 = hasVertex3 = false;
   }
 
+  @override
   bool testPoint(Transform xf, Vector2 p) {
     return false;
   }
@@ -38,24 +40,25 @@ class EdgeShape extends Shape {
   // for pooling
   final Vector2 normal = Vector2.zero();
 
+  @override
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
-    double xfqc = xf.q.c;
-    double xfqs = xf.q.s;
-    double xfpx = xf.p.x;
-    double xfpy = xf.p.y;
-    double v1x = (xfqc * vertex1.x - xfqs * vertex1.y) + xfpx;
-    double v1y = (xfqs * vertex1.x + xfqc * vertex1.y) + xfpy;
-    double v2x = (xfqc * vertex2.x - xfqs * vertex2.y) + xfpx;
-    double v2y = (xfqs * vertex2.x + xfqc * vertex2.y) + xfpy;
+    final double xfqc = xf.q.c;
+    final double xfqs = xf.q.s;
+    final double xfpx = xf.p.x;
+    final double xfpy = xf.p.y;
+    final double v1x = (xfqc * vertex1.x - xfqs * vertex1.y) + xfpx;
+    final double v1y = (xfqs * vertex1.x + xfqc * vertex1.y) + xfpy;
+    final double v2x = (xfqc * vertex2.x - xfqs * vertex2.y) + xfpx;
+    final double v2y = (xfqs * vertex2.x + xfqc * vertex2.y) + xfpy;
 
     double dx = p.x - v1x;
     double dy = p.y - v1y;
-    double sx = v2x - v1x;
-    double sy = v2y - v1y;
-    double ds = dx * sx + dy * sy;
+    final double sx = v2x - v1x;
+    final double sy = v2y - v1y;
+    final double ds = dx * sx + dy * sy;
     if (ds > 0) {
-      double s2 = sx * sx + sy * sy;
+      final double s2 = sx * sx + sy * sy;
       if (ds > s2) {
         dx = p.x - v2x;
         dy = p.y - v2y;
@@ -65,7 +68,7 @@ class EdgeShape extends Shape {
       }
     }
 
-    double d1 = math.sqrt(dx * dx + dy * dy);
+    final double d1 = math.sqrt(dx * dx + dy * dy);
     if (d1 > 0) {
       normalOut.x = 1 / d1 * dx;
       normalOut.y = 1 / d1 * dy;
@@ -76,6 +79,7 @@ class EdgeShape extends Shape {
     return d1;
   }
 
+  @override
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
     final Vector2 v1 = vertex1;
@@ -100,19 +104,19 @@ class EdgeShape extends Shape {
     normal.x = v2.y - v1.y;
     normal.y = v1.x - v2.x;
     normal.normalize();
-    final double normalx = normal.x;
-    final double normaly = normal.y;
+    final double normalX = normal.x;
+    final double normalY = normal.y;
 
     tempX = v1.x - p1x;
     tempY = v1.y - p1y;
-    double numerator = normalx * tempX + normaly * tempY;
-    double denominator = normalx * dx + normaly * dy;
+    final double numerator = normalX * tempX + normalY * tempY;
+    final double denominator = normalX * dx + normalY * dy;
 
     if (denominator == 0.0) {
       return false;
     }
 
-    double t = numerator / denominator;
+    final double t = numerator / denominator;
     if (t < 0.0 || 1.0 < t) {
       return false;
     }
@@ -128,7 +132,7 @@ class EdgeShape extends Shape {
     }
     tempX = qx - v1.x;
     tempY = qy - v1.y;
-    double s = (tempX * rx + tempY * ry) / rr;
+    final double s = (tempX * rx + tempY * ry) / rr;
     if (s < 0.0 || 1.0 < s) {
       return false;
     }
@@ -144,6 +148,7 @@ class EdgeShape extends Shape {
     return true;
   }
 
+  @override
   void computeAABB(AABB aabb, Transform xf, int childIndex) {
     final Vector2 lowerBound = aabb.lowerBound;
     final Vector2 upperBound = aabb.upperBound;
@@ -165,6 +170,7 @@ class EdgeShape extends Shape {
     upperBound.y += radius;
   }
 
+  @override
   void computeMass(MassData massData, double density) {
     massData.mass = 0.0;
     massData.center
@@ -174,15 +180,16 @@ class EdgeShape extends Shape {
     massData.I = 0.0;
   }
 
+  @override
   Shape clone() {
-    EdgeShape edge = EdgeShape();
-    edge.radius = this.radius;
-    edge.hasVertex0 = this.hasVertex0;
-    edge.hasVertex3 = this.hasVertex3;
-    edge.vertex0.setFrom(this.vertex0);
-    edge.vertex1.setFrom(this.vertex1);
-    edge.vertex2.setFrom(this.vertex2);
-    edge.vertex3.setFrom(this.vertex3);
+    final EdgeShape edge = EdgeShape();
+    edge.radius = radius;
+    edge.hasVertex0 = hasVertex0;
+    edge.hasVertex3 = hasVertex3;
+    edge.vertex0.setFrom(vertex0);
+    edge.vertex1.setFrom(vertex1);
+    edge.vertex2.setFrom(vertex2);
+    edge.vertex3.setFrom(vertex3);
     return edge;
   }
 }

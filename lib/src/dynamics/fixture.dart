@@ -85,23 +85,23 @@ class Fixture {
     // Flag associated contacts for filtering.
     ContactEdge edge = _body.getContactList();
     while (edge != null) {
-      Contact contact = edge.contact;
-      Fixture fixtureA = contact.fixtureA;
-      Fixture fixtureB = contact.fixtureB;
+      final Contact contact = edge.contact;
+      final Fixture fixtureA = contact.fixtureA;
+      final Fixture fixtureB = contact.fixtureB;
       if (fixtureA == this || fixtureB == this) {
         contact.flagForFiltering();
       }
       edge = edge.next;
     }
 
-    World world = _body.world;
+    final World world = _body.world;
 
     if (world == null) {
       return;
     }
 
     // Touch each proxy so that new pairs may be created
-    BroadPhase broadPhase = world._contactManager.broadPhase;
+    final BroadPhase broadPhase = world._contactManager.broadPhase;
     for (int i = 0; i < _proxyCount; ++i) {
       broadPhase.touchProxy(_proxies[i].proxyId);
     }
@@ -221,7 +221,7 @@ class Fixture {
     _shape = def.shape.clone();
 
     // Reserve proxy space
-    int childCount = _shape.getChildCount();
+    final int childCount = _shape.getChildCount();
     if (_proxies == null) {
       _proxies = List<FixtureProxy>(childCount);
       for (int i = 0; i < childCount; i++) {
@@ -232,8 +232,8 @@ class Fixture {
     }
 
     if (_proxies.length < childCount) {
-      List<FixtureProxy> old = _proxies;
-      int newLen = math.max(old.length * 2, childCount);
+      final List<FixtureProxy> old = _proxies;
+      final int newLen = math.max(old.length * 2, childCount);
       _proxies = List<FixtureProxy>(newLen);
       buffer_utils.arrayCopy(old, 0, _proxies, 0, old.length);
       for (int i = 0; i < newLen; i++) {
@@ -267,7 +267,7 @@ class Fixture {
     _proxyCount = _shape.getChildCount();
 
     for (int i = 0; i < _proxyCount; ++i) {
-      FixtureProxy proxy = _proxies[i];
+      final FixtureProxy proxy = _proxies[i];
       _shape.computeAABB(proxy.aabb, xf, i);
       proxy.proxyId = broadPhase.createProxy(proxy.aabb, proxy);
       proxy.fixture = this;
@@ -281,7 +281,7 @@ class Fixture {
   void destroyProxies(BroadPhase broadPhase) {
     // Destroy proxies in the broad-phase.
     for (int i = 0; i < _proxyCount; ++i) {
-      FixtureProxy proxy = _proxies[i];
+      final FixtureProxy proxy = _proxies[i];
       broadPhase.destroyProxy(proxy.proxyId);
       proxy.proxyId = BroadPhase.NULL_PROXY;
     }
@@ -305,7 +305,7 @@ class Fixture {
     }
 
     for (int i = 0; i < _proxyCount; ++i) {
-      FixtureProxy proxy = _proxies[i];
+      final FixtureProxy proxy = _proxies[i];
 
       // Compute an AABB that covers the swept shape (may miss some rotation effect).
       final AABB aabb1 = _pool1;
