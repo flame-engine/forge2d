@@ -187,10 +187,10 @@ class GearJoint extends Joint {
     _mB = _bodyB._invMass;
     _mC = _bodyC._invMass;
     _mD = _bodyD._invMass;
-    _iA = _bodyA._invI;
-    _iB = _bodyB._invI;
-    _iC = _bodyC._invI;
-    _iD = _bodyD._invI;
+    _iA = _bodyA.inverseInertia;
+    _iB = _bodyB.inverseInertia;
+    _iC = _bodyC.inverseInertia;
+    _iD = _bodyD.inverseInertia;
 
     // Vec2 cA = data.positions[_indexA].c;
     final double aA = data.positions[_indexA].a;

@@ -186,7 +186,7 @@ class Island {
         // Integrate velocities.
         v.x += dt * (b._gravityScale * gravity.x + b._invMass * b._force.x);
         v.y += dt * (b._gravityScale * gravity.y + b._invMass * b._force.y);
-        w += dt * b._invI * b._torque;
+        w += dt * b.inverseInertia * b._torque;
 
         // Apply damping.
         // ODE: dv/dt + c * v = 0

@@ -85,13 +85,13 @@ class ContactSolver {
       final ContactVelocityConstraint vc = _velocityConstraints[i];
       vc.friction = contact._friction;
       vc.restitution = contact._restitution;
-      vc.tangentSpeed = contact._tangentSpeed;
+      vc.tangentSpeed = contact.tangentSpeed;
       vc.indexA = bodyA.islandIndex;
       vc.indexB = bodyB.islandIndex;
       vc.invMassA = bodyA._invMass;
       vc.invMassB = bodyB._invMass;
-      vc.invIA = bodyA._invI;
-      vc.invIB = bodyB._invI;
+      vc.invIA = bodyA.inverseInertia;
+      vc.invIB = bodyB.inverseInertia;
       vc.contactIndex = i;
       vc.pointCount = pointCount;
       vc.K.setZero();
@@ -104,8 +104,8 @@ class ContactSolver {
       pc.invMassB = bodyB._invMass;
       pc.localCenterA.setFrom(bodyA._sweep.localCenter);
       pc.localCenterB.setFrom(bodyB._sweep.localCenter);
-      pc.invIA = bodyA._invI;
-      pc.invIB = bodyB._invI;
+      pc.invIA = bodyA.inverseInertia;
+      pc.invIB = bodyB.inverseInertia;
       pc.localNormal.setFrom(manifold.localNormal);
       pc.localPoint.setFrom(manifold.localPoint);
       pc.pointCount = pointCount;
