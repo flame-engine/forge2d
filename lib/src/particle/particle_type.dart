@@ -2,32 +2,32 @@ part of forge2d;
 
 /// The particle type. Can be combined with | operator. Zero means liquid.
 class ParticleType {
-  static const int b2_waterParticle = 0;
+  static const int waterParticle = 0;
 
   /// removed after next step
-  static const int b2_zombieParticle = 1 << 1;
+  static const int zombieParticle = 1 << 1;
 
   /// zero velocity
-  static const int b2_wallParticle = 1 << 2;
+  static const int wallParticle = 1 << 2;
 
   /// with restitution from stretching
-  static const int b2_springParticle = 1 << 3;
+  static const int springParticle = 1 << 3;
 
   /// with restitution from deformation
-  static const int b2_elasticParticle = 1 << 4;
+  static const int elasticParticle = 1 << 4;
 
   /// with viscosity
-  static const int b2_viscousParticle = 1 << 5;
+  static const int viscousParticle = 1 << 5;
 
   /// without isotropic pressure
-  static const int b2_powderParticle = 1 << 6;
+  static const int powderParticle = 1 << 6;
 
   /// with surface tension
-  static const int b2_tensileParticle = 1 << 7;
+  static const int tensileParticle = 1 << 7;
 
   /// mixing color between contacting particles
-  static const int b2_colorMixingParticle = 1 << 8;
+  static const int colorMixingParticle = 1 << 8;
 
   /// call b2DestructionListener on destruction
-  static const int b2_destructionListener = 1 << 9;
+  static const int destructionListener = 1 << 9;
 }

@@ -154,9 +154,9 @@ class AABB {
         return false;
       }
     } else {
-      final double inv_d = 1.0 / d.x;
-      double t1 = (lowerBound.x - p.x) * inv_d;
-      double t2 = (upperBound.x - p.x) * inv_d;
+      final double invD = 1.0 / d.x;
+      double t1 = (lowerBound.x - p.x) * invD;
+      double t2 = (upperBound.x - p.x) * invD;
 
       // Sign of the normal vector.
       double s = -1.0;
@@ -245,6 +245,7 @@ class AABB {
     return true;
   }
 
+  @override
   String toString() {
     return "AABB[$lowerBound . $upperBound]";
   }

@@ -203,7 +203,7 @@ class Collision {
   // #### COLLISION STUFF (not from collision.h or collision.cpp) ####
 
   // djm pooling
-  static Vector2 _d = Vector2.zero();
+  final Vector2 _d = Vector2.zero();
 
   /// Compute the collision manifold between two circles.
   void collideCircles(Manifold manifold, final CircleShape circle1,

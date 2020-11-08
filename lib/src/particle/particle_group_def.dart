@@ -26,8 +26,8 @@ class ParticleGroupDef {
   /// The color of all particles in the group.
   ParticleColor color;
 
-  /// The strength of cohesion among the particles in a group with flag b2_elasticParticle or
-  /// b2_springParticle.
+  /// The strength of cohesion among the particles in a group with flag elasticParticle or
+  /// springParticle.
   double strength = 1.0;
 
   /// Shape containing the particle group.
