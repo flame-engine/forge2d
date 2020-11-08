@@ -3,23 +3,22 @@ part of forge2d;
 enum ContactIDType { VERTEX, FACE }
 
 class ContactID implements Comparable<ContactID> {
-  Int8List _data = Int8List(4);
+  final Int8List _data = Int8List(4);
 
-  void set indexA(int v) {
+  set indexA(int v) {
     _data[0] = v;
   }
 
-  void set indexB(int v) {
+  set indexB(int v) {
     _data[1] = v;
   }
 
-  void set typeA(int v) {
+  set typeA(int v) {
     _data[2] = v;
   }
 
-  void set typeB(int v) {
+  set typeB(int v) {
     _data[3] = v;
-    ;
   }
 
   int get indexA => _data[0];
@@ -28,7 +27,7 @@ class ContactID implements Comparable<ContactID> {
   int get typeB => _data[3];
 
   int getKey() {
-    return (indexA << 24) | (indexB << 16) | (typeA << 8) | (typeB);
+    return (indexA << 24) | (indexB << 16) | (typeA << 8) | typeB;
   }
 
   bool isEqual(final ContactID cid) {
@@ -65,6 +64,7 @@ class ContactID implements Comparable<ContactID> {
     typeB = 0;
   }
 
+  @override
   int compareTo(ContactID o) {
     return getKey() - o.getKey();
   }

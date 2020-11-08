@@ -2,8 +2,8 @@ part of forge2d;
 
 class ParticleDef {
   /// Specifies the type of particle. A particle may be more than one type. Multiple types are
-  /// chained by logical sums, for example: pd.flags = ParticleType.b2_elasticParticle |
-  /// ParticleType.b2_viscousParticle.
+  /// chained by logical sums, for example: pd.flags = ParticleType.elasticParticle |
+  /// ParticleType.viscousParticle.
   int flags = 0;
 
   /// The world position of the particle.

@@ -68,13 +68,13 @@ class TimeOfImpact {
     _sweepA.normalize();
     _sweepB.normalize();
 
-    double tMax = input.tMax;
+    final double tMax = input.tMax;
 
-    double totalRadius = proxyA.radius + proxyB.radius;
+    final double totalRadius = proxyA.radius + proxyB.radius;
     // djm: whats with all these constants?
-    double target =
+    final double target =
         math.max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
-    double tolerance = 0.25 * settings.linearSlop;
+    final double tolerance = 0.25 * settings.linearSlop;
 
     assert(target > tolerance);
 
@@ -177,7 +177,7 @@ class TimeOfImpact {
           ++rootIterCount;
           ++toiRootIters;
 
-          double s = _fcn.evaluate(_indexes[0], _indexes[1], t);
+          final double s = _fcn.evaluate(_indexes[0], _indexes[1], t);
 
           if ((s - target).abs() < tolerance) {
             // t2 holds a tentative value for t1
@@ -257,18 +257,18 @@ class SeparationFunction {
 
   double initialize(
       final SimplexCache cache,
-      final DistanceProxy proxyA_,
-      final Sweep sweepA_,
-      final DistanceProxy proxyB_,
-      final Sweep sweepB_,
+      final DistanceProxy proxyA,
+      final Sweep sweepA,
+      final DistanceProxy proxyB,
+      final Sweep sweepB,
       double t1) {
-    proxyA = proxyA_;
-    proxyB = proxyB_;
-    int count = cache.count;
+    this.proxyA = proxyA;
+    this.proxyB = proxyB;
+    final int count = cache.count;
     assert(0 < count && count < 3);
 
-    sweepA = sweepA_;
-    sweepB = sweepB_;
+    this.sweepA = sweepA;
+    this.sweepB = sweepB;
 
     sweepA.getTransform(_xfa, t1);
     sweepB.getTransform(_xfb, t1);
@@ -282,8 +282,7 @@ class SeparationFunction {
       axis
         ..setFrom(_pointB)
         ..sub(_pointA);
-      double s = axis.normalize();
-      return s;
+      return axis.normalize();
     } else if (cache.indexA[0] == cache.indexA[1]) {
       // Two points on B and one on A.
       type = SeparationFunctionType.FACE_B;
@@ -376,9 +375,7 @@ class SeparationFunction {
         _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
-        double separation = (_pointB..sub(_pointA)).dot(axis);
-        return separation;
-
+        return (_pointB..sub(_pointA)).dot(axis);
       case SeparationFunctionType.FACE_A:
         _normal.setFrom(Rot.mulVec2(_xfa.q, axis));
         _pointA.setFrom(Transform.mulVec2(_xfa, localPoint));
@@ -392,9 +389,7 @@ class SeparationFunction {
         _localPointB.setFrom(proxyB.getVertex(indexes[1]));
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
-        double separation = (_pointB..sub(_pointA)).dot(_normal);
-        return separation;
-
+        return (_pointB..sub(_pointA)).dot(_normal);
       case SeparationFunctionType.FACE_B:
         _normal.setFrom(Rot.mulVec2(_xfb.q, axis));
         _pointB.setFrom(Transform.mulVec2(_xfb, localPoint));
@@ -408,9 +403,7 @@ class SeparationFunction {
         _localPointA.setFrom(proxyA.getVertex(indexes[0]));
         _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
 
-        double separation = (_pointA..sub(_pointB)).dot(_normal);
-        return separation;
-
+        return (_pointA..sub(_pointB)).dot(_normal);
       default:
         assert(false);
         indexes[0] = -1;
@@ -431,18 +424,14 @@ class SeparationFunction {
         _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
-        double separation = (_pointB..sub(_pointA)).dot(axis);
-        return separation;
-
+        return (_pointB..sub(_pointA)).dot(axis);
       case SeparationFunctionType.FACE_A:
         _normal.setFrom(Rot.mulVec2(_xfa.q, axis));
         _pointA.setFrom(Transform.mulVec2(_xfa, localPoint));
 
         _localPointB.setFrom(proxyB.getVertex(indexB));
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
-        double separation = (_pointB..sub(_pointA)).dot(_normal);
-        return separation;
-
+        return (_pointB..sub(_pointA)).dot(_normal);
       case SeparationFunctionType.FACE_B:
         _normal.setFrom(Rot.mulVec2(_xfb.q, axis));
         _pointB.setFrom(Transform.mulVec2(_xfb, localPoint));
@@ -450,9 +439,7 @@ class SeparationFunction {
         _localPointA.setFrom(proxyA.getVertex(indexA));
         _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
 
-        double separation = (_pointA..sub(_pointB)).dot(_normal);
-        return separation;
-
+        return (_pointA..sub(_pointB)).dot(_normal);
       default:
         assert(false);
         return 0.0;

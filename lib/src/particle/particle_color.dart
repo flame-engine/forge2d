@@ -2,21 +2,21 @@ part of forge2d;
 
 /// Small color object for each particle
 class ParticleColor {
-  Int8List _data = Int8List(4);
+  final Int8List _data = Int8List(4);
 
-  void set r(int v) {
+  set r(int v) {
     _data[0] = v;
   }
 
-  void set g(int v) {
+  set g(int v) {
     _data[1] = v;
   }
 
-  void set b(int v) {
+  set b(int v) {
     _data[2] = v;
   }
 
-  void set a(int v) {
+  set a(int v) {
     _data[3] = v;
   }
 
