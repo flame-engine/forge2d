@@ -12,7 +12,7 @@ class MassData {
   double I = 0.0;
 
   /// Blank mass data
-  MassData() : this.center = Vector2.zero();
+  MassData() : center = Vector2.zero();
 
   /// Copies from the given mass data
   ///

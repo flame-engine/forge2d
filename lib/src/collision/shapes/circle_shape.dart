@@ -8,14 +8,16 @@ class CircleShape extends Shape {
     radius = 0.0;
   }
 
+  @override
   Shape clone() {
-    CircleShape shape = CircleShape();
+    final CircleShape shape = CircleShape();
     shape.position.x = position.x;
     shape.position.y = position.y;
     shape.radius = radius;
     return shape;
   }
 
+  @override
   int getChildCount() => 1;
 
   /// Get the supporting vertex index in the given direction.
@@ -33,23 +35,27 @@ class CircleShape extends Shape {
     return position;
   }
 
+  @override
   bool testPoint(final Transform transform, final Vector2 point) {
     final Rot q = transform.q;
     final Vector2 tp = transform.p;
-    double centerX = -(q.c * position.x - q.s * position.y + tp.x - point.x);
-    double centerY = -(q.s * position.x + q.c * position.y + tp.y - point.y);
+    final double centerX =
+        -(q.c * position.x - q.s * position.y + tp.x - point.x);
+    final double centerY =
+        -(q.s * position.x + q.c * position.y + tp.y - point.y);
 
     return centerX * centerX + centerY * centerY <= radius * radius;
   }
 
+  @override
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
     final Rot xfq = xf.q;
-    double centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
-    double centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
-    double dx = p.x - centerX;
-    double dy = p.y - centerY;
-    double d1 = math.sqrt(dx * dx + dy * dy);
+    final double centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
+    final double centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
+    final double dx = p.x - centerX;
+    final double dy = p.y - centerY;
+    final double d1 = math.sqrt(dx * dx + dy * dy);
     normalOut.x = dx * 1 / d1;
     normalOut.y = dy * 1 / d1;
     return d1 - radius;
@@ -59,6 +65,7 @@ class CircleShape extends Shape {
   // From Section 3.1.2
   // x = s + a * r
   // norm(x) = radius
+  @override
   bool raycast(RayCastOutput output, RayCastInput input, Transform transform,
       int childIndex) {
     final Vector2 inputp1 = input.p1;
@@ -106,6 +113,7 @@ class CircleShape extends Shape {
     return false;
   }
 
+  @override
   void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
     final Rot tq = transform.q;
     final Vector2 tp = transform.p;
@@ -118,6 +126,7 @@ class CircleShape extends Shape {
     aabb.upperBound.y = py + radius;
   }
 
+  @override
   void computeMass(final MassData massData, final double density) {
     massData.mass = density * math.pi * radius * radius;
     massData.center.x = position.x;

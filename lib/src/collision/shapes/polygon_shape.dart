@@ -26,8 +26,9 @@ class PolygonShape extends Shape {
     radius = settings.polygonRadius;
   }
 
+  @override
   Shape clone() {
-    PolygonShape shape = PolygonShape();
+    final PolygonShape shape = PolygonShape();
     shape.centroid.setFrom(centroid);
     for (int i = 0; i < shape.normals.length; i++) {
       shape.normals[i].setFrom(normals[i]);
@@ -52,10 +53,10 @@ class PolygonShape extends Shape {
     int n = math.min(updatedCount, settings.maxPolygonVertices);
 
     // Perform welding and copy vertices into local buffer.
-    List<Vector2> ps = List<Vector2>(settings.maxPolygonVertices);
+    final List<Vector2> ps = List<Vector2>(settings.maxPolygonVertices);
     int tempCount = 0;
     for (int i = 0; i < n; ++i) {
-      Vector2 v = updatedVertices[i];
+      final Vector2 v = updatedVertices[i];
       bool unique = true;
       for (int j = 0; j < tempCount; ++j) {
         if (v.distanceToSquared(ps[j]) < 0.5 * settings.linearSlop) {
@@ -84,14 +85,14 @@ class PolygonShape extends Shape {
     int i0 = 0;
     double x0 = ps[0].x;
     for (int i = 1; i < n; ++i) {
-      double x = ps[i].x;
+      final double x = ps[i].x;
       if (x > x0 || (x == x0 && ps[i].y < ps[i0].y)) {
         i0 = i;
         x0 = x;
       }
     }
 
-    List<int> hull = List<int>(settings.maxPolygonVertices);
+    final List<int> hull = List<int>(settings.maxPolygonVertices);
     int m = 0;
     int ih = i0;
 
@@ -105,9 +106,9 @@ class PolygonShape extends Shape {
           continue;
         }
 
-        Vector2 r = Vector2.copy(ps[ie])..sub(ps[hull[m]]);
-        Vector2 v = Vector2.copy(ps[j])..sub(ps[hull[m]]);
-        double c = r.cross(v);
+        final Vector2 r = Vector2.copy(ps[ie])..sub(ps[hull[m]]);
+        final Vector2 v = Vector2.copy(ps[j])..sub(ps[hull[m]]);
+        final double c = r.cross(v);
         if (c < 0.0) {
           ie = j;
         }
@@ -126,7 +127,7 @@ class PolygonShape extends Shape {
       }
     }
 
-    this.count = m;
+    count = m;
 
     // Copy vertices.
     for (int i = 0; i < count; ++i) {
@@ -213,10 +214,12 @@ class PolygonShape extends Shape {
       ..negate();
   }
 
+  @override
   int getChildCount() {
     return 1;
   }
 
+  @override
   bool testPoint(final Transform xf, final Vector2 p) {
     final Rot xfq = xf.q;
 
@@ -235,8 +238,8 @@ class PolygonShape extends Shape {
     }
 
     for (int i = 0; i < count; ++i) {
-      Vector2 vertex = vertices[i];
-      Vector2 normal = normals[i];
+      final Vector2 vertex = vertices[i];
+      final Vector2 normal = normals[i];
       tempX = pLocalx - vertex.x;
       tempY = pLocaly - vertex.y;
       final double dot = normal.x * tempX + normal.y * tempY;
@@ -248,6 +251,7 @@ class PolygonShape extends Shape {
     return true;
   }
 
+  @override
   void computeAABB(final AABB aabb, final Transform xf, int childIndex) {
     final Vector2 lower = aabb.lowerBound;
     final Vector2 upper = aabb.upperBound;
@@ -262,10 +266,10 @@ class PolygonShape extends Shape {
     upper.y = lower.y;
 
     for (int i = 1; i < count; ++i) {
-      Vector2 v2 = vertices[i];
+      final Vector2 v2 = vertices[i];
       // Vec2 v = Mul(xf, _vertices[i]);
-      double vx = (xfqc * v2.x - xfqs * v2.y) + xfpx;
-      double vy = (xfqs * v2.x + xfqc * v2.y) + xfpy;
+      final double vx = (xfqc * v2.x - xfqs * v2.y) + xfpx;
+      final double vy = (xfqs * v2.x + xfqc * v2.y) + xfpy;
       lower.x = lower.x < vx ? lower.x : vx;
       lower.y = lower.y < vy ? lower.y : vy;
       upper.x = upper.x > vx ? upper.x : vx;
@@ -289,25 +293,26 @@ class PolygonShape extends Shape {
     return vertices[index];
   }
 
+  @override
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
-    double xfqc = xf.q.c;
-    double xfqs = xf.q.s;
+    final double xfqc = xf.q.c;
+    final double xfqs = xf.q.s;
     double tx = p.x - xf.p.x;
     double ty = p.y - xf.p.y;
-    double pLocalx = xfqc * tx + xfqs * ty;
-    double pLocaly = -xfqs * tx + xfqc * ty;
+    final double pLocalx = xfqc * tx + xfqs * ty;
+    final double pLocaly = -xfqs * tx + xfqc * ty;
 
     double maxDistance = -double.maxFinite;
     double normalForMaxDistanceX = pLocalx;
     double normalForMaxDistanceY = pLocaly;
 
     for (int i = 0; i < count; ++i) {
-      Vector2 vertex = vertices[i];
-      Vector2 normal = normals[i];
+      final Vector2 vertex = vertices[i];
+      final Vector2 normal = normals[i];
       tx = pLocalx - vertex.x;
       ty = pLocaly - vertex.y;
-      double dot = normal.x * tx + normal.y * ty;
+      final double dot = normal.x * tx + normal.y * ty;
       if (dot > maxDistance) {
         maxDistance = dot;
         normalForMaxDistanceX = normal.x;
@@ -321,11 +326,11 @@ class PolygonShape extends Shape {
       double minDistanceY = normalForMaxDistanceY;
       double minDistance2 = maxDistance * maxDistance;
       for (int i = 0; i < count; ++i) {
-        Vector2 vertex = vertices[i];
-        double distanceVecX = pLocalx - vertex.x;
-        double distanceVecY = pLocaly - vertex.y;
-        double distance2 =
-            (distanceVecX * distanceVecX + distanceVecY * distanceVecY);
+        final Vector2 vertex = vertices[i];
+        final double distanceVecX = pLocalx - vertex.x;
+        final double distanceVecY = pLocaly - vertex.y;
+        final double distance2 =
+            distanceVecX * distanceVecX + distanceVecY * distanceVecY;
         if (minDistance2 > distance2) {
           minDistanceX = distanceVecX;
           minDistanceY = distanceVecY;
@@ -345,6 +350,7 @@ class PolygonShape extends Shape {
     return distance;
   }
 
+  @override
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
     final double xfqc = xf.q.c;
@@ -368,11 +374,11 @@ class PolygonShape extends Shape {
     int index = -1;
 
     for (int i = 0; i < count; ++i) {
-      Vector2 normal = normals[i];
-      Vector2 vertex = vertices[i];
-      double tempxn = vertex.x - p1x;
-      double tempyn = vertex.y - p1y;
-      final double numerator = normal.x * tempxn + normal.y * tempyn;
+      final Vector2 normal = normals[i];
+      final Vector2 vertex = vertices[i];
+      final double tempX = vertex.x - p1x;
+      final double tempY = vertex.y - p1y;
+      final double numerator = normal.x * tempX + normal.y * tempY;
       final double denominator = normal.x * dx + normal.y * dy;
 
       if (denominator == 0.0) {
@@ -406,8 +412,8 @@ class PolygonShape extends Shape {
 
     if (index >= 0) {
       output.fraction = lower;
-      Vector2 normal = normals[index];
-      Vector2 out = output.normal;
+      final Vector2 normal = normals[index];
+      final Vector2 out = output.normal;
       out.x = xfqc * normal.x - xfqs * normal.y;
       out.y = xfqs * normal.x + xfqc * normal.y;
       return true;
@@ -428,7 +434,7 @@ class PolygonShape extends Shape {
     final Vector2 e1 = Vector2.zero();
     final Vector2 e2 = Vector2.zero();
 
-    final double inv3 = 1.0 / 3.0;
+    const double inv3 = 1.0 / 3.0;
 
     for (int i = 0; i < count; ++i) {
       // Triangle vertices.
@@ -462,6 +468,7 @@ class PolygonShape extends Shape {
     centroid.scale(1.0 / area);
   }
 
+  @override
   void computeMass(final MassData massData, double density) {
     // Polygon mass, centroid, and inertia.
     // Let rho be the polygon density in mass per unit area.
@@ -502,7 +509,7 @@ class PolygonShape extends Shape {
     }
     s.scale(1.0 / count.toDouble());
 
-    final double k_inv3 = 1.0 / 3.0;
+    const double kInv3 = 1.0 / 3.0;
 
     final Vector2 e1 = Vector2.zero();
     final Vector2 e2 = Vector2.zero();
@@ -523,16 +530,16 @@ class PolygonShape extends Shape {
       area += triangleArea;
 
       // Area weighted centroid
-      center.x += triangleArea * k_inv3 * (e1.x + e2.x);
-      center.y += triangleArea * k_inv3 * (e1.y + e2.y);
+      center.x += triangleArea * kInv3 * (e1.x + e2.x);
+      center.y += triangleArea * kInv3 * (e1.y + e2.y);
 
       final double ex1 = e1.x, ey1 = e1.y;
       final double ex2 = e2.x, ey2 = e2.y;
 
-      double intx2 = ex1 * ex1 + ex2 * ex1 + ex2 * ex2;
-      double inty2 = ey1 * ey1 + ey2 * ey1 + ey2 * ey2;
+      final double intx2 = ex1 * ex1 + ex2 * ex1 + ex2 * ex2;
+      final double inty2 = ey1 * ey1 + ey2 * ey1 + ey2 * ey2;
 
-      I += (0.25 * k_inv3 * D) * (intx2 + inty2);
+      I += (0.25 * kInv3 * D) * (intx2 + inty2);
     }
 
     // Total mass
@@ -555,18 +562,18 @@ class PolygonShape extends Shape {
   /// Validate convexity. This is a very time consuming operation.
   bool validate() {
     for (int i = 0; i < count; ++i) {
-      int i1 = i;
-      int i2 = i < count - 1 ? i1 + 1 : 0;
-      Vector2 p = vertices[i1];
-      Vector2 e = Vector2.copy(vertices[i2])..sub(p);
+      final int i1 = i;
+      final int i2 = i < count - 1 ? i1 + 1 : 0;
+      final Vector2 p = vertices[i1];
+      final Vector2 e = Vector2.copy(vertices[i2])..sub(p);
 
       for (int j = 0; j < count; ++j) {
         if (j == i1 || j == i2) {
           continue;
         }
 
-        Vector2 v = Vector2.copy(vertices[j])..sub(p);
-        double c = e.cross(v);
+        final Vector2 v = Vector2.copy(vertices[j])..sub(p);
+        final double c = e.cross(v);
         if (c < 0.0) {
           return false;
         }
