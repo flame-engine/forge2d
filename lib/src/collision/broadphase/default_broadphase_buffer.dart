@@ -26,6 +26,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     _moveBuffer = buffer_utils.intList(_moveCapacity);
   }
 
+  @override
   int createProxy(final AABB aabb, Object userData) {
     final int proxyId = _tree.createProxy(aabb, userData);
     ++_proxyCount;
@@ -33,12 +34,14 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     return proxyId;
   }
 
+  @override
   void destroyProxy(int proxyId) {
     unbufferMove(proxyId);
     --_proxyCount;
     _tree.destroyProxy(proxyId);
   }
 
+  @override
   void moveProxy(int proxyId, final AABB aabb, final Vector2 displacement) {
     final bool buffer = _tree.moveProxy(proxyId, aabb, displacement);
     if (buffer) {
@@ -46,18 +49,22 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     }
   }
 
+  @override
   void touchProxy(int proxyId) {
     bufferMove(proxyId);
   }
 
+  @override
   Object getUserData(int proxyId) {
     return _tree.getUserData(proxyId);
   }
 
+  @override
   AABB getFatAABB(int proxyId) {
     return _tree.getFatAABB(proxyId);
   }
 
+  @override
   bool testOverlap(int proxyIdA, int proxyIdB) {
     final AABB a = _tree.getFatAABB(proxyIdA);
     final AABB b = _tree.getFatAABB(proxyIdB);
@@ -74,14 +81,17 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     return true;
   }
 
+  @override
   int getProxyCount() {
     return _proxyCount;
   }
 
+  @override
   void drawTree(DebugDraw argDraw) {
     _tree.drawTree(argDraw);
   }
 
+  @override
   void updatePairs(PairCallback callback) {
     // Reset pair buffer
     _pairCount = 0;
@@ -129,29 +139,34 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     }
   }
 
+  @override
   void query(final TreeCallback callback, final AABB aabb) {
     _tree.query(callback, aabb);
   }
 
+  @override
   void raycast(final TreeRayCastCallback callback, final RayCastInput input) {
     _tree.raycast(callback, input);
   }
 
+  @override
   int getTreeHeight() {
     return _tree.getHeight();
   }
 
+  @override
   int getTreeBalance() {
     return _tree.getMaxBalance();
   }
 
+  @override
   double getTreeQuality() {
     return _tree.getAreaRatio();
   }
 
   void bufferMove(int proxyId) {
     if (_moveCount == _moveCapacity) {
-      List<int> old = _moveBuffer;
+      final List<int> old = _moveBuffer;
       _moveCapacity *= 2;
       _moveBuffer = List<int>(_moveCapacity);
       buffer_utils.arrayCopy(old, 0, _moveBuffer, 0, old.length);
@@ -170,6 +185,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   }
 
   /// This is called from DynamicTree::query when we are gathering pairs.
+  @override
   bool treeCallback(int proxyId) {
     // A proxy cannot form a pair with itself.
     if (proxyId == _queryProxyId) {
@@ -178,7 +194,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
     // Grow the pair buffer as needed.
     if (_pairCount == _pairCapacity) {
-      List<Pair> oldBuffer = _pairBuffer;
+      final List<Pair> oldBuffer = _pairBuffer;
       _pairCapacity *= 2;
       _pairBuffer = List<Pair>(_pairCapacity);
       buffer_utils.arrayCopy(oldBuffer, 0, _pairBuffer, 0, oldBuffer.length);
