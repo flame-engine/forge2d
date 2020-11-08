@@ -35,8 +35,6 @@ class VoronoiDiagram {
   // The diagram is an array of "pointers".
   List<VoronoiGenerator> _diagram;
 
-  VoronoiDiagram();
-
   void getNodes(VoronoiDiagramCallback callback) {
     for (int y = 0; y < _countY - 1; y++) {
       for (int x = 0; x < _countX - 1; x++) {

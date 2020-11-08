@@ -20,9 +20,9 @@ class Transform {
         q = xf.q.clone();
 
   /// Initialize using a position vector and a rotation matrix.
-  Transform.from(final Vector2 _position, final Rot _R)
-      : p = _position.clone(),
-        q = _R.clone();
+  Transform.from(final Vector2 position, final Rot r)
+      : p = position.clone(),
+        q = r.clone();
 
   /// Set this to equal another transform.
   Transform set(final Transform xf) {
@@ -43,35 +43,31 @@ class Transform {
     q.setIdentity();
   }
 
-  static Vector2 mulVec2(final Transform T, final Vector2 v) {
-    return Vector2((T.q.c * v.x - T.q.s * v.y) + T.p.x,
-        (T.q.s * v.x + T.q.c * v.y) + T.p.y);
+  static Vector2 mulVec2(final Transform t, final Vector2 v) {
+    return Vector2((t.q.c * v.x - t.q.s * v.y) + t.p.x,
+        (t.q.s * v.x + t.q.c * v.y) + t.p.y);
   }
 
-  static Vector2 mulTransVec2(final Transform T, final Vector2 v) {
-    final double px = v.x - T.p.x;
-    final double py = v.y - T.p.y;
-    return Vector2((T.q.c * px + T.q.s * py), (-T.q.s * px + T.q.c * py));
+  static Vector2 mulTransVec2(final Transform t, final Vector2 v) {
+    final double pX = v.x - t.p.x;
+    final double pY = v.y - t.p.y;
+    return Vector2(t.q.c * pX + t.q.s * pY, -t.q.s * pX + t.q.c * pY);
   }
 
-  static Transform mul(final Transform A, final Transform B) {
-    Transform c = Transform.zero();
-    c.q.setFrom(Rot.mul(A.q, B.q));
-    c.p.setFrom(Rot.mulVec2(A.q, B.p));
-    c.p.add(A.p);
+  static Transform mul(final Transform a, final Transform b) {
+    final Transform c = Transform.zero();
+    c.q.setFrom(Rot.mul(a.q, b.q));
+    c.p.setFrom(Rot.mulVec2(a.q, b.p));
+    c.p.add(a.p);
     return c;
   }
 
-  static Vector2 _pool = Vector2.zero();
-
-  static Transform mulTrans(final Transform A, final Transform B) {
-    Transform c = Transform.zero();
-    c.q.setFrom(Rot.mulTrans(A.q, B.q));
-    (_pool..setFrom(B.p)).sub(A.p);
-    c.p.setFrom(Rot.mulTransVec2(A.q, _pool));
-    return c;
+  static Transform mulTrans(final Transform a, final Transform b) {
+    final Vector2 v = b.p - a.p;
+    return Transform.from(Rot.mulTransVec2(a.q, v), Rot.mulTrans(a.q, b.q));
   }
 
+  @override
   String toString() {
     String s = "XForm:\n";
     s += "Position: $p\n";
