@@ -37,9 +37,6 @@ class EdgeShape extends Shape {
     return false;
   }
 
-  // for pooling
-  final Vector2 normal = Vector2.zero();
-
   @override
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
@@ -101,16 +98,13 @@ class EdgeShape extends Shape {
     final double dx = p2x - p1x;
     final double dy = p2y - p1y;
 
-    normal.x = v2.y - v1.y;
-    normal.y = v1.x - v2.x;
+    final Vector2 normal = Vector2(v2.y - v1.y, v1.x - v2.x);
     normal.normalize();
-    final double normalX = normal.x;
-    final double normalY = normal.y;
 
     tempX = v1.x - p1x;
     tempY = v1.y - p1y;
-    final double numerator = normalX * tempX + normalY * tempY;
-    final double denominator = normalX * dx + normalY * dy;
+    final double numerator = normal.x * tempX + normal.y * tempY;
+    final double denominator = normal.x * dx + normal.y * dy;
 
     if (denominator == 0.0) {
       return false;

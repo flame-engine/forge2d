@@ -38,7 +38,7 @@ class TimeOfImpact {
   final Transform _xfB = Transform.zero();
   final DistanceOutput _distanceOutput = DistanceOutput();
   final SeparationFunction _fcn = SeparationFunction();
-  final List<int> _indexes = buffer_utils.intList(2);
+  final List<int> _indexes = List<int>.filled(2, 0);
   final Sweep _sweepA = Sweep();
   final Sweep _sweepB = Sweep();
 

@@ -23,7 +23,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     for (int i = 0; i < _pairCapacity; i++) {
       _pairBuffer[i] = Pair();
     }
-    _moveBuffer = buffer_utils.intList(_moveCapacity);
+    _moveBuffer = List<int>.filled(_moveCapacity, 0);
   }
 
   @override
@@ -115,7 +115,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
     _moveCount = 0;
 
     // Sort the pair buffer to expose duplicates.
-    buffer_utils.sort(_pairBuffer, 0, _pairCount);
+    _pairBuffer.sort();
 
     // Send the pairs back to the client.
     int i = 0;
