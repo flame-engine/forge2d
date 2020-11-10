@@ -133,7 +133,7 @@ class DynamicTreeFlatNodes implements BroadPhaseStrategy {
     return _aabb[proxyId];
   }
 
-  List<int> _nodeStack = buffer_utils.intList(20);
+  List<int> _nodeStack = List<int>.filled(20, 0);
   int _nodeStackIndex = 0;
 
   @override

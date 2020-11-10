@@ -86,7 +86,7 @@ Float64List reallocateBufferFloat64Deferred(Float64List buffer,
   return buffer;
 }
 
-/// Rotate an array, see std::rotate
+/// Rotate an array
 void rotate<T>(List<T> ray, int first, int newFirst, int last) {
   int next = newFirst;
   while (next != first) {
@@ -103,18 +103,7 @@ void rotate<T>(List<T> ray, int first, int newFirst, int last) {
   }
 }
 
-/// Helper function to allocate a list of integers and set all elements to 0.
-List<int> intList(int size) => List<int>.filled(size, 0);
-
 /// Helper function for ease of porting Java to Dart.
 void arrayCopy(List src, int srcPos, List dest, int destPos, int length) {
   dest.setRange(destPos, length + destPos, src, srcPos);
-}
-
-// Replace Java's Arrays::sort.
-// TODO(srdjan): Make a version that does not require copying.
-void sort<T>(List<T> list, int fromPos, int toPos) {
-  final List<T> temp = List.from(list.getRange(fromPos, toPos));
-  temp.sort();
-  list.setRange(fromPos, toPos, temp);
 }

@@ -995,7 +995,7 @@ class ParticleSystem {
       final Vector2 pos = positionBuffer.data[i];
       proxy.tag = computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
     }
-    buffer_utils.sort(proxyBuffer, 0, proxyCount);
+    proxyBuffer.sort();
     contactCount = 0;
     int cIndex = 0;
     for (int i = 0; i < proxyCount; i++) {
@@ -1625,7 +1625,7 @@ class ParticleSystem {
   void solveZombie() {
     // removes particles with zombie flag
     int newCount = 0;
-    final List<int> newIndices = buffer_utils.intList(count);
+    final List<int> newIndices = List<int>.filled(count, 0);
     for (int i = 0; i < count; i++) {
       final int flags = flagsBuffer.data[i];
       if ((flags & ParticleType.zombieParticle) != 0) {

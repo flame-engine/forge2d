@@ -68,26 +68,21 @@ class CircleShape extends Shape {
   @override
   bool raycast(RayCastOutput output, RayCastInput input, Transform transform,
       int childIndex) {
-    final Vector2 inputp1 = input.p1;
-    final Vector2 inputp2 = input.p2;
+    final Vector2 inputP1 = input.p1;
+    final Vector2 inputP2 = input.p2;
     final Rot tq = transform.q;
     final Vector2 tp = transform.p;
 
-    // Rot.mulToOutUnsafe(transform.q, _p, position);
-    // position.addLocal(transform.p);
-    final double positionx = tq.c * position.x - tq.s * position.y + tp.x;
-    final double positiony = tq.s * position.x + tq.c * position.y + tp.y;
+    final double positionX = tq.c * position.x - tq.s * position.y + tp.x;
+    final double positionY = tq.s * position.x + tq.c * position.y + tp.y;
 
-    final double sx = inputp1.x - positionx;
-    final double sy = inputp1.y - positiony;
-    // final double b = Vec2.dot(s, s) - _radius * _radius;
+    final double sx = inputP1.x - positionX;
+    final double sy = inputP1.y - positionY;
     final double b = sx * sx + sy * sy - radius * radius;
 
     // Solve quadratic equation.
-    final double rx = inputp2.x - inputp1.x;
-    final double ry = inputp2.y - inputp1.y;
-    // final double c = Vec2.dot(s, r);
-    // final double rr = Vec2.dot(r, r);
+    final double rx = inputP2.x - inputP1.x;
+    final double ry = inputP2.y - inputP1.y;
     final double c = sx * rx + sy * ry;
     final double rr = rx * rx + ry * ry;
     final double sigma = c * c - rr * b;

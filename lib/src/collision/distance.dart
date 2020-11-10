@@ -25,10 +25,10 @@ class SimplexCache {
   int count = 0;
 
   /// vertices on shape A
-  final List<int> indexA = buffer_utils.intList(3);
+  final List<int> indexA = List<int>.filled(3, 0);
 
   /// vertices on shape B
-  final List<int> indexB = buffer_utils.intList(3);
+  final List<int> indexB = List<int>.filled(3, 0);
 
   SimplexCache() {
     indexA[0] = settings.INTEGER_MAX_VALUE;
@@ -154,11 +154,6 @@ class _Simplex {
     }
   }
 
-  // djm pooled
-  final Vector2 _case2 = Vector2.zero();
-  final Vector2 _case22 = Vector2.zero();
-
-  /// This returns pooled objects. don't keep or modify them
   void getClosestPoint(final Vector2 out) {
     switch (count) {
       case 0:
@@ -169,14 +164,11 @@ class _Simplex {
         out.setFrom(v1.w);
         return;
       case 2:
-        _case22
-          ..setFrom(v2.w)
-          ..scale(v2.a);
-        _case2
-          ..setFrom(v1.w)
+        final Vector2 case22 = Vector2.copy(v2.w)..scale(v2.a);
+        final Vector2 case2 = Vector2.copy(v1.w)
           ..scale(v1.a)
-          ..add(_case22);
-        out.setFrom(_case2);
+          ..add(case22);
+        out.setFrom(case2);
         return;
       case 3:
         out.setZero();
@@ -188,57 +180,38 @@ class _Simplex {
     }
   }
 
-  // djm pooled, and from above
-  final Vector2 _case3 = Vector2.zero();
-  final Vector2 _case33 = Vector2.zero();
-
   void getWitnessPoints(Vector2 pA, Vector2 pB) {
     switch (count) {
       case 0:
         assert(false);
         break;
-
       case 1:
         pA.setFrom(v1.wA);
         pB.setFrom(v1.wB);
         break;
-
       case 2:
-        _case2
-          ..setFrom(v1.wA)
-          ..scale(v1.a);
+        final Vector2 case2 = Vector2.copy(v1.wA)..scale(v1.a);
         pA
           ..setFrom(v2.wA)
           ..scale(v2.a)
-          ..add(_case2);
-        // v1.a * v1.wA + v2.a * v2.wA;
-        // *pB = v1.a * v1.wB + v2.a * v2.wB;
-        _case2
+          ..add(case2);
+        case2
           ..setFrom(v1.wB)
           ..scale(v1.a);
         pB
           ..setFrom(v2.wB)
           ..scale(v2.a)
-          ..add(_case2);
-
+          ..add(case2);
         break;
-
       case 3:
         pA
           ..setFrom(v1.wA)
           ..scale(v1.a);
-        _case3
-          ..setFrom(v2.wA)
-          ..scale(v2.a);
-        _case33
-          ..setFrom(v3.wA)
-          ..scale(v3.a);
-        pA..add(_case3)..add(_case33);
+        final Vector2 case3 = Vector2.copy(v2.wA)..scale(v2.a);
+        final Vector2 case33 = Vector2.copy(v3.wA)..scale(v3.a);
+        pA..add(case3)..add(case33);
         pB.setFrom(pA);
-        // *pA = v1.a * v1.wA + v2.a * v2.wA + v3.a * v3.wA;
-        // *pB = *pA;
         break;
-
       default:
         assert(false);
         break;
@@ -251,30 +224,20 @@ class _Simplex {
       case 0:
         assert(false);
         return 0.0;
-
       case 1:
         return 0.0;
-
       case 2:
         return v1.w.distanceTo(v2.w);
-
       case 3:
-        _case3
-          ..setFrom(v2.w)
-          ..sub(v1.w);
-        _case33
-          ..setFrom(v3.w)
-          ..sub(v1.w);
-        // return Vec2.cross(v2.w - v1.w, v3.w - v1.w);
-        return _case3.cross(_case33);
-
+        final Vector2 case3 = Vector2.copy(v2.w)..sub(v1.w);
+        final Vector2 case33 = Vector2.copy(v3.w)..sub(v1.w);
+        return case3.cross(case33);
       default:
         assert(false);
         return 0.0;
     }
   }
 
-  // djm pooled from above
   /// Solve a line segment using barycentric coordinates.
   void solve2() {
     // Solve a line segment using barycentric coordinates.
@@ -567,8 +530,8 @@ class Distance {
   static int gjkMaxIterations = 20;
 
   final _Simplex _simplex = _Simplex();
-  final List<int> _saveA = buffer_utils.intList(3);
-  final List<int> _saveB = buffer_utils.intList(3);
+  final List<int> _saveA = List<int>.filled(3, 0);
+  final List<int> _saveB = List<int>.filled(3, 0);
   final Vector2 _closestPoint = Vector2.zero();
   final Vector2 _d = Vector2.zero();
   final Vector2 _temp = Vector2.zero();

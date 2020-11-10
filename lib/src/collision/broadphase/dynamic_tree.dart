@@ -345,7 +345,7 @@ class DynamicTree implements BroadPhaseStrategy {
 
   /// Build an optimal tree. Very expensive. For testing.
   void rebuildBottomUp() {
-    final List<int> nodes = buffer_utils.intList(_nodeCount);
+    final List<int> nodes = List<int>.filled(_nodeCount, 0);
     int count = 0;
 
     // Build array of leaves. Free the rest.
