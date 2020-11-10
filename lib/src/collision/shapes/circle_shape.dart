@@ -1,52 +1,30 @@
-/// *****************************************************************************
-/// Copyright (c) 2015, Daniel Murphy, Google
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///  * Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-///  * Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-/// POSSIBILITY OF SUCH DAMAGE.
-/// *****************************************************************************
-
-part of box2d;
+part of forge2d;
 
 /// A circle shape.
 class CircleShape extends Shape {
-  final Vector2 p = Vector2.zero();
+  final Vector2 position = Vector2.zero();
 
   CircleShape() : super(ShapeType.CIRCLE) {
     radius = 0.0;
   }
 
+  @override
   Shape clone() {
-    CircleShape shape = CircleShape();
-    shape.p.x = p.x;
-    shape.p.y = p.y;
+    final CircleShape shape = CircleShape();
+    shape.position.x = position.x;
+    shape.position.y = position.y;
     shape.radius = radius;
     return shape;
   }
 
+  @override
   int getChildCount() => 1;
 
   /// Get the supporting vertex index in the given direction.
   int getSupport(final Vector2 d) => 0;
 
   /// Get the supporting vertex in the given direction.
-  Vector2 getSupportVertex(final Vector2 d) => p;
+  Vector2 getSupportVertex(final Vector2 d) => position;
 
   /// Get the vertex count.
   int getVertexCount() => 1;
@@ -54,26 +32,30 @@ class CircleShape extends Shape {
   /// Get a vertex by index.
   Vector2 getVertex(final int index) {
     assert(index == 0);
-    return p;
+    return position;
   }
 
+  @override
   bool testPoint(final Transform transform, final Vector2 point) {
     final Rot q = transform.q;
     final Vector2 tp = transform.p;
-    double centerx = -(q.c * p.x - q.s * p.y + tp.x - point.x);
-    double centery = -(q.s * p.x + q.c * p.y + tp.y - point.y);
+    final double centerX =
+        -(q.c * position.x - q.s * position.y + tp.x - point.x);
+    final double centerY =
+        -(q.s * position.x + q.c * position.y + tp.y - point.y);
 
-    return centerx * centerx + centery * centery <= radius * radius;
+    return centerX * centerX + centerY * centerY <= radius * radius;
   }
 
+  @override
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
     final Rot xfq = xf.q;
-    double centerx = xfq.c * p.x - xfq.s * p.y + xf.p.x;
-    double centery = xfq.s * p.x + xfq.c * p.y + xf.p.y;
-    double dx = p.x - centerx;
-    double dy = p.y - centery;
-    double d1 = Math.sqrt(dx * dx + dy * dy);
+    final double centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
+    final double centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
+    final double dx = p.x - centerX;
+    final double dy = p.y - centerY;
+    final double d1 = math.sqrt(dx * dx + dy * dy);
     normalOut.x = dx * 1 / d1;
     normalOut.y = dy * 1 / d1;
     return d1 - radius;
@@ -83,39 +65,35 @@ class CircleShape extends Shape {
   // From Section 3.1.2
   // x = s + a * r
   // norm(x) = radius
+  @override
   bool raycast(RayCastOutput output, RayCastInput input, Transform transform,
       int childIndex) {
-    final Vector2 inputp1 = input.p1;
-    final Vector2 inputp2 = input.p2;
+    final Vector2 inputP1 = input.p1;
+    final Vector2 inputP2 = input.p2;
     final Rot tq = transform.q;
     final Vector2 tp = transform.p;
 
-    // Rot.mulToOutUnsafe(transform.q, _p, position);
-    // position.addLocal(transform.p);
-    final double positionx = tq.c * p.x - tq.s * p.y + tp.x;
-    final double positiony = tq.s * p.x + tq.c * p.y + tp.y;
+    final double positionX = tq.c * position.x - tq.s * position.y + tp.x;
+    final double positionY = tq.s * position.x + tq.c * position.y + tp.y;
 
-    final double sx = inputp1.x - positionx;
-    final double sy = inputp1.y - positiony;
-    // final double b = Vec2.dot(s, s) - _radius * _radius;
+    final double sx = inputP1.x - positionX;
+    final double sy = inputP1.y - positionY;
     final double b = sx * sx + sy * sy - radius * radius;
 
     // Solve quadratic equation.
-    final double rx = inputp2.x - inputp1.x;
-    final double ry = inputp2.y - inputp1.y;
-    // final double c = Vec2.dot(s, r);
-    // final double rr = Vec2.dot(r, r);
+    final double rx = inputP2.x - inputP1.x;
+    final double ry = inputP2.y - inputP1.y;
     final double c = sx * rx + sy * ry;
     final double rr = rx * rx + ry * ry;
     final double sigma = c * c - rr * b;
 
     // Check for negative discriminant and short segment.
-    if (sigma < 0.0 || rr < Settings.EPSILON) {
+    if (sigma < 0.0 || rr < settings.EPSILON) {
       return false;
     }
 
     // Find the point of intersection of the line with the circle.
-    double a = -(c + Math.sqrt(sigma));
+    double a = -(c + math.sqrt(sigma));
 
     // Is the intersection point on the segment?
     if (0.0 <= a && a <= input.maxFraction * rr) {
@@ -130,11 +108,12 @@ class CircleShape extends Shape {
     return false;
   }
 
+  @override
   void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
     final Rot tq = transform.q;
     final Vector2 tp = transform.p;
-    final double px = tq.c * p.x - tq.s * p.y + tp.x;
-    final double py = tq.s * p.x + tq.c * p.y + tp.y;
+    final double px = tq.c * position.x - tq.s * position.y + tp.x;
+    final double py = tq.s * position.x + tq.c * position.y + tp.y;
 
     aabb.lowerBound.x = px - radius;
     aabb.lowerBound.y = py - radius;
@@ -142,13 +121,15 @@ class CircleShape extends Shape {
     aabb.upperBound.y = py + radius;
   }
 
+  @override
   void computeMass(final MassData massData, final double density) {
-    massData.mass = density * Math.pi * radius * radius;
-    massData.center.x = p.x;
-    massData.center.y = p.y;
+    massData.mass = density * math.pi * radius * radius;
+    massData.center.x = position.x;
+    massData.center.y = position.y;
 
     // inertia about the local origin
-    massData.I =
-        massData.mass * (0.5 * radius * radius + (p.x * p.x + p.y * p.y));
+    massData.I = massData.mass *
+        (0.5 * radius * radius +
+            (position.x * position.x + position.y * position.y));
   }
 }

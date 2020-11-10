@@ -1,37 +1,12 @@
-/// *****************************************************************************
-/// Copyright (c) 2015, Daniel Murphy, Google
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///  * Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-///  * Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-/// POSSIBILITY OF SUCH DAMAGE.
-/// *****************************************************************************
-
-library box2d;
+library forge2d;
 
 import 'dart:collection';
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'src/buffer_utils.dart' as BufferUtils;
+import 'src/buffer_utils.dart' as buffer_utils;
 import 'src/common.dart';
-import 'src/math_utils.dart' as MathUtils;
-import 'src/settings.dart' as Settings;
+import 'src/settings.dart' as settings;
 import 'src/vector_math.dart';
 
 export 'src/common.dart';
@@ -111,8 +86,8 @@ part 'src/dynamics/contacts/polygon_contact.dart';
 part 'src/dynamics/contacts/position.dart';
 part 'src/dynamics/contacts/velocity.dart';
 
-part 'src/dynamics/joints/constant_volume_joints.dart';
-part 'src/dynamics/joints/constant_volume_joints_def.dart';
+part 'src/dynamics/joints/constant_volume_joint.dart';
+part 'src/dynamics/joints/constant_volume_joint_def.dart';
 part 'src/dynamics/joints/distance_joint.dart';
 part 'src/dynamics/joints/distance_joint_def.dart';
 part 'src/dynamics/joints/friction_joint.dart';
@@ -151,21 +126,4 @@ part 'src/particle/particle_group_def.dart';
 part 'src/particle/particle_group_type.dart';
 part 'src/particle/particle_system.dart';
 part 'src/particle/particle_type.dart';
-part 'src/particle/stack_queue.dart';
 part 'src/particle/voronoi_diagram.dart';
-
-part 'src/pooling/idynamic_stack.dart';
-part 'src/pooling/iordered_stack.dart';
-part 'src/pooling/iworld_pool.dart';
-
-part 'src/pooling/arrays/float_array.dart';
-part 'src/pooling/arrays/generator_array.dart';
-part 'src/pooling/arrays/int_array.dart';
-part 'src/pooling/arrays/vec2_array.dart';
-
-part 'src/pooling/normal/circle_stack.dart';
-part 'src/pooling/normal/default_world_pool.dart';
-part 'src/pooling/normal/mutable_stack.dart';
-part 'src/pooling/normal/ordered_stack.dart';
-
-part 'src/pooling/stacks/dynamic_int_stack.dart';

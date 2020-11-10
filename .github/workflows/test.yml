@@ -1,0 +1,19 @@
+name: Test
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Check dart version
+      run: dart --version
+    - name: Get dependencies
+      run: pub get
+    - name: Run linting
+      run: ./scripts/lint.sh
+    - name: Run sanity check build
+      run: ./scripts/build.sh

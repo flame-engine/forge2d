@@ -1,28 +1,4 @@
-/// *****************************************************************************
-/// Copyright (c) 2015, Daniel Murphy, Google
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///  * Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-///  * Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-/// POSSIBILITY OF SUCH DAMAGE.
-/// *****************************************************************************
-
-part of box2d;
+part of forge2d;
 
 /// Implement this abstract class to allow DBox2d to automatically draw your physics for debugging
 /// purposes. Not intended to replace your own custom rendering routines!
@@ -51,8 +27,9 @@ abstract class DebugDraw {
   int drawFlags = SHAPE_BIT;
   ViewportTransform viewportTransform;
 
-  DebugDraw.zero();
   DebugDraw(this.viewportTransform);
+
+  DebugDraw.zero();
 
   void setViewportTransform(ViewportTransform viewportTransform) {
     this.viewportTransform = viewportTransform;
@@ -136,16 +113,6 @@ abstract class DebugDraw {
     viewportTransform.setCamera(x, y, scale);
   }
 
-  /// Takes the world coordinates and returns the corresponding screen
-  /// coordinates
-  Vector2 getWorldToScreenToOut(Vector2 input) =>
-      viewportTransform.getWorldToScreen(input);
-
-  /// Takes the world coordinates and returns the corresponding screen
-  /// coordinates
-  Vector2 getWorldToScreenToOutXY(double worldX, double worldY) =>
-      getWorldToScreenToOut(Vector2(worldX, worldY));
-
   /// Takes the world coordinate and returns the screen coordinates.
   Vector2 getWorldToScreen(Vector2 argWorld) =>
       viewportTransform.getWorldToScreen(argWorld);
@@ -157,8 +124,4 @@ abstract class DebugDraw {
   /// Takes the screen coordinates (argScreen) and returns the world coordinates
   Vector2 getScreenToWorld(Vector2 argScreen) =>
       viewportTransform.getScreenToWorld(argScreen);
-
-  /// Takes the screen coordinates and returns the corresponding world coordinates
-  Vector2 getScreenToWorldToOutXY(double screenX, double screenY) =>
-      viewportTransform.getScreenToWorld(Vector2(screenX, screenY));
 }

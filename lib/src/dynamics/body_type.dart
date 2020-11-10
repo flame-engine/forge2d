@@ -1,4 +1,4 @@
-part of box2d;
+part of forge2d;
 
 /// The body type.
 /// static: zero mass, zero velocity, may be manually moved

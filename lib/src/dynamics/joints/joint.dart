@@ -1,28 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
-
-part of box2d;
+part of forge2d;
 
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
 /// joints also feature limits and motors.
@@ -30,29 +6,29 @@ abstract class Joint {
   static Joint create(World world, JointDef def) {
     switch (def.type) {
       case JointType.MOUSE:
-        return new MouseJoint(world.getPool(), def as MouseJointDef);
+        return MouseJoint(def as MouseJointDef);
       case JointType.DISTANCE:
-        return new DistanceJoint(world.getPool(), def as DistanceJointDef);
+        return DistanceJoint(def as DistanceJointDef);
       case JointType.PRISMATIC:
-        return new PrismaticJoint(world.getPool(), def as PrismaticJointDef);
+        return PrismaticJoint(def as PrismaticJointDef);
       case JointType.REVOLUTE:
-        return new RevoluteJoint(world.getPool(), def as RevoluteJointDef);
+        return RevoluteJoint(def as RevoluteJointDef);
       case JointType.WELD:
-        return new WeldJoint(world.getPool(), def as WeldJointDef);
+        return WeldJoint(def as WeldJointDef);
       case JointType.FRICTION:
-        return new FrictionJoint(world.getPool(), def as FrictionJointDef);
+        return FrictionJoint(def as FrictionJointDef);
       case JointType.WHEEL:
-        return new WheelJoint(world.getPool(), def as WheelJointDef);
+        return WheelJoint(def as WheelJointDef);
       case JointType.GEAR:
-        return new GearJoint(world.getPool(), def as GearJointDef);
+        return GearJoint(def as GearJointDef);
       case JointType.PULLEY:
-        return new PulleyJoint(world.getPool(), def as PulleyJointDef);
+        return PulleyJoint(def as PulleyJointDef);
       case JointType.CONSTANT_VOLUME:
-        return new ConstantVolumeJoint(world, def as ConstantVolumeJointDef);
+        return ConstantVolumeJoint(world, def as ConstantVolumeJointDef);
       case JointType.ROPE:
-        return new RopeJoint(world.getPool(), def as RopeJointDef);
+        return RopeJoint(def as RopeJointDef);
       case JointType.MOTOR:
-        return new MotorJoint(world.getPool(), def as MotorJointDef);
+        return MotorJoint(def as MotorJointDef);
       case JointType.UNKNOWN:
       default:
         return null;
@@ -64,8 +40,6 @@ abstract class Joint {
   }
 
   final JointType _type;
-  Joint _prev;
-  Joint _next;
   JointEdge _edgeA;
   JointEdge _edgeB;
   Body _bodyA;
@@ -74,26 +48,26 @@ abstract class Joint {
   bool _islandFlag = false;
   bool _collideConnected = false;
 
-  IWorldPool pool;
+  final Vector2 localAnchorA;
+  final Vector2 localAnchorB;
 
-  Joint(IWorldPool worldPool, JointDef def) : _type = def.type {
-    assert(def.bodyA != def.bodyB);
-
-    pool = worldPool;
-    _prev = null;
-    _next = null;
+  Joint(JointDef def)
+      : assert(def.bodyA != def.bodyB),
+        localAnchorA = def.localAnchorA,
+        localAnchorB = def.localAnchorB,
+        _type = def.type {
     _bodyA = def.bodyA;
     _bodyB = def.bodyB;
     _collideConnected = def.collideConnected;
     _islandFlag = false;
 
-    _edgeA = new JointEdge();
+    _edgeA = JointEdge();
     _edgeA.joint = null;
     _edgeA.other = null;
     _edgeA.prev = null;
     _edgeA.next = null;
 
-    _edgeB = new JointEdge();
+    _edgeB = JointEdge();
     _edgeB.joint = null;
     _edgeB.other = null;
     _edgeB.prev = null;
@@ -112,39 +86,34 @@ abstract class Joint {
     return _bodyA;
   }
 
-  /// get the second body attached to this joint.
+  /// Get the second body attached to this joint.
   ///
   /// @return
   Body getBodyB() {
     return _bodyB;
   }
 
-  /// get the anchor point on bodyA in world coordinates.
+  /// Get the anchor point on bodyA in world coordinates.
   ///
   /// @return
-  void getAnchorA(Vector2 out);
+  Vector2 getAnchorA() => _bodyA.getWorldPoint(localAnchorA);
 
-  /// get the anchor point on bodyB in world coordinates.
+  /// Get the anchor point on bodyB in world coordinates.
   ///
   /// @return
-  void getAnchorB(Vector2 out);
+  Vector2 getAnchorB() => _bodyB.getWorldPoint(localAnchorB);
 
-  /// get the reaction force on body2 at the joint anchor in Newtons.
+  /// Get the reaction force on body2 at the joint anchor in Newtons.
   ///
-  /// @param inv_dt
+  /// @param invDt
   /// @return
-  void getReactionForce(double inv_dt, Vector2 out);
+  Vector2 getReactionForce(double invDt);
 
   /// get the reaction torque on body2 in N*m.
   ///
-  /// @param inv_dt
+  /// @param invDt
   /// @return
-  double getReactionTorque(double inv_dt);
-
-  /// get the next joint the world joint list.
-  Joint getNext() {
-    return _next;
-  }
+  double getReactionTorque(double invDt);
 
   /// Get collide connected. Note: modifying the collide connect flag won't work correctly because
   /// the flag is only checked when fixture AABBs begin to overlap.
