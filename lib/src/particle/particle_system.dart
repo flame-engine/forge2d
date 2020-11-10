@@ -995,7 +995,7 @@ class ParticleSystem {
       final Vector2 pos = positionBuffer.data[i];
       proxy.tag = computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
     }
-    proxyBuffer.sort();
+    buffer_utils.sort(proxyBuffer, 0, proxyCount);
     contactCount = 0;
     int cIndex = 0;
     for (int i = 0; i < proxyCount; i++) {

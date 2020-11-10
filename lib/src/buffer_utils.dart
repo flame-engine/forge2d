@@ -107,3 +107,11 @@ void rotate<T>(List<T> ray, int first, int newFirst, int last) {
 void arrayCopy(List src, int srcPos, List dest, int destPos, int length) {
   dest.setRange(destPos, length + destPos, src, srcPos);
 }
+
+// Replace Java's Arrays::sort.
+// TODO(srdjan): Make a version that does not require copying.
+void sort<T>(List<T> list, int fromPos, int toPos) {
+  final List<T> temp = List.from(list.getRange(fromPos, toPos));
+  temp.sort();
+  list.setRange(fromPos, toPos, temp);
+}

@@ -154,6 +154,11 @@ class _Simplex {
     }
   }
 
+  // djm pooled
+  final Vector2 _case2 = Vector2.zero();
+  final Vector2 _case22 = Vector2.zero();
+
+  /// This returns pooled objects. don't keep or modify them
   void getClosestPoint(final Vector2 out) {
     switch (count) {
       case 0:
@@ -164,11 +169,14 @@ class _Simplex {
         out.setFrom(v1.w);
         return;
       case 2:
-        final Vector2 case22 = Vector2.copy(v2.w)..scale(v2.a);
-        final Vector2 case2 = Vector2.copy(v1.w)
+        _case22
+          ..setFrom(v2.w)
+          ..scale(v2.a);
+        _case2
+          ..setFrom(v1.w)
           ..scale(v1.a)
-          ..add(case22);
-        out.setFrom(case2);
+          ..add(_case22);
+        out.setFrom(_case2);
         return;
       case 3:
         out.setZero();
@@ -180,6 +188,10 @@ class _Simplex {
     }
   }
 
+  // djm pooled, and from above
+  final Vector2 _case3 = Vector2.zero();
+  final Vector2 _case33 = Vector2.zero();
+
   void getWitnessPoints(Vector2 pA, Vector2 pB) {
     switch (count) {
       case 0:
@@ -190,26 +202,35 @@ class _Simplex {
         pB.setFrom(v1.wB);
         break;
       case 2:
-        final Vector2 case2 = Vector2.copy(v1.wA)..scale(v1.a);
+        _case2
+          ..setFrom(v1.wA)
+          ..scale(v1.a);
         pA
           ..setFrom(v2.wA)
           ..scale(v2.a)
-          ..add(case2);
-        case2
+          ..add(_case2);
+        // v1.a * v1.wA + v2.a * v2.wA;
+        // *pB = v1.a * v1.wB + v2.a * v2.wB;
+        _case2
           ..setFrom(v1.wB)
           ..scale(v1.a);
         pB
           ..setFrom(v2.wB)
           ..scale(v2.a)
-          ..add(case2);
+          ..add(_case2);
+
         break;
       case 3:
         pA
           ..setFrom(v1.wA)
           ..scale(v1.a);
-        final Vector2 case3 = Vector2.copy(v2.wA)..scale(v2.a);
-        final Vector2 case33 = Vector2.copy(v3.wA)..scale(v3.a);
-        pA..add(case3)..add(case33);
+        _case3
+          ..setFrom(v2.wA)
+          ..scale(v2.a);
+        _case33
+          ..setFrom(v3.wA)
+          ..scale(v3.a);
+        pA..add(_case3)..add(_case33);
         pB.setFrom(pA);
         break;
       default:
@@ -229,9 +250,14 @@ class _Simplex {
       case 2:
         return v1.w.distanceTo(v2.w);
       case 3:
-        final Vector2 case3 = Vector2.copy(v2.w)..sub(v1.w);
-        final Vector2 case33 = Vector2.copy(v3.w)..sub(v1.w);
-        return case3.cross(case33);
+        _case3
+          ..setFrom(v2.w)
+          ..sub(v1.w);
+        _case33
+          ..setFrom(v3.w)
+          ..sub(v1.w);
+        // return Vec2.cross(v2.w - v1.w, v3.w - v1.w);
+        return _case3.cross(_case33);
       default:
         assert(false);
         return 0.0;
