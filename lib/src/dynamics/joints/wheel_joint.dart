@@ -1,28 +1,4 @@
-/// *****************************************************************************
-/// Copyright (c) 2015, Daniel Murphy, Google
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///  * Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-///  * Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-/// POSSIBILITY OF SUCH DAMAGE.
-/// *****************************************************************************
-
-part of box2d;
+part of forge2d;
 
 //Linear constraint (point-to-line)
 //d = pB - pA = xB + rB - xA - rA
@@ -50,10 +26,12 @@ class WheelJoint extends Joint {
   double _dampingRatio = 0.0;
 
   // Solver shared
-  final Vector2 _localAnchorA = new Vector2.zero();
-  final Vector2 _localAnchorB = new Vector2.zero();
-  final Vector2 _localXAxisA = new Vector2.zero();
-  final Vector2 _localYAxisA = new Vector2.zero();
+  @override
+  final Vector2 localAnchorA = Vector2.zero();
+  @override
+  final Vector2 localAnchorB = Vector2.zero();
+  final Vector2 _localXAxisA = Vector2.zero();
+  final Vector2 _localYAxisA = Vector2.zero();
 
   double _impulse = 0.0;
   double _motorImpulse = 0.0;
@@ -66,15 +44,15 @@ class WheelJoint extends Joint {
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
-  final Vector2 _localCenterA = new Vector2.zero();
-  final Vector2 _localCenterB = new Vector2.zero();
+  final Vector2 _localCenterA = Vector2.zero();
+  final Vector2 _localCenterB = Vector2.zero();
   double _invMassA = 0.0;
   double _invMassB = 0.0;
   double _invIA = 0.0;
   double _invIB = 0.0;
 
-  final Vector2 _ax = new Vector2.zero();
-  final Vector2 _ay = new Vector2.zero();
+  final Vector2 _ax = Vector2.zero();
+  final Vector2 _ay = Vector2.zero();
   double _sAx = 0.0, _sBx = 0.0;
   double _sAy = 0.0, _sBy = 0.0;
 
@@ -85,9 +63,9 @@ class WheelJoint extends Joint {
   double _bias = 0.0;
   double _gamma = 0.0;
 
-  WheelJoint(IWorldPool argPool, WheelJointDef def) : super(argPool, def) {
-    _localAnchorA.setFrom(def.localAnchorA);
-    _localAnchorB.setFrom(def.localAnchorB);
+  WheelJoint(WheelJointDef def) : super(def) {
+    localAnchorA.setFrom(def.localAnchorA);
+    localAnchorB.setFrom(def.localAnchorB);
     _localXAxisA.setFrom(def.localAxisA);
     _localXAxisA.scaleOrthogonalInto(1.0, _localYAxisA);
 
@@ -102,53 +80,38 @@ class WheelJoint extends Joint {
     _dampingRatio = def.dampingRatio;
   }
 
-  Vector2 getLocalAnchorA() {
-    return _localAnchorA;
-  }
-
-  Vector2 getLocalAnchorB() {
-    return _localAnchorB;
-  }
-
-  void getAnchorA(Vector2 argOut) {
-    _bodyA.getWorldPointToOut(_localAnchorA, argOut);
-  }
-
-  void getAnchorB(Vector2 argOut) {
-    _bodyB.getWorldPointToOut(_localAnchorB, argOut);
-  }
-
-  void getReactionForce(double inv_dt, Vector2 argOut) {
-    final Vector2 temp = pool.popVec2();
+  @override
+  Vector2 getReactionForce(double invDt) {
+    final Vector2 temp = Vector2.zero();
     temp
       ..setFrom(_ay)
       ..scale(_impulse);
-    argOut
+    final Vector2 result = Vector2.copy(_ax)
       ..setFrom(_ax)
       ..scale(_springImpulse)
       ..add(temp)
-      ..scale(inv_dt);
-    pool.pushVec2(1);
+      ..scale(invDt);
+    return result;
   }
 
-  double getReactionTorque(double inv_dt) {
-    return inv_dt * _motorImpulse;
+  @override
+  double getReactionTorque(double invDt) {
+    return invDt * _motorImpulse;
   }
 
   double getJointTranslation() {
-    Body b1 = _bodyA;
-    Body b2 = _bodyB;
+    final Body b1 = _bodyA;
+    final Body b2 = _bodyB;
 
-    Vector2 p1 = pool.popVec2();
-    Vector2 p2 = pool.popVec2();
-    Vector2 axis = pool.popVec2();
-    b1.getWorldPointToOut(_localAnchorA, p1);
-    b2.getWorldPointToOut(_localAnchorA, p2);
+    final Vector2 p1 = Vector2.zero();
+    final Vector2 p2 = Vector2.zero();
+    final Vector2 axis = Vector2.zero();
+    p1.setFrom(b1.getWorldPoint(localAnchorA));
+    p2.setFrom(b2.getWorldPoint(localAnchorA));
     p2.sub(p1);
-    b1.getWorldVectorToOut(_localXAxisA, axis);
+    axis.setFrom(b1.getWorldVector(_localXAxisA));
 
-    double translation = p2.dot(axis);
-    pool.pushVec2(3);
+    final double translation = p2.dot(axis);
     return translation;
   }
 
@@ -191,59 +154,57 @@ class WheelJoint extends Joint {
     _maxMotorTorque = torque;
   }
 
-  double getMotorTorque(double inv_dt) {
-    return _motorImpulse * inv_dt;
+  double getMotorTorque(double invDt) {
+    return _motorImpulse * invDt;
   }
 
   // pooling
   // TODO(srdjan): Make fields private.
-  final Vector2 rA = new Vector2.zero();
-  final Vector2 rB = new Vector2.zero();
-  final Vector2 d = new Vector2.zero();
+  final Vector2 rA = Vector2.zero();
+  final Vector2 rB = Vector2.zero();
+  final Vector2 d = Vector2.zero();
 
+  @override
   void initVelocityConstraints(SolverData data) {
-    _indexA = _bodyA._islandIndex;
-    _indexB = _bodyB._islandIndex;
+    _indexA = _bodyA.islandIndex;
+    _indexB = _bodyB.islandIndex;
     _localCenterA.setFrom(_bodyA._sweep.localCenter);
     _localCenterB.setFrom(_bodyB._sweep.localCenter);
     _invMassA = _bodyA._invMass;
     _invMassB = _bodyB._invMass;
-    _invIA = _bodyA._invI;
-    _invIB = _bodyB._invI;
+    _invIA = _bodyA.inverseInertia;
+    _invIB = _bodyB.inverseInertia;
 
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
-    Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 cA = data.positions[_indexA].c;
+    final double aA = data.positions[_indexA].a;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
 
-    Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 cB = data.positions[_indexB].c;
+    final double aB = data.positions[_indexB].a;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
 
     // Compute the effective masses.
-    Rot.mulToOutUnsafe(
-        qA,
-        temp
-          ..setFrom(_localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOutUnsafe(
-        qB,
-        temp
-          ..setFrom(_localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
+
     d
       ..setFrom(cB)
       ..add(rB)
@@ -252,7 +213,7 @@ class WheelJoint extends Joint {
 
     // Point to line constraint
     {
-      Rot.mulToOut(qA, _localYAxisA, _ay);
+      _ay.setFrom(Rot.mulVec2(qA, _localYAxisA));
       _sAy = (temp
             ..setFrom(d)
             ..add(rA))
@@ -271,37 +232,37 @@ class WheelJoint extends Joint {
     _bias = 0.0;
     _gamma = 0.0;
     if (_frequencyHz > 0.0) {
-      Rot.mulToOut(qA, _localXAxisA, _ax);
+      _ax.setFrom(Rot.mulVec2(qA, _localXAxisA));
       _sAx = (temp
             ..setFrom(d)
             ..add(rA))
           .cross(_ax);
       _sBx = rB.cross(_ax);
 
-      double invMass = mA + mB + iA * _sAx * _sAx + iB * _sBx * _sBx;
+      final double invMass = mA + mB + iA * _sAx * _sAx + iB * _sBx * _sBx;
 
       if (invMass > 0.0) {
         _springMass = 1.0 / invMass;
 
-        double C = d.dot(_ax);
+        final double c = d.dot(_ax);
 
         // Frequency
-        double omega = 2.0 * Math.pi * _frequencyHz;
+        final double omega = 2.0 * math.pi * _frequencyHz;
 
         // Damping coefficient
-        double dd = 2.0 * _springMass * _dampingRatio * omega;
+        final double dd = 2.0 * _springMass * _dampingRatio * omega;
 
         // Spring stiffness
-        double k = _springMass * omega * omega;
+        final double k = _springMass * omega * omega;
 
         // magic formulas
-        double h = data.step.dt;
-        _gamma = h * (dd + h * k);
+        final double dt = data.step.dt;
+        _gamma = dt * (dd + dt * k);
         if (_gamma > 0.0) {
           _gamma = 1.0 / _gamma;
         }
 
-        _bias = C * h * k * _gamma;
+        _bias = c * dt * k * _gamma;
 
         _springMass = invMass + _gamma;
         if (_springMass > 0.0) {
@@ -324,84 +285,81 @@ class WheelJoint extends Joint {
     }
 
     if (data.step.warmStarting) {
-      final Vector2 P = pool.popVec2();
+      final Vector2 p = Vector2.zero();
       // Account for variable time step.
       _impulse *= data.step.dtRatio;
       _springImpulse *= data.step.dtRatio;
       _motorImpulse *= data.step.dtRatio;
 
-      P.x = _impulse * _ay.x + _springImpulse * _ax.x;
-      P.y = _impulse * _ay.y + _springImpulse * _ax.y;
-      double LA = _impulse * _sAy + _springImpulse * _sAx + _motorImpulse;
-      double LB = _impulse * _sBy + _springImpulse * _sBx + _motorImpulse;
+      p.x = _impulse * _ay.x + _springImpulse * _ax.x;
+      p.y = _impulse * _ay.y + _springImpulse * _ax.y;
+      final double lA = _impulse * _sAy + _springImpulse * _sAx + _motorImpulse;
+      final double lB = _impulse * _sBy + _springImpulse * _sBx + _motorImpulse;
 
-      vA.x -= _invMassA * P.x;
-      vA.y -= _invMassA * P.y;
-      wA -= _invIA * LA;
+      vA.x -= _invMassA * p.x;
+      vA.y -= _invMassA * p.y;
+      wA -= _invIA * lA;
 
-      vB.x += _invMassB * P.x;
-      vB.y += _invMassB * P.y;
-      wB += _invIB * LB;
-      pool.pushVec2(1);
+      vB.x += _invMassB * p.x;
+      vB.y += _invMassB * p.y;
+      wB += _invIB * lB;
     } else {
       _impulse = 0.0;
       _springImpulse = 0.0;
       _motorImpulse = 0.0;
     }
-    pool.pushRot(2);
-    pool.pushVec2(1);
 
-    // data.velocities[_indexA].v = vA;
     data.velocities[_indexA].w = wA;
-    // data.velocities[_indexB].v = vB;
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   void solveVelocityConstraints(SolverData data) {
-    double mA = _invMassA, mB = _invMassB;
-    double iA = _invIA, iB = _invIB;
+    final double mA = _invMassA, mB = _invMassB;
+    final double iA = _invIA, iB = _invIB;
 
-    Vector2 vA = data.velocities[_indexA].v;
+    final Vector2 vA = data.velocities[_indexA].v;
     double wA = data.velocities[_indexA].w;
-    Vector2 vB = data.velocities[_indexB].v;
+    final Vector2 vB = data.velocities[_indexB].v;
     double wB = data.velocities[_indexB].w;
 
-    final Vector2 temp = pool.popVec2();
-    final Vector2 P = pool.popVec2();
+    final Vector2 temp = Vector2.zero();
+    final Vector2 p = Vector2.zero();
 
     // Solve spring constraint
     {
-      double Cdot = _ax.dot(temp
+      final double cDot = _ax.dot(temp
             ..setFrom(vB)
             ..sub(vA)) +
           _sBx * wB -
           _sAx * wA;
-      double impulse = -_springMass * (Cdot + _bias + _gamma * _springImpulse);
+      final double impulse =
+          -_springMass * (cDot + _bias + _gamma * _springImpulse);
       _springImpulse += impulse;
 
-      P.x = impulse * _ax.x;
-      P.y = impulse * _ax.y;
-      double LA = impulse * _sAx;
-      double LB = impulse * _sBx;
+      p.x = impulse * _ax.x;
+      p.y = impulse * _ax.y;
+      final double lA = impulse * _sAx;
+      final double lB = impulse * _sBx;
 
-      vA.x -= mA * P.x;
-      vA.y -= mA * P.y;
-      wA -= iA * LA;
+      vA.x -= mA * p.x;
+      vA.y -= mA * p.y;
+      wA -= iA * lA;
 
-      vB.x += mB * P.x;
-      vB.y += mB * P.y;
-      wB += iB * LB;
+      vB.x += mB * p.x;
+      vB.y += mB * p.y;
+      wB += iB * lB;
     }
 
     // Solve rotational motor constraint
     {
-      double Cdot = wB - wA - _motorSpeed;
-      double impulse = -_motorMass * Cdot;
+      final double cDot = wB - wA - _motorSpeed;
+      double impulse = -_motorMass * cDot;
 
-      double oldImpulse = _motorImpulse;
-      double maxImpulse = data.step.dt * _maxMotorTorque;
-      _motorImpulse = MathUtils.clampDouble(
-          _motorImpulse + impulse, -maxImpulse, maxImpulse);
+      final double oldImpulse = _motorImpulse;
+      final double maxImpulse = data.step.dt * _maxMotorTorque;
+      _motorImpulse =
+          (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _motorImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -410,28 +368,27 @@ class WheelJoint extends Joint {
 
     // Solve point to line constraint
     {
-      double Cdot = _ay.dot(temp
+      final double cDot = _ay.dot(temp
             ..setFrom(vB)
             ..sub(vA)) +
           _sBy * wB -
           _sAy * wA;
-      double impulse = -_mass * Cdot;
+      final double impulse = -_mass * cDot;
       _impulse += impulse;
 
-      P.x = impulse * _ay.x;
-      P.y = impulse * _ay.y;
-      double LA = impulse * _sAy;
-      double LB = impulse * _sBy;
+      p.x = impulse * _ay.x;
+      p.y = impulse * _ay.y;
+      final double lA = impulse * _sAy;
+      final double lB = impulse * _sBy;
 
-      vA.x -= mA * P.x;
-      vA.y -= mA * P.y;
-      wA -= iA * LA;
+      vA.x -= mA * p.x;
+      vA.y -= mA * p.y;
+      wA -= iA * lA;
 
-      vB.x += mB * P.x;
-      vB.y += mB * P.y;
-      wB += iB * LB;
+      vB.x += mB * p.x;
+      vB.y += mB * p.y;
+      wB += iB * lB;
     }
-    pool.pushVec2(2);
 
     // data.velocities[_indexA].v = vA;
     data.velocities[_indexA].w = wA;
@@ -439,78 +396,64 @@ class WheelJoint extends Joint {
     data.velocities[_indexB].w = wB;
   }
 
+  @override
   bool solvePositionConstraints(SolverData data) {
-    Vector2 cA = data.positions[_indexA].c;
+    final Vector2 cA = data.positions[_indexA].c;
     double aA = data.positions[_indexA].a;
-    Vector2 cB = data.positions[_indexB].c;
+    final Vector2 cB = data.positions[_indexB].c;
     double aB = data.positions[_indexB].a;
 
-    final Rot qA = pool.popRot();
-    final Rot qB = pool.popRot();
-    final Vector2 temp = pool.popVec2();
+    final Rot qA = Rot();
+    final Rot qB = Rot();
+    final Vector2 temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    Rot.mulToOut(
-        qA,
-        temp
-          ..setFrom(_localAnchorA)
-          ..sub(_localCenterA),
-        rA);
-    Rot.mulToOut(
-        qB,
-        temp
-          ..setFrom(_localAnchorB)
-          ..sub(_localCenterB),
-        rB);
+    temp
+      ..setFrom(localAnchorA)
+      ..sub(_localCenterA);
+    rA.setFrom(Rot.mulVec2(qA, temp));
+    temp
+      ..setFrom(localAnchorB)
+      ..sub(_localCenterB);
+    rB.setFrom(Rot.mulVec2(qB, temp));
+
     d
       ..setFrom(cB)
       ..sub(cA)
       ..add(rB)
       ..sub(rA);
 
-    Vector2 ay = pool.popVec2();
-    Rot.mulToOut(qA, _localYAxisA, ay);
-
-    double sAy = (temp
+    final Vector2 ay = Vector2.copy(Rot.mulVec2(qA, _localYAxisA));
+    final double sAy = (temp
           ..setFrom(d)
           ..add(rA))
         .cross(ay);
-    double sBy = rB.cross(ay);
+    final double sBy = rB.cross(ay);
 
-    double C = d.dot(ay);
+    final double c = d.dot(ay);
 
-    double k =
+    final double k =
         _invMassA + _invMassB + _invIA * _sAy * _sAy + _invIB * _sBy * _sBy;
 
-    double impulse;
-    if (k != 0.0) {
-      impulse = -C / k;
-    } else {
-      impulse = 0.0;
-    }
+    final double impulse = k != 0.0 ? -c / k : 0.0;
+    final Vector2 p = Vector2.zero();
+    p.x = impulse * ay.x;
+    p.y = impulse * ay.y;
+    final double lA = impulse * sAy;
+    final double lB = impulse * sBy;
 
-    final Vector2 P = pool.popVec2();
-    P.x = impulse * ay.x;
-    P.y = impulse * ay.y;
-    double LA = impulse * sAy;
-    double LB = impulse * sBy;
+    cA.x -= _invMassA * p.x;
+    cA.y -= _invMassA * p.y;
+    aA -= _invIA * lA;
+    cB.x += _invMassB * p.x;
+    cB.y += _invMassB * p.y;
+    aB += _invIB * lB;
 
-    cA.x -= _invMassA * P.x;
-    cA.y -= _invMassA * P.y;
-    aA -= _invIA * LA;
-    cB.x += _invMassB * P.x;
-    cB.y += _invMassB * P.y;
-    aB += _invIB * LB;
-
-    pool.pushVec2(3);
-    pool.pushRot(2);
-    // data.positions[_indexA].c = cA;
     data.positions[_indexA].a = aA;
-    // data.positions[_indexB].c = cB;
     data.positions[_indexB].a = aB;
 
-    return C.abs() <= Settings.linearSlop;
+    return c.abs() <= settings.linearSlop;
   }
 }

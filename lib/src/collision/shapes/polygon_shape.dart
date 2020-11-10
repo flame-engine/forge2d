@@ -1,28 +1,4 @@
-/// *****************************************************************************
-/// Copyright (c) 2015, Daniel Murphy, Google
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///  * Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-///  * Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-/// POSSIBILITY OF SUCH DAMAGE.
-/// *****************************************************************************
-
-part of box2d;
+part of forge2d;
 
 /// A convex polygon shape. Polygons have a maximum number of vertices equal to _maxPolygonVertices.
 /// In most cases you should not need many vertices for a convex polygon.
@@ -35,42 +11,31 @@ class PolygonShape extends Shape {
 
   /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
   /// active vertices.
-  final List<Vector2> vertices = List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> vertices = List<Vector2>.generate(
+      settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
   /// active normals.
-  final List<Vector2> normals = List<Vector2>(Settings.maxPolygonVertices);
+  final List<Vector2> normals = List<Vector2>.generate(
+      settings.maxPolygonVertices, (i) => Vector2.zero());
 
   /// Number of active vertices in the shape.
   int count = 0;
 
-  // pooling
-  final Vector2 _pool1 = Vector2.zero();
-  final Vector2 _pool2 = Vector2.zero();
-  final Vector2 _pool3 = Vector2.zero();
-  final Vector2 _pool4 = Vector2.zero();
-  Transform _poolt1 = Transform.zero();
-
   PolygonShape() : super(ShapeType.POLYGON) {
-    for (int i = 0; i < vertices.length; i++) {
-      vertices[i] = Vector2.zero();
-    }
-
-    for (int i = 0; i < normals.length; i++) {
-      normals[i] = Vector2.zero();
-    }
-    radius = Settings.polygonRadius;
+    radius = settings.polygonRadius;
   }
 
+  @override
   Shape clone() {
-    PolygonShape shape = PolygonShape();
-    shape.centroid.setFrom(this.centroid);
+    final PolygonShape shape = PolygonShape();
+    shape.centroid.setFrom(centroid);
     for (int i = 0; i < shape.normals.length; i++) {
       shape.normals[i].setFrom(normals[i]);
       shape.vertices[i].setFrom(vertices[i]);
     }
-    shape.radius = this.radius;
-    shape.count = this.count;
+    shape.radius = radius;
+    shape.count = count;
     return shape;
   }
 
@@ -78,34 +43,23 @@ class PolygonShape extends Shape {
   /// Settings.maxPolygonVertices].
   /// @warning the points may be re-ordered, even if they form a convex polygon.
   /// @warning collinear points are removed.
-  void set(final List<Vector2> vertices, final int count) {
-    setWithPools(vertices, count, null, null);
-  }
-
-  /// Create a convex hull from the given array of points. The count must be in the range [3,
-  /// Settings.maxPolygonVertices]. This method takes an arraypool for pooling.
-  /// @warning the points may be re-ordered, even if they form a convex polygon.
-  /// @warning collinear points are removed.
-  void setWithPools(final List<Vector2> verts, final int num,
-      final Vec2Array vecPool, final IntArray intPool) {
-    assert(3 <= num && num <= Settings.maxPolygonVertices);
-    if (num < 3) {
+  void set(final List<Vector2> updatedVertices, final int updatedCount) {
+    assert(3 <= updatedCount && updatedCount <= settings.maxPolygonVertices);
+    if (updatedCount < 3) {
       setAsBoxXY(1.0, 1.0);
       return;
     }
 
-    int n = Math.min(num, Settings.maxPolygonVertices);
+    int n = math.min(updatedCount, settings.maxPolygonVertices);
 
     // Perform welding and copy vertices into local buffer.
-    List<Vector2> ps = (vecPool != null)
-        ? vecPool.get(Settings.maxPolygonVertices)
-        : List<Vector2>(Settings.maxPolygonVertices);
+    final List<Vector2> ps = List<Vector2>(settings.maxPolygonVertices);
     int tempCount = 0;
     for (int i = 0; i < n; ++i) {
-      Vector2 v = verts[i];
+      final Vector2 v = updatedVertices[i];
       bool unique = true;
       for (int j = 0; j < tempCount; ++j) {
-        if (MathUtils.distanceSquared(v, ps[j]) < 0.5 * Settings.linearSlop) {
+        if (v.distanceToSquared(ps[j]) < 0.5 * settings.linearSlop) {
           unique = false;
           break;
         }
@@ -131,16 +85,14 @@ class PolygonShape extends Shape {
     int i0 = 0;
     double x0 = ps[0].x;
     for (int i = 1; i < n; ++i) {
-      double x = ps[i].x;
+      final double x = ps[i].x;
       if (x > x0 || (x == x0 && ps[i].y < ps[i0].y)) {
         i0 = i;
         x0 = x;
       }
     }
 
-    List<int> hull = (intPool != null)
-        ? intPool.get(Settings.maxPolygonVertices)
-        : BufferUtils.allocClearIntList(Settings.maxPolygonVertices);
+    final List<int> hull = List<int>(settings.maxPolygonVertices);
     int m = 0;
     int ih = i0;
 
@@ -154,13 +106,9 @@ class PolygonShape extends Shape {
           continue;
         }
 
-        Vector2 r = _pool1
-          ..setFrom(ps[ie])
-          ..sub(ps[hull[m]]);
-        Vector2 v = _pool2
-          ..setFrom(ps[j])
-          ..sub(ps[hull[m]]);
-        double c = r.cross(v);
+        final Vector2 r = Vector2.copy(ps[ie])..sub(ps[hull[m]]);
+        final Vector2 v = Vector2.copy(ps[j])..sub(ps[hull[m]]);
+        final double c = r.cross(v);
         if (c < 0.0) {
           ie = j;
         }
@@ -179,7 +127,7 @@ class PolygonShape extends Shape {
       }
     }
 
-    this.count = m;
+    count = m;
 
     // Copy vertices.
     for (int i = 0; i < count; ++i) {
@@ -189,7 +137,7 @@ class PolygonShape extends Shape {
       vertices[i].setFrom(ps[hull[i]]);
     }
 
-    final Vector2 edge = _pool1;
+    final Vector2 edge = Vector2.zero();
 
     // Compute normals. Ensure the edges have non-zero length.
     for (int i = 0; i < count; ++i) {
@@ -199,13 +147,13 @@ class PolygonShape extends Shape {
         ..setFrom(vertices[i2])
         ..sub(vertices[i1]);
 
-      assert(edge.length2 > Settings.EPSILON * Settings.EPSILON);
+      assert(edge.length2 > settings.EPSILON * settings.EPSILON);
       edge.scaleOrthogonalInto(-1.0, normals[i]);
       normals[i].normalize();
     }
 
     // Compute the polygon centroid.
-    computeCentroidToOut(vertices, count, centroid);
+    computeCentroid(vertices, count);
   }
 
   /// Build vertices to represent an axis-aligned box.
@@ -233,25 +181,17 @@ class PolygonShape extends Shape {
   /// @param angle the rotation of the box in local coordinates.
   void setAsBox(final double hx, final double hy, final Vector2 center,
       final double angle) {
-    count = 4;
-    vertices[0].setValues(-hx, -hy);
-    vertices[1].setValues(hx, -hy);
-    vertices[2].setValues(hx, hy);
-    vertices[3].setValues(-hx, hy);
-    normals[0].setValues(0.0, -1.0);
-    normals[1].setValues(1.0, 0.0);
-    normals[2].setValues(0.0, 1.0);
-    normals[3].setValues(-1.0, 0.0);
+    setAsBoxXY(hx, hy);
     centroid.setFrom(center);
 
-    final Transform xf = _poolt1;
+    final Transform xf = Transform.zero();
     xf.p.setFrom(center);
     xf.q.setAngle(angle);
 
     // Transform vertices and normals.
     for (int i = 0; i < count; ++i) {
-      Transform.mulToOutVec2(xf, vertices[i], vertices[i]);
-      Rot.mulToOut(xf.q, normals[i], normals[i]);
+      vertices[i].setFrom(Transform.mulVec2(xf, vertices[i]));
+      normals[i].setFrom(Rot.mulVec2(xf.q, normals[i]));
     }
   }
 
@@ -274,18 +214,19 @@ class PolygonShape extends Shape {
       ..negate();
   }
 
+  @override
   int getChildCount() {
     return 1;
   }
 
+  @override
   bool testPoint(final Transform xf, final Vector2 p) {
-    double tempx, tempy;
     final Rot xfq = xf.q;
 
-    tempx = p.x - xf.p.x;
-    tempy = p.y - xf.p.y;
-    final double pLocalx = xfq.c * tempx + xfq.s * tempy;
-    final double pLocaly = -xfq.s * tempx + xfq.c * tempy;
+    double tempX = p.x - xf.p.x;
+    double tempY = p.y - xf.p.y;
+    final double pLocalx = xfq.c * tempX + xfq.s * tempY;
+    final double pLocaly = -xfq.s * tempX + xfq.c * tempY;
 
     if (_debug) {
       print("--testPoint debug--");
@@ -297,11 +238,11 @@ class PolygonShape extends Shape {
     }
 
     for (int i = 0; i < count; ++i) {
-      Vector2 vertex = vertices[i];
-      Vector2 normal = normals[i];
-      tempx = pLocalx - vertex.x;
-      tempy = pLocaly - vertex.y;
-      final double dot = normal.x * tempx + normal.y * tempy;
+      final Vector2 vertex = vertices[i];
+      final Vector2 normal = normals[i];
+      tempX = pLocalx - vertex.x;
+      tempY = pLocaly - vertex.y;
+      final double dot = normal.x * tempX + normal.y * tempY;
       if (dot > 0.0) {
         return false;
       }
@@ -310,6 +251,7 @@ class PolygonShape extends Shape {
     return true;
   }
 
+  @override
   void computeAABB(final AABB aabb, final Transform xf, int childIndex) {
     final Vector2 lower = aabb.lowerBound;
     final Vector2 upper = aabb.upperBound;
@@ -324,10 +266,10 @@ class PolygonShape extends Shape {
     upper.y = lower.y;
 
     for (int i = 1; i < count; ++i) {
-      Vector2 v2 = vertices[i];
+      final Vector2 v2 = vertices[i];
       // Vec2 v = Mul(xf, _vertices[i]);
-      double vx = (xfqc * v2.x - xfqs * v2.y) + xfpx;
-      double vy = (xfqs * v2.x + xfqc * v2.y) + xfpy;
+      final double vx = (xfqc * v2.x - xfqs * v2.y) + xfpx;
+      final double vy = (xfqs * v2.x + xfqc * v2.y) + xfpy;
       lower.x = lower.x < vx ? lower.x : vx;
       lower.y = lower.y < vy ? lower.y : vy;
       upper.x = upper.x > vx ? upper.x : vx;
@@ -351,25 +293,26 @@ class PolygonShape extends Shape {
     return vertices[index];
   }
 
+  @override
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
-    double xfqc = xf.q.c;
-    double xfqs = xf.q.s;
+    final double xfqc = xf.q.c;
+    final double xfqs = xf.q.s;
     double tx = p.x - xf.p.x;
     double ty = p.y - xf.p.y;
-    double pLocalx = xfqc * tx + xfqs * ty;
-    double pLocaly = -xfqs * tx + xfqc * ty;
+    final double pLocalx = xfqc * tx + xfqs * ty;
+    final double pLocaly = -xfqs * tx + xfqc * ty;
 
     double maxDistance = -double.maxFinite;
     double normalForMaxDistanceX = pLocalx;
     double normalForMaxDistanceY = pLocaly;
 
     for (int i = 0; i < count; ++i) {
-      Vector2 vertex = vertices[i];
-      Vector2 normal = normals[i];
+      final Vector2 vertex = vertices[i];
+      final Vector2 normal = normals[i];
       tx = pLocalx - vertex.x;
       ty = pLocaly - vertex.y;
-      double dot = normal.x * tx + normal.y * ty;
+      final double dot = normal.x * tx + normal.y * ty;
       if (dot > maxDistance) {
         maxDistance = dot;
         normalForMaxDistanceX = normal.x;
@@ -383,18 +326,18 @@ class PolygonShape extends Shape {
       double minDistanceY = normalForMaxDistanceY;
       double minDistance2 = maxDistance * maxDistance;
       for (int i = 0; i < count; ++i) {
-        Vector2 vertex = vertices[i];
-        double distanceVecX = pLocalx - vertex.x;
-        double distanceVecY = pLocaly - vertex.y;
-        double distance2 =
-            (distanceVecX * distanceVecX + distanceVecY * distanceVecY);
+        final Vector2 vertex = vertices[i];
+        final double distanceVecX = pLocalx - vertex.x;
+        final double distanceVecY = pLocaly - vertex.y;
+        final double distance2 =
+            distanceVecX * distanceVecX + distanceVecY * distanceVecY;
         if (minDistance2 > distance2) {
           minDistanceX = distanceVecX;
           minDistanceY = distanceVecY;
           minDistance2 = distance2;
         }
       }
-      distance = Math.sqrt(minDistance2);
+      distance = math.sqrt(minDistance2);
       normalOut.x = xfqc * minDistanceX - xfqs * minDistanceY;
       normalOut.y = xfqs * minDistanceX + xfqc * minDistanceY;
       normalOut.normalize();
@@ -407,23 +350,21 @@ class PolygonShape extends Shape {
     return distance;
   }
 
+  @override
   bool raycast(
       RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
     final double xfqc = xf.q.c;
     final double xfqs = xf.q.s;
     final Vector2 xfp = xf.p;
-    double tempx, tempy;
-    // b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
-    // b2Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
-    tempx = input.p1.x - xfp.x;
-    tempy = input.p1.y - xfp.y;
-    final double p1x = xfqc * tempx + xfqs * tempy;
-    final double p1y = -xfqs * tempx + xfqc * tempy;
+    double tempX = input.p1.x - xfp.x;
+    double tempY = input.p1.y - xfp.y;
+    final double p1x = xfqc * tempX + xfqs * tempY;
+    final double p1y = -xfqs * tempX + xfqc * tempY;
 
-    tempx = input.p2.x - xfp.x;
-    tempy = input.p2.y - xfp.y;
-    final double p2x = xfqc * tempx + xfqs * tempy;
-    final double p2y = -xfqs * tempx + xfqc * tempy;
+    tempX = input.p2.x - xfp.x;
+    tempY = input.p2.y - xfp.y;
+    final double p2x = xfqc * tempX + xfqs * tempY;
+    final double p2y = -xfqs * tempX + xfqc * tempY;
 
     final double dx = p2x - p1x;
     final double dy = p2y - p1y;
@@ -433,14 +374,11 @@ class PolygonShape extends Shape {
     int index = -1;
 
     for (int i = 0; i < count; ++i) {
-      Vector2 normal = normals[i];
-      Vector2 vertex = vertices[i];
-      // p = p1 + a * d
-      // dot(normal, p - v) = 0
-      // dot(normal, p1 - v) + a * dot(normal, d) = 0
-      double tempxn = vertex.x - p1x;
-      double tempyn = vertex.y - p1y;
-      final double numerator = normal.x * tempxn + normal.y * tempyn;
+      final Vector2 normal = normals[i];
+      final Vector2 vertex = vertices[i];
+      final double tempX = vertex.x - p1x;
+      final double tempY = vertex.y - p1y;
+      final double numerator = normal.x * tempX + normal.y * tempY;
       final double denominator = normal.x * dx + normal.y * dy;
 
       if (denominator == 0.0) {
@@ -474,9 +412,8 @@ class PolygonShape extends Shape {
 
     if (index >= 0) {
       output.fraction = lower;
-      // normal = Mul(xf.R, _normals[index]);
-      Vector2 normal = normals[index];
-      Vector2 out = output.normal;
+      final Vector2 normal = normals[index];
+      final Vector2 out = output.normal;
       out.x = xfqc * normal.x - xfqs * normal.y;
       out.y = xfqs * normal.x + xfqc * normal.y;
       return true;
@@ -484,22 +421,20 @@ class PolygonShape extends Shape {
     return false;
   }
 
-  void computeCentroidToOut(
-      final List<Vector2> vs, final int count, final Vector2 out) {
+  void computeCentroid(final List<Vector2> vs, final int count) {
     assert(count >= 3);
 
-    out.setValues(0.0, 0.0);
+    centroid.setZero();
     double area = 0.0;
 
     // pRef is the reference point for forming triangles.
     // It's location doesn't change the result (except for rounding error).
-    final Vector2 pRef = _pool1;
-    pRef.setZero();
+    final Vector2 pRef = Vector2.zero();
 
-    final Vector2 e1 = _pool2;
-    final Vector2 e2 = _pool3;
+    final Vector2 e1 = Vector2.zero();
+    final Vector2 e2 = Vector2.zero();
 
-    final double inv3 = 1.0 / 3.0;
+    const double inv3 = 1.0 / 3.0;
 
     for (int i = 0; i < count; ++i) {
       // Triangle vertices.
@@ -525,14 +460,15 @@ class PolygonShape extends Shape {
         ..add(p2)
         ..add(p3)
         ..scale(triangleArea * inv3);
-      out.add(e1);
+      centroid.add(e1);
     }
 
     // Centroid
-    assert(area > Settings.EPSILON);
-    out.scale(1.0 / area);
+    assert(area > settings.EPSILON);
+    centroid.scale(1.0 / area);
   }
 
+  @override
   void computeMass(final MassData massData, double density) {
     // Polygon mass, centroid, and inertia.
     // Let rho be the polygon density in mass per unit area.
@@ -560,25 +496,23 @@ class PolygonShape extends Shape {
 
     assert(count >= 3);
 
-    final Vector2 center = _pool1;
-    center.setZero();
+    final Vector2 center = Vector2.zero();
     double area = 0.0;
     double I = 0.0;
 
     // pRef is the reference point for forming triangles.
     // It's location doesn't change the result (except for rounding error).
-    final Vector2 s = _pool2;
-    s.setZero();
+    final Vector2 s = Vector2.zero();
     // This code would put the reference point inside the polygon.
     for (int i = 0; i < count; ++i) {
       s.add(vertices[i]);
     }
     s.scale(1.0 / count.toDouble());
 
-    final double k_inv3 = 1.0 / 3.0;
+    const double kInv3 = 1.0 / 3.0;
 
-    final Vector2 e1 = _pool3;
-    final Vector2 e2 = _pool4;
+    final Vector2 e1 = Vector2.zero();
+    final Vector2 e2 = Vector2.zero();
 
     for (int i = 0; i < count; ++i) {
       // Triangle vertices.
@@ -596,23 +530,23 @@ class PolygonShape extends Shape {
       area += triangleArea;
 
       // Area weighted centroid
-      center.x += triangleArea * k_inv3 * (e1.x + e2.x);
-      center.y += triangleArea * k_inv3 * (e1.y + e2.y);
+      center.x += triangleArea * kInv3 * (e1.x + e2.x);
+      center.y += triangleArea * kInv3 * (e1.y + e2.y);
 
       final double ex1 = e1.x, ey1 = e1.y;
       final double ex2 = e2.x, ey2 = e2.y;
 
-      double intx2 = ex1 * ex1 + ex2 * ex1 + ex2 * ex2;
-      double inty2 = ey1 * ey1 + ey2 * ey1 + ey2 * ey2;
+      final double intx2 = ex1 * ex1 + ex2 * ex1 + ex2 * ex2;
+      final double inty2 = ey1 * ey1 + ey2 * ey1 + ey2 * ey2;
 
-      I += (0.25 * k_inv3 * D) * (intx2 + inty2);
+      I += (0.25 * kInv3 * D) * (intx2 + inty2);
     }
 
     // Total mass
     massData.mass = density * area;
 
     // Center of mass
-    assert(area > Settings.EPSILON);
+    assert(area > settings.EPSILON);
     center.scale(1.0 / area);
     massData.center
       ..setFrom(center)
@@ -628,22 +562,18 @@ class PolygonShape extends Shape {
   /// Validate convexity. This is a very time consuming operation.
   bool validate() {
     for (int i = 0; i < count; ++i) {
-      int i1 = i;
-      int i2 = i < count - 1 ? i1 + 1 : 0;
-      Vector2 p = vertices[i1];
-      Vector2 e = _pool1
-        ..setFrom(vertices[i2])
-        ..sub(p);
+      final int i1 = i;
+      final int i2 = i < count - 1 ? i1 + 1 : 0;
+      final Vector2 p = vertices[i1];
+      final Vector2 e = Vector2.copy(vertices[i2])..sub(p);
 
       for (int j = 0; j < count; ++j) {
         if (j == i1 || j == i2) {
           continue;
         }
 
-        Vector2 v = _pool2
-          ..setFrom(vertices[j])
-          ..sub(p);
-        double c = e.cross(v);
+        final Vector2 v = Vector2.copy(vertices[j])..sub(p);
+        final double c = e.cross(v);
         if (c < 0.0) {
           return false;
         }
@@ -656,11 +586,5 @@ class PolygonShape extends Shape {
   /// Get the centroid and apply the supplied transform.
   Vector2 applyToCentroid(final Transform xf) {
     return Transform.mulVec2(xf, centroid);
-  }
-
-  /// Get the centroid and apply the supplied transform.
-  Vector2 centroidToOut(final Transform xf, final Vector2 out) {
-    Transform.mulToOutUnsafeVec2(xf, centroid, out);
-    return out;
   }
 }

@@ -1,38 +1,14 @@
-/// *****************************************************************************
-/// Copyright (c) 2015, Daniel Murphy, Google
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///  * Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-///  * Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-/// POSSIBILITY OF SUCH DAMAGE.
-/// *****************************************************************************
-
-part of box2d.common;
+part of forge2d.common;
 
 /// This describes the motion of a body/shape for TOI computation. Shapes are defined with respect to
 /// the body origin, which may not coincide with the center of mass. However, to support dynamics we
 /// must interpolate the center of mass position.
 class Sweep {
   /// Local center of mass position
-  final Vector2 localCenter = new Vector2.zero();
+  final Vector2 localCenter = Vector2.zero();
 
   /// Center world positions
-  final Vector2 c0 = new Vector2.zero(), c = new Vector2.zero();
+  final Vector2 c0 = Vector2.zero(), c = Vector2.zero();
 
   /// World angles
   double a0 = 0.0, a = 0.0;
@@ -40,6 +16,7 @@ class Sweep {
   /// Fraction of the current time step in the range [0,1] c0 and a0 are the positions at alpha0.
   double alpha0 = 0.0;
 
+  @override
   String toString() {
     String s = "Sweep:\nlocalCenter: $localCenter\n";
     s += "c0: $c0, c: $c\n";
@@ -49,7 +26,7 @@ class Sweep {
   }
 
   void normalize() {
-    double d = MathUtils.TWOPI * (a0 / MathUtils.TWOPI).floor();
+    final double d = pi * 2 * (a0 / pi * 2).floor();
     a0 -= d;
     a -= d;
   }
@@ -75,7 +52,7 @@ class Sweep {
     // xf->q.Set(angle);
     xf.p.x = (1.0 - beta) * c0.x + beta * c.x;
     xf.p.y = (1.0 - beta) * c0.y + beta * c.y;
-    double angle = (1.0 - beta) * a0 + beta * a;
+    final double angle = (1.0 - beta) * a0 + beta * a;
     xf.q.setAngle(angle);
 
     // Shift to origin
@@ -94,7 +71,7 @@ class Sweep {
     // c0 += beta * (c - c0);
     // a0 += beta * (a - a0);
     // alpha0 = alpha;
-    double beta = (alpha - alpha0) / (1.0 - alpha0);
+    final double beta = (alpha - alpha0) / (1.0 - alpha0);
     c0.x += beta * (c.x - c0.x);
     c0.y += beta * (c.y - c0.y);
     a0 += beta * (a - a0);

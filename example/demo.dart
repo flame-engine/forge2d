@@ -1,40 +1,16 @@
-/// *****************************************************************************
-/// Copyright (c) 2015, Daniel Murphy, Google
-/// All rights reserved.
-///
-/// Redistribution and use in source and binary forms, with or without modification,
-/// are permitted provided that the following conditions are met:
-///  * Redistributions of source code must retain the above copyright notice,
-///    this list of conditions and the following disclaimer.
-///  * Redistributions in binary form must reproduce the above copyright notice,
-///    this list of conditions and the following disclaimer in the documentation
-///    and/or other materials provided with the distribution.
-///
-/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-/// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-/// IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-/// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-/// NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-/// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-/// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-/// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-/// POSSIBILITY OF SUCH DAMAGE.
-/// *****************************************************************************
-
 library demo;
 
 import 'dart:async';
 import 'dart:html' hide Body;
-import 'package:box2d_flame/box2d_browser.dart' hide Timer;
+import 'package:forge2d/forge2d_browser.dart' hide Timer;
 
-/// An abstract class for any Demo of the Box2D library.
+/// An abstract class for any Demo of the Forge2D library.
 abstract class Demo {
   static const int WORLD_POOL_SIZE = 100;
   static const int WORLD_POOL_CONTAINER_SIZE = 10;
 
   /// All of the bodies in a simulation.
-  List<Body> bodies = new List<Body>();
+  List<Body> bodies = <Body>[];
 
   /// The default canvas width and height.
   static const int CANVAS_WIDTH = 900;
@@ -85,10 +61,9 @@ abstract class Demo {
   Element worldStepTime;
 
   Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
-      : this.world = new World.withPool(
-            (gravity == null) ? new Vector2(0.0, GRAVITY) : gravity,
-            new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE)),
-        _stopwatch = new Stopwatch()..start() {
+      : world = World(gravity ?? Vector2(0.0, GRAVITY)),
+        _stopwatch = Stopwatch()..start() {
+    world.setAllowSleep(true);
     querySelector("#title").innerHtml = name;
   }
 
@@ -110,19 +85,19 @@ abstract class Demo {
   /// before calling runAnimation.
   void initializeAnimation() {
     // Setup the canvas.
-    canvas = (new Element.tag('canvas') as CanvasElement)
+    canvas = (Element.tag('canvas') as CanvasElement)
       ..width = CANVAS_WIDTH
       ..height = CANVAS_HEIGHT;
     document.body.nodes.add(canvas);
     ctx = canvas.context2D;
 
     // Create the viewport transform with the center at extents.
-    var extents = new Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-    viewport = new CanvasViewportTransform(extents, extents)
+    final Vector2 extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    viewport = CanvasViewportTransform(extents, extents)
       ..scale = _viewportScale;
 
     // Create our canvas drawing tool to give to the world.
-    debugDraw = new CanvasDraw(viewport, ctx);
+    debugDraw = CanvasDraw(viewport, ctx);
 
     // Have the world draw itself for debugging purposes.
     world.debugDraw = debugDraw;
@@ -130,12 +105,14 @@ abstract class Demo {
     frameCount = 0;
     fpsCounter = querySelector("#fps-counter");
     worldStepTime = querySelector("#world-step-time");
-    new Timer.periodic(new Duration(seconds: 1), (Timer t) {
+    Timer.periodic(const Duration(seconds: 1), (Timer t) {
       fpsCounter.innerHtml = frameCount.toString();
       frameCount = 0;
     });
-    new Timer.periodic(new Duration(milliseconds: 200), (Timer t) {
-      if (elapsedUs == null) return;
+    Timer.periodic(const Duration(milliseconds: 200), (Timer t) {
+      if (elapsedUs == null) {
+        return;
+      }
       worldStepTime.innerHtml = "${elapsedUs / 1000} ms";
     });
   }

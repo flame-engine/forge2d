@@ -1,30 +1,16 @@
-// Copyright 2012 Google Inc. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 part of racer;
 
 class Tire {
   Tire(World world, this._maxForwardSpeed, this._maxBackwardSpeed,
       this._maxDriveForce, this._maxLateralImpulse) {
-    BodyDef def = new BodyDef();
+    final BodyDef def = BodyDef();
     def.type = BodyType.DYNAMIC;
     _body = world.createBody(def);
     _body.userData = "Tire";
 
-    PolygonShape polygonShape = new PolygonShape();
+    final PolygonShape polygonShape = PolygonShape();
     polygonShape.setAsBoxXY(0.5, 1.25);
-    Fixture fixture = _body.createFixtureFromShape(polygonShape, 1.0);
+    final Fixture fixture = _body.createFixtureFromShape(polygonShape, 1.0);
     fixture.userData = this;
 
     _currentTraction = 1.0;
@@ -53,7 +39,7 @@ class Tire {
     _body.applyAngularImpulse(
         0.1 * _currentTraction * _body.getInertia() * (-_body.angularVelocity));
 
-    Vector2 currentForwardNormal = _forwardVelocity;
+    final Vector2 currentForwardNormal = _forwardVelocity;
     final double currentForwardSpeed = currentForwardNormal.length;
     currentForwardNormal.normalize();
     final double dragForceMagnitude = -2 * currentForwardSpeed;
@@ -75,7 +61,8 @@ class Tire {
         return;
     }
 
-    Vector2 currentForwardNormal = _body.getWorldVector(new Vector2(0.0, 1.0));
+    final Vector2 currentForwardNormal =
+        _body.getWorldVector(Vector2(0.0, 1.0));
     final double currentSpeed = _forwardVelocity.dot(currentForwardNormal);
     double force = 0.0;
     if (desiredSpeed < currentSpeed) {
@@ -132,9 +119,9 @@ class Tire {
   final double _maxDriveForce;
   final double _maxLateralImpulse;
   double _currentTraction;
-  final Set<GroundArea> _groundAreas = new Set<GroundArea>();
+  final Set<GroundArea> _groundAreas = <GroundArea>{};
 
   // Cached Vectors to reduce unnecessary object creation.
-  final Vector2 _worldLeft = new Vector2(1.0, 0.0);
-  final Vector2 _worldUp = new Vector2(0.0, 1.0);
+  final Vector2 _worldLeft = Vector2(1.0, 0.0);
+  final Vector2 _worldUp = Vector2(0.0, 1.0);
 }

@@ -1,30 +1,6 @@
-/*******************************************************************************
- * Copyright (c) 2015, Daniel Murphy, Google
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- ******************************************************************************/
+part of forge2d;
 
-part of box2d;
-
-/// A manifold for two touching convex shapes. Box2D supports multiple types of contact:
+/// A manifold for two touching convex shapes. Forge2D supports multiple types of contact:
 /// <ul>
 /// <li>clip point versus plane with radius</li>
 /// <li>point versus point with radius (circles)</li>
@@ -64,23 +40,23 @@ class Manifold {
 
   /// creates a manifold with 0 points, with it's points array full of instantiated ManifoldPoints.
   Manifold()
-      : points = List<ManifoldPoint>(Settings.maxManifoldPoints),
+      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
         localNormal = Vector2.zero(),
         localPoint = Vector2.zero() {
-    for (int i = 0; i < Settings.maxManifoldPoints; i++) {
+    for (int i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = ManifoldPoint();
     }
   }
 
   /// Creates this manifold as a copy of the other
   Manifold.copy(Manifold other)
-      : points = List<ManifoldPoint>(Settings.maxManifoldPoints),
+      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
         localNormal = other.localNormal.clone(),
         localPoint = other.localPoint.clone(),
         pointCount = other.pointCount {
     type = other.type;
     // djm: this is correct now
-    for (int i = 0; i < Settings.maxManifoldPoints; i++) {
+    for (int i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = ManifoldPoint.copy(other.points[i]);
     }
   }
