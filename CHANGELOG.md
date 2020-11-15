@@ -1,8 +1,10 @@
 # CHANGELOG
 
 ## [next]
-* Make code more like the dart standard and less C++
 
+## 1.0.0
+* Rebranding to forge2d
+* Make code more like the dart standard and less C++
 
 ## Old box2d.dart
 
