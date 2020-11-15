@@ -1,3 +1,5 @@
+<img alt="Forge2D" src="https://raw.githubusercontent.com/flame-engine/forge2d/brand/design/with-text.png" width="300" />
+
 # Forge2D - A Dart port of the Box2D physics engine
 [![Pub](https://img.shields.io/pub/v/forge2d.svg?style=popout)](https://pub.dartlang.org/packages/forge2d) ![Test](https://github.com/flame-engine/forge2d/workflows/Test/badge.svg?branch=master&event=push) [![Discord](https://img.shields.io/discord/509714518008528896.svg)](https://discord.gg/pxrBmy4)
 
