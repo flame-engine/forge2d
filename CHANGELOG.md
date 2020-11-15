@@ -2,7 +2,7 @@
 
 ## [next]
 
-## 1.0.0
+## 0.5.0
 * Rebranding to forge2d
 * Make code more like the dart standard and less C++
 
