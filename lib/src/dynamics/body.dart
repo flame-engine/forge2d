@@ -602,7 +602,6 @@ class Body {
         broadPhase.touchProxy(f._proxies[i].proxyId);
       }
     }
-    fixtures.clear();
   }
 
   /// Is this body treated like a bullet for continuous collision detection?
