@@ -21,19 +21,14 @@ abstract class Contact {
 
   int flags = 0;
 
-  // World pool and list pointers.
-  Contact _prev;
-  Contact _next;
+  final Fixture fixtureA;
+  final Fixture fixtureB;
 
-  // Nodes for connecting bodies.
-  final ContactEdge _nodeA = ContactEdge();
-  final ContactEdge _nodeB = ContactEdge();
+  final int indexA;
+  final int indexB;
 
-  final Fixture _fixtureA;
-  final Fixture _fixtureB;
-
-  final int _indexA;
-  final int _indexB;
+  Body get bodyA => fixtureA.body;
+  Body get bodyB => fixtureB.body;
 
   final Manifold _manifold = Manifold();
 
@@ -45,16 +40,16 @@ abstract class Contact {
 
   double tangentSpeed = 0.0;
 
-  Contact(this._fixtureA, this._indexA, this._fixtureB, this._indexB) {
+  Contact(this.fixtureA, this.indexA, this.fixtureB, this.indexB) {
     flags = ENABLED_FLAG;
     _manifold.pointCount = 0;
     _friction = Contact.mixFriction(
-      _fixtureA._friction,
-      _fixtureB._friction,
+      fixtureA._friction,
+      fixtureB._friction,
     );
     _restitution = Contact.mixRestitution(
-      _fixtureA._restitution,
-      _fixtureB._restitution,
+      fixtureA._restitution,
+      fixtureB._restitution,
     );
   }
 
@@ -95,13 +90,22 @@ abstract class Contact {
 
   /// Get the world manifold.
   void getWorldManifold(WorldManifold worldManifold) {
-    final Body bodyA = _fixtureA.getBody();
-    final Body bodyB = _fixtureB.getBody();
-    final Shape shapeA = _fixtureA.getShape();
-    final Shape shapeB = _fixtureB.getShape();
+    final Body bodyA = fixtureA.body;
+    final Body bodyB = fixtureB.body;
+    final Shape shapeA = fixtureA.shape;
+    final Shape shapeB = fixtureB.shape;
 
     worldManifold.initialize(_manifold, bodyA._transform, shapeA.radius,
         bodyB._transform, shapeB.radius);
+  }
+
+  /// Whether the body is connected to the joint
+  bool containsBody(Body body) => body == bodyA || body == bodyB;
+
+  /// Get the other body than the argument in the contact
+  Body getOtherBody(Body body) {
+    assert(containsBody(body), "Body is not in contact");
+    return body == bodyA ? bodyB : bodyB;
   }
 
   /// Is this contact touching
@@ -124,32 +128,13 @@ abstract class Contact {
     return (flags & ENABLED_FLAG) == ENABLED_FLAG;
   }
 
-  /// Get the next contact in the world's contact list.
-  Contact getNext() {
-    return _next;
-  }
-
-  /// Get the first fixture in this contact.
-  Fixture get fixtureA => _fixtureA;
-
-  int getChildIndexA() {
-    return _indexA;
-  }
-
-  /// Get the second fixture in this contact.
-  Fixture get fixtureB => _fixtureB;
-
-  int getChildIndexB() {
-    return _indexB;
-  }
-
   void resetFriction() {
-    _friction = Contact.mixFriction(_fixtureA._friction, _fixtureB._friction);
+    _friction = Contact.mixFriction(fixtureA._friction, fixtureB._friction);
   }
 
   void resetRestitution() {
     _restitution =
-        Contact.mixRestitution(_fixtureA._restitution, _fixtureB._restitution);
+        Contact.mixRestitution(fixtureA._restitution, fixtureB._restitution);
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB);
@@ -171,20 +156,20 @@ abstract class Contact {
     bool touching = false;
     final bool wasTouching = (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
-    final bool sensorA = _fixtureA.isSensor();
-    final bool sensorB = _fixtureB.isSensor();
+    final bool sensorA = fixtureA.isSensor();
+    final bool sensorB = fixtureB.isSensor();
     final bool sensor = sensorA || sensorB;
 
-    final Body bodyA = _fixtureA.getBody();
-    final Body bodyB = _fixtureB.getBody();
+    final Body bodyA = fixtureA.body;
+    final Body bodyB = fixtureB.body;
     final Transform xfA = bodyA._transform;
     final Transform xfB = bodyB._transform;
 
     if (sensor) {
-      final Shape shapeA = _fixtureA.getShape();
-      final Shape shapeB = _fixtureB.getShape();
-      touching = World.collision
-          .testOverlap(shapeA, _indexA, shapeB, _indexB, xfA, xfB);
+      final Shape shapeA = fixtureA.shape;
+      final Shape shapeB = fixtureB.shape;
+      touching =
+          World.collision.testOverlap(shapeA, indexA, shapeB, indexB, xfA, xfB);
 
       // Sensors don't generate manifolds.
       _manifold.pointCount = 0;

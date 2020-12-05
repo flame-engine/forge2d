@@ -102,8 +102,8 @@ class UpdateBodyContactsCallback implements QueryCallback {
     if (fixture.isSensor()) {
       return true;
     }
-    final Shape shape = fixture.getShape();
-    final Body b = fixture.getBody();
+    final Shape shape = fixture.shape;
+    final Body b = fixture.body;
     final Vector2 bp = b.worldCenter;
     final double bm = b.mass;
     final double bI = b.getInertia() - bm * b.getLocalCenter().length2;
@@ -313,8 +313,8 @@ class SolveCollisionCallback implements QueryCallback {
     if (fixture.isSensor()) {
       return true;
     }
-    final Shape shape = fixture.getShape();
-    final Body body = fixture.getBody();
+    final Shape shape = fixture.shape;
+    final Body body = fixture.body;
     final int childCount = shape.getChildCount();
     for (int childIndex = 0; childIndex < childCount; childIndex++) {
       final AABB aabb = fixture.getAABB(childIndex);

@@ -53,12 +53,12 @@ class MotorJoint extends Joint {
 
   @override
   Vector2 getAnchorA() {
-    return Vector2.copy(_bodyA.position);
+    return Vector2.copy(bodyA.position);
   }
 
   @override
   Vector2 getAnchorB() {
-    return Vector2.copy(_bodyB.position);
+    return Vector2.copy(bodyB.position);
   }
 
   @override
@@ -75,8 +75,8 @@ class MotorJoint extends Joint {
   void setLinearOffset(Vector2 linearOffset) {
     if (linearOffset.x != _linearOffset.x ||
         linearOffset.y != _linearOffset.y) {
-      _bodyA.setAwake(true);
-      _bodyB.setAwake(true);
+      bodyA.setAwake(true);
+      bodyB.setAwake(true);
       _linearOffset.setFrom(linearOffset);
     }
   }
@@ -96,8 +96,8 @@ class MotorJoint extends Joint {
   /// @param angularOffset
   void setAngularOffset(double angularOffset) {
     if (angularOffset != _angularOffset) {
-      _bodyA.setAwake(true);
-      _bodyB.setAwake(true);
+      bodyA.setAwake(true);
+      bodyB.setAwake(true);
       _angularOffset = angularOffset;
     }
   }
@@ -132,14 +132,14 @@ class MotorJoint extends Joint {
 
   @override
   void initVelocityConstraints(SolverData data) {
-    _indexA = _bodyA.islandIndex;
-    _indexB = _bodyB.islandIndex;
-    _localCenterA.setFrom(_bodyA._sweep.localCenter);
-    _localCenterB.setFrom(_bodyB._sweep.localCenter);
-    _invMassA = _bodyA._invMass;
-    _invMassB = _bodyB._invMass;
-    _invIA = _bodyA.inverseInertia;
-    _invIB = _bodyB.inverseInertia;
+    _indexA = bodyA.islandIndex;
+    _indexB = bodyB.islandIndex;
+    _localCenterA.setFrom(bodyA._sweep.localCenter);
+    _localCenterB.setFrom(bodyB._sweep.localCenter);
+    _invMassA = bodyA._invMass;
+    _invMassB = bodyB._invMass;
+    _invIA = bodyA.inverseInertia;
+    _invIB = bodyB.inverseInertia;
 
     final Vector2 cA = data.positions[_indexA].c;
     final double aA = data.positions[_indexA].a;

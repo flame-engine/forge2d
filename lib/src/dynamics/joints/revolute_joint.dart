@@ -66,14 +66,14 @@ class RevoluteJoint extends Joint {
 
   @override
   void initVelocityConstraints(final SolverData data) {
-    _indexA = _bodyA.islandIndex;
-    _indexB = _bodyB.islandIndex;
-    _localCenterA.setFrom(_bodyA._sweep.localCenter);
-    _localCenterB.setFrom(_bodyB._sweep.localCenter);
-    _invMassA = _bodyA._invMass;
-    _invMassB = _bodyB._invMass;
-    _invIA = _bodyA.inverseInertia;
-    _invIB = _bodyB.inverseInertia;
+    _indexA = bodyA.islandIndex;
+    _indexB = bodyB.islandIndex;
+    _localCenterA.setFrom(bodyA._sweep.localCenter);
+    _localCenterB.setFrom(bodyB._sweep.localCenter);
+    _invMassA = bodyA._invMass;
+    _invMassB = bodyB._invMass;
+    _invIA = bodyA.inverseInertia;
+    _invIB = bodyB.inverseInertia;
 
     // Vec2 cA = data.positions[_indexA].c;
     final double aA = data.positions[_indexA].a;
@@ -431,14 +431,14 @@ class RevoluteJoint extends Joint {
   }
 
   double getJointAngle() {
-    final Body b1 = _bodyA;
-    final Body b2 = _bodyB;
+    final Body b1 = bodyA;
+    final Body b2 = bodyB;
     return b2._sweep.a - b1._sweep.a - _referenceAngle;
   }
 
   double getJointSpeed() {
-    final Body b1 = _bodyA;
-    final Body b2 = _bodyB;
+    final Body b1 = bodyA;
+    final Body b2 = bodyB;
     return b2._angularVelocity - b1._angularVelocity;
   }
 
@@ -447,8 +447,8 @@ class RevoluteJoint extends Joint {
   }
 
   void enableMotor(bool flag) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _enableMotor = flag;
   }
 
@@ -457,14 +457,14 @@ class RevoluteJoint extends Joint {
   }
 
   void setMotorSpeed(final double speed) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
   void setMaxMotorTorque(final double torque) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _maxMotorTorque = torque;
   }
 
@@ -482,8 +482,8 @@ class RevoluteJoint extends Joint {
 
   void enableLimit(final bool flag) {
     if (flag != _enableLimit) {
-      _bodyA.setAwake(true);
-      _bodyB.setAwake(true);
+      bodyA.setAwake(true);
+      bodyB.setAwake(true);
       _enableLimit = flag;
       _impulse.z = 0.0;
     }
@@ -500,8 +500,8 @@ class RevoluteJoint extends Joint {
   void setLimits(final double lower, final double upper) {
     assert(lower <= upper);
     if (lower != _lowerAngle || upper != _upperAngle) {
-      _bodyA.setAwake(true);
-      _bodyB.setAwake(true);
+      bodyA.setAwake(true);
+      bodyB.setAwake(true);
       _impulse.z = 0.0;
       _lowerAngle = lower;
       _upperAngle = upper;

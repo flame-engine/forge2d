@@ -8,9 +8,9 @@ part of forge2d;
 class Fixture {
   double _density = 0.0;
 
-  Body _body;
+  Body body;
 
-  Shape _shape;
+  Shape shape;
 
   double _friction = 0.0;
   double _restitution = 0.0;
@@ -28,15 +28,7 @@ class Fixture {
   /// Get the type of the child shape. You can use this to down cast to the concrete shape.
   ///
   /// @return the shape type.
-  ShapeType getType() => _shape.shapeType;
-
-  /// Get the child shape. You can modify the child shape, however you should not change the number
-  /// of vertices because this will crash some collision caching mechanisms.
-  ///
-  /// @return
-  Shape getShape() {
-    return _shape;
-  }
+  ShapeType getType() => shape.shapeType;
 
   /// Is this fixture a sensor (non-solid)?
   ///
@@ -51,7 +43,7 @@ class Fixture {
   /// @param sensor
   void setSensor(bool sensor) {
     if (sensor != _isSensor) {
-      _body.setAwake(true);
+      body.setAwake(true);
       _isSensor = sensor;
     }
   }
@@ -77,23 +69,20 @@ class Fixture {
   /// Call this if you want to establish collision that was previously disabled by
   /// ContactFilter::ShouldCollide.
   void refilter() {
-    if (_body == null) {
+    if (body == null) {
       return;
     }
 
     // Flag associated contacts for filtering.
-    ContactEdge edge = _body.getContactList();
-    while (edge != null) {
-      final Contact contact = edge.contact;
+    for (Contact contact in body.contacts) {
       final Fixture fixtureA = contact.fixtureA;
       final Fixture fixtureB = contact.fixtureB;
       if (fixtureA == this || fixtureB == this) {
         contact.flagForFiltering();
       }
-      edge = edge.next;
     }
 
-    final World world = _body.world;
+    final World world = body.world;
 
     if (world == null) {
       return;
@@ -104,14 +93,6 @@ class Fixture {
     for (int i = 0; i < _proxyCount; ++i) {
       broadPhase.touchProxy(_proxies[i].proxyId);
     }
-  }
-
-  /// Get the parent body of this fixture. This is NULL if the fixture is not attached.
-  ///
-  /// @return the parent body.
-  /// @return
-  Body getBody() {
-    return _body;
   }
 
   void setDensity(double density) {
@@ -128,7 +109,7 @@ class Fixture {
   /// @param p a point in world coordinates.
   /// @return
   bool testPoint(final Vector2 p) {
-    return _shape.testPoint(_body._transform, p);
+    return shape.testPoint(body._transform, p);
   }
 
   /// Cast a ray against this shape.
@@ -136,7 +117,7 @@ class Fixture {
   /// @param input the ray-cast input parameters.
   /// @param output the ray-cast results.
   bool raycast(RayCastOutput output, RayCastInput input, int childIndex) {
-    return _shape.raycast(output, input, _body._transform, childIndex);
+    return shape.raycast(output, input, body._transform, childIndex);
   }
 
   /// Get the mass data for this fixture. The mass data is based on the density and the shape. The
@@ -144,7 +125,7 @@ class Fixture {
   ///
   /// @return
   void getMassData(MassData massData) {
-    _shape.computeMass(massData, _density);
+    shape.computeMass(massData, _density);
   }
 
   /// Get the coefficient of friction.
@@ -190,8 +171,8 @@ class Fixture {
   /// @param p a point in world coordinates.
   /// @return distance
   double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) {
-    return _shape.computeDistanceToOut(
-        _body._transform, p, childIndex, normalOut);
+    return shape.computeDistanceToOut(
+        body._transform, p, childIndex, normalOut);
   }
 
   // We need separation create/destroy functions from the constructor/destructor because
@@ -202,16 +183,16 @@ class Fixture {
     _friction = def.friction;
     _restitution = def.restitution;
 
-    _body = body;
+    this.body = body;
 
     _filter.set(def.filter);
 
     _isSensor = def.isSensor;
 
-    _shape = def.shape.clone();
+    shape = def.shape.clone();
 
     // Reserve proxy space
-    final int childCount = _shape.getChildCount();
+    final int childCount = shape.getChildCount();
     if (_proxies == null) {
       _proxies = List<FixtureProxy>(childCount);
       for (int i = 0; i < childCount; i++) {
@@ -244,11 +225,11 @@ class Fixture {
     assert(_proxyCount == 0);
 
     // Create proxies in the broad-phase.
-    _proxyCount = _shape.getChildCount();
+    _proxyCount = shape.getChildCount();
 
     for (int i = 0; i < _proxyCount; ++i) {
       final FixtureProxy proxy = _proxies[i];
-      _shape.computeAABB(proxy.aabb, xf, i);
+      shape.computeAABB(proxy.aabb, xf, i);
       proxy.proxyId = broadPhase.createProxy(proxy.aabb, proxy);
       proxy.fixture = this;
       proxy.childIndex = i;
@@ -290,8 +271,8 @@ class Fixture {
       // Compute an AABB that covers the swept shape (may miss some rotation effect).
       final AABB aabb1 = _pool1;
       final AABB aab = _pool2;
-      _shape.computeAABB(aabb1, transform1, proxy.childIndex);
-      _shape.computeAABB(aab, transform2, proxy.childIndex);
+      shape.computeAABB(aabb1, transform1, proxy.childIndex);
+      shape.computeAABB(aab, transform2, proxy.childIndex);
 
       proxy.aabb.lowerBound.x = aabb1.lowerBound.x < aab.lowerBound.x
           ? aabb1.lowerBound.x

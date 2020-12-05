@@ -3,17 +3,17 @@ part of forge2d;
 class PolygonAndCircleContact extends Contact {
   PolygonAndCircleContact(Fixture fixtureA, Fixture fixtureB)
       : super(fixtureA, 0, fixtureB, 0) {
-    assert(_fixtureA.getType() == ShapeType.POLYGON);
-    assert(_fixtureB.getType() == ShapeType.CIRCLE);
+    assert(fixtureA.getType() == ShapeType.POLYGON);
+    assert(fixtureB.getType() == ShapeType.CIRCLE);
   }
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     World.collision.collidePolygonAndCircle(
       manifold,
-      _fixtureA.getShape() as PolygonShape,
+      fixtureA.shape as PolygonShape,
       xfA,
-      _fixtureB.getShape() as CircleShape,
+      fixtureB.shape as CircleShape,
       xfB,
     );
   }
