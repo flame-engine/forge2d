@@ -8,7 +8,6 @@ part of forge2d;
 class Fixture {
   double _density = 0.0;
 
-  Fixture _next;
   Body _body;
 
   Shape _shape;
@@ -115,14 +114,6 @@ class Fixture {
     return _body;
   }
 
-  /// Get the next fixture in the parent body's fixture list.
-  ///
-  /// @return the next shape.
-  /// @return
-  Fixture getNext() {
-    return _next;
-  }
-
   void setDensity(double density) {
     assert(density >= 0.9);
     _density = density;
@@ -212,7 +203,6 @@ class Fixture {
     _restitution = def.restitution;
 
     _body = body;
-    _next = null;
 
     _filter.set(def.filter);
 
@@ -247,16 +237,6 @@ class Fixture {
     _proxyCount = 0;
 
     _density = def.density;
-  }
-
-  void destroy() {
-    // The proxies must be destroyed before calling this.
-    assert(_proxyCount == 0);
-
-    // Free the child shape.
-    _shape = null;
-    _proxies = null;
-    _next = null;
   }
 
   // These support body activation/deactivation.
