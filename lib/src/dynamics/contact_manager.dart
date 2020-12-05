@@ -36,23 +36,23 @@ class ContactManager implements PairCallback {
     // Does a contact already exist?
     for (Contact contact in bodyB.contacts) {
       if (contact.containsBody(bodyA)) {
-        final Fixture fixtureA = contact.fixtureA;
-        final Fixture fixtureB = contact.fixtureB;
-        final int indexA = contact.indexA;
-        final int indexB = contact.indexB;
+        final Fixture currentFixtureA = contact.fixtureA;
+        final Fixture currentFixtureB = contact.fixtureB;
+        final int currentIndexA = contact.indexA;
+        final int currentIndexB = contact.indexB;
 
-        if (fixtureA == fixtureA &&
-            indexA == indexA &&
-            fixtureB == fixtureB &&
-            indexB == indexB) {
+        if (currentFixtureA == fixtureA &&
+            currentIndexA == indexA &&
+            currentFixtureB == fixtureB &&
+            currentIndexB == indexB) {
           // A contact already exists.
           return;
         }
 
-        if (fixtureA == fixtureB &&
-            indexA == indexB &&
-            fixtureB == fixtureA &&
-            indexB == indexA) {
+        if (currentFixtureA == fixtureB &&
+            currentIndexA == indexB &&
+            currentFixtureB == fixtureA &&
+            currentIndexB == indexA) {
           // A contact already exists.
           return;
         }
@@ -60,7 +60,7 @@ class ContactManager implements PairCallback {
     }
 
     // Does a joint override collision? is at least one body dynamic?
-    if (bodyB.shouldCollide(bodyA) == false) {
+    if (!bodyB.shouldCollide(bodyA)) {
       return;
     }
 
