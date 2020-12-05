@@ -73,7 +73,6 @@ part 'src/dynamics/contacts/chain_and_circle_contact.dart';
 part 'src/dynamics/contacts/chain_and_polygon_contact.dart';
 part 'src/dynamics/contacts/circle_contact.dart';
 part 'src/dynamics/contacts/contact.dart';
-part 'src/dynamics/contacts/contact_creator.dart';
 part 'src/dynamics/contacts/contact_position_and_constraint.dart';
 part 'src/dynamics/contacts/contact_register.dart';
 part 'src/dynamics/contacts/contact_solver.dart';
