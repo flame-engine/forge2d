@@ -1,11 +1,14 @@
 part of forge2d;
 
 class ChainAndCircleContact extends Contact {
-  ChainAndCircleContact(Fixture fA, int indexA, Fixture fB, int indexB)
-      : super(fA, indexA, fB, indexB) {
-    assert(fixtureA.getType() == ShapeType.CHAIN);
-    assert(fixtureB.getType() == ShapeType.CIRCLE);
-  }
+  ChainAndCircleContact(
+    Fixture fixtureA,
+    int indexA,
+    Fixture fixtureB,
+    int indexB,
+  )   : assert(fixtureA.getType() == ShapeType.CHAIN),
+        assert(fixtureB.getType() == ShapeType.CIRCLE),
+        super(fixtureA, indexA, fixtureB, indexB);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
