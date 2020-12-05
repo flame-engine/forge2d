@@ -3,8 +3,7 @@ part of forge2d;
 /// Delegate of World.
 class ContactManager implements PairCallback {
   BroadPhase broadPhase;
-  Contact contactList;
-  int contactCount = 0;
+  final List<Contact> contacts = [];
   ContactFilter contactFilter;
   ContactListener contactListener;
 
@@ -24,8 +23,8 @@ class ContactManager implements PairCallback {
     int indexA = proxyA.childIndex;
     int indexB = proxyB.childIndex;
 
-    Body bodyA = fixtureA.getBody();
-    Body bodyB = fixtureB.getBody();
+    Body bodyA = fixtureA.body;
+    Body bodyB = fixtureB.body;
 
     // Are the fixtures on the same body?
     if (bodyA == bodyB) {
@@ -35,26 +34,29 @@ class ContactManager implements PairCallback {
     // TODO_ERIN use a hash table to remove a potential bottleneck when both
     // bodies have a lot of contacts.
     // Does a contact already exist?
-    ContactEdge edge = bodyB.getContactList();
-    while (edge != null) {
-      if (edge.other == bodyA) {
-        final Fixture fA = edge.contact.fixtureA;
-        final Fixture fB = edge.contact.fixtureB;
-        final int iA = edge.contact.getChildIndexA();
-        final int iB = edge.contact.getChildIndexB();
+    for (Contact contact in bodyB.contacts) {
+      if (contact.containsBody(bodyA)) {
+        final Fixture fixtureA = contact.fixtureA;
+        final Fixture fixtureB = contact.fixtureB;
+        final int indexA = contact.indexA;
+        final int indexB = contact.indexB;
 
-        if (fA == fixtureA && iA == indexA && fB == fixtureB && iB == indexB) {
+        if (fixtureA == fixtureA &&
+            indexA == indexA &&
+            fixtureB == fixtureB &&
+            indexB == indexB) {
           // A contact already exists.
           return;
         }
 
-        if (fA == fixtureB && iA == indexB && fB == fixtureA && iB == indexA) {
+        if (fixtureA == fixtureB &&
+            indexA == indexB &&
+            fixtureB == fixtureA &&
+            indexB == indexA) {
           // A contact already exists.
           return;
         }
       }
-
-      edge = edge.next;
     }
 
     // Does a joint override collision? is at least one body dynamic?
@@ -68,54 +70,30 @@ class ContactManager implements PairCallback {
       return;
     }
 
-    final Contact c = Contact.init(fixtureA, indexA, fixtureB, indexB);
-    if (c == null) {
-      return;
-    }
+    final Contact contact = Contact.init(fixtureA, indexA, fixtureB, indexB);
 
     // Contact creation may swap fixtures.
-    fixtureA = c.fixtureA;
-    fixtureB = c.fixtureB;
-    indexA = c.getChildIndexA();
-    indexB = c.getChildIndexB();
-    bodyA = fixtureA.getBody();
-    bodyB = fixtureB.getBody();
+    fixtureA = contact.fixtureA;
+    fixtureB = contact.fixtureB;
+    indexA = contact.indexA;
+    indexB = contact.indexB;
+    bodyA = fixtureA.body;
+    bodyB = fixtureB.body;
 
     // Insert into the world.
-    c._prev = null;
-    c._next = contactList;
-    contactList?._prev = c;
-    contactList = c;
+    contacts.add(contact);
 
     // Connect to island graph.
 
     // Connect to body A
-    c._nodeA.contact = c;
-    c._nodeA.other = bodyB;
+    bodyA.contacts.add(contact);
+    bodyB.contacts.add(contact);
 
-    c._nodeA.prev = null;
-    c._nodeA.next = bodyA._contactList;
-    if (bodyA._contactList != null) {
-      bodyA._contactList.prev = c._nodeA;
-    }
-    bodyA._contactList = c._nodeA;
-
-    // Connect to body B
-    c._nodeB.contact = c;
-    c._nodeB.other = bodyA;
-
-    c._nodeB.prev = null;
-    c._nodeB.next = bodyB._contactList;
-    bodyB._contactList?.prev = c._nodeB;
-    bodyB._contactList = c._nodeB;
-
-    // wake up the bodies
+    // Wake up the bodies
     if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
       bodyA.setAwake(true);
       bodyB.setAwake(true);
     }
-
-    ++contactCount;
   }
 
   void findNewContacts() {
@@ -125,90 +103,48 @@ class ContactManager implements PairCallback {
   void destroy(Contact c) {
     final Fixture fixtureA = c.fixtureA;
     final Fixture fixtureB = c.fixtureB;
-    final Body bodyA = fixtureA.getBody();
-    final Body bodyB = fixtureB.getBody();
 
     if (contactListener != null && c.isTouching()) {
       contactListener.endContact(c);
     }
 
-    // Remove from the world.
-    if (c._prev != null) {
-      c._prev._next = c._next;
-    }
-
-    if (c._next != null) {
-      c._next._prev = c._prev;
-    }
-
-    if (c == contactList) {
-      contactList = c._next;
-    }
-
-    // Remove from body 1
-    if (c._nodeA.prev != null) {
-      c._nodeA.prev.next = c._nodeA.next;
-    }
-
-    if (c._nodeA.next != null) {
-      c._nodeA.next.prev = c._nodeA.prev;
-    }
-
-    if (c._nodeA == bodyA._contactList) {
-      bodyA._contactList = c._nodeA.next;
-    }
-
-    // Remove from body 2
-    if (c._nodeB.prev != null) {
-      c._nodeB.prev.next = c._nodeB.next;
-    }
-
-    if (c._nodeB.next != null) {
-      c._nodeB.next.prev = c._nodeB.prev;
-    }
-
-    if (c._nodeB == bodyB._contactList) {
-      bodyB._contactList = c._nodeB.next;
-    }
+    contacts.remove(c);
+    c.bodyA.contacts.remove(c);
+    c.bodyB.contacts.remove(c);
 
     if (c._manifold.pointCount > 0 &&
         !fixtureA.isSensor() &&
         !fixtureB.isSensor()) {
-      fixtureA.getBody().setAwake(true);
-      fixtureB.getBody().setAwake(true);
+      fixtureA.body.setAwake(true);
+      fixtureB.body.setAwake(true);
     }
-    --contactCount;
   }
 
   /// This is the top level collision call for the time step. Here all the narrow phase collision is
   /// processed for the world contact list.
   void collide() {
+    final List<Contact> contactRemovals = [];
     // Update awake contacts.
-    Contact c = contactList;
-    while (c != null) {
+    for (Contact c in contacts) {
       final Fixture fixtureA = c.fixtureA;
       final Fixture fixtureB = c.fixtureB;
-      final int indexA = c._indexA;
-      final int indexB = c._indexB;
-      final Body bodyA = fixtureA.getBody();
-      final Body bodyB = fixtureB.getBody();
+      final int indexA = c.indexA;
+      final int indexB = c.indexB;
+      final Body bodyA = fixtureA.body;
+      final Body bodyB = fixtureB.body;
 
       // is this contact flagged for filtering?
       if ((c.flags & Contact.FILTER_FLAG) == Contact.FILTER_FLAG) {
         // Should these bodies collide?
         if (bodyB.shouldCollide(bodyA) == false) {
-          final Contact cNuke = c;
-          c = cNuke.getNext();
-          destroy(cNuke);
+          contactRemovals.add(c);
           continue;
         }
 
         // Check user filtering.
         if (contactFilter != null &&
             contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
-          final Contact cNuke = c;
-          c = cNuke.getNext();
-          destroy(cNuke);
+          contactRemovals.add(c);
           continue;
         }
 
@@ -223,7 +159,6 @@ class ContactManager implements PairCallback {
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {
-        c = c.getNext();
         continue;
       }
 
@@ -233,15 +168,13 @@ class ContactManager implements PairCallback {
 
       // Here we destroy contacts that cease to overlap in the broad-phase.
       if (overlap == false) {
-        final Contact cNuke = c;
-        c = cNuke.getNext();
-        destroy(cNuke);
+        contactRemovals.add(c);
         continue;
       }
 
       // The contact persists.
       c.update(contactListener);
-      c = c.getNext();
     }
+    contactRemovals.forEach(destroy);
   }
 }

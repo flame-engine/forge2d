@@ -35,9 +35,8 @@ class Body {
   final World world;
 
   final List<Fixture> fixtures = [];
-
-  JointEdge _jointList;
-  ContactEdge _contactList;
+  final List<Joint> joints = [];
+  final List<Contact> contacts = [];
 
   double _mass = 0.0, _invMass = 0.0;
 
@@ -87,9 +86,6 @@ class Body {
     _sweep.a = bd.angle;
     _sweep.alpha0 = 0.0;
 
-    _jointList = null;
-    _contactList = null;
-
     _linearVelocity.setFrom(bd.linearVelocity);
     _angularVelocity = bd.angularVelocity;
 
@@ -135,7 +131,7 @@ class Body {
       fixture.createProxies(broadPhase, _transform);
     }
 
-    fixture._body = this;
+    fixture.body = this;
     fixtures.add(fixture);
 
     // Adjust mass properties if needed.
@@ -175,7 +171,7 @@ class Body {
   /// @warning This function is locked during callbacks.
   void destroyFixture(Fixture fixture) {
     assert(world.isLocked() == false);
-    assert(fixture._body == this);
+    assert(fixture.body == this);
 
     // Remove the fixture from this body's singly linked list.
     assert(fixtures.isNotEmpty);
@@ -188,18 +184,14 @@ class Body {
     );
 
     // Destroy any contacts associated with the fixture.
-    ContactEdge edge = _contactList;
-    while (edge != null) {
-      final Contact c = edge.contact;
-      edge = edge.next;
-
-      final Fixture fixtureA = c.fixtureA;
-      final Fixture fixtureB = c.fixtureB;
+    for (Contact contact in contacts) {
+      final Fixture fixtureA = contact.fixtureA;
+      final Fixture fixtureB = contact.fixtureB;
 
       if (fixture == fixtureA || fixture == fixtureB) {
         // This destroys the contact and removes it from
         // this body's contact list.
-        world._contactManager.destroy(c);
+        world._contactManager.destroy(contact);
       }
     }
 
@@ -599,13 +591,8 @@ class Body {
     _torque = 0.0;
 
     // Delete the attached contacts.
-    ContactEdge ce = _contactList;
-    while (ce != null) {
-      final ContactEdge ce0 = ce;
-      ce = ce.next;
-      world._contactManager.destroy(ce0.contact);
-    }
-    _contactList = null;
+    contacts.forEach(world._contactManager.destroy);
+    contacts.clear();
 
     // Touch the proxies so that new contacts will be created (when appropriate)
     final BroadPhase broadPhase = world._contactManager.broadPhase;
@@ -615,6 +602,7 @@ class Body {
         broadPhase.touchProxy(f._proxies[i].proxyId);
       }
     }
+    fixtures.clear();
   }
 
   /// Is this body treated like a bullet for continuous collision detection?
@@ -712,13 +700,8 @@ class Body {
       }
 
       // Destroy the attached contacts.
-      ContactEdge ce = _contactList;
-      while (ce != null) {
-        final ContactEdge ce0 = ce;
-        ce = ce.next;
-        world._contactManager.destroy(ce0.contact);
-      }
-      _contactList = null;
+      contacts.forEach(world._contactManager.destroy);
+      contacts.clear();
     }
   }
 
@@ -747,19 +730,6 @@ class Body {
   /// @return
   bool isFixedRotation() {
     return (_flags & FIXED_ROTATION_FLAG) == FIXED_ROTATION_FLAG;
-  }
-
-  /// Get the list of all joints attached to this body.
-  JointEdge getJointList() {
-    return _jointList;
-  }
-
-  /// Get the list of all contacts attached to this body.
-  ///
-  /// @warning this list changes during the time step and you may miss some collisions if you don't
-  /// use ContactListener.
-  ContactEdge getContactList() {
-    return _contactList;
   }
 
   // djm pooling
@@ -802,9 +772,9 @@ class Body {
     }
 
     // Does a joint prevent collision?
-    for (JointEdge jn = _jointList; jn != null; jn = jn.next) {
-      if (jn.other == other) {
-        if (jn.joint.getCollideConnected() == false) {
+    for (Joint joint in joints) {
+      if (joint.containsBody(other)) {
+        if (joint.getCollideConnected() == false) {
           return false;
         }
       }

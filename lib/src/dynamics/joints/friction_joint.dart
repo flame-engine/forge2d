@@ -59,14 +59,14 @@ class FrictionJoint extends Joint {
 
   @override
   void initVelocityConstraints(final SolverData data) {
-    _indexA = _bodyA.islandIndex;
-    _indexB = _bodyB.islandIndex;
-    _localCenterA.setFrom(_bodyA._sweep.localCenter);
-    _localCenterB.setFrom(_bodyB._sweep.localCenter);
-    _invMassA = _bodyA._invMass;
-    _invMassB = _bodyB._invMass;
-    _invIA = _bodyA.inverseInertia;
-    _invIB = _bodyB.inverseInertia;
+    _indexA = bodyA.islandIndex;
+    _indexB = bodyB.islandIndex;
+    _localCenterA.setFrom(bodyA._sweep.localCenter);
+    _localCenterB.setFrom(bodyB._sweep.localCenter);
+    _invMassA = bodyA._invMass;
+    _invMassB = bodyB._invMass;
+    _invIA = bodyA.inverseInertia;
+    _invIB = bodyB.inverseInertia;
 
     final double aA = data.positions[_indexA].a;
     final Vector2 vA = data.velocities[_indexA].v;

@@ -59,14 +59,14 @@ class PulleyJoint extends Joint {
 
   double getCurrentLengthA() {
     final Vector2 p = Vector2.zero();
-    p.setFrom(_bodyA.getWorldPoint(localAnchorA));
+    p.setFrom(bodyA.getWorldPoint(localAnchorA));
     p.sub(_groundAnchorA);
     return p.length;
   }
 
   double getCurrentLengthB() {
     final Vector2 p = Vector2.zero();
-    p.setFrom(_bodyB.getWorldPoint(localAnchorB));
+    p.setFrom(bodyB.getWorldPoint(localAnchorB));
     p.sub(_groundAnchorB);
     return p.length;
   }
@@ -95,14 +95,14 @@ class PulleyJoint extends Joint {
 
   @override
   void initVelocityConstraints(final SolverData data) {
-    _indexA = _bodyA.islandIndex;
-    _indexB = _bodyB.islandIndex;
-    _localCenterA.setFrom(_bodyA._sweep.localCenter);
-    _localCenterB.setFrom(_bodyB._sweep.localCenter);
-    _invMassA = _bodyA._invMass;
-    _invMassB = _bodyB._invMass;
-    _invIA = _bodyA.inverseInertia;
-    _invIB = _bodyB.inverseInertia;
+    _indexA = bodyA.islandIndex;
+    _indexB = bodyB.islandIndex;
+    _localCenterA.setFrom(bodyA._sweep.localCenter);
+    _localCenterB.setFrom(bodyB._sweep.localCenter);
+    _invMassA = bodyA._invMass;
+    _invMassB = bodyB._invMass;
+    _invIA = bodyA.inverseInertia;
+    _invIB = bodyB.inverseInertia;
 
     final Vector2 cA = data.positions[_indexA].c;
     final double aA = data.positions[_indexA].a;

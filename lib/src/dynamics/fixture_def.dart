@@ -25,18 +25,6 @@ class FixtureDef {
   /// Contact filtering data;
   Filter filter = Filter();
 
-  /// The shape, this must be set. The shape will be cloned, so you can create the shape on the
-  /// stack.
-  Shape getShape() {
-    return shape;
-  }
-
-  /// The shape, this must be set. The shape will be cloned, so you can create the shape on the
-  /// stack.
-  void setShape(Shape shape) {
-    this.shape = shape;
-  }
-
   /// Use this to store application specific fixture data.
   Object getUserData() {
     return userData;

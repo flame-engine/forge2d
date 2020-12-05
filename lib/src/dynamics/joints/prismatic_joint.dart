@@ -144,8 +144,8 @@ class PrismaticJoint extends Joint {
 
   /// Get the current joint translation, usually in meters.
   double getJointSpeed() {
-    final Body bA = _bodyA;
-    final Body bB = _bodyB;
+    final Body bA = bodyA;
+    final Body bB = bodyB;
 
     final Vector2 temp = Vector2.zero();
     final Vector2 rA = Vector2.zero();
@@ -201,9 +201,9 @@ class PrismaticJoint extends Joint {
     final Vector2 pA = Vector2.zero(),
         pB = Vector2.zero(),
         axis = Vector2.zero();
-    pA.setFrom(_bodyA.getWorldPoint(localAnchorA));
-    pB.setFrom(_bodyB.getWorldPoint(localAnchorB));
-    axis.setFrom(_bodyA.getWorldVector(_localXAxisA));
+    pA.setFrom(bodyA.getWorldPoint(localAnchorA));
+    pB.setFrom(bodyB.getWorldPoint(localAnchorB));
+    axis.setFrom(bodyA.getWorldVector(_localXAxisA));
     pB.sub(pA);
     final double translation = pB.dot(axis);
     return translation;
@@ -221,8 +221,8 @@ class PrismaticJoint extends Joint {
   /// @param flag
   void enableLimit(bool flag) {
     if (flag != _enableLimit) {
-      _bodyA.setAwake(true);
-      _bodyB.setAwake(true);
+      bodyA.setAwake(true);
+      bodyB.setAwake(true);
       _enableLimit = flag;
       _impulse.z = 0.0;
     }
@@ -249,8 +249,8 @@ class PrismaticJoint extends Joint {
   void setLimits(double lower, double upper) {
     assert(lower <= upper);
     if (lower != _lowerTranslation || upper != _upperTranslation) {
-      _bodyA.setAwake(true);
-      _bodyB.setAwake(true);
+      bodyA.setAwake(true);
+      bodyB.setAwake(true);
       _lowerTranslation = lower;
       _upperTranslation = upper;
       _impulse.z = 0.0;
@@ -268,8 +268,8 @@ class PrismaticJoint extends Joint {
   ///
   /// @param flag
   void enableMotor(bool flag) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _enableMotor = flag;
   }
 
@@ -277,8 +277,8 @@ class PrismaticJoint extends Joint {
   ///
   /// @param speed
   void setMotorSpeed(double speed) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
@@ -293,8 +293,8 @@ class PrismaticJoint extends Joint {
   ///
   /// @param force
   void setMaxMotorForce(double force) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _maxMotorForce = force;
   }
 
@@ -320,14 +320,14 @@ class PrismaticJoint extends Joint {
 
   @override
   void initVelocityConstraints(final SolverData data) {
-    _indexA = _bodyA.islandIndex;
-    _indexB = _bodyB.islandIndex;
-    _localCenterA.setFrom(_bodyA._sweep.localCenter);
-    _localCenterB.setFrom(_bodyB._sweep.localCenter);
-    _invMassA = _bodyA._invMass;
-    _invMassB = _bodyB._invMass;
-    _invIA = _bodyA.inverseInertia;
-    _invIB = _bodyB.inverseInertia;
+    _indexA = bodyA.islandIndex;
+    _indexB = bodyB.islandIndex;
+    _localCenterA.setFrom(bodyA._sweep.localCenter);
+    _localCenterB.setFrom(bodyB._sweep.localCenter);
+    _invMassA = bodyA._invMass;
+    _invMassB = bodyB._invMass;
+    _invIA = bodyA.inverseInertia;
+    _invIB = bodyB.inverseInertia;
 
     final Vector2 cA = data.positions[_indexA].c;
     final double aA = data.positions[_indexA].a;
