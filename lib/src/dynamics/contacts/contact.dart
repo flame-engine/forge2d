@@ -105,7 +105,7 @@ abstract class Contact {
   /// Get the other body than the argument in the contact
   Body getOtherBody(Body body) {
     assert(containsBody(body), "Body is not in contact");
-    return body == bodyA ? bodyB : bodyB;
+    return body == bodyA ? bodyB : bodyA;
   }
 
   /// Is this contact touching

@@ -104,8 +104,8 @@ class ContactManager implements PairCallback {
     final Fixture fixtureA = c.fixtureA;
     final Fixture fixtureB = c.fixtureB;
 
-    if (contactListener != null && c.isTouching()) {
-      contactListener.endContact(c);
+    if (c.isTouching()) {
+      contactListener?.endContact(c);
     }
 
     contacts.remove(c);
