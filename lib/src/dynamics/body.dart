@@ -34,8 +34,7 @@ class Body {
 
   final World world;
 
-  Fixture _fixtureList;
-  int _fixtureCount = 0;
+  final List<Fixture> fixtures = [];
 
   JointEdge _jointList;
   ContactEdge _contactList;
@@ -116,9 +115,6 @@ class Body {
     inverseInertia = 0.0;
 
     userData = bd.userData;
-
-    _fixtureList = null;
-    _fixtureCount = 0;
   }
 
   /// Creates a fixture and attach it to this body. Use this function if you need to set some fixture
@@ -139,11 +135,8 @@ class Body {
       fixture.createProxies(broadPhase, _transform);
     }
 
-    fixture._next = _fixtureList;
-    _fixtureList = fixture;
-    ++_fixtureCount;
-
     fixture._body = this;
+    fixtures.add(fixture);
 
     // Adjust mass properties if needed.
     if (fixture._density > 0.0) {
@@ -185,29 +178,14 @@ class Body {
     assert(fixture._body == this);
 
     // Remove the fixture from this body's singly linked list.
-    assert(_fixtureCount > 0);
-    Fixture node = _fixtureList;
-    Fixture last;
-    bool found = false;
-    while (node != null) {
-      if (node == fixture) {
-        node = fixture._next;
-        found = true;
-        break;
-      }
-      last = node;
-      node = node._next;
-    }
+    assert(fixtures.isNotEmpty);
+    final removed = fixtures.remove(fixture);
 
     // You tried to remove a shape that is not attached to this body.
-    assert(found);
-
-    // java change, remove it from the list
-    if (last == null) {
-      _fixtureList = fixture._next;
-    } else {
-      last._next = fixture._next;
-    }
+    assert(
+      removed,
+      "You tried to remove a fixture that is not attached to this body",
+    );
 
     // Destroy any contacts associated with the fixture.
     ContactEdge edge = _contactList;
@@ -229,13 +207,6 @@ class Body {
       final BroadPhase broadPhase = world._contactManager.broadPhase;
       fixture.destroyProxies(broadPhase);
     }
-
-    fixture.destroy();
-    fixture._body = null;
-    fixture._next = null;
-    fixture = null;
-
-    --_fixtureCount;
 
     // Reset the mass data.
     resetMassData();
@@ -259,7 +230,7 @@ class Body {
     _sweep.a0 = _sweep.a;
 
     final BroadPhase broadPhase = world._contactManager.broadPhase;
-    for (Fixture f = _fixtureList; f != null; f = f._next) {
+    for (Fixture f in fixtures) {
       f.synchronize(broadPhase, _transform, _transform);
     }
   }
@@ -501,7 +472,7 @@ class Body {
     final Vector2 localCenter = Vector2.zero();
     final Vector2 temp = Vector2.zero();
     final MassData massData = _pmd;
-    for (Fixture f = _fixtureList; f != null; f = f._next) {
+    for (Fixture f in fixtures) {
       if (f._density == 0.0) {
         continue;
       }
@@ -638,7 +609,7 @@ class Body {
 
     // Touch the proxies so that new contacts will be created (when appropriate)
     final BroadPhase broadPhase = world._contactManager.broadPhase;
-    for (Fixture f = _fixtureList; f != null; f = f._next) {
+    for (Fixture f in fixtures) {
       final int proxyCount = f._proxyCount;
       for (int i = 0; i < proxyCount; ++i) {
         broadPhase.touchProxy(f._proxies[i].proxyId);
@@ -726,7 +697,7 @@ class Body {
 
       // Create all proxies.
       final BroadPhase broadPhase = world._contactManager.broadPhase;
-      for (Fixture f = _fixtureList; f != null; f = f._next) {
+      for (Fixture f in fixtures) {
         f.createProxies(broadPhase, _transform);
       }
 
@@ -736,7 +707,7 @@ class Body {
 
       // Destroy all proxies.
       final BroadPhase broadPhase = world._contactManager.broadPhase;
-      for (Fixture f = _fixtureList; f != null; f = f._next) {
+      for (Fixture f in fixtures) {
         f.destroyProxies(broadPhase);
       }
 
@@ -778,11 +749,6 @@ class Body {
     return (_flags & FIXED_ROTATION_FLAG) == FIXED_ROTATION_FLAG;
   }
 
-  /// Get the list of all fixtures attached to this body.
-  Fixture getFixtureList() {
-    return _fixtureList;
-  }
-
   /// Get the list of all joints attached to this body.
   JointEdge getJointList() {
     return _jointList;
@@ -810,7 +776,7 @@ class Body {
         xf1.q.s * _sweep.localCenter.x -
         xf1.q.c * _sweep.localCenter.y;
 
-    for (Fixture f = _fixtureList; f != null; f = f._next) {
+    for (Fixture f in fixtures) {
       f.synchronize(world._contactManager.broadPhase, xf1, _transform);
     }
   }

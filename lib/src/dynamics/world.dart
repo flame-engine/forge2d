@@ -178,23 +178,12 @@ class World {
     }
     body._contactList = null;
 
-    Fixture f = body._fixtureList;
-    while (f != null) {
-      final Fixture f0 = f;
-      f = f._next;
-
+    for (Fixture f in body.fixtures) {
       if (_destructionListener != null) {
-        _destructionListener.sayGoodbyeFixture(f0);
+        _destructionListener.sayGoodbyeFixture(f);
       }
-
-      f0.destroyProxies(_contactManager.broadPhase);
-      f0.destroy();
-      body._fixtureList = f;
-      body._fixtureCount -= 1;
+      f.destroyProxies(_contactManager.broadPhase);
     }
-    body._fixtureList = null;
-    body._fixtureCount = 0;
-
     bodies.remove(body);
   }
 
@@ -418,7 +407,7 @@ class World {
     if ((flags & DebugDraw.SHAPE_BIT) != 0) {
       for (Body b in bodies) {
         xf.set(b._transform);
-        for (Fixture f = b.getFixtureList(); f != null; f = f.getNext()) {
+        for (Fixture f in b.fixtures) {
           if (b.isActive() == false) {
             color.setFromRGBd(0.5, 0.5, 0.3);
             drawShape(f, xf, color, wireframe);
@@ -465,7 +454,7 @@ class World {
           continue;
         }
 
-        for (Fixture f = b.getFixtureList(); f != null; f = f.getNext()) {
+        for (Fixture f in b.fixtures) {
           for (int i = 0; i < f._proxyCount; ++i) {
             final FixtureProxy proxy = f._proxies[i];
             final AABB aabb =
