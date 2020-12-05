@@ -629,7 +629,7 @@ class World {
         }
 
         // Search all contacts connected to this body.
-        for (Contact contact in _contactManager.contacts) {
+        for (Contact contact in b.contacts) {
           // Has this contact already been added to an island?
           if ((contact.flags & Contact.ISLAND_FLAG) == Contact.ISLAND_FLAG) {
             continue;
@@ -650,7 +650,7 @@ class World {
           island.addContact(contact);
           contact.flags |= Contact.ISLAND_FLAG;
 
-          final Body other = contact.getOtherBody(seed);
+          final Body other = contact.getOtherBody(b);
 
           // Was the other body already added to this island?
           if ((other._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
