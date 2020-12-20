@@ -113,6 +113,18 @@ abstract class Contact {
     return (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
   }
 
+  bool representsArguments(
+      Fixture fixtureA, int indexA, Fixture fixtureB, int indexB) {
+    return (this.fixtureA == fixtureA &&
+            this.indexA == indexA &&
+            this.fixtureB == fixtureB &&
+            this.indexB == indexB) ||
+        (this.fixtureA == fixtureB &&
+            this.indexA == indexB &&
+            this.fixtureB == fixtureA &&
+            this.indexB == indexA);
+  }
+
   /// Enable/disable this contact. This can be used inside the pre-solve contact listener. The
   /// contact is only disabled for the current time step (or sub-step in continuous collisions).
   void setEnabled(bool flag) {

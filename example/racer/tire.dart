@@ -34,8 +34,7 @@ class Tire {
     if (impulse.length > _maxLateralImpulse) {
       impulse.scale(_maxLateralImpulse / impulse.length);
     }
-    _body.applyLinearImpulse(
-        impulse..scale(_currentTraction), _body.worldCenter, true);
+    _body.applyLinearImpulse(impulse..scale(_currentTraction));
     _body.applyAngularImpulse(
         0.1 * _currentTraction * _body.getInertia() * (-_body.angularVelocity));
 
@@ -44,8 +43,8 @@ class Tire {
     currentForwardNormal.normalize();
     final double dragForceMagnitude = -2 * currentForwardSpeed;
     _body.applyForce(
-        currentForwardNormal..scale(_currentTraction * dragForceMagnitude),
-        _body.worldCenter);
+      currentForwardNormal..scale(_currentTraction * dragForceMagnitude),
+    );
   }
 
   void updateDrive(int controlState) {
@@ -72,8 +71,7 @@ class Tire {
     }
 
     if (force.abs() > 0) {
-      _body.applyForce(currentForwardNormal..scale(_currentTraction * force),
-          _body.worldCenter);
+      _body.applyForce(currentForwardNormal..scale(_currentTraction * force));
     }
   }
 

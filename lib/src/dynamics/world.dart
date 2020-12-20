@@ -1070,8 +1070,8 @@ class World {
 
           if (fixture.userData != null && fixture.userData == LIQUID_INT) {
             final Body b = fixture.body;
-            liquidOffset.setFrom(b._linearVelocity);
-            final double linVelLength = b._linearVelocity.length;
+            liquidOffset.setFrom(b.linearVelocity);
+            final double linVelLength = b.linearVelocity.length;
             if (averageLinearVel == -1) {
               averageLinearVel = linVelLength;
             } else {

@@ -31,28 +31,10 @@ class ContactManager implements PairCallback {
       return;
     }
 
-    // TODO_ERIN use a hash table to remove a potential bottleneck when both
-    // bodies have a lot of contacts.
-    // Does a contact already exist?
+    // Check whether a contact already exists
     for (Contact contact in bodyB.contacts) {
       if (contact.containsBody(bodyA)) {
-        final Fixture currentFixtureA = contact.fixtureA;
-        final Fixture currentFixtureB = contact.fixtureB;
-        final int currentIndexA = contact.indexA;
-        final int currentIndexB = contact.indexB;
-
-        if (currentFixtureA == fixtureA &&
-            currentIndexA == indexA &&
-            currentFixtureB == fixtureB &&
-            currentIndexB == indexB) {
-          // A contact already exists.
-          return;
-        }
-
-        if (currentFixtureA == fixtureB &&
-            currentIndexA == indexB &&
-            currentFixtureB == fixtureA &&
-            currentIndexB == indexA) {
+        if (contact.representsArguments(fixtureA, indexA, fixtureB, indexB)) {
           // A contact already exists.
           return;
         }
@@ -72,20 +54,12 @@ class ContactManager implements PairCallback {
 
     final Contact contact = Contact.init(fixtureA, indexA, fixtureB, indexB);
 
-    // Contact creation may swap fixtures.
-    fixtureA = contact.fixtureA;
-    fixtureB = contact.fixtureB;
-    indexA = contact.indexA;
-    indexB = contact.indexB;
-    bodyA = fixtureA.body;
-    bodyB = fixtureB.body;
-
     // Insert into the world.
     contacts.add(contact);
 
     // Connect to island graph.
 
-    // Connect to body A
+    // Connect to ths bodies
     bodyA.contacts.add(contact);
     bodyB.contacts.add(contact);
 
@@ -136,14 +110,14 @@ class ContactManager implements PairCallback {
       // is this contact flagged for filtering?
       if ((c.flags & Contact.FILTER_FLAG) == Contact.FILTER_FLAG) {
         // Should these bodies collide?
-        if (bodyB.shouldCollide(bodyA) == false) {
+        if (!bodyB.shouldCollide(bodyA)) {
           contactRemovals.add(c);
           continue;
         }
 
         // Check user filtering.
         if (contactFilter != null &&
-            contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
+            !contactFilter.shouldCollide(fixtureA, fixtureB)) {
           contactRemovals.add(c);
           continue;
         }
@@ -164,10 +138,9 @@ class ContactManager implements PairCallback {
 
       final int proxyIdA = fixtureA._proxies[indexA].proxyId;
       final int proxyIdB = fixtureB._proxies[indexB].proxyId;
-      final bool overlap = broadPhase.testOverlap(proxyIdA, proxyIdB);
 
       // Here we destroy contacts that cease to overlap in the broad-phase.
-      if (overlap == false) {
+      if (!broadPhase.testOverlap(proxyIdA, proxyIdB)) {
         contactRemovals.add(c);
         continue;
       }

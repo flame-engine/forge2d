@@ -179,8 +179,8 @@ class PrismaticJoint extends Joint {
       ..sub(p1);
     axis.setFrom(Rot.mulVec2(bA._transform.q, _localXAxisA));
 
-    final Vector2 vA = bA._linearVelocity;
-    final Vector2 vB = bB._linearVelocity;
+    final Vector2 vA = bA.linearVelocity;
+    final Vector2 vB = bB.linearVelocity;
     final double wA = bA._angularVelocity;
     final double wB = bB._angularVelocity;
 
