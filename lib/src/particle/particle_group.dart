@@ -13,7 +13,7 @@ class ParticleGroup {
   double _mass = 0.0;
   double _inertia = 0.0;
   final Vector2 _center = Vector2.zero();
-  final Vector2 _linearVelocity = Vector2.zero();
+  final Vector2 linearVelocity = Vector2.zero();
   double _angularVelocity = 0.0;
   final Transform _transform = Transform.zero();
 
@@ -78,7 +78,7 @@ class ParticleGroup {
 
   Vector2 getLinearVelocity() {
     updateStatistics();
-    return _linearVelocity;
+    return linearVelocity;
   }
 
   double getAngularVelocity() {
@@ -111,21 +111,21 @@ class ParticleGroup {
       final double m = _system.getParticleMass();
       _mass = 0.0;
       _center.setZero();
-      _linearVelocity.setZero();
+      linearVelocity.setZero();
       for (int i = _firstIndex; i < _lastIndex; i++) {
         _mass += m;
         final Vector2 pos = _system.positionBuffer.data[i];
         _center.x += m * pos.x;
         _center.y += m * pos.y;
         final Vector2 vel = _system.velocityBuffer.data[i];
-        _linearVelocity.x += m * vel.x;
-        _linearVelocity.y += m * vel.y;
+        linearVelocity.x += m * vel.x;
+        linearVelocity.y += m * vel.y;
       }
       if (_mass > 0) {
         _center.x *= 1 / _mass;
         _center.y *= 1 / _mass;
-        _linearVelocity.x *= 1 / _mass;
-        _linearVelocity.y *= 1 / _mass;
+        linearVelocity.x *= 1 / _mass;
+        linearVelocity.y *= 1 / _mass;
       }
       _inertia = 0.0;
       _angularVelocity = 0.0;
@@ -134,8 +134,8 @@ class ParticleGroup {
         final Vector2 vel = _system.velocityBuffer.data[i];
         final double px = pos.x - _center.x;
         final double py = pos.y - _center.y;
-        final double vx = vel.x - _linearVelocity.x;
-        final double vy = vel.y - _linearVelocity.y;
+        final double vx = vel.x - linearVelocity.x;
+        final double vy = vel.y - linearVelocity.y;
         _inertia += m * (px * px + py * py);
         _angularVelocity += m * (px * vy - py * vx);
       }

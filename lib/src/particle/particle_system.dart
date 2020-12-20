@@ -370,7 +370,7 @@ class SolveCollisionCallback implements QueryCallback {
             final Vector2 b = output.normal;
             final double fdn = ax * b.x + ay * b.y;
             final Vector2 f = Vector2(fdn * b.x, fdn * b.y);
-            body.applyLinearImpulse(f, p, true);
+            body.applyLinearImpulse(f, point: p);
           }
         }
       }
@@ -1231,7 +1231,7 @@ class ParticleSystem {
       final double particleInvMass = getParticleInvMass();
       velData.x -= particleInvMass * f.x;
       velData.y -= particleInvMass * f.y;
-      b.applyLinearImpulse(f, p, true);
+      b.applyLinearImpulse(f, point: p);
     }
     for (int k = 0; k < contactCount; k++) {
       final ParticleContact contact = contactBuffer[k];
@@ -1266,9 +1266,9 @@ class ParticleSystem {
       final double tempY = p.y - b._sweep.c.y;
       final Vector2 velA = velocityBuffer.data[a];
       final double vx =
-          -b._angularVelocity * tempY + b._linearVelocity.x - velA.x;
+          -b._angularVelocity * tempY + b.linearVelocity.x - velA.x;
       final double vy =
-          b._angularVelocity * tempX + b._linearVelocity.y - velA.y;
+          b._angularVelocity * tempX + b.linearVelocity.y - velA.y;
       final double vn = vx * n.x + vy * n.y;
       if (vn < 0) {
         final Vector2 f = _tempVec;
@@ -1279,7 +1279,7 @@ class ParticleSystem {
         velA.y += invMass * f.y;
         f.x = -f.x;
         f.y = -f.y;
-        b.applyLinearImpulse(f, p, true);
+        b.applyLinearImpulse(f, point: p);
       }
     }
     for (int k = 0; k < contactCount; k++) {
@@ -1327,7 +1327,7 @@ class ParticleSystem {
         rotation.setAngle(step.dt * group._angularVelocity);
         final Vector2 cross = Rot.mulVec2(rotation, group._center);
         temp
-          ..setFrom(group._linearVelocity)
+          ..setFrom(group.linearVelocity)
           ..scale(step.dt)
           ..add(group._center)
           ..sub(cross);
@@ -1484,9 +1484,9 @@ class ParticleSystem {
         final double tempX = p.x - b._sweep.c.x;
         final double tempY = p.y - b._sweep.c.y;
         final double vx =
-            -b._angularVelocity * tempY + b._linearVelocity.x - va.x;
+            -b._angularVelocity * tempY + b.linearVelocity.x - va.x;
         final double vy =
-            b._angularVelocity * tempX + b._linearVelocity.y - va.y;
+            b._angularVelocity * tempX + b.linearVelocity.y - va.y;
         final Vector2 f = _tempVec;
         final double pInvMass = getParticleInvMass();
         f.x = viscousStrength * m * w * vx;
@@ -1495,7 +1495,7 @@ class ParticleSystem {
         va.y += pInvMass * f.y;
         f.x = -f.x;
         f.y = -f.y;
-        b.applyLinearImpulse(f, p, true);
+        b.applyLinearImpulse(f, point: p);
       }
     }
     for (int k = 0; k < contactCount; k++) {
@@ -1540,7 +1540,7 @@ class ParticleSystem {
           f.y = inter * n.y;
           va.x -= pInvMass * f.x;
           va.y -= pInvMass * f.y;
-          b.applyLinearImpulse(f, p, true);
+          b.applyLinearImpulse(f, point: p);
         }
       }
     }
