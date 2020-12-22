@@ -17,14 +17,14 @@ class ContactManager implements PairCallback {
     final FixtureProxy proxyA = proxyUserDataA;
     final FixtureProxy proxyB = proxyUserDataB;
 
-    Fixture fixtureA = proxyA.fixture;
-    Fixture fixtureB = proxyB.fixture;
+    final Fixture fixtureA = proxyA.fixture;
+    final Fixture fixtureB = proxyB.fixture;
 
-    int indexA = proxyA.childIndex;
-    int indexB = proxyB.childIndex;
+    final int indexA = proxyA.childIndex;
+    final int indexB = proxyB.childIndex;
 
-    Body bodyA = fixtureA.body;
-    Body bodyB = fixtureB.body;
+    final Body bodyA = fixtureA.body;
+    final Body bodyB = fixtureB.body;
 
     // Are the fixtures on the same body?
     if (bodyA == bodyB) {
