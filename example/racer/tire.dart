@@ -17,10 +17,10 @@ class Tire {
   }
 
   void addGroundArea(GroundArea ga) {
-    // TODO: If http://dartbug.com/4210 is fixed, check the return value of add
-    // before calling _updateTraction().
-    _groundAreas.add(ga);
-    _updateTraction();
+    final newlyAdded = _groundAreas.add(ga);
+    if (newlyAdded) {
+      _updateTraction();
+    }
   }
 
   void removeGroundArea(GroundArea ga) {
