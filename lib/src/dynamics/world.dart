@@ -3,9 +3,6 @@ part of forge2d;
 /// The world class manages all physics entities, dynamic simulation, and asynchronous queries. The
 /// world also contains efficient memory management facilities.
 class World {
-  static const int WORLD_POOL_SIZE = 100;
-  static const int WORLD_POOL_CONTAINER_SIZE = 10;
-
   static const int NEW_FIXTURE = 0x0001;
   static const int LOCKED = 0x0002;
   static const int CLEAR_FORCES = 0x0004;
@@ -195,7 +192,7 @@ class World {
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (def.collideConnected == false) {
       for (Contact contact in bodyB.contacts) {
-        if (contact.containsBody(bodyA)) {
+        if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
           // body is awake).
           contact.flagForFiltering();
@@ -236,7 +233,7 @@ class World {
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (collideConnected == false) {
       for (Contact contact in bodyB.contacts) {
-        if (contact.containsBody(bodyA)) {
+        if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
           // body is awake).
           contact.flagForFiltering();
