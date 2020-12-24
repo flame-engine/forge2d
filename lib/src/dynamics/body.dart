@@ -631,10 +631,9 @@ class Body {
 
   /// Set the sleep state of the body. A sleeping body has very low CPU cost.
   ///
-  /// @param flag set to true to put body to sleep, false to wake it.
-  /// @param flag
-  void setAwake(bool flag) {
-    if (flag) {
+  /// @param awaken set to false to put body to sleep, true to wake it.
+  void setAwake(bool awaken) {
+    if (awaken) {
       if ((_flags & AWAKE_FLAG) == 0) {
         _flags |= AWAKE_FLAG;
         _sleepTime = 0.0;

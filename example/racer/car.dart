@@ -1,6 +1,20 @@
 part of racer;
 
 class Car {
+  final double _maxForwardSpeed = 250.0;
+  final double _maxBackwardSpeed = -40.0;
+  final double _backTireMaxDriveForce = 300.0;
+  final double _frontTireMaxDriveForce = 500.0;
+  final double _backTireMaxLateralImpulse = 8.5;
+  final double _frontTireMaxLateralImpulse = 7.5;
+
+  final double _lockAngle = (pi / 180) * 35;
+  final double _turnSpeedPerSec = (pi / 180) * 160;
+
+  Body _body;
+  Tire _blTire, _brTire, _flTire, _frTire;
+  RevoluteJoint _flJoint, _frJoint;
+
   Car(World world) {
     final BodyDef def = BodyDef();
     def.type = BodyType.DYNAMIC;
@@ -69,11 +83,7 @@ class Car {
     _frTire.updateDrive(controlState);
   }
 
-  void update(num time, int controlState) {
-    _updateFriction();
-    _updateDrive(controlState);
-
-    // Steering.
+  void _updateSteering(num time, int controlState) {
     double desiredAngle = 0.0;
     switch (controlState & (ControlState.LEFT | ControlState.RIGHT)) {
       case ControlState.LEFT:
@@ -93,17 +103,12 @@ class Car {
     _frJoint.setLimits(angle, angle);
   }
 
-  final double _maxForwardSpeed = 250.0;
-  final double _maxBackwardSpeed = -40.0;
-  final double _backTireMaxDriveForce = 300.0;
-  final double _frontTireMaxDriveForce = 500.0;
-  final double _backTireMaxLateralImpulse = 8.5;
-  final double _frontTireMaxLateralImpulse = 7.5;
-
-  final double _lockAngle = (pi / 180) * 35;
-  final double _turnSpeedPerSec = (pi / 180) * 160;
-
-  Body _body;
-  Tire _blTire, _brTire, _flTire, _frTire;
-  RevoluteJoint _flJoint, _frJoint;
+  void update(num time, int controlState) {
+    if(_body.isAwake() || controlState != 0) {
+      _body.setAwake(true);
+      _updateFriction();
+      _updateDrive(controlState);
+      _updateSteering(time, controlState);
+    }
+  }
 }
