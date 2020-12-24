@@ -104,7 +104,7 @@ class Car {
   }
 
   void update(num time, int controlState) {
-    if(_body.isAwake() || controlState != 0) {
+    if (_body.isAwake() || controlState != 0) {
       _body.setAwake(true);
       _updateFriction();
       _updateDrive(controlState);
