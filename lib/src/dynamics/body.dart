@@ -70,7 +70,7 @@ class Body {
     if (bd.allowSleep) {
       _flags |= AUTO_SLEEP_FLAG;
     }
-    if (bd.awake) {
+    if (bd.isAwake) {
       _flags |= AWAKE_FLAG;
     }
     if (bd.active) {
