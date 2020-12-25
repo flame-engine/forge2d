@@ -26,9 +26,12 @@ class Body {
   final Sweep _sweep = Sweep();
 
   /// The linear velocity of the center of mass. Do not modify directly, instead
-  /// use setLinearVelocity, applyLinearImpulse or applyForce
+  /// use applyLinearImpulse or applyForce.
   final Vector2 linearVelocity = Vector2.zero();
+
+  /// The angular velocity in radians/second.
   double _angularVelocity = 0.0;
+  double get angularVelocity => _angularVelocity;
 
   final Vector2 _force = Vector2.zero();
   double _torque = 0.0;
@@ -270,11 +273,6 @@ class Body {
 
     _angularVelocity = w;
   }
-
-  /// Get the angular velocity.
-  ///
-  /// @return the angular velocity in radians/second.
-  double get angularVelocity => _angularVelocity;
 
   /// Apply a force at a world point. If the force is not applied at the center of mass, it will
   /// generate a torque and affect the angular velocity. This wakes up the body.
