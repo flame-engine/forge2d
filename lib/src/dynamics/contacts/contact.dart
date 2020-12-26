@@ -90,13 +90,13 @@ abstract class Contact {
 
   /// Get the world manifold.
   void getWorldManifold(WorldManifold worldManifold) {
-    final Body bodyA = fixtureA.body;
-    final Body bodyB = fixtureB.body;
-    final Shape shapeA = fixtureA.shape;
-    final Shape shapeB = fixtureB.shape;
-
-    worldManifold.initialize(_manifold, bodyA._transform, shapeA.radius,
-        bodyB._transform, shapeB.radius);
+    worldManifold.initialize(
+      _manifold,
+      fixtureA.body._transform,
+      fixtureA.shape.radius,
+      fixtureB.body._transform,
+      fixtureB.shape.radius,
+    );
   }
 
   /// Whether the body is connected to the joint
@@ -109,12 +109,14 @@ abstract class Contact {
   }
 
   /// Is this contact touching
-  bool isTouching() {
-    return (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
-  }
+  bool isTouching() => (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
   bool representsArguments(
-      Fixture fixtureA, int indexA, Fixture fixtureB, int indexB) {
+    Fixture fixtureA,
+    int indexA,
+    Fixture fixtureB,
+    int indexB,
+  ) {
     return (this.fixtureA == fixtureA &&
             this.indexA == indexA &&
             this.fixtureB == fixtureB &&
@@ -127,8 +129,8 @@ abstract class Contact {
 
   /// Enable/disable this contact. This can be used inside the pre-solve contact listener. The
   /// contact is only disabled for the current time step (or sub-step in continuous collisions).
-  void setEnabled(bool flag) {
-    if (flag) {
+  void setEnabled(bool enable) {
+    if (enable) {
       flags |= ENABLED_FLAG;
     } else {
       flags &= ~ENABLED_FLAG;
@@ -136,9 +138,7 @@ abstract class Contact {
   }
 
   /// Has this contact been disabled?
-  bool isEnabled() {
-    return (flags & ENABLED_FLAG) == ENABLED_FLAG;
-  }
+  bool isEnabled() => (flags & ENABLED_FLAG) == ENABLED_FLAG;
 
   void resetFriction() {
     _friction = Contact.mixFriction(fixtureA._friction, fixtureB._friction);
