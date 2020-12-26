@@ -2,18 +2,17 @@ part of forge2d;
 
 class PolygonContact extends Contact {
   PolygonContact(Fixture fixtureA, Fixture fixtureB)
-      : super(fixtureA, 0, fixtureB, 0) {
-    assert(_fixtureA.getType() == ShapeType.POLYGON);
-    assert(_fixtureB.getType() == ShapeType.POLYGON);
-  }
+      : assert(fixtureA.getType() == ShapeType.POLYGON),
+        assert(fixtureB.getType() == ShapeType.POLYGON),
+        super(fixtureA, 0, fixtureB, 0);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     World.collision.collidePolygons(
       manifold,
-      _fixtureA.getShape() as PolygonShape,
+      fixtureA.shape as PolygonShape,
       xfA,
-      _fixtureB.getShape() as PolygonShape,
+      fixtureB.shape as PolygonShape,
       xfB,
     );
   }

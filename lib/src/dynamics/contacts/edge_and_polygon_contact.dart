@@ -1,19 +1,19 @@
 part of forge2d;
 
 class EdgeAndPolygonContact extends Contact {
-  EdgeAndPolygonContact(Fixture fA, int indexA, Fixture fB, int indexB)
-      : super(fA, indexA, fB, indexB) {
-    assert(_fixtureA.getType() == ShapeType.EDGE);
-    assert(_fixtureB.getType() == ShapeType.POLYGON);
-  }
+  EdgeAndPolygonContact(
+      Fixture fixtureA, int indexA, Fixture fixtureB, int indexB)
+      : assert(fixtureA.getType() == ShapeType.EDGE),
+        assert(fixtureB.getType() == ShapeType.POLYGON),
+        super(fixtureA, indexA, fixtureB, indexB);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     World.collision.collideEdgeAndPolygon(
       manifold,
-      _fixtureA.getShape() as EdgeShape,
+      fixtureA.shape as EdgeShape,
       xfA,
-      _fixtureB.getShape() as PolygonShape,
+      fixtureB.shape as PolygonShape,
       xfB,
     );
   }

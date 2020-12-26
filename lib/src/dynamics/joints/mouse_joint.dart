@@ -31,7 +31,7 @@ class MouseJoint extends Joint {
         assert(def.dampingRatio >= 0),
         super(def) {
     _targetA.setFrom(def.target);
-    localAnchorB.setFrom(Transform.mulTransVec2(_bodyB._transform, _targetA));
+    localAnchorB.setFrom(Transform.mulTransVec2(bodyB._transform, _targetA));
 
     _maxForce = def.maxForce;
     _impulse.setZero();
@@ -56,8 +56,8 @@ class MouseJoint extends Joint {
   }
 
   void setTarget(Vector2 target) {
-    if (_bodyB.isAwake() == false) {
-      _bodyB.setAwake(true);
+    if (bodyB.isAwake() == false) {
+      bodyB.setAwake(true);
     }
     _targetA.setFrom(target);
   }
@@ -68,10 +68,10 @@ class MouseJoint extends Joint {
 
   @override
   void initVelocityConstraints(final SolverData data) {
-    _indexB = _bodyB.islandIndex;
-    _localCenterB.setFrom(_bodyB._sweep.localCenter);
-    _invMassB = _bodyB._invMass;
-    _invIB = _bodyB.inverseInertia;
+    _indexB = bodyB.islandIndex;
+    _localCenterB.setFrom(bodyB._sweep.localCenter);
+    _invMassB = bodyB._invMass;
+    _invIB = bodyB.inverseInertia;
 
     final Vector2 cB = data.positions[_indexB].c;
     final double aB = data.positions[_indexB].a;
@@ -82,7 +82,7 @@ class MouseJoint extends Joint {
 
     qB.setAngle(aB);
 
-    final double mass = _bodyB.mass;
+    final double mass = bodyB.mass;
 
     // Frequency
     final double omega = 2.0 * math.pi * _frequencyHz;

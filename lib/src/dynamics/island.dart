@@ -175,7 +175,7 @@ class Island {
       final Sweep bmSweep = b._sweep;
       final Vector2 c = bmSweep.c;
       final double a = bmSweep.a;
-      final Vector2 v = b._linearVelocity;
+      final Vector2 v = b.linearVelocity;
       double w = b._angularVelocity;
 
       // Store positions for continuous collision.
@@ -196,8 +196,8 @@ class Island {
         // v2 = exp(-c * dt) * v1
         // Pade approximation:
         // v2 = v1 * 1 / (1 + c * dt)
-        v.x *= 1.0 / (1.0 + dt * b._linearDamping);
-        v.y *= 1.0 / (1.0 + dt * b._linearDamping);
+        v.x *= 1.0 / (1.0 + dt * b.linearDamping);
+        v.y *= 1.0 / (1.0 + dt * b.linearDamping);
         w *= 1.0 / (1.0 + dt * b.angularDamping);
       }
 
@@ -302,8 +302,8 @@ class Island {
       body._sweep.c.x = bodyMeta.position.c.x;
       body._sweep.c.y = bodyMeta.position.c.y;
       body._sweep.a = bodyMeta.position.a;
-      body._linearVelocity.x = bodyMeta.velocity.v.x;
-      body._linearVelocity.y = bodyMeta.velocity.v.y;
+      body.linearVelocity.x = bodyMeta.velocity.v.x;
+      body.linearVelocity.y = bodyMeta.velocity.v.y;
       body._angularVelocity = bodyMeta.velocity.w;
       body.synchronizeTransform();
     }
@@ -326,7 +326,7 @@ class Island {
 
         if ((b._flags & Body.AUTO_SLEEP_FLAG) == 0 ||
             b._angularVelocity * b._angularVelocity > angTolSqr ||
-            b._linearVelocity.dot(b._linearVelocity) > linTolSqr) {
+            b.linearVelocity.dot(b.linearVelocity) > linTolSqr) {
           b._sleepTime = 0.0;
           minSleepTime = 0.0;
         } else {
@@ -354,8 +354,8 @@ class Island {
       bodyMeta.position.c.x = body._sweep.c.x;
       bodyMeta.position.c.y = body._sweep.c.y;
       bodyMeta.position.a = body._sweep.a;
-      bodyMeta.velocity.v.x = body._linearVelocity.x;
-      bodyMeta.velocity.v.y = body._linearVelocity.y;
+      bodyMeta.velocity.v.x = body.linearVelocity.x;
+      bodyMeta.velocity.v.y = body.linearVelocity.y;
       bodyMeta.velocity.w = body._angularVelocity;
     }
 
@@ -440,8 +440,8 @@ class Island {
       body._sweep.c.x = c.x;
       body._sweep.c.y = c.y;
       body._sweep.a = a;
-      body._linearVelocity.x = v.x;
-      body._linearVelocity.y = v.y;
+      body.linearVelocity.x = v.x;
+      body.linearVelocity.y = v.y;
       body._angularVelocity = w;
       body.synchronizeTransform();
     }
