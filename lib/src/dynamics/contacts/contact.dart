@@ -30,6 +30,11 @@ abstract class Contact {
   Body get bodyA => fixtureA.body;
   Body get bodyB => fixtureB.body;
 
+  final ContactPositionConstraint positionConstraint =
+      ContactPositionConstraint();
+  final ContactVelocityConstraint velocityConstraint =
+      ContactVelocityConstraint();
+
   final Manifold _manifold = Manifold();
 
   int toiCount = 0;

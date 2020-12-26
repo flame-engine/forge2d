@@ -3,7 +3,6 @@ part of forge2d;
 class ContactSolverDef {
   TimeStep step;
   List<Contact> contacts;
-  int count = 0;
   List<Position> positions;
   List<Velocity> velocities;
 }
@@ -22,46 +21,15 @@ class ContactSolver {
   TimeStep _step;
   List<Position> _positions;
   List<Velocity> _velocities;
-  List<ContactPositionConstraint> _positionConstraints =
-      List<ContactPositionConstraint>.generate(
-    INITIAL_NUM_CONSTRAINTS,
-    (_) => ContactPositionConstraint(),
-  );
-  List<ContactVelocityConstraint> _velocityConstraints =
-      List<ContactVelocityConstraint>.generate(
-    INITIAL_NUM_CONSTRAINTS,
-    (_) => ContactVelocityConstraint(),
-  );
   List<Contact> _contacts;
-  int _count = 0;
 
   void init(ContactSolverDef def) {
     _step = def.step;
-    _count = def.count;
-
-    if (_positionConstraints.length < _count) {
-      _positionConstraints = _positionConstraints +
-          List<ContactPositionConstraint>.generate(
-            _positionConstraints.length,
-            (_) => ContactPositionConstraint(),
-          );
-    }
-
-    if (_velocityConstraints.length < _count) {
-      _velocityConstraints = _velocityConstraints +
-          List<ContactVelocityConstraint>.generate(
-            _velocityConstraints.length,
-            (_) => ContactVelocityConstraint(),
-          );
-    }
-
     _positions = def.positions;
     _velocities = def.velocities;
     _contacts = def.contacts;
 
-    for (int i = 0; i < _count; ++i) {
-      final Contact contact = _contacts[i];
-
+    for (Contact contact in _contacts) {
       final Fixture fixtureA = contact.fixtureA;
       final Fixture fixtureB = contact.fixtureB;
       final Shape shapeA = fixtureA.shape;
@@ -75,40 +43,42 @@ class ContactSolver {
       final int pointCount = manifold.pointCount;
       assert(pointCount > 0);
 
-      final ContactVelocityConstraint vc = _velocityConstraints[i];
-      vc.friction = contact._friction;
-      vc.restitution = contact._restitution;
-      vc.tangentSpeed = contact.tangentSpeed;
-      vc.indexA = bodyA.islandIndex;
-      vc.indexB = bodyB.islandIndex;
-      vc.invMassA = bodyA._invMass;
-      vc.invMassB = bodyB._invMass;
-      vc.invIA = bodyA.inverseInertia;
-      vc.invIB = bodyB.inverseInertia;
-      vc.contactIndex = i;
-      vc.pointCount = pointCount;
-      vc.K.setZero();
-      vc.normalMass.setZero();
+      final ContactVelocityConstraint velocityConstraint =
+          contact.velocityConstraint
+            ..friction = contact._friction
+            ..restitution = contact._restitution
+            ..tangentSpeed = contact.tangentSpeed
+            ..indexA = bodyA.islandIndex
+            ..indexB = bodyB.islandIndex
+            ..invMassA = bodyA._invMass
+            ..invMassB = bodyB._invMass
+            ..invIA = bodyA.inverseInertia
+            ..invIB = bodyB.inverseInertia
+            ..contactIndex = _contacts.indexOf(contact)
+            ..pointCount = pointCount
+            ..K.setZero()
+            ..normalMass.setZero();
 
-      final ContactPositionConstraint pc = _positionConstraints[i];
-      pc.indexA = bodyA.islandIndex;
-      pc.indexB = bodyB.islandIndex;
-      pc.invMassA = bodyA._invMass;
-      pc.invMassB = bodyB._invMass;
-      pc.localCenterA.setFrom(bodyA._sweep.localCenter);
-      pc.localCenterB.setFrom(bodyB._sweep.localCenter);
-      pc.invIA = bodyA.inverseInertia;
-      pc.invIB = bodyB.inverseInertia;
-      pc.localNormal.setFrom(manifold.localNormal);
-      pc.localPoint.setFrom(manifold.localPoint);
-      pc.pointCount = pointCount;
-      pc.radiusA = radiusA;
-      pc.radiusB = radiusB;
-      pc.type = manifold.type;
+      final ContactPositionConstraint positionConstraint =
+          contact.positionConstraint
+            ..indexA = bodyA.islandIndex
+            ..indexB = bodyB.islandIndex
+            ..invMassA = bodyA._invMass
+            ..invMassB = bodyB._invMass
+            ..localCenterA.setFrom(bodyA._sweep.localCenter)
+            ..localCenterB.setFrom(bodyB._sweep.localCenter)
+            ..invIA = bodyA.inverseInertia
+            ..invIB = bodyB.inverseInertia
+            ..localNormal.setFrom(manifold.localNormal)
+            ..localPoint.setFrom(manifold.localPoint)
+            ..pointCount = pointCount
+            ..radiusA = radiusA
+            ..radiusB = radiusB
+            ..type = manifold.type;
 
       for (int j = 0; j < pointCount; j++) {
         final ManifoldPoint cp = manifold.points[j];
-        final VelocityConstraintPoint vcp = vc.points[j];
+        final VelocityConstraintPoint vcp = velocityConstraint.points[j];
 
         if (_step.warmStarting) {
           vcp.normalImpulse = _step.dtRatio * cp.normalImpulse;
@@ -123,36 +93,37 @@ class ContactSolver {
         vcp.normalMass = 0.0;
         vcp.tangentMass = 0.0;
         vcp.velocityBias = 0.0;
-        pc.localPoints[j].x = cp.localPoint.x;
-        pc.localPoints[j].y = cp.localPoint.y;
+        positionConstraint.localPoints[j].x = cp.localPoint.x;
+        positionConstraint.localPoints[j].y = cp.localPoint.y;
       }
     }
   }
 
   void warmStart() {
     // Warm start.
-    for (int i = 0; i < _count; ++i) {
-      final ContactVelocityConstraint vc = _velocityConstraints[i];
+    for (Contact contact in _contacts) {
+      final ContactVelocityConstraint velocityConstraint =
+          contact.velocityConstraint;
 
-      final int indexA = vc.indexA;
-      final int indexB = vc.indexB;
-      final double mA = vc.invMassA;
-      final double iA = vc.invIA;
-      final double mB = vc.invMassB;
-      final double iB = vc.invIB;
-      final int pointCount = vc.pointCount;
+      final int indexA = velocityConstraint.indexA;
+      final int indexB = velocityConstraint.indexB;
+      final double mA = velocityConstraint.invMassA;
+      final double iA = velocityConstraint.invIA;
+      final double mB = velocityConstraint.invMassB;
+      final double iB = velocityConstraint.invIB;
+      final int pointCount = velocityConstraint.pointCount;
 
       final Vector2 vA = _velocities[indexA].v;
       double wA = _velocities[indexA].w;
       final Vector2 vB = _velocities[indexB].v;
       double wB = _velocities[indexB].w;
 
-      final Vector2 normal = vc.normal;
+      final Vector2 normal = velocityConstraint.normal;
       final double tangentX = 1.0 * normal.y;
       final double tangentY = -1.0 * normal.x;
 
       for (int j = 0; j < pointCount; ++j) {
-        final VelocityConstraintPoint vcp = vc.points[j];
+        final VelocityConstraintPoint vcp = velocityConstraint.points[j];
         final double pX =
             tangentX * vcp.tangentImpulse + normal.x * vcp.normalImpulse;
         final double pY =
@@ -178,23 +149,26 @@ class ContactSolver {
 
   void initializeVelocityConstraints() {
     // Warm start.
-    for (int i = 0; i < _count; ++i) {
-      final ContactVelocityConstraint vc = _velocityConstraints[i];
-      final ContactPositionConstraint pc = _positionConstraints[i];
+    for (Contact contact in _contacts) {
+      final ContactVelocityConstraint velocityConstraint =
+          contact.velocityConstraint;
+      final ContactPositionConstraint positionConstraint =
+          contact.positionConstraint;
 
-      final double radiusA = pc.radiusA;
-      final double radiusB = pc.radiusB;
-      final Manifold manifold = _contacts[vc.contactIndex]._manifold;
+      final double radiusA = positionConstraint.radiusA;
+      final double radiusB = positionConstraint.radiusB;
+      final Manifold manifold =
+          _contacts[velocityConstraint.contactIndex]._manifold;
 
-      final int indexA = vc.indexA;
-      final int indexB = vc.indexB;
+      final int indexA = velocityConstraint.indexA;
+      final int indexB = velocityConstraint.indexB;
 
-      final double mA = vc.invMassA;
-      final double mB = vc.invMassB;
-      final double iA = vc.invIA;
-      final double iB = vc.invIB;
-      final Vector2 localCenterA = pc.localCenterA;
-      final Vector2 localCenterB = pc.localCenterB;
+      final double mA = velocityConstraint.invMassA;
+      final double mB = velocityConstraint.invMassB;
+      final double iA = velocityConstraint.invIA;
+      final double iB = velocityConstraint.invIB;
+      final Vector2 localCenterA = positionConstraint.localCenterA;
+      final Vector2 localCenterB = positionConstraint.localCenterB;
 
       final Vector2 cA = _positions[indexA].c;
       final double aA = _positions[indexA].a;
@@ -219,13 +193,13 @@ class ContactSolver {
 
       worldManifold.initialize(manifold, xfA, radiusA, xfB, radiusB);
 
-      final Vector2 vcNormal = vc.normal;
+      final Vector2 vcNormal = velocityConstraint.normal;
       vcNormal.x = worldManifold.normal.x;
       vcNormal.y = worldManifold.normal.y;
 
-      final int pointCount = vc.pointCount;
+      final int pointCount = velocityConstraint.pointCount;
       for (int j = 0; j < pointCount; ++j) {
-        final VelocityConstraintPoint vcp = vc.points[j];
+        final VelocityConstraintPoint vcp = velocityConstraint.points[j];
         final Vector2 wmPj = worldManifold.points[j];
         final Vector2 vcprA = vcp.rA;
         final Vector2 vcprB = vcp.rB;
@@ -257,14 +231,14 @@ class ContactSolver {
         final double tempY = vB.y + wB * vcprB.x - vA.y - (wA * vcprA.x);
         final double vRel = vcNormal.x * tempX + vcNormal.y * tempY;
         if (vRel < -settings.velocityThreshold) {
-          vcp.velocityBias = -vc.restitution * vRel;
+          vcp.velocityBias = -velocityConstraint.restitution * vRel;
         }
       }
 
       // If we have two points, then prepare the block solver.
-      if (vc.pointCount == 2) {
-        final VelocityConstraintPoint vcp1 = vc.points[0];
-        final VelocityConstraintPoint vcp2 = vc.points[1];
+      if (velocityConstraint.pointCount == 2) {
+        final VelocityConstraintPoint vcp1 = velocityConstraint.points[0];
+        final VelocityConstraintPoint vcp2 = velocityConstraint.points[1];
         final double rn1A = vcp1.rA.x * vcNormal.y - vcp1.rA.y * vcNormal.x;
         final double rn1B = vcp1.rB.x * vcNormal.y - vcp1.rB.y * vcNormal.x;
         final double rn2A = vcp2.rA.x * vcNormal.y - vcp2.rA.y * vcNormal.x;
@@ -275,21 +249,21 @@ class ContactSolver {
         final double k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
         if (k11 * k11 < kMaxConditionNumber * (k11 * k22 - k12 * k12)) {
           // K is safe to invert.
-          vc.K.setValues(k11, k12, k12, k22);
-          vc.normalMass.setFrom(vc.K);
-          vc.normalMass.invert();
+          velocityConstraint.K.setValues(k11, k12, k12, k22);
+          velocityConstraint.normalMass.setFrom(velocityConstraint.K);
+          velocityConstraint.normalMass.invert();
         } else {
           // The constraints are redundant, just use one.
           // TODO_ERIN use deepest?
-          vc.pointCount = 1;
+          velocityConstraint.pointCount = 1;
         }
       }
     }
   }
 
   void solveVelocityConstraints() {
-    for (int i = 0; i < _count; ++i) {
-      final ContactVelocityConstraint vc = _velocityConstraints[i];
+    for (Contact contact in _contacts) {
+      final ContactVelocityConstraint vc = contact.velocityConstraint;
 
       final int indexA = vc.indexA;
       final int indexB = vc.indexB;
@@ -730,8 +704,8 @@ class ContactSolver {
   }
 
   void storeImpulses() {
-    for (int i = 0; i < _count; i++) {
-      final ContactVelocityConstraint vc = _velocityConstraints[i];
+    for (Contact contact in _contacts) {
+      final ContactVelocityConstraint vc = contact.velocityConstraint;
       final Manifold manifold = _contacts[vc.contactIndex]._manifold;
 
       for (int j = 0; j < vc.pointCount; j++) {
@@ -747,8 +721,8 @@ class ContactSolver {
   bool solvePositionConstraints() {
     double minSeparation = 0.0;
 
-    for (int i = 0; i < _count; ++i) {
-      final ContactPositionConstraint pc = _positionConstraints[i];
+    for (Contact contact in _contacts) {
+      final ContactPositionConstraint pc = contact.positionConstraint;
 
       final int indexA = pc.indexA;
       final int indexB = pc.indexB;
@@ -832,8 +806,8 @@ class ContactSolver {
   bool solveTOIPositionConstraints(int toiIndexA, int toiIndexB) {
     double minSeparation = 0.0;
 
-    for (int i = 0; i < _count; ++i) {
-      final ContactPositionConstraint pc = _positionConstraints[i];
+    for (Contact contact in _contacts) {
+      final ContactPositionConstraint pc = contact.positionConstraint;
 
       final int indexA = pc.indexA;
       final int indexB = pc.indexB;

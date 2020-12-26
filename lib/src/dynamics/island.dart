@@ -217,7 +217,6 @@ class Island {
     // Initialize velocity constraints.
     _solverDef.step = step;
     _solverDef.contacts = _contacts;
-    _solverDef.count = _contacts.length;
     _solverDef.positions = _positions;
     _solverDef.velocities = _velocities;
 
@@ -308,7 +307,7 @@ class Island {
       body.synchronizeTransform();
     }
 
-    report(_contactSolver._velocityConstraints);
+    reportVelocityConstraints();
 
     if (allowSleep) {
       double minSleepTime = double.maxFinite;
@@ -361,7 +360,6 @@ class Island {
 
     // TODO: Is this correct, since it is no longer a fixed list?
     _toiSolverDef.contacts = _contacts;
-    _toiSolverDef.count = _contacts.length;
     _toiSolverDef.step = subStep;
     _toiSolverDef.positions = _positions;
     _toiSolverDef.velocities = _velocities;
@@ -446,7 +444,7 @@ class Island {
       body.synchronizeTransform();
     }
 
-    report(_toiContactSolver._velocityConstraints);
+    reportVelocityConstraints();
   }
 
   void addBody(Body body) {
@@ -464,15 +462,13 @@ class Island {
 
   final ContactImpulse _impulse = ContactImpulse();
 
-  void report(List<ContactVelocityConstraint> constraints) {
+  void reportVelocityConstraints() {
     if (_listener == null) {
       return;
     }
 
-    for (int i = 0; i < _contacts.length; ++i) {
-      final Contact contact = _contacts[i];
-
-      final ContactVelocityConstraint vc = constraints[i];
+    for (Contact contact in _contacts) {
+      final ContactVelocityConstraint vc = contact.velocityConstraint;
       _impulse.count = vc.pointCount;
       for (int j = 0; j < vc.pointCount; ++j) {
         _impulse.normalImpulses[j] = vc.points[j].normalImpulse;
