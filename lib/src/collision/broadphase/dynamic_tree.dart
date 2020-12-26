@@ -9,14 +9,23 @@ class DynamicTree implements BroadPhaseStrategy {
   static const int NULL_NODE = -1;
 
   DynamicTreeNode _root;
-  List<DynamicTreeNode> _nodes = List<DynamicTreeNode>(16);
+  List<DynamicTreeNode> _nodes = List<DynamicTreeNode>.generate(
+    16,
+    (i) => DynamicTreeNode(i),
+  );
   int _nodeCount = 0;
   int _nodeCapacity = 16;
 
   int _freeList = 0;
 
-  final List<Vector2> drawVecs = List<Vector2>(4);
-  List<DynamicTreeNode> nodeStack = List<DynamicTreeNode>(20);
+  final List<Vector2> drawVecs = List<Vector2>.generate(
+    4,
+    (_) => Vector2.zero(),
+  );
+  List<DynamicTreeNode> nodeStack = List<DynamicTreeNode>.generate(
+    20,
+    (i) => DynamicTreeNode(i),
+  );
   int nodeStackIndex = 0;
 
   DynamicTree() {
@@ -137,11 +146,12 @@ class DynamicTree implements BroadPhaseStrategy {
           }
         } else {
           if (nodeStack.length - nodeStackIndex - 2 <= 0) {
-            final List<DynamicTreeNode> newBuffer =
-                List<DynamicTreeNode>(nodeStack.length * 2);
-            buffer_utils.arrayCopy(
-                nodeStack, 0, newBuffer, 0, nodeStack.length);
-            nodeStack = newBuffer;
+            final previousSize = nodeStack.length;
+            nodeStack = nodeStack +
+                List.generate(
+                  previousSize,
+                  (i) => DynamicTreeNode(previousSize + i),
+                );
           }
           nodeStack[nodeStackIndex++] = node.child1;
           nodeStack[nodeStackIndex++] = node.child2;
@@ -245,10 +255,12 @@ class DynamicTree implements BroadPhaseStrategy {
         }
       } else {
         if (nodeStack.length - nodeStackIndex - 2 <= 0) {
-          final List<DynamicTreeNode> newBuffer =
-              List<DynamicTreeNode>(nodeStack.length * 2);
-          buffer_utils.arrayCopy(nodeStack, 0, newBuffer, 0, nodeStack.length);
-          nodeStack = newBuffer;
+          final previousSize = nodeStack.length;
+          nodeStack = nodeStack +
+              List.generate(
+                previousSize,
+                (i) => DynamicTreeNode(previousSize + i),
+              );
         }
         nodeStack[nodeStackIndex++] = node.child1;
         nodeStack[nodeStackIndex++] = node.child2;
@@ -413,14 +425,13 @@ class DynamicTree implements BroadPhaseStrategy {
     if (_freeList == NULL_NODE) {
       assert(_nodeCount == _nodeCapacity);
 
-      final List<DynamicTreeNode> old = _nodes;
-      _nodeCapacity *= 2;
-      _nodes = List<DynamicTreeNode>(_nodeCapacity);
-      buffer_utils.arrayCopy(old, 0, _nodes, 0, old.length);
+      _nodes = _nodes +
+          List<DynamicTreeNode>.generate(
+              _nodeCapacity, (i) => DynamicTreeNode(_nodeCapacity + i));
+      _nodeCapacity = _nodes.length;
 
       // Build a linked list for the free list.
       for (int i = _nodeCapacity - 1; i >= _nodeCount; i--) {
-        _nodes[i] = DynamicTreeNode(i);
         _nodes[i].parent = (i == _nodeCapacity - 1) ? null : _nodes[i + 1];
         _nodes[i].height = -1;
       }

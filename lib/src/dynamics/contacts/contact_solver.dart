@@ -22,44 +22,37 @@ class ContactSolver {
   TimeStep _step;
   List<Position> _positions;
   List<Velocity> _velocities;
-  List<ContactPositionConstraint> _positionConstraints;
-  List<ContactVelocityConstraint> _velocityConstraints;
+  List<ContactPositionConstraint> _positionConstraints =
+      List<ContactPositionConstraint>.generate(
+    INITIAL_NUM_CONSTRAINTS,
+    (_) => ContactPositionConstraint(),
+  );
+  List<ContactVelocityConstraint> _velocityConstraints =
+      List<ContactVelocityConstraint>.generate(
+    INITIAL_NUM_CONSTRAINTS,
+    (_) => ContactVelocityConstraint(),
+  );
   List<Contact> _contacts;
   int _count = 0;
-
-  ContactSolver() {
-    _positionConstraints =
-        List<ContactPositionConstraint>(INITIAL_NUM_CONSTRAINTS);
-    _velocityConstraints =
-        List<ContactVelocityConstraint>(INITIAL_NUM_CONSTRAINTS);
-    for (int i = 0; i < INITIAL_NUM_CONSTRAINTS; i++) {
-      _positionConstraints[i] = ContactPositionConstraint();
-      _velocityConstraints[i] = ContactVelocityConstraint();
-    }
-  }
 
   void init(ContactSolverDef def) {
     _step = def.step;
     _count = def.count;
 
     if (_positionConstraints.length < _count) {
-      final List<ContactPositionConstraint> old = _positionConstraints;
-      _positionConstraints =
-          List<ContactPositionConstraint>(math.max(old.length * 2, _count));
-      buffer_utils.arrayCopy(old, 0, _positionConstraints, 0, old.length);
-      for (int i = old.length; i < _positionConstraints.length; i++) {
-        _positionConstraints[i] = ContactPositionConstraint();
-      }
+      _positionConstraints = _positionConstraints +
+          List<ContactPositionConstraint>.generate(
+            _positionConstraints.length,
+            (_) => ContactPositionConstraint(),
+          );
     }
 
     if (_velocityConstraints.length < _count) {
-      final List<ContactVelocityConstraint> old = _velocityConstraints;
-      _velocityConstraints =
-          List<ContactVelocityConstraint>(math.max(old.length * 2, _count));
-      buffer_utils.arrayCopy(old, 0, _velocityConstraints, 0, old.length);
-      for (int i = old.length; i < _velocityConstraints.length; i++) {
-        _velocityConstraints[i] = ContactVelocityConstraint();
-      }
+      _velocityConstraints = _velocityConstraints +
+          List<ContactVelocityConstraint>.generate(
+            _velocityConstraints.length,
+            (_) => ContactVelocityConstraint(),
+          );
     }
 
     _positions = def.positions;

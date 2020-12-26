@@ -43,7 +43,6 @@ part 'src/collision/broadphase/broadphase.dart';
 part 'src/collision/broadphase/broadphase_strategy.dart';
 part 'src/collision/broadphase/default_broadphase_buffer.dart';
 part 'src/collision/broadphase/dynamic_tree.dart';
-part 'src/collision/broadphase/dynamic_tree_flatnodes.dart';
 part 'src/collision/broadphase/dynamic_tree_node.dart';
 part 'src/collision/broadphase/pair.dart';
 

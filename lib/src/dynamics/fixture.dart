@@ -15,7 +15,7 @@ class Fixture {
   double _friction = 0.0;
   double _restitution = 0.0;
 
-  List<FixtureProxy> _proxies;
+  List<FixtureProxy> _proxies = List.empty();
   int _proxyCount = 0;
 
   final Filter _filter = Filter();
@@ -193,30 +193,15 @@ class Fixture {
 
     // Reserve proxy space
     final int childCount = shape.getChildCount();
-    if (_proxies == null) {
-      _proxies = List<FixtureProxy>(childCount);
-      for (int i = 0; i < childCount; i++) {
-        _proxies[i] = FixtureProxy();
-        _proxies[i].fixture = null;
-        _proxies[i].proxyId = BroadPhase.NULL_PROXY;
-      }
-    }
-
     if (_proxies.length < childCount) {
       final List<FixtureProxy> old = _proxies;
-      final int newLen = math.max(old.length * 2, childCount);
-      _proxies = List<FixtureProxy>(newLen);
-      buffer_utils.arrayCopy(old, 0, _proxies, 0, old.length);
-      for (int i = 0; i < newLen; i++) {
-        if (i >= old.length) {
-          _proxies[i] = FixtureProxy();
-        }
-        _proxies[i].fixture = null;
-        _proxies[i].proxyId = BroadPhase.NULL_PROXY;
-      }
+      final int newLength = math.max(old.length * 2, childCount);
+      _proxies = List<FixtureProxy>.generate(
+        newLength,
+        (_) => FixtureProxy()..proxyId = BroadPhase.NULL_PROXY,
+      );
     }
     _proxyCount = 0;
-
     _density = def.density;
   }
 

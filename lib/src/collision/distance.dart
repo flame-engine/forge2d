@@ -40,8 +40,8 @@ class SimplexCache {
   }
 
   void set(SimplexCache sc) {
-    buffer_utils.arrayCopy(sc.indexA, 0, indexA, 0, indexA.length);
-    buffer_utils.arrayCopy(sc.indexB, 0, indexB, 0, indexB.length);
+    indexA.setRange(0, sc.indexA.length, sc.indexA);
+    indexA.setRange(0, sc.indexB.length, sc.indexB);
     metric = sc.metric;
     count = sc.count;
   }

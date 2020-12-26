@@ -19,10 +19,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   int _queryProxyId = BroadPhase.NULL_PROXY;
 
   DefaultBroadPhaseBuffer(BroadPhaseStrategy strategy) : _tree = strategy {
-    _pairBuffer = List<Pair>(_pairCapacity);
-    for (int i = 0; i < _pairCapacity; i++) {
-      _pairBuffer[i] = Pair();
-    }
+    _pairBuffer = List<Pair>.generate(_pairCapacity, (_) => Pair());
     _moveBuffer = List<int>.filled(_moveCapacity, 0);
   }
 
@@ -166,10 +163,8 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
   void bufferMove(int proxyId) {
     if (_moveCount == _moveCapacity) {
-      final List<int> old = _moveBuffer;
-      _moveCapacity *= 2;
-      _moveBuffer = List<int>(_moveCapacity);
-      buffer_utils.arrayCopy(old, 0, _moveBuffer, 0, old.length);
+      _moveBuffer = _moveBuffer + List.filled(_moveCapacity ~/ 2, 0);
+      _moveCapacity = _moveBuffer.length;
     }
 
     _moveBuffer[_moveCount] = proxyId;
@@ -194,13 +189,9 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
     // Grow the pair buffer as needed.
     if (_pairCount == _pairCapacity) {
-      final List<Pair> oldBuffer = _pairBuffer;
-      _pairCapacity *= 2;
-      _pairBuffer = List<Pair>(_pairCapacity);
-      buffer_utils.arrayCopy(oldBuffer, 0, _pairBuffer, 0, oldBuffer.length);
-      for (int i = oldBuffer.length; i < _pairCapacity; i++) {
-        _pairBuffer[i] = Pair();
-      }
+      _pairBuffer =
+          _pairBuffer + List<Pair>.generate(_pairCapacity, (_) => Pair());
+      _pairCapacity = _pairBuffer.length;
     }
 
     if (proxyId < _queryProxyId) {

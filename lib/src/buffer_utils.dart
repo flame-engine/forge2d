@@ -4,56 +4,45 @@ import 'dart:typed_data';
 
 /// Reallocate a buffer.
 List<T> reallocateBufferWithAlloc<T>(
-    List oldBuffer, int oldCapacity, int newCapacity, T alloc()) {
+  List<T> oldBuffer,
+  int oldCapacity,
+  int newCapacity,
+  T alloc(),
+) {
   assert(newCapacity > oldCapacity);
-  final List<T> newBuffer = List<T>(newCapacity);
-  if (oldBuffer != null) {
-    arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
-  }
-  for (int i = oldCapacity; i < newCapacity; i++) {
-    try {
-      newBuffer[i] = alloc();
-    } catch (e) {
-      throw "ReallocateBuffer Exception: $e";
-    }
-  }
-  return newBuffer;
+  return oldBuffer + List.generate(newCapacity - oldCapacity, (_) => alloc());
 }
 
 /// Reallocate a buffer.
 List<int> reallocateBufferInt(
-    List<int> oldBuffer, int oldCapacity, int newCapacity) {
+  List<int> oldBuffer,
+  int oldCapacity,
+  int newCapacity,
+) {
   assert(newCapacity > oldCapacity);
-  final List<int> newBuffer = List<int>(newCapacity);
-  if (oldBuffer != null) {
-    arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
-  }
-  for (int i = oldCapacity; i < newCapacity; i++) {
-    newBuffer[i] = 0;
-  }
-  return newBuffer;
+  return oldBuffer + List.filled(newCapacity - oldCapacity, 0);
 }
 
 /// Reallocate a buffer.
 Float64List reallocateBuffer(
-    Float64List oldBuffer, int oldCapacity, int newCapacity) {
+  Float64List oldBuffer,
+  int oldCapacity,
+  int newCapacity,
+) {
   assert(newCapacity > oldCapacity);
-  final Float64List newBuffer = Float64List(newCapacity);
-  if (oldBuffer != null) {
-    arrayCopy(oldBuffer, 0, newBuffer, 0, oldCapacity);
-  }
-  return newBuffer;
+  return Float64List(newCapacity)..setRange(0, oldCapacity, oldBuffer);
 }
 
 /// Reallocate a buffer. A 'deferred' buffer is reallocated only if it is not NULL.
 /// If 'userSuppliedCapacity' is not zero, buffer is user supplied and must be kept.
 List<T> reallocateBufferWithAllocDeferred<T>(
-    List<T> buffer,
-    int userSuppliedCapacity,
-    int oldCapacity,
-    int newCapacity,
-    bool deferred,
-    T alloc()) {
+  List<T> buffer,
+  int userSuppliedCapacity,
+  int oldCapacity,
+  int newCapacity,
+  bool deferred,
+  T alloc(),
+) {
   assert(newCapacity > oldCapacity);
   assert(userSuppliedCapacity == 0 || newCapacity <= userSuppliedCapacity);
   if ((!deferred || buffer != null) && userSuppliedCapacity == 0) {
@@ -64,8 +53,13 @@ List<T> reallocateBufferWithAllocDeferred<T>(
 
 /// Reallocate an int buffer. A 'deferred' buffer is reallocated only if it is not NULL.
 /// If 'userSuppliedCapacity' is not zero, buffer is user supplied and must be kept.
-List<int> reallocateBufferIntDeferred(List<int> buffer,
-    int userSuppliedCapacity, int oldCapacity, int newCapacity, bool deferred) {
+List<int> reallocateBufferIntDeferred(
+  List<int> buffer,
+  int userSuppliedCapacity,
+  int oldCapacity,
+  int newCapacity,
+  bool deferred,
+) {
   assert(newCapacity > oldCapacity);
   assert(userSuppliedCapacity == 0 || newCapacity <= userSuppliedCapacity);
   if ((!deferred || buffer != null) && userSuppliedCapacity == 0) {
@@ -76,8 +70,13 @@ List<int> reallocateBufferIntDeferred(List<int> buffer,
 
 /// Reallocate a float buffer. A 'deferred' buffer is reallocated only if it is not NULL.
 /// If 'userSuppliedCapacity' is not zero, buffer is user supplied and must be kept.
-Float64List reallocateBufferFloat64Deferred(Float64List buffer,
-    int userSuppliedCapacity, int oldCapacity, int newCapacity, bool deferred) {
+Float64List reallocateBufferFloat64Deferred(
+  Float64List buffer,
+  int userSuppliedCapacity,
+  int oldCapacity,
+  int newCapacity,
+  bool deferred,
+) {
   assert(newCapacity > oldCapacity);
   assert(userSuppliedCapacity == 0 || newCapacity <= userSuppliedCapacity);
   if ((!deferred || buffer != null) && userSuppliedCapacity == 0) {
@@ -101,11 +100,6 @@ void rotate<T>(List<T> ray, int first, int newFirst, int last) {
       newFirst = next;
     }
   }
-}
-
-/// Helper function for ease of porting Java to Dart.
-void arrayCopy(List src, int srcPos, List dest, int destPos, int length) {
-  dest.setRange(destPos, length + destPos, src, srcPos);
 }
 
 // Replace Java's Arrays::sort.
