@@ -1,7 +1,17 @@
-<img alt="Forge2D" src="https://raw.githubusercontent.com/flame-engine/forge2d/master/design/with-text.png" width="300" />
 
-# Forge2D - A Dart port of the Box2D physics engine
-[![Pub](https://img.shields.io/pub/v/forge2d.svg?style=popout)](https://pub.dartlang.org/packages/forge2d) ![Test](https://github.com/flame-engine/forge2d/workflows/Test/badge.svg?branch=master&event=push) [![Discord](https://img.shields.io/discord/509714518008528896.svg)](https://discord.gg/pxrBmy4)
+<p align="center">
+  <a href="https://flame-engine.org">
+    <img alt="flame" width="200px" src="https://raw.githubusercontent.com/flame-engine/forge2d/master/design/with-text.png">
+  </a>
+</p>
+
+<p align="center">
+  Forge2D - A Dart port of the Box2D physics engine
+</p>
+
+<p align="center">
+  <a title="Pub" href="https://pub.dartlang.org/packages/forge2d" ><img src="https://img.shields.io/pub/v/forge2d.svg?style=popout" /></a> <img src="https://github.com/flame-engine/forge2d/workflows/Test/badge.svg?branch=master&event=push" alt="Test" /> <a title="Discord" href="https://discord.gg/pxrBmy4" ><img src="https://img.shields.io/discord/509714518008528896.svg" /></a>
+</p>
 
 The Box2D physics engine is a fairly famous open source physics engine and this is our dart port of it.
 
