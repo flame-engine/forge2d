@@ -1,10 +1,12 @@
 # CHANGELOG
 
 ## [next]
+ - Refactor joints, fixtures and contacts not to be linked lists
+ - Make force/impulses default to the center of a body
 
 ## 0.5.0
-* Rebranding to forge2d
-* Make code more like the dart standard and less C++
+ - Rebranding to forge2d
+ - Make code more like the dart standard and less C++
 
 ## Old box2d.dart
 

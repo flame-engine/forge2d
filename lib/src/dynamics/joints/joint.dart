@@ -40,10 +40,8 @@ abstract class Joint {
   }
 
   final JointType _type;
-  JointEdge _edgeA;
-  JointEdge _edgeB;
-  Body _bodyA;
-  Body _bodyB;
+  Body bodyA;
+  Body bodyB;
 
   bool _islandFlag = false;
   bool _collideConnected = false;
@@ -56,22 +54,10 @@ abstract class Joint {
         localAnchorA = def.localAnchorA,
         localAnchorB = def.localAnchorB,
         _type = def.type {
-    _bodyA = def.bodyA;
-    _bodyB = def.bodyB;
+    bodyA = def.bodyA;
+    bodyB = def.bodyB;
     _collideConnected = def.collideConnected;
     _islandFlag = false;
-
-    _edgeA = JointEdge();
-    _edgeA.joint = null;
-    _edgeA.other = null;
-    _edgeA.prev = null;
-    _edgeA.next = null;
-
-    _edgeB = JointEdge();
-    _edgeB.joint = null;
-    _edgeB.other = null;
-    _edgeB.prev = null;
-    _edgeB.next = null;
   }
 
   /// get the type of the concrete joint.
@@ -81,27 +67,24 @@ abstract class Joint {
     return _type;
   }
 
-  /// get the first body attached to this joint.
-  Body getBodyA() {
-    return _bodyA;
-  }
+  /// Whether the body is connected to the joint
+  bool containsBody(Body body) => body == bodyA || body == bodyB;
 
-  /// Get the second body attached to this joint.
-  ///
-  /// @return
-  Body getBodyB() {
-    return _bodyB;
+  /// Get the other body than the argument in the joint
+  Body getOtherBody(Body body) {
+    assert(containsBody(body), "Body is not in the joint");
+    return body == bodyA ? bodyB : bodyB;
   }
 
   /// Get the anchor point on bodyA in world coordinates.
   ///
   /// @return
-  Vector2 getAnchorA() => _bodyA.getWorldPoint(localAnchorA);
+  Vector2 getAnchorA() => bodyA.getWorldPoint(localAnchorA);
 
   /// Get the anchor point on bodyB in world coordinates.
   ///
   /// @return
-  Vector2 getAnchorB() => _bodyB.getWorldPoint(localAnchorB);
+  Vector2 getAnchorB() => bodyB.getWorldPoint(localAnchorB);
 
   /// Get the reaction force on body2 at the joint anchor in Newtons.
   ///
@@ -125,7 +108,7 @@ abstract class Joint {
   ///
   /// @return
   bool isActive() {
-    return _bodyA.isActive() && _bodyB.isActive();
+    return bodyA.isActive() && bodyB.isActive();
   }
 
   /// Internal

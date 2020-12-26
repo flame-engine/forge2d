@@ -69,14 +69,14 @@ class ContactSolver {
     for (int i = 0; i < _count; ++i) {
       final Contact contact = _contacts[i];
 
-      final Fixture fixtureA = contact._fixtureA;
-      final Fixture fixtureB = contact._fixtureB;
-      final Shape shapeA = fixtureA.getShape();
-      final Shape shapeB = fixtureB.getShape();
+      final Fixture fixtureA = contact.fixtureA;
+      final Fixture fixtureB = contact.fixtureB;
+      final Shape shapeA = fixtureA.shape;
+      final Shape shapeB = fixtureB.shape;
       final double radiusA = shapeA.radius;
       final double radiusB = shapeB.radius;
-      final Body bodyA = fixtureA.getBody();
-      final Body bodyB = fixtureB.getBody();
+      final Body bodyA = fixtureA.body;
+      final Body bodyB = fixtureB.body;
       final Manifold manifold = contact._manifold;
 
       final int pointCount = manifold.pointCount;

@@ -3,9 +3,6 @@ part of forge2d;
 /// The world class manages all physics entities, dynamic simulation, and asynchronous queries. The
 /// world also contains efficient memory management facilities.
 class World {
-  static const int WORLD_POOL_SIZE = 100;
-  static const int WORLD_POOL_CONTAINER_SIZE = 10;
-
   static const int NEW_FIXTURE = 0x0001;
   static const int LOCKED = 0x0002;
   static const int CLEAR_FORCES = 0x0004;
@@ -156,27 +153,16 @@ class World {
     assert(isLocked() == false);
 
     // Delete the attached joints.
-    JointEdge je = body._jointList;
-    while (je != null) {
-      final JointEdge je0 = je;
-      je = je.next;
+    for (Joint joint in body.joints) {
       if (_destructionListener != null) {
-        _destructionListener.sayGoodbyeJoint(je0.joint);
+        _destructionListener.sayGoodbyeJoint(joint);
       }
-
-      destroyJoint(je0.joint);
-      body._jointList = je;
+      destroyJoint(joint);
     }
-    body._jointList = null;
 
     // Delete the attached contacts.
-    ContactEdge ce = body._contactList;
-    while (ce != null) {
-      final ContactEdge ce0 = ce;
-      ce = ce.next;
-      _contactManager.destroy(ce0.contact);
-    }
-    body._contactList = null;
+    body.contacts.forEach(_contactManager.destroy);
+    body.contacts.clear();
 
     for (Fixture f in body.fixtures) {
       if (_destructionListener != null) {
@@ -197,39 +183,20 @@ class World {
     final Joint joint = Joint.create(this, def);
     joints.add(joint);
 
-    // Connect to the bodies' doubly linked lists.
-    joint._edgeA.joint = joint;
-    joint._edgeA.other = joint.getBodyB();
-    joint._edgeA.prev = null;
-    joint._edgeA.next = joint.getBodyA()._jointList;
-    if (joint.getBodyA()._jointList != null) {
-      joint.getBodyA()._jointList.prev = joint._edgeA;
-    }
-    joint.getBodyA()._jointList = joint._edgeA;
-
-    joint._edgeB.joint = joint;
-    joint._edgeB.other = joint.getBodyA();
-    joint._edgeB.prev = null;
-    joint._edgeB.next = joint.getBodyB()._jointList;
-    if (joint.getBodyB()._jointList != null) {
-      joint.getBodyB()._jointList.prev = joint._edgeB;
-    }
-    joint.getBodyB()._jointList = joint._edgeB;
+    joint.bodyA.joints.add(joint);
+    joint.bodyB.joints.add(joint);
 
     final Body bodyA = def.bodyA;
     final Body bodyB = def.bodyB;
 
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (def.collideConnected == false) {
-      ContactEdge edge = bodyB.getContactList();
-      while (edge != null) {
-        if (edge.other == bodyA) {
+      for (Contact contact in bodyB.contacts) {
+        if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
           // body is awake).
-          edge.contact.flagForFiltering();
+          contact.flagForFiltering();
         }
-
-        edge = edge.next;
       }
     }
 
@@ -242,67 +209,35 @@ class World {
   ///
   /// @warning This function is locked during callbacks.
   /// @param joint
-  void destroyJoint(Joint j) {
+  void destroyJoint(Joint joint) {
     assert(isLocked() == false);
 
-    final bool collideConnected = j.getCollideConnected();
-    joints.remove(j);
+    final bool collideConnected = joint.getCollideConnected();
+    joints.remove(joint);
 
     // Disconnect from island graph.
-    final Body bodyA = j.getBodyA();
-    final Body bodyB = j.getBodyB();
+    final Body bodyA = joint.bodyA;
+    final Body bodyB = joint.bodyB;
 
     // Wake up connected bodies.
     bodyA.setAwake(true);
     bodyB.setAwake(true);
 
-    // Remove from body 1.
-    if (j._edgeA.prev != null) {
-      j._edgeA.prev.next = j._edgeA.next;
-    }
+    bodyA.joints.remove(joint);
+    bodyB.joints.remove(joint);
 
-    if (j._edgeA.next != null) {
-      j._edgeA.next.prev = j._edgeA.prev;
-    }
-
-    if (j._edgeA == bodyA._jointList) {
-      bodyA._jointList = j._edgeA.next;
-    }
-
-    j._edgeA.prev = null;
-    j._edgeA.next = null;
-
-    // Remove from body 2
-    if (j._edgeB.prev != null) {
-      j._edgeB.prev.next = j._edgeB.next;
-    }
-
-    if (j._edgeB.next != null) {
-      j._edgeB.next.prev = j._edgeB.prev;
-    }
-
-    if (j._edgeB == bodyB._jointList) {
-      bodyB._jointList = j._edgeB.next;
-    }
-
-    j._edgeB.prev = null;
-    j._edgeB.next = null;
-
-    Joint.destroy(j);
+    Joint.destroy(joint);
 
     assert(joints.isNotEmpty);
 
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (collideConnected == false) {
-      ContactEdge edge = bodyB.getContactList();
-      while (edge != null) {
-        if (edge.other == bodyA) {
+      for (Contact contact in bodyB.contacts) {
+        if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
           // body is awake).
-          edge.contact.flagForFiltering();
+          contact.flagForFiltering();
         }
-
-        edge = edge.next;
       }
     }
   }
@@ -435,13 +370,11 @@ class World {
 
     if ((flags & DebugDraw.PAIR_BIT) != 0) {
       color.setFromRGBd(0.3, 0.9, 0.9);
-      for (Contact c = _contactManager.contactList;
-          c != null;
-          c = c.getNext()) {
+      for (Contact c in _contactManager.contacts) {
         final Fixture fixtureA = c.fixtureA;
         final Fixture fixtureB = c.fixtureB;
-        cA.setFrom(fixtureA.getAABB(c.getChildIndexA()).getCenter());
-        cB.setFrom(fixtureB.getAABB(c.getChildIndexB()).getCenter());
+        cA.setFrom(fixtureA.getAABB(c.indexA).getCenter());
+        cB.setFrom(fixtureB.getAABB(c.indexB).getCenter());
         debugDraw.drawSegment(cA, cB, color);
       }
     }
@@ -573,24 +506,9 @@ class World {
     _particleSystem.raycast(particleCallback, point1, point2);
   }
 
-  /// Get the world contact list. With the returned contact, use Contact.getNext to get the next
-  /// contact in the world list. A null contact indicates the end of the list.
-  ///
-  /// @return the head of the world contact list.
-  /// @warning contacts are created and destroyed in the middle of a time step. Use ContactListener
-  ///          to avoid missing contacts.
-  Contact getContactList() {
-    return _contactManager.contactList;
-  }
-
   /// Get the number of broad-phase proxies.
   int getProxyCount() {
     return _contactManager.broadPhase.getProxyCount();
-  }
-
-  /// Get the number of contacts (each may have 0 or more contact points).
-  int getContactCount() {
-    return _contactManager.contactCount;
   }
 
   /// Gets the height of the dynamic tree
@@ -659,7 +577,7 @@ class World {
     for (Body b in bodies) {
       b._flags &= ~Body.ISLAND_FLAG;
     }
-    for (Contact c = _contactManager.contactList; c != null; c = c._next) {
+    for (Contact c in _contactManager.contacts) {
       c.flags &= ~Contact.ISLAND_FLAG;
     }
     for (Joint j in joints) {
@@ -708,9 +626,7 @@ class World {
         }
 
         // Search all contacts connected to this body.
-        for (ContactEdge ce = b._contactList; ce != null; ce = ce.next) {
-          final Contact contact = ce.contact;
-
+        for (Contact contact in b.contacts) {
           // Has this contact already been added to an island?
           if ((contact.flags & Contact.ISLAND_FLAG) == Contact.ISLAND_FLAG) {
             continue;
@@ -722,8 +638,8 @@ class World {
           }
 
           // Skip sensors.
-          final bool sensorA = contact._fixtureA._isSensor;
-          final bool sensorB = contact._fixtureB._isSensor;
+          final bool sensorA = contact.fixtureA._isSensor;
+          final bool sensorB = contact.fixtureB._isSensor;
           if (sensorA || sensorB) {
             continue;
           }
@@ -731,7 +647,7 @@ class World {
           island.addContact(contact);
           contact.flags |= Contact.ISLAND_FLAG;
 
-          final Body other = ce.other;
+          final Body other = contact.getOtherBody(b);
 
           // Was the other body already added to this island?
           if ((other._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
@@ -744,20 +660,20 @@ class World {
         }
 
         // Search all joints connect to this body.
-        for (JointEdge je = b._jointList; je != null; je = je.next) {
-          if (je.joint._islandFlag == true) {
+        for (Joint joint in b.joints) {
+          if (joint._islandFlag == true) {
             continue;
           }
 
-          final Body other = je.other;
+          final Body other = joint.getOtherBody(b);
 
           // Don't simulate joints connected to inactive bodies.
           if (other.isActive() == false) {
             continue;
           }
 
-          island.addJoint(je.joint);
-          je.joint._islandFlag = true;
+          island.addJoint(joint);
+          joint._islandFlag = true;
 
           if ((other._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
             continue;
@@ -820,7 +736,7 @@ class World {
         b._sweep.alpha0 = 0.0;
       }
 
-      for (Contact c = _contactManager.contactList; c != null; c = c._next) {
+      for (Contact c in _contactManager.contacts) {
         // Invalidate TOI
         c.flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
         c.toiCount = 0;
@@ -834,7 +750,7 @@ class World {
       Contact minContact;
       double minAlpha = 1.0;
 
-      for (Contact c = _contactManager.contactList; c != null; c = c._next) {
+      for (Contact c in _contactManager.contacts) {
         // Is this contact disabled?
         if (c.isEnabled() == false) {
           continue;
@@ -858,8 +774,8 @@ class World {
             continue;
           }
 
-          final Body bA = fA.getBody();
-          final Body bB = fB.getBody();
+          final Body bA = fA.body;
+          final Body bB = fB.body;
 
           final BodyType typeA = bA._bodyType;
           final BodyType typeB = bB._bodyType;
@@ -895,13 +811,13 @@ class World {
 
           assert(alpha0 < 1.0);
 
-          final int indexA = c.getChildIndexA();
-          final int indexB = c.getChildIndexB();
+          final int indexA = c.indexA;
+          final int indexB = c.indexB;
 
           // Compute the time of impact in interval [0, minTOI]
           final TOIInput input = toiInput;
-          input.proxyA.set(fA.getShape(), indexA);
-          input.proxyB.set(fB.getShape(), indexB);
+          input.proxyA.set(fA.shape, indexA);
+          input.proxyB.set(fB.shape, indexB);
           input.sweepA.set(bA._sweep);
           input.sweepB.set(bB._sweep);
           input.tMax = 1.0;
@@ -936,8 +852,8 @@ class World {
       // Advance the bodies to the TOI.
       final Fixture fA = minContact.fixtureA;
       final Fixture fB = minContact.fixtureB;
-      final Body bA = fA.getBody();
-      final Body bB = fB.getBody();
+      final Body bA = fA.body;
+      final Body bB = fB.body;
 
       backup1.set(bA._sweep);
       backup2.set(bB._sweep);
@@ -980,16 +896,14 @@ class World {
       for (int i = 0; i < 2; ++i) {
         final Body body = tempBodies[i];
         if (body._bodyType == BodyType.DYNAMIC) {
-          for (ContactEdge ce = body._contactList; ce != null; ce = ce.next) {
-            final Contact contact = ce.contact;
-
+          for (Contact contact in body.contacts) {
             // Has this contact already been added to the island?
             if ((contact.flags & Contact.ISLAND_FLAG) != 0) {
               continue;
             }
 
             // Only add static, kinematic, or bullet bodies.
-            final Body other = ce.other;
+            final Body other = contact.getOtherBody(body);
             if (other._bodyType == BodyType.DYNAMIC &&
                 body.isBullet() == false &&
                 other.isBullet() == false) {
@@ -997,8 +911,8 @@ class World {
             }
 
             // Skip sensors.
-            final bool sensorA = contact._fixtureA._isSensor;
-            final bool sensorB = contact._fixtureB._isSensor;
+            final bool sensorA = contact.fixtureA._isSensor;
+            final bool sensorB = contact.fixtureB._isSensor;
             if (sensorA || sensorB) {
               continue;
             }
@@ -1067,8 +981,8 @@ class World {
         body.synchronizeFixtures();
 
         // Invalidate all contact TOIs on this displaced body.
-        for (ContactEdge ce = body._contactList; ce != null; ce = ce.next) {
-          ce.contact.flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
+        for (Contact contact in body.contacts) {
+          contact.flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
         }
       }
 
@@ -1084,8 +998,8 @@ class World {
   }
 
   void drawJoint(Joint joint) {
-    final Body bodyA = joint.getBodyA();
-    final Body bodyB = joint.getBodyB();
+    final Body bodyA = joint.bodyA;
+    final Body bodyB = joint.bodyB;
     final Transform xf1 = bodyA._transform;
     final Transform xf2 = bodyB._transform;
     final Vector2 x1 = xf1.p;
@@ -1145,16 +1059,16 @@ class World {
     switch (fixture.getType()) {
       case ShapeType.CIRCLE:
         {
-          final circle = fixture.getShape() as CircleShape;
+          final circle = fixture.shape as CircleShape;
 
           center.setFrom(Transform.mulVec2(xf, circle.position));
           final double radius = circle.radius;
           xf.q.getXAxis(axis);
 
           if (fixture.userData != null && fixture.userData == LIQUID_INT) {
-            final Body b = fixture.getBody();
-            liquidOffset.setFrom(b._linearVelocity);
-            final double linVelLength = b._linearVelocity.length;
+            final Body b = fixture.body;
+            liquidOffset.setFrom(b.linearVelocity);
+            final double linVelLength = b.linearVelocity.length;
             if (averageLinearVel == -1) {
               averageLinearVel = linVelLength;
             } else {
@@ -1177,7 +1091,7 @@ class World {
         break;
       case ShapeType.POLYGON:
         {
-          final poly = fixture.getShape() as PolygonShape;
+          final poly = fixture.shape as PolygonShape;
           final int vertexCount = poly.count;
           assert(vertexCount <= settings.maxPolygonVertices);
           final List<Vector2> vertices =
@@ -1195,7 +1109,7 @@ class World {
         break;
       case ShapeType.EDGE:
         {
-          final edge = fixture.getShape() as EdgeShape;
+          final edge = fixture.shape as EdgeShape;
           v1.setFrom(Transform.mulVec2(xf, edge.vertex1));
           v2.setFrom(Transform.mulVec2(xf, edge.vertex2));
           debugDraw.drawSegment(v1, v2, color);
@@ -1203,7 +1117,7 @@ class World {
         break;
       case ShapeType.CHAIN:
         {
-          final chain = fixture.getShape() as ChainShape;
+          final chain = fixture.shape as ChainShape;
           final int count = chain.vertexCount;
           final List<Vector2> vertices = chain._vertices;
 

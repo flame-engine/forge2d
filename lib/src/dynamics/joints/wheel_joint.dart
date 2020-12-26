@@ -100,8 +100,8 @@ class WheelJoint extends Joint {
   }
 
   double getJointTranslation() {
-    final Body b1 = _bodyA;
-    final Body b2 = _bodyB;
+    final Body b1 = bodyA;
+    final Body b2 = bodyB;
 
     final Vector2 p1 = Vector2.zero();
     final Vector2 p2 = Vector2.zero();
@@ -121,7 +121,7 @@ class WheelJoint extends Joint {
   }
 
   double getJointSpeed() {
-    return _bodyA._angularVelocity - _bodyB._angularVelocity;
+    return bodyA._angularVelocity - bodyB._angularVelocity;
   }
 
   bool isMotorEnabled() {
@@ -129,14 +129,14 @@ class WheelJoint extends Joint {
   }
 
   void enableMotor(bool flag) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _enableMotor = flag;
   }
 
   void setMotorSpeed(double speed) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
@@ -149,8 +149,8 @@ class WheelJoint extends Joint {
   }
 
   void setMaxMotorTorque(double torque) {
-    _bodyA.setAwake(true);
-    _bodyB.setAwake(true);
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
     _maxMotorTorque = torque;
   }
 
@@ -166,14 +166,14 @@ class WheelJoint extends Joint {
 
   @override
   void initVelocityConstraints(SolverData data) {
-    _indexA = _bodyA.islandIndex;
-    _indexB = _bodyB.islandIndex;
-    _localCenterA.setFrom(_bodyA._sweep.localCenter);
-    _localCenterB.setFrom(_bodyB._sweep.localCenter);
-    _invMassA = _bodyA._invMass;
-    _invMassB = _bodyB._invMass;
-    _invIA = _bodyA.inverseInertia;
-    _invIB = _bodyB.inverseInertia;
+    _indexA = bodyA.islandIndex;
+    _indexB = bodyB.islandIndex;
+    _localCenterA.setFrom(bodyA._sweep.localCenter);
+    _localCenterB.setFrom(bodyB._sweep.localCenter);
+    _invMassA = bodyA._invMass;
+    _invMassB = bodyB._invMass;
+    _invIA = bodyA.inverseInertia;
+    _invIB = bodyB.inverseInertia;
 
     final double mA = _invMassA, mB = _invMassB;
     final double iA = _invIA, iB = _invIB;

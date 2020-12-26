@@ -72,8 +72,8 @@ class GearJoint extends Joint {
         _joint2 = def.joint2,
         _typeA = def.joint1.getType(),
         _typeB = def.joint2.getType(),
-        _bodyC = def.joint1.getBodyA(),
-        _bodyD = def.joint2.getBodyA(),
+        _bodyC = def.joint1.bodyA,
+        _bodyD = def.joint2.bodyA,
         super(def) {
     assert(_typeA == JointType.REVOLUTE || _typeA == JointType.PRISMATIC);
     assert(_typeB == JointType.REVOLUTE || _typeB == JointType.PRISMATIC);
@@ -81,11 +81,11 @@ class GearJoint extends Joint {
     double coordinateA, coordinateB;
 
     // TODO_ERIN there might be some problem with the joint edges in Joint.
-    _bodyA = _joint1.getBodyB();
+    bodyA = _joint1.bodyB;
 
     // Get geometry of joint1
-    final Transform xfA = _bodyA._transform;
-    final double aA = _bodyA._sweep.a;
+    final Transform xfA = bodyA._transform;
+    final double aA = bodyA._sweep.a;
     final Transform xfC = _bodyC._transform;
     final double aC = _bodyC._sweep.a;
 
@@ -115,11 +115,11 @@ class GearJoint extends Joint {
       coordinateA = (pA..sub(pC)).dot(_localAxisC);
     }
 
-    _bodyB = _joint2.getBodyB();
+    bodyB = _joint2.bodyB;
 
     // Get geometry of joint2
-    final Transform xfB = _bodyB._transform;
-    final double aB = _bodyB._sweep.a;
+    final Transform xfB = bodyB._transform;
+    final double aB = bodyB._sweep.a;
     final Transform xfD = _bodyD._transform;
     final double aD = _bodyD._sweep.a;
 
@@ -175,20 +175,20 @@ class GearJoint extends Joint {
 
   @override
   void initVelocityConstraints(SolverData data) {
-    _indexA = _bodyA.islandIndex;
-    _indexB = _bodyB.islandIndex;
+    _indexA = bodyA.islandIndex;
+    _indexB = bodyB.islandIndex;
     _indexC = _bodyC.islandIndex;
     _indexD = _bodyD.islandIndex;
-    _lcA.setFrom(_bodyA._sweep.localCenter);
-    _lcB.setFrom(_bodyB._sweep.localCenter);
+    _lcA.setFrom(bodyA._sweep.localCenter);
+    _lcB.setFrom(bodyB._sweep.localCenter);
     _lcC.setFrom(_bodyC._sweep.localCenter);
     _lcD.setFrom(_bodyD._sweep.localCenter);
-    _mA = _bodyA._invMass;
-    _mB = _bodyB._invMass;
+    _mA = bodyA._invMass;
+    _mB = bodyB._invMass;
     _mC = _bodyC._invMass;
     _mD = _bodyD._invMass;
-    _iA = _bodyA.inverseInertia;
-    _iB = _bodyB.inverseInertia;
+    _iA = bodyA.inverseInertia;
+    _iB = bodyB.inverseInertia;
     _iC = _bodyC.inverseInertia;
     _iD = _bodyD.inverseInertia;
 

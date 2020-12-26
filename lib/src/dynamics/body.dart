@@ -25,9 +25,13 @@ class Body {
   /// The swept motion for CCD
   final Sweep _sweep = Sweep();
 
-  /// the linear velocity of the center of mass
-  final Vector2 _linearVelocity = Vector2.zero();
+  /// The linear velocity of the center of mass. Do not modify directly, instead
+  /// use applyLinearImpulse or applyForce.
+  final Vector2 linearVelocity = Vector2.zero();
+
+  /// The angular velocity in radians/second.
   double _angularVelocity = 0.0;
+  double get angularVelocity => _angularVelocity;
 
   final Vector2 _force = Vector2.zero();
   double _torque = 0.0;
@@ -35,16 +39,15 @@ class Body {
   final World world;
 
   final List<Fixture> fixtures = [];
-
-  JointEdge _jointList;
-  ContactEdge _contactList;
+  final List<Joint> joints = [];
+  final List<Contact> contacts = [];
 
   double _mass = 0.0, _invMass = 0.0;
 
   // Rotational inertia about the center of mass.
   double inertia = 0.0, inverseInertia = 0.0;
 
-  double _linearDamping = 0.0;
+  double linearDamping = 0.0;
   double angularDamping = 0.0;
   double _gravityScale = 0.0;
 
@@ -70,7 +73,7 @@ class Body {
     if (bd.allowSleep) {
       _flags |= AUTO_SLEEP_FLAG;
     }
-    if (bd.awake) {
+    if (bd.isAwake) {
       _flags |= AWAKE_FLAG;
     }
     if (bd.active) {
@@ -87,13 +90,10 @@ class Body {
     _sweep.a = bd.angle;
     _sweep.alpha0 = 0.0;
 
-    _jointList = null;
-    _contactList = null;
-
-    _linearVelocity.setFrom(bd.linearVelocity);
+    linearVelocity.setFrom(bd.linearVelocity);
     _angularVelocity = bd.angularVelocity;
 
-    _linearDamping = bd.linearDamping;
+    linearDamping = bd.linearDamping;
     angularDamping = bd.angularDamping;
     _gravityScale = bd.gravityScale;
 
@@ -135,7 +135,7 @@ class Body {
       fixture.createProxies(broadPhase, _transform);
     }
 
-    fixture._body = this;
+    fixture.body = this;
     fixtures.add(fixture);
 
     // Adjust mass properties if needed.
@@ -175,7 +175,7 @@ class Body {
   /// @warning This function is locked during callbacks.
   void destroyFixture(Fixture fixture) {
     assert(world.isLocked() == false);
-    assert(fixture._body == this);
+    assert(fixture.body == this);
 
     // Remove the fixture from this body's singly linked list.
     assert(fixtures.isNotEmpty);
@@ -188,18 +188,11 @@ class Body {
     );
 
     // Destroy any contacts associated with the fixture.
-    ContactEdge edge = _contactList;
-    while (edge != null) {
-      final Contact c = edge.contact;
-      edge = edge.next;
-
-      final Fixture fixtureA = c.fixtureA;
-      final Fixture fixtureB = c.fixtureB;
-
-      if (fixture == fixtureA || fixture == fixtureB) {
+    for (Contact contact in contacts) {
+      if (fixture == contact.fixtureA || fixture == contact.fixtureB) {
         // This destroys the contact and removes it from
         // this body's contact list.
-        world._contactManager.destroy(c);
+        world._contactManager.destroy(contact);
       }
     }
 
@@ -263,14 +256,8 @@ class Body {
       setAwake(true);
     }
 
-    _linearVelocity.setFrom(v);
+    linearVelocity.setFrom(v);
   }
-
-  /// Get the linear velocity of the center of mass. Do not modify, instead use
-  /// {@link #setLinearVelocity(Vec2)}.
-  ///
-  /// @return the linear velocity of the center of mass.
-  Vector2 get linearVelocity => _linearVelocity;
 
   /// Set the angular velocity.
   ///
@@ -287,18 +274,14 @@ class Body {
     _angularVelocity = w;
   }
 
-  /// Get the angular velocity.
-  ///
-  /// @return the angular velocity in radians/second.
-  double get angularVelocity => _angularVelocity;
-
   /// Apply a force at a world point. If the force is not applied at the center of mass, it will
   /// generate a torque and affect the angular velocity. This wakes up the body.
   ///
   /// @param force the world force vector, usually in Newtons (N).
-  /// @param point the world position of the point of application.
-  void applyForce(Vector2 force, Vector2 point) {
-    applyForceToCenter(force);
+  /// @param point the world position of the point of application (default: center of mass)
+  void applyForce(Vector2 force, {Vector2 point}) {
+    point ??= worldCenter;
+    _applyForceToCenter(force);
     _torque +=
         (point.x - _sweep.c.x) * force.y - (point.y - _sweep.c.y) * force.x;
   }
@@ -306,7 +289,7 @@ class Body {
   /// Apply a force to the center of mass. This wakes up the body.
   ///
   /// @param force the world force vector, usually in Newtons (N).
-  void applyForceToCenter(Vector2 force) {
+  void _applyForceToCenter(Vector2 force) {
     if (_bodyType != BodyType.DYNAMIC) {
       return;
     }
@@ -341,12 +324,13 @@ class Body {
   /// effect.
   ///
   /// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
-  /// @param point the world position of the point of application.
-  /// @param wake also wake up the body
-  void applyLinearImpulse(Vector2 impulse, Vector2 point, bool wake) {
+  /// @param point the world position of the point of application (default: center of mass)
+  /// @param wake also wake up the body (default: true)
+  void applyLinearImpulse(Vector2 impulse, {Vector2 point, bool wake = true}) {
     if (_bodyType != BodyType.DYNAMIC) {
       return;
     }
+    point ??= worldCenter;
 
     if (!isAwake()) {
       if (wake) {
@@ -356,9 +340,7 @@ class Body {
       }
     }
 
-    _linearVelocity.x += impulse.x * _invMass;
-    _linearVelocity.y += impulse.y * _invMass;
-
+    linearVelocity += impulse * _invMass;
     _angularVelocity += inverseInertia *
         ((point.x - _sweep.c.x) * impulse.y -
             (point.y - _sweep.c.y) * impulse.x);
@@ -442,7 +424,7 @@ class Body {
     // Update center of mass velocity.
     final Vector2 temp = Vector2.copy(_sweep.c)..sub(oldCenter);
     temp.scaleOrthogonalInto(_angularVelocity, temp);
-    _linearVelocity.add(temp);
+    linearVelocity.add(temp);
   }
 
   final MassData _pmd = MassData();
@@ -514,7 +496,7 @@ class Body {
 
     final Vector2 temp2 = oldCenter;
     temp.scaleOrthogonalInto(_angularVelocity, temp2);
-    _linearVelocity.add(temp2);
+    linearVelocity.add(temp2);
   }
 
   /// Get the world coordinates of a point given the local coordinates.
@@ -555,8 +537,8 @@ class Body {
   /// @return the world velocity of a point.
   Vector2 getLinearVelocityFromWorldPoint(Vector2 worldPoint) {
     return Vector2(
-      -_angularVelocity * (worldPoint.y - _sweep.c.y) + _linearVelocity.x,
-      _angularVelocity * (worldPoint.x - _sweep.c.x) + _linearVelocity.y,
+      -_angularVelocity * (worldPoint.y - _sweep.c.y) + linearVelocity.x,
+      _angularVelocity * (worldPoint.x - _sweep.c.x) + linearVelocity.y,
     );
   }
 
@@ -586,7 +568,7 @@ class Body {
     resetMassData();
 
     if (_bodyType == BodyType.STATIC) {
-      _linearVelocity.setZero();
+      linearVelocity.setZero();
       _angularVelocity = 0.0;
       _sweep.a0 = _sweep.a;
       _sweep.c0.setFrom(_sweep.c);
@@ -599,13 +581,8 @@ class Body {
     _torque = 0.0;
 
     // Delete the attached contacts.
-    ContactEdge ce = _contactList;
-    while (ce != null) {
-      final ContactEdge ce0 = ce;
-      ce = ce.next;
-      world._contactManager.destroy(ce0.contact);
-    }
-    _contactList = null;
+    contacts.forEach(world._contactManager.destroy);
+    contacts.clear();
 
     // Touch the proxies so that new contacts will be created (when appropriate)
     final BroadPhase broadPhase = world._contactManager.broadPhase;
@@ -652,10 +629,9 @@ class Body {
 
   /// Set the sleep state of the body. A sleeping body has very low CPU cost.
   ///
-  /// @param flag set to true to put body to sleep, false to wake it.
-  /// @param flag
-  void setAwake(bool flag) {
-    if (flag) {
+  /// @param awaken set to false to put body to sleep, true to wake it.
+  void setAwake(bool awaken) {
+    if (awaken) {
       if ((_flags & AWAKE_FLAG) == 0) {
         _flags |= AWAKE_FLAG;
         _sleepTime = 0.0;
@@ -663,7 +639,7 @@ class Body {
     } else {
       _flags &= ~AWAKE_FLAG;
       _sleepTime = 0.0;
-      _linearVelocity.setZero();
+      linearVelocity.setZero();
       _angularVelocity = 0.0;
       _force.setZero();
       _torque = 0.0;
@@ -712,13 +688,8 @@ class Body {
       }
 
       // Destroy the attached contacts.
-      ContactEdge ce = _contactList;
-      while (ce != null) {
-        final ContactEdge ce0 = ce;
-        ce = ce.next;
-        world._contactManager.destroy(ce0.contact);
-      }
-      _contactList = null;
+      contacts.forEach(world._contactManager.destroy);
+      contacts.clear();
     }
   }
 
@@ -747,19 +718,6 @@ class Body {
   /// @return
   bool isFixedRotation() {
     return (_flags & FIXED_ROTATION_FLAG) == FIXED_ROTATION_FLAG;
-  }
-
-  /// Get the list of all joints attached to this body.
-  JointEdge getJointList() {
-    return _jointList;
-  }
-
-  /// Get the list of all contacts attached to this body.
-  ///
-  /// @warning this list changes during the time step and you may miss some collisions if you don't
-  /// use ContactListener.
-  ContactEdge getContactList() {
-    return _contactList;
   }
 
   // djm pooling
@@ -802,11 +760,9 @@ class Body {
     }
 
     // Does a joint prevent collision?
-    for (JointEdge jn = _jointList; jn != null; jn = jn.next) {
-      if (jn.other == other) {
-        if (jn.joint.getCollideConnected() == false) {
-          return false;
-        }
+    for (Joint joint in joints) {
+      if (joint.containsBody(other) && !joint.getCollideConnected()) {
+        return false;
       }
     }
 
