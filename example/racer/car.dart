@@ -22,15 +22,16 @@ class Car {
     _body.userData = "Car";
     _body.angularDamping = 3.0;
 
-    final List<Vector2> vertices = List<Vector2>(8);
-    vertices[0] = Vector2(1.5, 0.0);
-    vertices[1] = Vector2(3.0, 2.5);
-    vertices[2] = Vector2(2.8, 5.5);
-    vertices[3] = Vector2(1.0, 10.0);
-    vertices[4] = Vector2(-1.0, 10.0);
-    vertices[5] = Vector2(-2.8, 5.5);
-    vertices[6] = Vector2(-3.0, 2.5);
-    vertices[7] = Vector2(-1.5, 0.0);
+    final List<Vector2> vertices = [
+      Vector2(1.5, 0.0),
+      Vector2(3.0, 2.5),
+      Vector2(2.8, 5.5),
+      Vector2(1.0, 10.0),
+      Vector2(-1.0, 10.0),
+      Vector2(-2.8, 5.5),
+      Vector2(-3.0, 2.5),
+      Vector2(-1.5, 0.0),
+    ];
 
     final PolygonShape shape = PolygonShape();
     shape.set(vertices, vertices.length);

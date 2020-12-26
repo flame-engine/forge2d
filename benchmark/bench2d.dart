@@ -75,15 +75,15 @@ class Bench2d {
   }
 
   List<double> bench() {
-    final List<double> times = List<double>(FRAMES);
     final Stopwatch stopwatch = Stopwatch()..start();
-    for (int i = 0; i < FRAMES; ++i) {
+    final List<double> times = List.generate(FRAMES, (_) {
       final int begin = stopwatch.elapsedMilliseconds;
       step();
       final int end = stopwatch.elapsedMilliseconds;
-      times[i] = (end - begin).toDouble();
-      log("${times[i]}");
-    }
+      final time = (end - begin).toDouble();
+      log("$time");
+      return time;
+    });
 
     times.sort();
     final double mean = meanF(times);
