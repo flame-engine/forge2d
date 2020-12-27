@@ -575,13 +575,11 @@ class ParticleSystem {
       depthBuffer[index] = 0.0;
     }
     if (colorBuffer.data != null || def.color != null) {
-      colorBuffer.data =
-          requestParticleBuffer(colorBuffer.data, colorBuffer.allocClosure);
+      colorBuffer.data ??= requestParticleBuffer(colorBuffer.allocClosure);
       colorBuffer.data[index].setParticleColor(def.color);
     }
     if (userDataBuffer.data != null || def.userData != null) {
-      userDataBuffer.data = requestParticleBuffer(
-          userDataBuffer.data, userDataBuffer.allocClosure);
+      userDataBuffer.data ??= requestParticleBuffer(userDataBuffer.allocClosure);
       userDataBuffer.data[index] = def.userData;
     }
     if (proxyCount >= proxyCapacity) {
@@ -616,18 +614,11 @@ class ParticleSystem {
         buffer.userSuppliedCapacity, oldCapacity, newCapacity, deferred);
   }
 
-  List<T> requestParticleBuffer<T>(List<T> buffer, T allocClosure()) {
-    if (buffer == null) {
-      buffer = List<T>(internalAllocatedCapacity);
-      for (int i = 0; i < internalAllocatedCapacity; i++) {
-        try {
-          buffer[i] = allocClosure();
-        } catch (e) {
-          throw "Exception $e";
-        }
-      }
-    }
-    return buffer;
+  List<T> requestParticleBuffer<T>(T allocClosure()) {
+    return List<T>.generate(
+        internalAllocatedCapacity,
+        (_) => allocClosure(),
+      );
   }
 
   Float64List requestParticleBufferFloat64(Float64List buffer) {
@@ -1418,7 +1409,7 @@ class ParticleSystem {
   }
 
   void solveTensile(final TimeStep step) {
-    accumulation2Buffer = requestParticleBuffer(accumulation2Buffer, allocVec2);
+    accumulation2Buffer ??= requestParticleBuffer(allocVec2);
     for (int i = 0; i < count; i++) {
       accumulationBuffer[i] = 0.0;
       accumulation2Buffer[i].setZero();
@@ -1593,8 +1584,7 @@ class ParticleSystem {
 
   void solveColorMixing(final TimeStep step) {
     // mixes color between contacting particles
-    colorBuffer.data =
-        requestParticleBuffer(colorBuffer.data, allocParticleColor);
+    colorBuffer.data ??= requestParticleBuffer(allocParticleColor);
     final int colorMixing256 = (256 * colorMixingStrength).toInt();
     for (int k = 0; k < contactCount; k++) {
       final ParticleContact contact = contactBuffer[k];
@@ -1955,24 +1945,13 @@ class ParticleSystem {
   }
 
   List<ParticleColor> getParticleColorBuffer() {
-    colorBuffer.data =
-        requestParticleBuffer(colorBuffer.data, colorBuffer.allocClosure);
+    colorBuffer.data ??= requestParticleBuffer(colorBuffer.allocClosure);
     return colorBuffer.data;
   }
 
   List<Object> getParticleUserDataBuffer() {
-    userDataBuffer.data =
-        requestParticleBuffer(userDataBuffer.data, userDataBuffer.allocClosure);
+    userDataBuffer.data ??= requestParticleBuffer(userDataBuffer.allocClosure);
     return userDataBuffer.data;
-  }
-
-  int getParticleMaxCount() {
-    return maxCount;
-  }
-
-  void setParticleMaxCount(int count) {
-    assert(count <= count);
-    maxCount = count;
   }
 
   void setParticleBufferInt(

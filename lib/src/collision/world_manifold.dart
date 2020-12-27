@@ -6,16 +6,15 @@ class WorldManifold {
   final Vector2 normal = Vector2.zero();
 
   /// World contact point (point of intersection)
-  final List<Vector2> points = List<Vector2>(settings.maxManifoldPoints);
+  final List<Vector2> points = List<Vector2>.generate(
+    settings.maxManifoldPoints,
+    (_) => Vector2.zero(),
+  );
 
   /// A negative value indicates overlap, in meters.
   final Float64List separations = Float64List(settings.maxManifoldPoints);
 
-  WorldManifold() {
-    for (int i = 0; i < settings.maxManifoldPoints; i++) {
-      points[i] = Vector2.zero();
-    }
-  }
+  WorldManifold();
 
   final Vector2 _pool3 = Vector2.zero();
   final Vector2 _pool4 = Vector2.zero();

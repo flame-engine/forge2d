@@ -32,8 +32,8 @@ class VoronoiDiagramTask {
 class VoronoiDiagram {
   final List<VoronoiGenerator> generators = <VoronoiGenerator>[];
   int _countX = 0, _countY = 0;
-  // The diagram is an array of "pointers".
-  List<VoronoiGenerator> _diagram;
+  // The diagram is an map of "pointers".
+  final Map<int, VoronoiGenerator> _diagram = {};
 
   void getNodes(VoronoiDiagramCallback callback) {
     for (int y = 0; y < _countY - 1; y++) {
@@ -77,7 +77,7 @@ class VoronoiDiagram {
     }
     _countX = 1 + (inverseRadius * (_upper.x - _lower.x)).toInt();
     _countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
-    _diagram = List<VoronoiGenerator>(_countX * _countY);
+    _diagram.clear();
     _queue.clear();
     for (VoronoiGenerator g in generators) {
       g.center.setFrom((g.center - _lower)..scale(inverseRadius));
@@ -91,7 +91,7 @@ class VoronoiDiagram {
       final int y = front.y;
       final int i = front.i;
       final VoronoiGenerator g = front.generator;
-      if (_diagram[i] == null) {
+      if (_diagram.containsKey(i)) {
         _diagram[i] = g;
         if (x > 0) {
           _queue.addFirst(VoronoiDiagramTask(x - 1, y, i - 1, g));

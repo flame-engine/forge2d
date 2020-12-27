@@ -1264,14 +1264,14 @@ class World {
   ///
   /// @return
   int getParticleMaxCount() {
-    return _particleSystem.getParticleMaxCount();
+    return _particleSystem.maxCount;
   }
 
   /// Set the maximum number of particles.
   ///
   /// @param count
   void setParticleMaxCount(int count) {
-    _particleSystem.setParticleMaxCount(count);
+    _particleSystem.maxCount = count;
   }
 
   /// Change the particle density.

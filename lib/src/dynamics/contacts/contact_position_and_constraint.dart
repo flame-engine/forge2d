@@ -1,7 +1,10 @@
 part of forge2d;
 
 class ContactPositionConstraint {
-  List<Vector2> localPoints = List<Vector2>(settings.maxManifoldPoints);
+  List<Vector2> localPoints = List<Vector2>.generate(
+    settings.maxManifoldPoints,
+    (_) => Vector2.zero(),
+  );
   final Vector2 localNormal = Vector2.zero();
   final Vector2 localPoint = Vector2.zero();
   int indexA = 0;
@@ -14,9 +17,5 @@ class ContactPositionConstraint {
   double radiusA = 0.0, radiusB = 0.0;
   int pointCount = 0;
 
-  ContactPositionConstraint() {
-    for (int i = 0; i < localPoints.length; i++) {
-      localPoints[i] = Vector2.zero();
-    }
-  }
+  ContactPositionConstraint();
 }
