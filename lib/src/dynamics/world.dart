@@ -557,8 +557,7 @@ class World {
   }
 
   final Island island = Island();
-  // TODO djm find a good initial stack number;
-  List<Body> stack = List<Body>(10);
+  final List<Body> stack = [];
   final Timer broadphaseTimer = Timer();
 
   void solve(TimeStep step) {
@@ -585,11 +584,6 @@ class World {
       j._islandFlag = false;
     }
 
-    // Build and simulate all awake islands.
-    final int stackSize = bodies.length;
-    if (stack.length < stackSize) {
-      stack = List<Body>(stackSize);
-    }
     for (Body seed in bodies) {
       if ((seed._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
         continue;
@@ -606,28 +600,28 @@ class World {
 
       // Reset island and stack.
       island.clear();
-      int stackCount = 0;
-      stack[stackCount++] = seed;
+      stack.clear();
+      stack.add(seed);
       seed._flags |= Body.ISLAND_FLAG;
 
       // Perform a depth first search (DFS) on the constraint graph.
-      while (stackCount > 0) {
+      while (stack.isNotEmpty) {
         // Grab the next body off the stack and add it to the island.
-        final Body b = stack[--stackCount];
-        assert(b.isActive() == true);
-        island.addBody(b);
+        final Body body = stack.removeLast();
+        assert(body.isActive() == true);
+        island.addBody(body);
 
         // Make sure the body is awake.
-        b.setAwake(true);
+        body.setAwake(true);
 
         // To keep islands as small as possible, we don't
         // propagate islands across static bodies.
-        if (b.getType() == BodyType.STATIC) {
+        if (body.getType() == BodyType.STATIC) {
           continue;
         }
 
         // Search all contacts connected to this body.
-        for (Contact contact in b.contacts) {
+        for (Contact contact in body.contacts) {
           // Has this contact already been added to an island?
           if ((contact.flags & Contact.ISLAND_FLAG) == Contact.ISLAND_FLAG) {
             continue;
@@ -648,25 +642,24 @@ class World {
           island.addContact(contact);
           contact.flags |= Contact.ISLAND_FLAG;
 
-          final Body other = contact.getOtherBody(b);
+          final Body other = contact.getOtherBody(body);
 
           // Was the other body already added to this island?
           if ((other._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
             continue;
           }
 
-          assert(stackCount < stackSize);
-          stack[stackCount++] = other;
+          stack.add(other);
           other._flags |= Body.ISLAND_FLAG;
         }
 
         // Search all joints connect to this body.
-        for (Joint joint in b.joints) {
+        for (Joint joint in body.joints) {
           if (joint._islandFlag == true) {
             continue;
           }
 
-          final Body other = joint.getOtherBody(b);
+          final Body other = joint.getOtherBody(body);
 
           // Don't simulate joints connected to inactive bodies.
           if (other.isActive() == false) {
@@ -680,8 +673,7 @@ class World {
             continue;
           }
 
-          assert(stackCount < stackSize);
-          stack[stackCount++] = other;
+          stack.add(other);
           other._flags |= Body.ISLAND_FLAG;
         }
       }
@@ -725,7 +717,6 @@ class World {
   final TOIInput toiInput = TOIInput();
   final TOIOutput toiOutput = TOIOutput();
   final TimeStep subStep = TimeStep();
-  final List<Body> tempBodies = List<Body>(2);
   final Sweep backup1 = Sweep();
   final Sweep backup2 = Sweep();
 
@@ -892,10 +883,7 @@ class World {
       minContact.flags |= Contact.ISLAND_FLAG;
 
       // Get contacts on bodyA and bodyB.
-      tempBodies[0] = bA;
-      tempBodies[1] = bB;
-      for (int i = 0; i < 2; ++i) {
-        final Body body = tempBodies[i];
+      for (Body body in [bA, bB]) {
         if (body._bodyType == BodyType.DYNAMIC) {
           for (Contact contact in body.contacts) {
             // Has this contact already been added to the island?

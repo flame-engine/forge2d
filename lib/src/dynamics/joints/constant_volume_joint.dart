@@ -47,25 +47,28 @@ class ConstantVolumeJoint extends Joint {
       throw "Incorrect joint definition. Joints have to correspond to the _bodies";
     }
     if (def.joints == null) {
-      final DistanceJointDef djd = DistanceJointDef();
-      _distanceJoints = List<DistanceJoint>(_bodies.length);
-      for (int i = 0; i < _targetLengths.length; ++i) {
-        final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
-        djd.frequencyHz = def.frequencyHz; // 20.0;
-        djd.dampingRatio = def.dampingRatio; // 50.0;
-        djd.collideConnected = def.collideConnected;
-        djd.initialize(_bodies[i], _bodies[next], _bodies[i].worldCenter,
-            _bodies[next].worldCenter);
-        _distanceJoints[i] = _world.createJoint(djd) as DistanceJoint;
-      }
+      final DistanceJointDef distanceJointDef = DistanceJointDef();
+      _distanceJoints = List<DistanceJoint>.generate(
+        _bodies.length,
+        (i) {
+          final int next = (i == _bodies.length - 1) ? 0 : i + 1;
+          distanceJointDef.frequencyHz = def.frequencyHz; // 20.0;
+          distanceJointDef.dampingRatio = def.dampingRatio; // 50.0;
+          distanceJointDef.collideConnected = def.collideConnected;
+          distanceJointDef.initialize(
+            _bodies[i],
+            _bodies[next],
+            _bodies[i].worldCenter,
+            _bodies[next].worldCenter,
+          );
+          return _world.createJoint(distanceJointDef) as DistanceJoint;
+        },
+      );
     } else {
       _distanceJoints = def.joints.toList();
     }
 
-    _normals = List<Vector2>(_bodies.length);
-    for (int i = 0; i < _normals.length; ++i) {
-      _normals[i] = Vector2.zero();
-    }
+    _normals = List<Vector2>.generate(_bodies.length, (_) => Vector2.zero());
   }
 
   @override
@@ -145,14 +148,15 @@ class ConstantVolumeJoint extends Joint {
   void initVelocityConstraints(final SolverData step) {
     final List<Velocity> velocities = step.velocities;
     final List<Position> positions = step.positions;
-    final List<Vector2> d = List<Vector2>(_bodies.length);
-
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i] = Vector2.copy(positions[_bodies[next].islandIndex].c);
-      d[i].sub(positions[_bodies[prev].islandIndex].c);
-    }
+    final List<Vector2> d = List<Vector2>.generate(
+      _bodies.length,
+      (i) {
+        final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
+        final int next = (i == _bodies.length - 1) ? 0 : i + 1;
+        return positions[_bodies[next].islandIndex].c -
+            positions[_bodies[prev].islandIndex].c;
+      },
+    );
 
     if (step.step.warmStarting) {
       _impulse *= step.step.dtRatio;
@@ -179,16 +183,18 @@ class ConstantVolumeJoint extends Joint {
 
     final List<Velocity> velocities = step.velocities;
     final List<Position> positions = step.positions;
-    final List<Vector2> d = List<Vector2>(_bodies.length);
-
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i] = Vector2.copy(positions[_bodies[next].islandIndex].c);
-      d[i].sub(positions[_bodies[prev].islandIndex].c);
-      dotMassSum += (d[i].length2) / _bodies[i].mass;
-      crossMassSum += velocities[_bodies[i].islandIndex].v.cross(d[i]);
-    }
+    final List<Vector2> d = List<Vector2>.generate(
+      _bodies.length,
+      (i) {
+        final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
+        final int next = (i == _bodies.length - 1) ? 0 : i + 1;
+        final v = positions[_bodies[next].islandIndex].c -
+            positions[_bodies[prev].islandIndex].c;
+        dotMassSum += (v.length2) / _bodies[i].mass;
+        crossMassSum += velocities[_bodies[i].islandIndex].v.cross(v);
+        return v;
+      },
+    );
     final double lambda = -2.0 * crossMassSum / dotMassSum;
     _impulse += lambda;
     for (int i = 0; i < _bodies.length; ++i) {
