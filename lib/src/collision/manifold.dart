@@ -25,36 +25,31 @@ enum ManifoldType { CIRCLES, FACE_A, FACE_B }
 
 class Manifold {
   /// The points of contact.
-  final List<ManifoldPoint> points;
+  final List<ManifoldPoint> points = List<ManifoldPoint>.generate(
+    settings.maxManifoldPoints,
+    (_) => ManifoldPoint(),
+  );
 
   /// not use for Type::e_points
-  final Vector2 localNormal;
+  final Vector2 localNormal = Vector2.zero();
 
   /// usage depends on manifold type
-  final Vector2 localPoint;
+  final Vector2 localPoint = Vector2.zero();
 
   ManifoldType type = ManifoldType.CIRCLES;
 
   /// The number of manifold points.
   int pointCount = 0;
 
-  /// creates a manifold with 0 points, with it's points array full of instantiated ManifoldPoints.
-  Manifold()
-      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
-        localNormal = Vector2.zero(),
-        localPoint = Vector2.zero() {
-    for (int i = 0; i < settings.maxManifoldPoints; i++) {
-      points[i] = ManifoldPoint();
-    }
-  }
+  /// Initially a manifold with 0 points, with it's points array full of instantiated ManifoldPoints.
+  Manifold();
 
   /// Creates this manifold as a copy of the other
-  Manifold.copy(Manifold other)
-      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
-        localNormal = other.localNormal.clone(),
-        localPoint = other.localPoint.clone(),
-        pointCount = other.pointCount {
+  Manifold.copy(Manifold other) {
+    localNormal.setFrom(other.localNormal);
+    localPoint.setFrom(other.localPoint);
     type = other.type;
+    pointCount = other.pointCount;
     // djm: this is correct now
     for (int i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = ManifoldPoint.copy(other.points[i]);

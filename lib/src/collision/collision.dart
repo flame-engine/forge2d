@@ -50,16 +50,15 @@ class EPAxis {
 
 /// This holds polygon B expressed in frame A.
 class TempPolygon {
-  final List<Vector2> vertices = List<Vector2>(settings.maxPolygonVertices);
-  final List<Vector2> normals = List<Vector2>(settings.maxPolygonVertices);
+  final List<Vector2> vertices = List<Vector2>.generate(
+    settings.maxPolygonVertices,
+    (_) => Vector2.zero(),
+  );
+  final List<Vector2> normals = List<Vector2>.generate(
+    settings.maxPolygonVertices,
+    (_) => Vector2.zero(),
+  );
   int count = 0;
-
-  TempPolygon() {
-    for (int i = 0; i < vertices.length; i++) {
-      vertices[i] = Vector2.zero();
-      normals[i] = Vector2.zero();
-    }
-  }
 }
 
 /// Reference face used for clipping
@@ -81,15 +80,6 @@ class _ReferenceFace {
 /// Should not be finalructed.
 class Collision {
   static const int NULL_FEATURE = 0x3FFFFFFF; // Integer.MAX_VALUE;
-
-  Collision() {
-    _incidentEdge[0] = ClipVertex();
-    _incidentEdge[1] = ClipVertex();
-    _clipPoints1[0] = ClipVertex();
-    _clipPoints1[1] = ClipVertex();
-    _clipPoints2[0] = ClipVertex();
-    _clipPoints2[1] = ClipVertex();
-  }
 
   final DistanceInput _input = DistanceInput();
   final SimplexCache _cache = SimplexCache();
@@ -267,12 +257,11 @@ class Collision {
     int normalIndex = 0;
     double separation = -double.maxFinite;
     final double radius = polygon.radius + circle.radius;
-    final int vertexCount = polygon.count;
     double s;
     final List<Vector2> vertices = polygon.vertices;
     final List<Vector2> normals = polygon.normals;
 
-    for (int i = 0; i < vertexCount; i++) {
+    for (int i = 0; i < vertices.length; i++) {
       // before inline
       // temp.set(cLocal).subLocal(vertices[i]);
       // double s = Vec2.dot(normals[i], temp);
@@ -295,7 +284,8 @@ class Collision {
 
     // Vertices that subtend the incident face.
     final int vertIndex1 = normalIndex;
-    final int vertIndex2 = vertIndex1 + 1 < vertexCount ? vertIndex1 + 1 : 0;
+    final int vertIndex2 =
+        vertIndex1 + 1 < vertices.length ? vertIndex1 + 1 : 0;
     final Vector2 v1 = vertices[vertIndex1];
     final Vector2 v2 = vertices[vertIndex2];
 
@@ -392,8 +382,8 @@ class Collision {
   /// Find the max separation between poly1 and poly2 using edge normals from poly1.
   void findMaxSeparation(_EdgeResults results, final PolygonShape poly1,
       final Transform xf1, final PolygonShape poly2, final Transform xf2) {
-    final int count1 = poly1.count;
-    final int count2 = poly2.count;
+    final int count1 = poly1.vertices.length;
+    final int count2 = poly2.vertices.length;
     final List<Vector2> n1s = poly1.normals;
     final List<Vector2> v1s = poly1.vertices;
     final List<Vector2> v2s = poly2.vertices;
@@ -435,10 +425,10 @@ class Collision {
       int edge1,
       final PolygonShape poly2,
       final Transform xf2) {
-    final int count1 = poly1.count;
+    final int count1 = poly1.vertices.length;
     final List<Vector2> normals1 = poly1.normals;
 
-    final int count2 = poly2.count;
+    final int count2 = poly2.vertices.length;
     final List<Vector2> vertices2 = poly2.vertices;
     final List<Vector2> normals2 = poly2.normals;
 
@@ -493,15 +483,15 @@ class Collision {
 
   final _EdgeResults _results1 = _EdgeResults();
   final _EdgeResults results2 = _EdgeResults();
-  final List<ClipVertex> _incidentEdge = List<ClipVertex>(2);
   final Vector2 _localTangent = Vector2.zero();
   final Vector2 _localNormal = Vector2.zero();
   final Vector2 _planePoint = Vector2.zero();
   final Vector2 _tangent = Vector2.zero();
   final Vector2 _v11 = Vector2.zero();
   final Vector2 _v12 = Vector2.zero();
-  final List<ClipVertex> _clipPoints1 = List<ClipVertex>(2);
-  final List<ClipVertex> _clipPoints2 = List<ClipVertex>(2);
+  final List<ClipVertex> _incidentEdge = [ClipVertex(), ClipVertex()];
+  final List<ClipVertex> _clipPoints1 = [ClipVertex(), ClipVertex()];
+  final List<ClipVertex> _clipPoints2 = [ClipVertex(), ClipVertex()];
 
   /// Compute the collision manifold between two polygons.
   void collidePolygons(Manifold manifold, final PolygonShape polyA,
@@ -555,7 +545,7 @@ class Collision {
 
     findIncidentEdge(_incidentEdge, poly1, xf1, edge1, poly2, xf2);
 
-    final int count1 = poly1.count;
+    final int count1 = poly1.vertices.length;
     final List<Vector2> vertices1 = poly1.vertices;
 
     final int iv1 = edge1;
@@ -829,21 +819,13 @@ class EdgePolygonCollider {
   double radius = 0.0;
   bool front = false;
 
-  EdgePolygonCollider() {
-    for (int i = 0; i < 2; i++) {
-      _ie[i] = ClipVertex();
-      _clipPoints1[i] = ClipVertex();
-      _clipPoints2[i] = ClipVertex();
-    }
-  }
-
   final Vector2 _edge1 = Vector2.zero();
   final Vector2 _temp = Vector2.zero();
   final Vector2 _edge0 = Vector2.zero();
   final Vector2 _edge2 = Vector2.zero();
-  final List<ClipVertex> _ie = List<ClipVertex>(2);
-  final List<ClipVertex> _clipPoints1 = List<ClipVertex>(2);
-  final List<ClipVertex> _clipPoints2 = List<ClipVertex>(2);
+  final List<ClipVertex> _incidentEdge = [ClipVertex(), ClipVertex()];
+  final List<ClipVertex> _clipPoints1 = [ClipVertex(), ClipVertex()];
+  final List<ClipVertex> _clipPoints2 = [ClipVertex(), ClipVertex()];
   final _ReferenceFace _rf = _ReferenceFace();
   final EPAxis _edgeAxis = EPAxis();
   final EPAxis _polygonAxis = EPAxis();
@@ -1062,8 +1044,8 @@ class EdgePolygonCollider {
     }
 
     // Get polygonB in frameA
-    polygonB.count = polygonB2.count;
-    for (int i = 0; i < polygonB2.count; ++i) {
+    polygonB.count = polygonB2.vertices.length;
+    for (int i = 0; i < polygonB2.vertices.length; ++i) {
       polygonB.vertices[i]
           .setFrom(Transform.mulVec2(xf, polygonB2.vertices[i]));
       polygonB.normals[i].setFrom(Rot.mulVec2(xf.q, polygonB2.normals[i]));
@@ -1104,8 +1086,8 @@ class EdgePolygonCollider {
       primaryAxis = _edgeAxis;
     }
 
-    final ClipVertex ie0 = _ie[0];
-    final ClipVertex ie1 = _ie[1];
+    final ClipVertex ie0 = _incidentEdge[0];
+    final ClipVertex ie1 = _incidentEdge[1];
 
     if (primaryAxis.type == EPAxisType.EDGE_A) {
       manifold.type = ManifoldType.FACE_A;
@@ -1185,7 +1167,7 @@ class EdgePolygonCollider {
 
     // Clip to box side 1
     np = Collision.clipSegmentToLine(
-        _clipPoints1, _ie, _rf.sideNormal1, _rf.sideOffset1, _rf.i1);
+        _clipPoints1, _incidentEdge, _rf.sideNormal1, _rf.sideOffset1, _rf.i1);
 
     if (np < settings.maxManifoldPoints) {
       return;

@@ -16,34 +16,31 @@ class CanvasDraw extends DebugDraw {
   /// Draw a closed polygon provided in CCW order. WARNING: This mutates
   /// [vertices].
   @override
-  void drawPolygon(List<Vector2> vertices, int vertexCount, Color3i color) {
-    _pathPolygon(vertices, vertexCount, color);
+  void drawPolygon(List<Vector2> vertices, Color3i color) {
+    _pathPolygon(vertices, color);
     ctx.stroke();
   }
 
   /// Draw a solid closed polygon provided in CCW order. WARNING: This mutates
   /// [vertices].
   @override
-  void drawSolidPolygon(
-      List<Vector2> vertices, int vertexCount, Color3i color) {
-    _pathPolygon(vertices, vertexCount, color);
+  void drawSolidPolygon(List<Vector2> vertices, Color3i color) {
+    _pathPolygon(vertices, color);
     ctx.fill();
   }
 
-  void _pathPolygon(List<Vector2> vertices, int vertexCount, Color3i color) {
+  void _pathPolygon(List<Vector2> vertices, Color3i color) {
     // Set the color and convert to screen coordinates.
     _setColor(color);
     // TODO(gregbglw): Do a single ctx transform rather than convert all of
     // these vectors.
-    for (int i = 0; i < vertexCount; ++i) {
-      vertices[i] = getWorldToScreen(vertices[i]);
-    }
+    vertices = vertices.map(getWorldToScreen).toList();
 
     ctx.beginPath();
     ctx.moveTo(vertices[0].x, vertices[0].y);
 
     // Draw lines to all of the remaining points.
-    for (int i = 1; i < vertexCount; ++i) {
+    for (int i = 1; i < vertices.length; ++i) {
       ctx.lineTo(vertices[i].x, vertices[i].y);
     }
 

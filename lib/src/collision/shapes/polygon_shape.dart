@@ -9,18 +9,13 @@ class PolygonShape extends Shape {
   /// Local position of the shape centroid in parent body frame.
   final Vector2 centroid = Vector2.zero();
 
-  /// The vertices of the shape. Note: use getVertexCount(), not _vertices.length, to get number of
+  /// The vertices of the shape. Note: use vertexCount, not _vertices.length, to get number of
   /// active vertices.
-  final List<Vector2> vertices = List<Vector2>.generate(
-      settings.maxPolygonVertices, (i) => Vector2.zero());
+  final List<Vector2> vertices = [];
 
-  /// The normals of the shape. Note: use getVertexCount(), not _normals.length, to get number of
+  /// The normals of the shape. Note: use vertexCount, not _normals.length, to get number of
   /// active normals.
-  final List<Vector2> normals = List<Vector2>.generate(
-      settings.maxPolygonVertices, (i) => Vector2.zero());
-
-  /// Number of active vertices in the shape.
-  int count = 0;
+  final List<Vector2> normals = [];
 
   PolygonShape() : super(ShapeType.POLYGON) {
     radius = settings.polygonRadius;
@@ -30,50 +25,46 @@ class PolygonShape extends Shape {
   Shape clone() {
     final PolygonShape shape = PolygonShape();
     shape.centroid.setFrom(centroid);
-    for (int i = 0; i < shape.normals.length; i++) {
-      shape.normals[i].setFrom(normals[i]);
-      shape.vertices[i].setFrom(vertices[i]);
-    }
+    normals.forEach((normal) => shape.normals.add(normal.clone()));
+    vertices.forEach((vertex) => shape.vertices.add(vertex.clone()));
     shape.radius = radius;
-    shape.count = count;
     return shape;
   }
 
-  /// Create a convex hull from the given array of points. The count must be in the range [3,
-  /// Settings.maxPolygonVertices].
+  /// Create a convex hull from the given array of points. The length of the list
+  /// must be in the range [3, Settings.maxPolygonVertices].
   /// @warning the points may be re-ordered, even if they form a convex polygon.
   /// @warning collinear points are removed.
-  void set(final List<Vector2> updatedVertices, final int updatedCount) {
-    assert(3 <= updatedCount && updatedCount <= settings.maxPolygonVertices);
+  void set(final List<Vector2> updatedVertices) {
+    final updatedCount = updatedVertices.length;
+    assert(updatedCount >= 3, "Too few vertices to form polygon");
+    assert(updatedCount <= settings.maxPolygonVertices, "Too many vertices");
     if (updatedCount < 3) {
       setAsBoxXY(1.0, 1.0);
       return;
     }
 
-    int n = math.min(updatedCount, settings.maxPolygonVertices);
-
     // Perform welding and copy vertices into local buffer.
-    final List<Vector2> ps = List<Vector2>(settings.maxPolygonVertices);
-    int tempCount = 0;
-    for (int i = 0; i < n; ++i) {
-      final Vector2 v = updatedVertices[i];
+    final List<Vector2> points = [];
+    for (Vector2 v in updatedVertices) {
       bool unique = true;
-      for (int j = 0; j < tempCount; ++j) {
-        if (v.distanceToSquared(ps[j]) < 0.5 * settings.linearSlop) {
+      for (int j = 0; j < points.length; ++j) {
+        if (v.distanceToSquared(points[j]) < 0.5 * settings.linearSlop) {
           unique = false;
           break;
         }
       }
 
       if (unique) {
-        ps[tempCount++] = v;
+        points.add(v.clone());
+        if (points.length == settings.maxPolygonVertices) {
+          break;
+        }
       }
     }
 
-    n = tempCount;
-    if (n < 3) {
-      // Polygon is degenerate.
-      assert(false);
+    if (points.length < 3) {
+      assert(false, "Too few vertices to be a polygon");
       setAsBoxXY(1.0, 1.0);
       return;
     }
@@ -82,67 +73,62 @@ class PolygonShape extends Shape {
     // http://en.wikipedia.org/wiki/Gift_wrapping_algorithm
 
     // Find the right most point on the hull
-    int i0 = 0;
-    double x0 = ps[0].x;
-    for (int i = 1; i < n; ++i) {
-      final double x = ps[i].x;
-      if (x > x0 || (x == x0 && ps[i].y < ps[i0].y)) {
-        i0 = i;
-        x0 = x;
+    Vector2 rightMostPoint = points.first;
+    for (Vector2 point in points) {
+      final double x = point.x;
+      final double y = point.y;
+      final double x0 = rightMostPoint.x;
+      final double y0 = rightMostPoint.y;
+      if (x > x0 || (x == x0 && y < y0)) {
+        rightMostPoint = point;
       }
     }
+    print(rightMostPoint);
 
-    final List<int> hull = List<int>(settings.maxPolygonVertices);
-    int m = 0;
-    int ih = i0;
+    final List<Vector2> hull = [rightMostPoint];
+    Vector2 pointToAdd = rightMostPoint;
+    print(points);
 
-    while (true) {
-      hull[m] = ih;
-
-      int ie = 0;
-      for (int j = 1; j < n; ++j) {
-        if (ie == ih) {
-          ie = j;
+    for (Vector2 point1 in points) {
+      Vector2 lastCheckedPoint = pointToAdd;
+      for (Vector2 point2 in points) {
+        if (lastCheckedPoint == pointToAdd) {
+          lastCheckedPoint = point2;
           continue;
         }
 
-        final Vector2 r = Vector2.copy(ps[ie])..sub(ps[hull[m]]);
-        final Vector2 v = Vector2.copy(ps[j])..sub(ps[hull[m]]);
+        final Vector2 r = lastCheckedPoint.clone()..sub(point1);
+        final Vector2 v = point2.clone()..sub(point1);
         final double c = r.cross(v);
         if (c < 0.0) {
-          ie = j;
+          lastCheckedPoint = point2;
         }
 
         // Collinearity check
         if (c == 0.0 && v.length2 > r.length2) {
-          ie = j;
+          lastCheckedPoint = point2;
         }
       }
 
-      ++m;
-      ih = ie;
-
-      if (ie == i0) {
-        break;
+      pointToAdd = lastCheckedPoint;
+      if (!hull.contains(pointToAdd)) {
+        hull.add(pointToAdd);
       }
     }
-
-    count = m;
 
     // Copy vertices.
-    for (int i = 0; i < count; ++i) {
-      if (vertices[i] == null) {
-        vertices[i] = Vector2.zero();
-      }
-      vertices[i].setFrom(ps[hull[i]]);
-    }
+    vertices.clear();
+    vertices.addAll(hull);
+    vertices.forEach((_) => normals.add(Vector2.zero()));
 
     final Vector2 edge = Vector2.zero();
 
     // Compute normals. Ensure the edges have non-zero length.
-    for (int i = 0; i < count; ++i) {
+    print(hull);
+    print(vertices);
+    for (int i = 0; i < vertices.length; ++i) {
       final int i1 = i;
-      final int i2 = i + 1 < count ? i + 1 : 0;
+      final int i2 = (i + 1) % vertices.length;
       edge
         ..setFrom(vertices[i2])
         ..sub(vertices[i1]);
@@ -153,7 +139,7 @@ class PolygonShape extends Shape {
     }
 
     // Compute the polygon centroid.
-    computeCentroid(vertices, count);
+    computeCentroid(vertices, vertices.length);
   }
 
   /// Build vertices to represent an axis-aligned box.
@@ -161,15 +147,20 @@ class PolygonShape extends Shape {
   /// @param hx the half-width.
   /// @param hy the half-height.
   void setAsBoxXY(final double hx, final double hy) {
-    count = 4;
-    vertices[0].setValues(-hx, -hy);
-    vertices[1].setValues(hx, -hy);
-    vertices[2].setValues(hx, hy);
-    vertices[3].setValues(-hx, hy);
-    normals[0].setValues(0.0, -1.0);
-    normals[1].setValues(1.0, 0.0);
-    normals[2].setValues(0.0, 1.0);
-    normals[3].setValues(-1.0, 0.0);
+    vertices.clear();
+    vertices.addAll([
+      Vector2(-hx, -hy),
+      Vector2(hx, -hy),
+      Vector2(hx, hy),
+      Vector2(-hx, hy),
+    ]);
+    normals.clear();
+    normals.addAll([
+      Vector2(0.0, -1.0),
+      Vector2(1.0, 0.0),
+      Vector2(0.0, 1.0),
+      Vector2(-1.0, 0.0),
+    ]);
     centroid.setZero();
   }
 
@@ -189,7 +180,7 @@ class PolygonShape extends Shape {
     xf.q.setAngle(angle);
 
     // Transform vertices and normals.
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < vertices.length; ++i) {
       vertices[i].setFrom(Transform.mulVec2(xf, vertices[i]));
       normals[i].setFrom(Rot.mulVec2(xf.q, normals[i]));
     }
@@ -197,21 +188,18 @@ class PolygonShape extends Shape {
 
   /// Set this as a single edge.
   void setAsEdge(Vector2 v1, Vector2 v2) {
-    count = 2;
-    vertices[0].setFrom(v1);
-    vertices[1].setFrom(v2);
+    vertices.clear();
+    vertices.add(v1.clone());
+    vertices.add(v2.clone());
     centroid
       ..setFrom(v1)
       ..add(v2)
       ..scale(0.5);
-    normals[0]
-      ..setFrom(v2)
-      ..sub(v1);
+    normals.clear();
+    normals.add(v2 - v1);
     normals[0].scaleOrthogonalInto(-1.0, normals[0]);
     normals[0].normalize();
-    normals[1]
-      ..setFrom(normals[0])
-      ..negate();
+    normals.add(-normals[0]);
   }
 
   @override
@@ -231,13 +219,11 @@ class PolygonShape extends Shape {
     if (_debug) {
       print("--testPoint debug--");
       print("Vertices: ");
-      for (int i = 0; i < count; ++i) {
-        print(vertices[i]);
-      }
+      vertices.forEach(print);
       print("pLocal: $pLocalx, $pLocaly");
     }
 
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < vertices.length; ++i) {
       final Vector2 vertex = vertices[i];
       final Vector2 normal = normals[i];
       tempX = pLocalx - vertex.x;
@@ -265,7 +251,7 @@ class PolygonShape extends Shape {
     upper.x = lower.x;
     upper.y = lower.y;
 
-    for (int i = 1; i < count; ++i) {
+    for (int i = 1; i < vertices.length; ++i) {
       final Vector2 v2 = vertices[i];
       // Vec2 v = Mul(xf, _vertices[i]);
       final double vx = (xfqc * v2.x - xfqs * v2.y) + xfpx;
@@ -282,17 +268,6 @@ class PolygonShape extends Shape {
     upper.y += radius;
   }
 
-  /// Get the vertex count.
-  int getVertexCount() {
-    return count;
-  }
-
-  /// Get a vertex by index.
-  Vector2 getVertex(final int index) {
-    assert(0 <= index && index < count);
-    return vertices[index];
-  }
-
   @override
   double computeDistanceToOut(
       Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
@@ -307,7 +282,7 @@ class PolygonShape extends Shape {
     double normalForMaxDistanceX = pLocalx;
     double normalForMaxDistanceY = pLocaly;
 
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < vertices.length; ++i) {
       final Vector2 vertex = vertices[i];
       final Vector2 normal = normals[i];
       tx = pLocalx - vertex.x;
@@ -325,7 +300,7 @@ class PolygonShape extends Shape {
       double minDistanceX = normalForMaxDistanceX;
       double minDistanceY = normalForMaxDistanceY;
       double minDistance2 = maxDistance * maxDistance;
-      for (int i = 0; i < count; ++i) {
+      for (int i = 0; i < vertices.length; ++i) {
         final Vector2 vertex = vertices[i];
         final double distanceVecX = pLocalx - vertex.x;
         final double distanceVecY = pLocaly - vertex.y;
@@ -373,7 +348,7 @@ class PolygonShape extends Shape {
 
     int index = -1;
 
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < vertices.length; ++i) {
       final Vector2 normal = normals[i];
       final Vector2 vertex = vertices[i];
       final double tempX = vertex.x - p1x;
@@ -494,7 +469,7 @@ class PolygonShape extends Shape {
     //
     // The rest of the derivation is handled by computer algebra.
 
-    assert(count >= 3);
+    assert(vertices.length >= 3);
 
     final Vector2 center = Vector2.zero();
     double area = 0.0;
@@ -504,17 +479,17 @@ class PolygonShape extends Shape {
     // It's location doesn't change the result (except for rounding error).
     final Vector2 s = Vector2.zero();
     // This code would put the reference point inside the polygon.
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < vertices.length; ++i) {
       s.add(vertices[i]);
     }
-    s.scale(1.0 / count.toDouble());
+    s.scale(1.0 / vertices.length.toDouble());
 
     const double kInv3 = 1.0 / 3.0;
 
     final Vector2 e1 = Vector2.zero();
     final Vector2 e2 = Vector2.zero();
 
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < vertices.length; ++i) {
       // Triangle vertices.
       e1
         ..setFrom(vertices[i])
@@ -522,7 +497,7 @@ class PolygonShape extends Shape {
       e2
         ..setFrom(s)
         ..negate()
-        ..add(i + 1 < count ? vertices[i + 1] : vertices[0]);
+        ..add(i + 1 < vertices.length ? vertices[i + 1] : vertices[0]);
 
       final double D = e1.cross(e2);
 
@@ -561,13 +536,13 @@ class PolygonShape extends Shape {
 
   /// Validate convexity. This is a very time consuming operation.
   bool validate() {
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < vertices.length; ++i) {
       final int i1 = i;
-      final int i2 = i < count - 1 ? i1 + 1 : 0;
+      final int i2 = i < vertices.length - 1 ? i1 + 1 : 0;
       final Vector2 p = vertices[i1];
       final Vector2 e = Vector2.copy(vertices[i2])..sub(p);
 
-      for (int j = 0; j < count; ++j) {
+      for (int j = 0; j < vertices.length; ++j) {
         if (j == i1 || j == i2) {
           continue;
         }

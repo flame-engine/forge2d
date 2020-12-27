@@ -393,12 +393,13 @@ class World {
             final AABB aabb =
                 _contactManager.broadPhase.getFatAABB(proxy.proxyId);
             if (aabb != null) {
-              final List<Vector2> vs = List<Vector2>(4);
-              vs[0].setValues(aabb.lowerBound.x, aabb.lowerBound.y);
-              vs[1].setValues(aabb.upperBound.x, aabb.lowerBound.y);
-              vs[2].setValues(aabb.upperBound.x, aabb.upperBound.y);
-              vs[3].setValues(aabb.lowerBound.x, aabb.upperBound.y);
-              debugDraw.drawPolygon(vs, 4, color);
+              final List<Vector2> vs = [
+                Vector2(aabb.lowerBound.x, aabb.lowerBound.y),
+                Vector2(aabb.upperBound.x, aabb.lowerBound.y),
+                Vector2(aabb.upperBound.x, aabb.upperBound.y),
+                Vector2(aabb.lowerBound.x, aabb.upperBound.y),
+              ];
+              debugDraw.drawPolygon(vs, color);
             }
           }
         }
@@ -1092,18 +1093,17 @@ class World {
       case ShapeType.POLYGON:
         {
           final poly = fixture.shape as PolygonShape;
-          final int vertexCount = poly.count;
-          assert(vertexCount <= settings.maxPolygonVertices);
-          final List<Vector2> vertices =
-              List<Vector2>(settings.maxPolygonVertices);
+          assert(poly.vertices.length <= settings.maxPolygonVertices);
+          final List<Vector2> vertices = poly.vertices
+              .map(
+                (vertex) => Transform.mulVec2(xf, vertex),
+              )
+              .toList();
 
-          for (int i = 0; i < vertexCount; ++i) {
-            vertices[i] = Transform.mulVec2(xf, poly.vertices[i]);
-          }
           if (wireframe) {
-            debugDraw.drawPolygon(vertices, vertexCount, color);
+            debugDraw.drawPolygon(vertices, color);
           } else {
-            debugDraw.drawSolidPolygon(vertices, vertexCount, color);
+            debugDraw.drawSolidPolygon(vertices, color);
           }
         }
         break;

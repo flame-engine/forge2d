@@ -48,20 +48,22 @@ class SimplexCache {
 }
 
 class _Simplex {
-  final _SimplexVertex v1 = _SimplexVertex();
-  final _SimplexVertex v2 = _SimplexVertex();
-  final _SimplexVertex v3 = _SimplexVertex();
-  final List<_SimplexVertex> vertices = List<_SimplexVertex>(3);
+  final List<_SimplexVertex> vertices = List<_SimplexVertex>.generate(
+    3,
+    (_) => _SimplexVertex(),
+  );
+  _SimplexVertex get vertex1 => vertices[0];
+  _SimplexVertex get vertex2 => vertices[1];
+  _SimplexVertex get vertex3 => vertices[2];
   int count = 0;
 
-  _Simplex() {
-    vertices[0] = v1;
-    vertices[1] = v2;
-    vertices[2] = v3;
-  }
-
-  void readCache(SimplexCache cache, DistanceProxy proxyA, Transform transformA,
-      DistanceProxy proxyB, Transform transformB) {
+  void readCache(
+    SimplexCache cache,
+    DistanceProxy proxyA,
+    Transform transformA,
+    DistanceProxy proxyB,
+    Transform transformB,
+  ) {
     assert(cache.count <= 3);
 
     // Copy data from cache.
@@ -126,16 +128,16 @@ class _Simplex {
     switch (count) {
       case 1:
         out
-          ..setFrom(v1.w)
+          ..setFrom(vertex1.w)
           ..negate();
         return;
       case 2:
         _e12
-          ..setFrom(v2.w)
-          ..sub(v1.w);
+          ..setFrom(vertex2.w)
+          ..sub(vertex1.w);
         // use out for a temp variable real quick
         out
-          ..setFrom(v1.w)
+          ..setFrom(vertex1.w)
           ..negate();
         final double sgn = _e12.cross(out);
 
@@ -166,15 +168,15 @@ class _Simplex {
         out.setZero();
         return;
       case 1:
-        out.setFrom(v1.w);
+        out.setFrom(vertex1.w);
         return;
       case 2:
         _case22
-          ..setFrom(v2.w)
-          ..scale(v2.a);
+          ..setFrom(vertex2.w)
+          ..scale(vertex2.a);
         _case2
-          ..setFrom(v1.w)
-          ..scale(v1.a)
+          ..setFrom(vertex1.w)
+          ..scale(vertex1.a)
           ..add(_case22);
         out.setFrom(_case2);
         return;
@@ -198,38 +200,38 @@ class _Simplex {
         assert(false);
         break;
       case 1:
-        pA.setFrom(v1.wA);
-        pB.setFrom(v1.wB);
+        pA.setFrom(vertex1.wA);
+        pB.setFrom(vertex1.wB);
         break;
       case 2:
         _case2
-          ..setFrom(v1.wA)
-          ..scale(v1.a);
+          ..setFrom(vertex1.wA)
+          ..scale(vertex1.a);
         pA
-          ..setFrom(v2.wA)
-          ..scale(v2.a)
+          ..setFrom(vertex2.wA)
+          ..scale(vertex2.a)
           ..add(_case2);
         // v1.a * v1.wA + v2.a * v2.wA;
         // *pB = v1.a * v1.wB + v2.a * v2.wB;
         _case2
-          ..setFrom(v1.wB)
-          ..scale(v1.a);
+          ..setFrom(vertex1.wB)
+          ..scale(vertex1.a);
         pB
-          ..setFrom(v2.wB)
-          ..scale(v2.a)
+          ..setFrom(vertex2.wB)
+          ..scale(vertex2.a)
           ..add(_case2);
 
         break;
       case 3:
         pA
-          ..setFrom(v1.wA)
-          ..scale(v1.a);
+          ..setFrom(vertex1.wA)
+          ..scale(vertex1.a);
         _case3
-          ..setFrom(v2.wA)
-          ..scale(v2.a);
+          ..setFrom(vertex2.wA)
+          ..scale(vertex2.a);
         _case33
-          ..setFrom(v3.wA)
-          ..scale(v3.a);
+          ..setFrom(vertex3.wA)
+          ..scale(vertex3.a);
         pA..add(_case3)..add(_case33);
         pB.setFrom(pA);
         break;
@@ -248,14 +250,14 @@ class _Simplex {
       case 1:
         return 0.0;
       case 2:
-        return v1.w.distanceTo(v2.w);
+        return vertex1.w.distanceTo(vertex2.w);
       case 3:
         _case3
-          ..setFrom(v2.w)
-          ..sub(v1.w);
+          ..setFrom(vertex2.w)
+          ..sub(vertex1.w);
         _case33
-          ..setFrom(v3.w)
-          ..sub(v1.w);
+          ..setFrom(vertex3.w)
+          ..sub(vertex1.w);
         // return Vec2.cross(v2.w - v1.w, v3.w - v1.w);
         return _case3.cross(_case33);
       default:
@@ -289,8 +291,8 @@ class _Simplex {
     // Solution
     // a1 = d12_1 / d12
     // a2 = d12_2 / d12
-    final Vector2 w1 = v1.w;
-    final Vector2 w2 = v2.w;
+    final Vector2 w1 = vertex1.w;
+    final Vector2 w2 = vertex2.w;
     _e12
       ..setFrom(w2)
       ..sub(w1);
@@ -299,7 +301,7 @@ class _Simplex {
     final double d12n2 = -w1.dot(_e12);
     if (d12n2 <= 0.0) {
       // a2 <= 0, so we clamp it to 0
-      v1.a = 1.0;
+      vertex1.a = 1.0;
       count = 1;
       return;
     }
@@ -308,16 +310,16 @@ class _Simplex {
     final double d12n1 = w2.dot(_e12);
     if (d12n1 <= 0.0) {
       // a1 <= 0, so we clamp it to 0
-      v2.a = 1.0;
+      vertex2.a = 1.0;
       count = 1;
-      v1.set(v2);
+      vertex1.set(vertex2);
       return;
     }
 
     // Must be in e12 region.
     final double invD12 = 1.0 / (d12n1 + d12n2);
-    v1.a = d12n1 * invD12;
-    v2.a = d12n2 * invD12;
+    vertex1.a = d12n1 * invD12;
+    vertex2.a = d12n2 * invD12;
     count = 2;
   }
 
@@ -335,9 +337,9 @@ class _Simplex {
   /// - edge points[1]-points[2]<br/>
   /// - inside the triangle
   void solve3() {
-    _w1.setFrom(v1.w);
-    _w2.setFrom(v2.w);
-    _w3.setFrom(v3.w);
+    _w1.setFrom(vertex1.w);
+    _w2.setFrom(vertex2.w);
+    _w3.setFrom(vertex3.w);
 
     // Edge12
     // [1 1 ][a1] = [1]
@@ -384,7 +386,7 @@ class _Simplex {
 
     // w1 region
     if (d12n2 <= 0.0 && d13n2 <= 0.0) {
-      v1.a = 1.0;
+      vertex1.a = 1.0;
       count = 1;
       return;
     }
@@ -392,8 +394,8 @@ class _Simplex {
     // e12
     if (d12n1 > 0.0 && d12n2 > 0.0 && d123n3 <= 0.0) {
       final double invD12 = 1.0 / (d12n1 + d12n2);
-      v1.a = d12n1 * invD12;
-      v2.a = d12n2 * invD12;
+      vertex1.a = d12n1 * invD12;
+      vertex2.a = d12n2 * invD12;
       count = 2;
       return;
     }
@@ -401,63 +403,56 @@ class _Simplex {
     // e13
     if (d13n1 > 0.0 && d13n2 > 0.0 && d123n2 <= 0.0) {
       final double invD13 = 1.0 / (d13n1 + d13n2);
-      v1.a = d13n1 * invD13;
-      v3.a = d13n2 * invD13;
+      vertex1.a = d13n1 * invD13;
+      vertex3.a = d13n2 * invD13;
       count = 2;
-      v2.set(v3);
+      vertex2.set(vertex3);
       return;
     }
 
     // w2 region
     if (d12n1 <= 0.0 && d23n2 <= 0.0) {
-      v2.a = 1.0;
+      vertex2.a = 1.0;
       count = 1;
-      v1.set(v2);
+      vertex1.set(vertex2);
       return;
     }
 
     // w3 region
     if (d13n1 <= 0.0 && d23n1 <= 0.0) {
-      v3.a = 1.0;
+      vertex3.a = 1.0;
       count = 1;
-      v1.set(v3);
+      vertex1.set(vertex3);
       return;
     }
 
     // e23
     if (d23n1 > 0.0 && d23n2 > 0.0 && d123n1 <= 0.0) {
       final double invD23 = 1.0 / (d23n1 + d23n2);
-      v2.a = d23n1 * invD23;
-      v3.a = d23n2 * invD23;
+      vertex2.a = d23n1 * invD23;
+      vertex3.a = d23n2 * invD23;
       count = 2;
-      v1.set(v3);
+      vertex1.set(vertex3);
       return;
     }
 
     // Must be in triangle123
     final double invD123 = 1.0 / (d123n1 + d123n2 + d123n3);
-    v1.a = d123n1 * invD123;
-    v2.a = d123n2 * invD123;
-    v3.a = d123n3 * invD123;
+    vertex1.a = d123n1 * invD123;
+    vertex2.a = d123n2 * invD123;
+    vertex3.a = d123n3 * invD123;
     count = 3;
   }
 } // Class _Simplex
 
 class DistanceProxy {
-  final List<Vector2> vertices;
-  int _count;
-  double radius;
-  final List<Vector2> buffer;
-
-  DistanceProxy()
-      : vertices = List<Vector2>(settings.maxPolygonVertices),
-        buffer = List<Vector2>(2) {
-    for (int i = 0; i < vertices.length; i++) {
-      vertices[i] = Vector2.zero();
-    }
-    _count = 0;
-    radius = 0.0;
-  }
+  final List<Vector2> vertices = List<Vector2>.generate(
+    settings.maxPolygonVertices,
+    (_) => Vector2.zero(),
+  );
+  int _count = 0;
+  double radius = 0.0;
+  final List<Vector2> buffer = List<Vector2>.generate(2, (_) => Vector2.zero());
 
   /// Initialize the proxy using the given shape. The shape must remain in scope while the proxy is
   /// in use.
@@ -472,7 +467,7 @@ class DistanceProxy {
         break;
       case ShapeType.POLYGON:
         final poly = shape as PolygonShape;
-        _count = poly.count;
+        _count = poly.vertices.length;
         radius = poly.radius;
         for (int i = 0; i < _count; i++) {
           vertices[i].setFrom(poly.vertices[i]);

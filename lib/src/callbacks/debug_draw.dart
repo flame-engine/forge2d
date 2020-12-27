@@ -45,7 +45,8 @@ abstract class DebugDraw {
 
   /// Draw a closed polygon provided in CCW order. This implementation uses
   /// {@link #drawSegment(Vec2, Vec2, Color3f)} to draw each side of the polygon.
-  void drawPolygon(List<Vector2> vertices, int vertexCount, Color3i color) {
+  void drawPolygon(List<Vector2> vertices, Color3i color) {
+    final int vertexCount = vertices.length;
     if (vertexCount == 1) {
       drawSegment(vertices[0], vertices[0], color);
       return;
@@ -63,7 +64,7 @@ abstract class DebugDraw {
   void drawPoint(Vector2 argPoint, double argRadiusOnScreen, Color3i argColor);
 
   /// Draw a solid closed polygon provided in CCW order.
-  void drawSolidPolygon(List<Vector2> vertices, int vertexCount, Color3i color);
+  void drawSolidPolygon(List<Vector2> vertices, Color3i color);
 
   /// Draw a circle.
   void drawCircle(Vector2 center, double radius, Color3i color);

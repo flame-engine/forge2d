@@ -33,8 +33,7 @@ class Car {
       Vector2(-1.5, 0.0),
     ];
 
-    final PolygonShape shape = PolygonShape();
-    shape.set(vertices, vertices.length);
+    final PolygonShape shape = PolygonShape()..set(vertices);
 
     _body.createFixtureFromShape(shape, 0.1);
 
