@@ -83,36 +83,31 @@ class PolygonShape extends Shape {
         rightMostPoint = point;
       }
     }
-    print(rightMostPoint);
 
     final List<Vector2> hull = [rightMostPoint];
-    Vector2 pointToAdd = rightMostPoint;
-    print(points);
-
     for (Vector2 point1 in points) {
-      Vector2 lastCheckedPoint = pointToAdd;
+      Vector2 currentPoint = hull.last;
       for (Vector2 point2 in points) {
-        if (lastCheckedPoint == pointToAdd) {
-          lastCheckedPoint = point2;
+        if (currentPoint == hull.last) {
+          currentPoint = point2;
           continue;
         }
 
-        final Vector2 r = lastCheckedPoint.clone()..sub(point1);
+        final Vector2 r = currentPoint.clone()..sub(point1);
         final Vector2 v = point2.clone()..sub(point1);
         final double c = r.cross(v);
         if (c < 0.0) {
-          lastCheckedPoint = point2;
+          currentPoint = point2;
         }
 
         // Collinearity check
         if (c == 0.0 && v.length2 > r.length2) {
-          lastCheckedPoint = point2;
+          currentPoint = point2;
         }
       }
 
-      pointToAdd = lastCheckedPoint;
-      if (!hull.contains(pointToAdd)) {
-        hull.add(pointToAdd);
+      if (!hull.contains(currentPoint)) {
+        hull.add(currentPoint);
       }
     }
 
@@ -124,8 +119,6 @@ class PolygonShape extends Shape {
     final Vector2 edge = Vector2.zero();
 
     // Compute normals. Ensure the edges have non-zero length.
-    print(hull);
-    print(vertices);
     for (int i = 0; i < vertices.length; ++i) {
       final int i1 = i;
       final int i2 = (i + 1) % vertices.length;
