@@ -298,18 +298,18 @@ class SolveCollisionCallback implements QueryCallback {
       final double aabbupperBoundy =
           aabb.upperBound.y + system.particleDiameter;
       final int firstProxy = ParticleSystem._lowerBound(
-          system.proxyBuffer,
-          ParticleSystem.computeTag(
-            system.inverseDiameter * aabblowerBoundx,
-              system.inverseDiameter * aabblowerBoundy,
-          ),
+        system.proxyBuffer,
+        ParticleSystem.computeTag(
+          system.inverseDiameter * aabblowerBoundx,
+          system.inverseDiameter * aabblowerBoundy,
+        ),
       );
       final int lastProxy = ParticleSystem._upperBound(
-          system.proxyBuffer,
-          ParticleSystem.computeTag(
-              system.inverseDiameter * aabbupperBoundx,
-              system.inverseDiameter * aabbupperBoundy,
-          ),
+        system.proxyBuffer,
+        ParticleSystem.computeTag(
+          system.inverseDiameter * aabbupperBoundx,
+          system.inverseDiameter * aabbupperBoundy,
+        ),
       );
 
       for (int proxy = firstProxy; proxy != lastProxy; ++proxy) {
@@ -642,12 +642,12 @@ class ParticleSystem {
         }
         if (firstIndex <= a && b < lastIndex) {
           final PsPair pair = PsPair()
-          ..indexA = a
-          ..indexB = b
-          ..flags = contact.flags
-          ..strength = groupDef.strength
-          ..distance =
-              positionBuffer.data[a].distanceTo(positionBuffer.data[b]);
+            ..indexA = a
+            ..indexB = b
+            ..flags = contact.flags
+            ..strength = groupDef.strength
+            ..distance =
+                positionBuffer.data[a].distanceTo(positionBuffer.data[b]);
           pairBuffer.add(pair);
         }
       }
@@ -704,7 +704,7 @@ class ParticleSystem {
             ..flags = contact.flags
             ..strength = math.min(groupA._strength, groupB._strength)
             ..distance =
-            positionBuffer.data[a].distanceTo(positionBuffer.data[b]);
+                positionBuffer.data[a].distanceTo(positionBuffer.data[b]);
           pairBuffer.add(pair);
         }
       }
@@ -1789,7 +1789,8 @@ class ParticleSystem {
     return _bound(ray, tag, (int a, int b) => a >= b);
   }
 
-  static int _bound(Iterable<PsProxy> ray, int tag, bool compare(int a, int b)) {
+  static int _bound(
+      Iterable<PsProxy> ray, int tag, bool compare(int a, int b)) {
     int left = 0;
     int step, current;
     int length = ray.length;
