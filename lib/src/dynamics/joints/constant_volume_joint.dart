@@ -10,7 +10,7 @@ class ConstantVolumeJoint extends Joint {
 
   World _world;
 
-  List<DistanceJoint> _distanceJoints;
+  final List<DistanceJoint> _distanceJoints = [];
 
   List<Body> getBodies() {
     return _bodies;
@@ -41,14 +41,14 @@ class ConstantVolumeJoint extends Joint {
     }
     _targetVolume = getBodyArea();
 
-    if (def.joints != null && def.joints.length != def.bodies.length) {
+    if (def.joints.isNotEmpty && def.joints.length != def.bodies.length) {
       print(def.joints.length);
       print(def.bodies.length);
       throw "Incorrect joint definition. Joints have to correspond to the _bodies";
     }
-    if (def.joints == null) {
+    if (def.joints.isEmpty) {
       final DistanceJointDef distanceJointDef = DistanceJointDef();
-      _distanceJoints = List<DistanceJoint>.generate(
+      _distanceJoints.addAll(List<DistanceJoint>.generate(
         _bodies.length,
         (i) {
           final int next = (i == _bodies.length - 1) ? 0 : i + 1;
@@ -63,9 +63,10 @@ class ConstantVolumeJoint extends Joint {
           );
           return _world.createJoint(distanceJointDef) as DistanceJoint;
         },
-      );
+      ));
     } else {
-      _distanceJoints = def.joints.toList();
+      _distanceJoints.clear();
+      _distanceJoints.addAll(def.joints);
     }
 
     _normals = List<Vector2>.generate(_bodies.length, (_) => Vector2.zero());

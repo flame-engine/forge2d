@@ -154,9 +154,7 @@ class World {
 
     // Delete the attached joints.
     for (Joint joint in body.joints) {
-      if (_destructionListener != null) {
-        _destructionListener.sayGoodbyeJoint(joint);
-      }
+      _destructionListener?.sayGoodbyeJoint(joint);
       destroyJoint(joint);
     }
 
@@ -167,9 +165,7 @@ class World {
     body.contacts.clear();
 
     for (Fixture f in body.fixtures) {
-      if (_destructionListener != null) {
-        _destructionListener.sayGoodbyeFixture(f);
-      }
+      _destructionListener?.sayGoodbyeFixture(f);
       f.destroyProxies(_contactManager.broadPhase);
     }
     bodies.remove(body);
@@ -1361,30 +1357,6 @@ class World {
     return _particleSystem.getParticleUserDataBuffer();
   }
 
-  /// Set a buffer for particle data.
-  ///
-  /// @param buffer is a pointer to a block of memory.
-  /// @param size is the number of values in the block.
-  void setParticleFlagsBuffer(List<int> buffer, int capacity) {
-    _particleSystem.setParticleFlagsBuffer(buffer, capacity);
-  }
-
-  void setParticlePositionBuffer(List<Vector2> buffer, int capacity) {
-    _particleSystem.setParticlePositionBuffer(buffer, capacity);
-  }
-
-  void setParticleVelocityBuffer(List<Vector2> buffer, int capacity) {
-    _particleSystem.setParticleVelocityBuffer(buffer, capacity);
-  }
-
-  void setParticleColorBuffer(List<ParticleColor> buffer, int capacity) {
-    _particleSystem.setParticleColorBuffer(buffer, capacity);
-  }
-
-  void setParticleUserDataBuffer(List<Object> buffer, int capacity) {
-    _particleSystem.setParticleUserDataBuffer(buffer, capacity);
-  }
-
   /// Get contacts between particles
   ///
   /// @return
@@ -1392,19 +1364,11 @@ class World {
     return _particleSystem.contactBuffer;
   }
 
-  int getParticleContactCount() {
-    return _particleSystem.contactCount;
-  }
-
   /// Get contacts between particles and bodies
   ///
   /// @return
   List<ParticleBodyContact> getParticleBodyContacts() {
     return _particleSystem.bodyContactBuffer;
-  }
-
-  int getParticleBodyContactCount() {
-    return _particleSystem.bodyContactCount;
   }
 
   /// Compute the kinetic energy that can be lost by damping force

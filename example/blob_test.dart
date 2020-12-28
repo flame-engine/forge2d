@@ -25,7 +25,6 @@ class BlobTest extends Demo {
 
       final BodyDef bd = BodyDef();
       bd.position.setValues(0.0, 0.0);
-      assert(world != null);
       ground = world.createBody(bd);
       ground.createFixtureFromShape(sd);
 
