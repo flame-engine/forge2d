@@ -6,8 +6,6 @@ class ParticleGroup {
   int _lastIndex = 0;
   int _groupFlags = 0;
   double _strength = 0.0;
-  ParticleGroup _prev;
-  ParticleGroup _next;
 
   int _timestamp = 0;
   double _mass = 0.0;
@@ -24,7 +22,6 @@ class ParticleGroup {
   Object _userData;
 
   ParticleGroup() {
-    // _system = null;
     _firstIndex = 0;
     _lastIndex = 0;
     _groupFlags = 0;
@@ -39,10 +36,6 @@ class ParticleGroup {
     _destroyAutomatically = true;
     _toBeDestroyed = false;
     _toBeSplit = false;
-  }
-
-  ParticleGroup getNext() {
-    return _next;
   }
 
   int getParticleCount() {
@@ -114,10 +107,10 @@ class ParticleGroup {
       linearVelocity.setZero();
       for (int i = _firstIndex; i < _lastIndex; i++) {
         _mass += m;
-        final Vector2 pos = _system.positionBuffer.data[i];
+        final Vector2 pos = _system.positionBuffer[i];
         _center.x += m * pos.x;
         _center.y += m * pos.y;
-        final Vector2 vel = _system.velocityBuffer.data[i];
+        final Vector2 vel = _system.velocityBuffer[i];
         linearVelocity.x += m * vel.x;
         linearVelocity.y += m * vel.y;
       }
@@ -130,8 +123,8 @@ class ParticleGroup {
       _inertia = 0.0;
       _angularVelocity = 0.0;
       for (int i = _firstIndex; i < _lastIndex; i++) {
-        final Vector2 pos = _system.positionBuffer.data[i];
-        final Vector2 vel = _system.velocityBuffer.data[i];
+        final Vector2 pos = _system.positionBuffer[i];
+        final Vector2 vel = _system.velocityBuffer[i];
         final double px = pos.x - _center.x;
         final double py = pos.y - _center.y;
         final double vx = vel.x - linearVelocity.x;

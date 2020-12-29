@@ -21,8 +21,8 @@ class World {
   final Vector2 _gravity;
   bool _allowSleep = false;
 
-  DestructionListener _destructionListener;
-  ParticleDestructionListener _particleDestructionListener;
+  DestructionListener destructionListener;
+  ParticleDestructionListener particleDestructionListener;
   DebugDraw debugDraw;
 
   /// This is used to compute the time step ratio to support a variable time step.
@@ -37,7 +37,7 @@ class World {
 
   Profile _profile;
 
-  ParticleSystem _particleSystem;
+  ParticleSystem particleSystem;
 
   /// Construct a world object.
   ///
@@ -61,7 +61,7 @@ class World {
     _contactManager = ContactManager(broadPhase);
     _profile = Profile();
 
-    _particleSystem = ParticleSystem(this);
+    particleSystem = ParticleSystem(this);
   }
 
   void setAllowSleep(bool flag) {
@@ -87,25 +87,6 @@ class World {
 
   bool isAllowSleep() {
     return _allowSleep;
-  }
-
-  DestructionListener getDestructionListener() {
-    return _destructionListener;
-  }
-
-  ParticleDestructionListener getParticleDestructionListener() {
-    return _particleDestructionListener;
-  }
-
-  void setParticleDestructionListener(ParticleDestructionListener listener) {
-    _particleDestructionListener = listener;
-  }
-
-  /// Register a destruction listener. The listener is owned by you and must remain in scope.
-  ///
-  /// @param listener
-  void setDestructionListener(DestructionListener listener) {
-    _destructionListener = listener;
   }
 
   /// Register a contact filter to provide specific control over collision. Otherwise the default
@@ -154,7 +135,7 @@ class World {
 
     // Delete the attached joints.
     for (Joint joint in body.joints) {
-      _destructionListener?.sayGoodbyeJoint(joint);
+      destructionListener?.sayGoodbyeJoint(joint);
       destroyJoint(joint);
     }
 
@@ -165,7 +146,7 @@ class World {
     body.contacts.clear();
 
     for (Fixture f in body.fixtures) {
-      _destructionListener?.sayGoodbyeFixture(f);
+      destructionListener?.sayGoodbyeFixture(f);
       f.destroyProxies(_contactManager.broadPhase);
     }
     bodies.remove(body);
@@ -282,7 +263,7 @@ class World {
     // Integrate velocities, solve velocity constraints, and integrate positions.
     if (_stepComplete && step.dt > 0.0) {
       tempTimer.reset();
-      _particleSystem.solve(step); // Particle Simulation
+      particleSystem.solve(step); // Particle Simulation
       _profile.solveParticleSystem.record(tempTimer.getMilliseconds());
       tempTimer.reset();
       solve(step);
@@ -357,7 +338,7 @@ class World {
           }
         }
       }
-      drawParticleSystem(_particleSystem);
+      drawParticleSystem(particleSystem);
     }
 
     if ((flags & DebugDraw.JOINT_BIT) != 0) {
@@ -440,7 +421,7 @@ class World {
     wqwrapper.broadPhase = _contactManager.broadPhase;
     wqwrapper.callback = callback;
     _contactManager.broadPhase.query(wqwrapper, aabb);
-    _particleSystem.queryAABB(particleCallback, aabb);
+    particleSystem.queryAABB(particleCallback, aabb);
   }
 
   /// Query the world for all particles that potentially overlap the provided AABB.
@@ -448,7 +429,7 @@ class World {
   /// @param particleCallback callback for particles.
   /// @param aabb the query box.
   void queryAABBParticle(ParticleQueryCallback particleCallback, AABB aabb) {
-    _particleSystem.queryAABB(particleCallback, aabb);
+    particleSystem.queryAABB(particleCallback, aabb);
   }
 
   final WorldRayCastWrapper wrcwrapper = WorldRayCastWrapper();
@@ -489,7 +470,7 @@ class World {
     input.p1.setFrom(point1);
     input.p2.setFrom(point2);
     _contactManager.broadPhase.raycast(wrcwrapper, input);
-    _particleSystem.raycast(particleCallback, point1, point2);
+    particleSystem.raycast(particleCallback, point1, point2);
   }
 
   /// Ray-cast the world for all particles in the path of the ray. Your callback controls whether you
@@ -500,7 +481,7 @@ class World {
   /// @param point2 the ray ending point
   void raycastParticle(ParticleRaycastCallback particleCallback, Vector2 point1,
       Vector2 point2) {
-    _particleSystem.raycast(particleCallback, point1, point2);
+    particleSystem.raycast(particleCallback, point1, point2);
   }
 
   /// Get the number of broad-phase proxies.
@@ -1122,14 +1103,11 @@ class World {
   void drawParticleSystem(ParticleSystem system) {
     final bool wireframe =
         (debugDraw.drawFlags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
-    final int particleCount = system.getParticleCount();
+    final int particleCount = system.particleCount;
     if (particleCount != 0) {
       final double particleRadius = system.getParticleRadius();
-      final List<Vector2> positionBuffer = system.getParticlePositionBuffer();
-      List<ParticleColor> colorBuffer;
-      if (system.colorBuffer.data != null) {
-        colorBuffer = system.getParticleColorBuffer();
-      }
+      final List<Vector2> positionBuffer = system.positionBuffer;
+      final List<ParticleColor> colorBuffer = system.colorBuffer;
       if (wireframe) {
         debugDraw.drawParticlesWireframe(
             positionBuffer, particleRadius, colorBuffer, particleCount);
@@ -1140,6 +1118,7 @@ class World {
     }
   }
 
+  // TODO.spydon: all the following method in this class should be moved to the particle system
   /// Create a particle whose properties have been defined. No reference to the definition is
   /// retained. A simulation step must occur before it's possible to interact with a newly created
   /// particle. For example, DestroyParticleInShape() will not destroy a particle until Step() has
@@ -1149,7 +1128,7 @@ class World {
   /// @return the index of the particle.
   int createParticle(ParticleDef def) {
     assert(isLocked() == false);
-    return _particleSystem.createParticle(def);
+    return particleSystem.createParticle(def);
   }
 
   /// Destroy a particle. The particle is removed after the next step.
@@ -1164,7 +1143,7 @@ class World {
   /// @param Index of the particle to destroy.
   /// @param Whether to call the destruction listener just before the particle is destroyed.
   void destroyParticleFlag(int index, bool callDestructionListener) {
-    _particleSystem.destroyParticle(index, callDestructionListener);
+    particleSystem.destroyParticle(index, callDestructionListener);
   }
 
   /// Destroy particles inside a shape without enabling the destruction callback for destroyed
@@ -1191,7 +1170,7 @@ class World {
   int destroyParticlesInShapeFlag(
       Shape shape, Transform xf, bool callDestructionListener) {
     assert(isLocked() == false);
-    return _particleSystem.destroyParticlesInShape(
+    return particleSystem.destroyParticlesInShape(
         shape, xf, callDestructionListener);
   }
 
@@ -1201,7 +1180,7 @@ class World {
   /// @warning This function is locked during callbacks.
   ParticleGroup createParticleGroup(ParticleGroupDef def) {
     assert(isLocked() == false);
-    return _particleSystem.createParticleGroup(def);
+    return particleSystem.createParticleGroup(def);
   }
 
   /// Join two particle groups.
@@ -1211,7 +1190,7 @@ class World {
   /// @warning This function is locked during callbacks.
   void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
     assert(isLocked() == false);
-    _particleSystem.joinParticleGroups(groupA, groupB);
+    particleSystem.joinParticleGroups(groupA, groupB);
   }
 
   /// Destroy particles in a group. This function is locked during callbacks.
@@ -1222,7 +1201,7 @@ class World {
   void destroyParticlesInGroupFlag(
       ParticleGroup group, bool callDestructionListener) {
     assert(isLocked() == false);
-    _particleSystem.destroyParticlesInGroup(group, callDestructionListener);
+    particleSystem.destroyParticlesInGroup(group, callDestructionListener);
   }
 
   /// Destroy particles in a group without enabling the destruction callback for destroyed particles.
@@ -1232,150 +1211,6 @@ class World {
   /// @warning This function is locked during callbacks.
   void destroyParticlesInGroup(ParticleGroup group) {
     destroyParticlesInGroupFlag(group, false);
-  }
-
-  /// Get the world particle group list. With the returned group, use ParticleGroup::GetNext to get
-  /// the next group in the world list. A NULL group indicates the end of the list.
-  ///
-  /// @return the head of the world particle group list.
-  List<ParticleGroup> getParticleGroupList() {
-    return _particleSystem.getParticleGroupList();
-  }
-
-  /// Get the number of particle groups.
-  ///
-  /// @return
-  int getParticleGroupCount() {
-    return _particleSystem.getParticleGroupCount();
-  }
-
-  /// Get the number of particles.
-  ///
-  /// @return
-  int getParticleCount() {
-    return _particleSystem.getParticleCount();
-  }
-
-  /// Get the maximum number of particles.
-  ///
-  /// @return
-  int getParticleMaxCount() {
-    return _particleSystem.maxCount;
-  }
-
-  /// Set the maximum number of particles.
-  ///
-  /// @param count
-  void setParticleMaxCount(int count) {
-    _particleSystem.maxCount = count;
-  }
-
-  /// Change the particle density.
-  ///
-  /// @param density
-  void setParticleDensity(double density) {
-    _particleSystem.setParticleDensity(density);
-  }
-
-  /// Get the particle density.
-  ///
-  /// @return
-  double getParticleDensity() {
-    return _particleSystem.getParticleDensity();
-  }
-
-  /// Change the particle gravity scale. Adjusts the effect of the global gravity vector on
-  /// particles. Default value is 1.0.
-  ///
-  /// @param gravityScale
-  void setParticleGravityScale(double gravityScale) {
-    _particleSystem.setParticleGravityScale(gravityScale);
-  }
-
-  /// Get the particle gravity scale.
-  ///
-  /// @return
-  double getParticleGravityScale() {
-    return _particleSystem.getParticleGravityScale();
-  }
-
-  /// Damping is used to reduce the velocity of particles. The damping parameter can be larger than
-  /// 1.0 but the damping effect becomes sensitive to the time step when the damping parameter is
-  /// large.
-  ///
-  /// @param damping
-  void setParticleDamping(double damping) {
-    _particleSystem.setParticleDamping(damping);
-  }
-
-  /// Get damping for particles
-  ///
-  /// @return
-  double getParticleDamping() {
-    return _particleSystem.getParticleDamping();
-  }
-
-  /// Change the particle radius. You should set this only once, on world start. If you change the
-  /// radius during execution, existing particles may explode, shrink, or behave unexpectedly.
-  ///
-  /// @param radius
-  void setParticleRadius(double radius) {
-    _particleSystem.setParticleRadius(radius);
-  }
-
-  /// Get the particle radius.
-  ///
-  /// @return
-  double getParticleRadius() {
-    return _particleSystem.getParticleRadius();
-  }
-
-  /// Get the particle data. @return the pointer to the head of the particle data.
-  ///
-  /// @return
-  List<int> getParticleFlagsBuffer() {
-    return _particleSystem.getParticleFlagsBuffer();
-  }
-
-  List<Vector2> getParticlePositionBuffer() {
-    return _particleSystem.getParticlePositionBuffer();
-  }
-
-  List<Vector2> getParticleVelocityBuffer() {
-    return _particleSystem.getParticleVelocityBuffer();
-  }
-
-  List<ParticleColor> getParticleColorBuffer() {
-    return _particleSystem.getParticleColorBuffer();
-  }
-
-  List<ParticleGroup> getParticleGroupBuffer() {
-    return _particleSystem.getParticleGroupBuffer();
-  }
-
-  List<Object> getParticleUserDataBuffer() {
-    return _particleSystem.getParticleUserDataBuffer();
-  }
-
-  /// Get contacts between particles
-  ///
-  /// @return
-  List<ParticleContact> getParticleContacts() {
-    return _particleSystem.contactBuffer;
-  }
-
-  /// Get contacts between particles and bodies
-  ///
-  /// @return
-  List<ParticleBodyContact> getParticleBodyContacts() {
-    return _particleSystem.bodyContactBuffer;
-  }
-
-  /// Compute the kinetic energy that can be lost by damping force
-  ///
-  /// @return
-  double computeParticleCollisionEnergy() {
-    return _particleSystem.computeParticleCollisionEnergy();
   }
 }
 
