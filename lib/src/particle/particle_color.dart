@@ -64,4 +64,8 @@ class ParticleColor {
     this.b = b;
     this.a = a;
   }
+
+  ParticleColor clone() {
+    return ParticleColor()..setRGBA(r, g, b, a);
+  }
 }

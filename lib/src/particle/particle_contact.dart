@@ -1,9 +1,11 @@
 part of forge2d;
 
 class ParticleContact {
-  /// Indices of the respective particles making contact.
-  int indexA = 0;
-  int indexB = 0;
+  /// The respective particles making contact.
+  Particle particleA;
+  Particle particleB;
+
+  ParticleContact(this.particleA, this.particleB);
 
   /// The logical sum of the particle behaviors that have been set.
   int flags = 0;
