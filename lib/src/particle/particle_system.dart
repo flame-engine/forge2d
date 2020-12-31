@@ -188,7 +188,7 @@ class ParticleSystem {
     final ParticleGroup group = ParticleGroup()
       .._system = this
       ..groupFlags = groupDef.groupFlags
-      .._strength = groupDef.strength
+      ..strength = groupDef.strength
       ..userData = groupDef.userData
       .._transform.set(transform)
       ..destroyAutomatically = groupDef.destroyAutomatically;
@@ -289,7 +289,7 @@ class ParticleSystem {
             groupB.particles.contains(particleB)) {
           final PsPair pair = PsPair(particleA, particleB)
             ..flags = contact.flags
-            ..strength = math.min(groupA._strength, groupB._strength)
+            ..strength = math.min(groupA.strength, groupB.strength)
             ..distance = particleA.position.distanceTo(particleB.position);
           pairBuffer.add(pair);
         }
@@ -1227,10 +1227,8 @@ class ParticleSystem {
   double computeParticleCollisionEnergy() {
     double sumV2 = 0.0;
     for (ParticleContact contact in contactBuffer) {
-      final Vector2 n = contact.normal;
-      final Vector2 va = contact.particleA.velocity;
-      final Vector2 vb = contact.particleB.velocity;
-      final Vector2 collisionVelocity = vb - va;
+      final Vector2 collisionVelocity =
+          contact.particleA.velocity - contact.particleB.velocity;
       final double vn = collisionVelocity.dot(contact.normal);
       if (vn < 0) {
         sumV2 += vn * vn;

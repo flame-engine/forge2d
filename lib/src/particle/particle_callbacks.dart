@@ -182,7 +182,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
           final double midPointY = 1.0 / 3.0 * (pa.y + pb.y + pc.y);
           final PsTriad triad = PsTriad(particleA, particleB, particleC)
             ..flags = af | bf | cf
-            ..strength = math.min(groupA._strength, groupB._strength)
+            ..strength = math.min(groupA.strength, groupB.strength)
             ..pa.x = pa.x - midPointX
             ..pa.y = pa.y - midPointY
             ..pb.x = pb.x - midPointX

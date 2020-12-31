@@ -4,7 +4,7 @@ class ParticleGroup {
   ParticleSystem _system;
   final List<Particle> particles = [];
   int groupFlags = 0;
-  double _strength = 1.0;
+  double strength = 1.0;
 
   int _timestamp = -1;
   double _mass = 0.0;
@@ -12,7 +12,7 @@ class ParticleGroup {
   final Vector2 _center = Vector2.zero();
   final Vector2 _linearVelocity = Vector2.zero();
   double _angularVelocity = 0.0;
-  final Transform _transform = Transform.zero()..setIdentity();
+  final Transform transform = Transform.zero()..setIdentity();
 
   bool destroyAutomatically = true;
   bool toBeDestroyed = false;
@@ -28,42 +28,37 @@ class ParticleGroup {
 
   bool contains(Particle particle) => particles.contains(particle);
 
-  double getMass() {
+  set mass(double mass) => _mass = mass;
+  double get mass {
     updateStatistics();
     return _mass;
   }
 
-  double getInertia() {
+  set inertia(double inertia) => _inertia = inertia;
+  double get inertia {
     updateStatistics();
     return _inertia;
   }
 
-  Vector2 getCenter() {
+  set center(Vector2 center) => _center.setFrom(center);
+  Vector2 get center {
     updateStatistics();
     return _center;
   }
 
-  Vector2 getLinearVelocity() {
+  Vector2 get linearVelocity {
     updateStatistics();
     return _linearVelocity;
   }
 
-  double getAngularVelocity() {
+  double get angularVelocity {
     updateStatistics();
     return _angularVelocity;
   }
 
-  Transform getTransform() {
-    return _transform;
-  }
+  Vector2 get position => transform.p;
 
-  Vector2 getPosition() {
-    return _transform.p;
-  }
-
-  double getAngle() {
-    return _transform.q.getAngle();
-  }
+  double get angle => transform.q.getAngle();
 
   void updateStatistics() {
     if (_timestamp != _system.timestamp) {
