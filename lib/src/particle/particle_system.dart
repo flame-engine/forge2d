@@ -190,7 +190,7 @@ class ParticleSystem {
       ..groupFlags = groupDef.groupFlags
       ..strength = groupDef.strength
       ..userData = groupDef.userData
-      .._transform.set(transform)
+      ..transform.set(transform)
       ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
@@ -717,7 +717,7 @@ class ParticleSystem {
           ..sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.setFrom(rotation);
-        group._transform.set(Transform.mul(_tempXf, group._transform));
+        group.transform.set(Transform.mul(_tempXf, group.transform));
         final Transform velocityTransform = _tempXf2;
         velocityTransform.p.x = step.invDt * _tempXf.p.x;
         velocityTransform.p.y = step.invDt * _tempXf.p.y;
