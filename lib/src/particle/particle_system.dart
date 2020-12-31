@@ -718,11 +718,11 @@ class ParticleSystem {
         _tempXf.p.setFrom(temp);
         _tempXf.q.setFrom(rotation);
         group.transform.set(Transform.mul(_tempXf, group.transform));
-        final Transform velocityTransform = _tempXf2;
-        velocityTransform.p.x = step.invDt * _tempXf.p.x;
-        velocityTransform.p.y = step.invDt * _tempXf.p.y;
-        velocityTransform.q.s = step.invDt * _tempXf.q.s;
-        velocityTransform.q.c = step.invDt * (_tempXf.q.c - 1);
+        final Transform velocityTransform = _tempXf2
+          ..p.x = step.invDt * _tempXf.p.x
+          ..p.y = step.invDt * _tempXf.p.y
+          ..q.s = step.invDt * _tempXf.q.s
+          ..q.c = step.invDt * (_tempXf.q.c - 1);
         for (Particle particle in group.particles) {
           particle.velocity.setFrom(
             Transform.mulVec2(velocityTransform, particle.position),

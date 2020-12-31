@@ -31,10 +31,6 @@ abstract class DebugDraw {
 
   DebugDraw.zero();
 
-  void setViewportTransform(ViewportTransform viewportTransform) {
-    this.viewportTransform = viewportTransform;
-  }
-
   void appendFlags(int flags) {
     drawFlags |= flags;
   }
@@ -109,15 +105,6 @@ abstract class DebugDraw {
 
   void drawString(Vector2 pos, String s, Color3i color) {
     drawStringXY(pos.x, pos.y, s, color);
-  }
-
-  ViewportTransform getViewportTranform() {
-    return viewportTransform;
-  }
-
-  /// @deprecated use the viewport transform in {@link #getViewportTranform()}
-  void setCamera(double x, double y, double scale) {
-    viewportTransform.setCamera(x, y, scale);
   }
 
   /// Takes the world coordinate and returns the screen coordinates.
