@@ -167,11 +167,9 @@ class ParticleSystem {
   }
 
   void destroyParticlesInGroup(
-    ParticleGroup group,
-      {
-        bool callDestructionListener = false,
-      }
-  ) {
+    ParticleGroup group, {
+    bool callDestructionListener = false,
+  }) {
     group.particles.forEach((p) => destroyParticle(p, callDestructionListener));
   }
 
@@ -186,15 +184,14 @@ class ParticleSystem {
     final double stride = getParticleStride();
     final Transform identity = _tempTransform..setIdentity();
     final Transform transform = _tempTransform2..setIdentity();
-    final int firstIndex = _particleCount;
 
-    final ParticleGroup group = ParticleGroup();
-    group._system = this;
-    group.groupFlags = groupDef.groupFlags;
-    group._strength = groupDef.strength;
-    group.userData = groupDef.userData;
-    group._transform.set(transform);
-    group._destroyAutomatically = groupDef.destroyAutomatically;
+    final ParticleGroup group = ParticleGroup()
+      .._system = this
+      ..groupFlags = groupDef.groupFlags
+      .._strength = groupDef.strength
+      ..userData = groupDef.userData
+      .._transform.set(transform)
+      ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
       final Particle seedParticle = Particle()
@@ -267,7 +264,6 @@ class ParticleSystem {
       diagram.generate(stride / 2);
       _createParticleGroupCallback.system = this;
       _createParticleGroupCallback.def = groupDef;
-      _createParticleGroupCallback.firstIndex = firstIndex;
       diagram.getNodes(_createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
@@ -500,7 +496,7 @@ class ParticleSystem {
 
   void solve(TimeStep step) {
     ++timestamp;
-    if (_particleCount == 0) {
+    if (particles.isEmpty) {
       return;
     }
     allParticleFlags = 0;
@@ -510,7 +506,7 @@ class ParticleSystem {
     if ((allParticleFlags & ParticleType.zombieParticle) != 0) {
       solveZombie();
     }
-    if (_particleCount == 0) {
+    if (particles.isEmpty) {
       return;
     }
     allGroupFlags = 0;
@@ -1024,7 +1020,7 @@ class ParticleSystem {
 
     groupBuffer.removeWhere((g) {
       g.particles.removeWhere(isZombie);
-      final toBeRemoved = g._destroyAutomatically && g.particles.isEmpty;
+      final toBeRemoved = g.destroyAutomatically && g.particles.isEmpty;
       if (toBeRemoved) {
         world.particleDestructionListener?.sayGoodbyeParticleGroup(g);
       }
@@ -1150,12 +1146,13 @@ class ParticleSystem {
     );
     for (int i = firstProxy; i < lastProxy; ++i) {
       // TODO: Does this still work now when we don't rotate the buffers?
-      final Vector2 p = proxyBuffer[i].particle.position;
+      final Particle particle = proxyBuffer[i].particle;
+      final Vector2 p = particle.position;
       if (lowerBoundX < p.x &&
           p.x < upperBoundX &&
           lowerBoundY < p.y &&
           p.y < upperBoundY) {
-        if (!callback.reportParticle(i)) {
+        if (!callback.reportParticle(particle)) {
           break;
         }
       }
@@ -1192,7 +1189,7 @@ class ParticleSystem {
     final double vy = point2.y - point1.y;
     double v2 = vx * vx + vy * vy;
     v2 = v2 == 0 ? double.maxFinite : v2;
-    for (int i = firstProxy; proxy < lastProxy; ++proxy) {
+    for (int i = firstProxy; i < lastProxy; ++i) {
       // TODO: Is this correct now when we are not rotating the buffers?
       final positionI = proxyBuffer[i].particle.position;
       final double px = point1.x - positionI.x;

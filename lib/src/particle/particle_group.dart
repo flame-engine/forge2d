@@ -12,11 +12,11 @@ class ParticleGroup {
   final Vector2 _center = Vector2.zero();
   final Vector2 _linearVelocity = Vector2.zero();
   double _angularVelocity = 0.0;
-  final Transform _transform = Transform.zero().setIdentity();
+  final Transform _transform = Transform.zero()..setIdentity();
 
-  bool _destroyAutomatically = true;
-  bool _toBeDestroyed = false;
-  bool _toBeSplit = false;
+  bool destroyAutomatically = true;
+  bool toBeDestroyed = false;
+  bool toBeSplit = false;
 
   Object userData;
 

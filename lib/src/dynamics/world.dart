@@ -1103,13 +1103,12 @@ class World {
   void drawParticleSystem(ParticleSystem system) {
     final bool wireframe =
         (debugDraw.drawFlags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
-    final int particleCount = system.particleCount;
-    if (particleCount != 0) {
+    if (system.particles.isNotEmpty) {
       final double particleRadius = system.getParticleRadius();
-      final List<Vector2> positionBuffer = system.particles.map(
+      final Iterable<Vector2> positionBuffer = system.particles.map(
         (p) => p.position,
       );
-      final List<ParticleColor> colorBuffer = system.particles.map(
+      final Iterable<ParticleColor> colorBuffer = system.particles.map(
         (p) => p.color,
       );
       if (wireframe) {
@@ -1117,14 +1116,12 @@ class World {
           positionBuffer,
           particleRadius,
           colorBuffer,
-          particleCount,
         );
       } else {
         debugDraw.drawParticles(
           positionBuffer,
           particleRadius,
           colorBuffer,
-          particleCount,
         );
       }
     }

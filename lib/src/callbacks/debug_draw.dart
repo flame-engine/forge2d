@@ -90,13 +90,19 @@ abstract class DebugDraw {
 
   /// Draw a particle array
   /// @param colors can be null
-  void drawParticles(List<Vector2> centers, double radius,
-      List<ParticleColor> colors, int count);
+  void drawParticles(
+    Iterable<Vector2> centers,
+    double radius,
+    Iterable<ParticleColor> colors,
+  );
 
   /// Draw a particle array
   /// @param colors can be null
-  void drawParticlesWireframe(List<Vector2> centers, double radius,
-      List<ParticleColor> colors, int count);
+  void drawParticlesWireframe(
+    Iterable<Vector2> centers,
+    double radius,
+    Iterable<ParticleColor> colors,
+  );
 
   /// Called at the end of drawing a world
   void flush() {}

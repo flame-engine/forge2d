@@ -120,14 +120,20 @@ class CanvasDraw extends DebugDraw {
   }
 
   @override
-  void drawParticles(List<Vector2> centers, double radius,
-      List<ParticleColor> colors, int count) {
+  void drawParticles(
+    Iterable<Vector2> centers,
+    double radius,
+    Iterable<ParticleColor> colors,
+  ) {
     throw "Unimplemented";
   }
 
   @override
-  void drawParticlesWireframe(List<Vector2> centers, double radius,
-      List<ParticleColor> colors, int count) {
+  void drawParticlesWireframe(
+    Iterable<Vector2> centers,
+    double radius,
+    Iterable<ParticleColor> colors,
+  ) {
     throw "Unimplemented";
   }
 }

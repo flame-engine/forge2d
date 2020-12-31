@@ -89,13 +89,12 @@ class UpdateBodyContactsCallback implements QueryCallback {
             final double rpx = ap.x - bp.x;
             final double rpy = ap.y - bp.y;
             final double rpn = rpx * n.y - rpy * n.x;
-            final ParticleBodyContact contact = ParticleBodyContact();
-            contact.index = a;
-            contact.body = b;
-            contact.weight = 1 - d * system.inverseDiameter;
-            contact.normal.x = -n.x;
-            contact.normal.y = -n.y;
-            contact.mass = 1 / (invAm + invBm + invBI * rpn * rpn);
+            final ParticleBodyContact contact = ParticleBodyContact(particle)
+              ..body = b
+              ..weight = 1 - d * system.inverseDiameter
+              ..normal.x = -n.x
+              ..normal.y = -n.y
+              ..mass = 1 / (invAm + invBm + invBI * rpn * rpn);
             system.bodyContactBuffer.add(contact);
           }
         }
@@ -226,25 +225,25 @@ class SolveCollisionCallback implements QueryCallback {
       final int firstProxy = ParticleSystem._lowerBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
-          system.inverseDiameter * aabblowerBoundx,
-          system.inverseDiameter * aabblowerBoundy,
+          system.inverseDiameter * aabbLowerBoundx,
+          system.inverseDiameter * aabbLowerBoundy,
         ),
       );
       final int lastProxy = ParticleSystem._upperBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
-          system.inverseDiameter * aabbupperBoundx,
-          system.inverseDiameter * aabbupperBoundy,
+          system.inverseDiameter * aabbUpperBoundx,
+          system.inverseDiameter * aabbUpperBoundy,
         ),
       );
 
       for (int i = firstProxy; i != lastProxy; ++i) {
-        final particle = system.proxyBuffer[i].particle
+        final particle = system.proxyBuffer[i].particle;
         final Vector2 ap = particle.position;
-        if (aabblowerBoundx <= ap.x &&
-            ap.x <= aabbupperBoundx &&
-            aabblowerBoundy <= ap.y &&
-            ap.y <= aabbupperBoundy) {
+        if (aabbLowerBoundx <= ap.x &&
+            ap.x <= aabbUpperBoundx &&
+            aabbLowerBoundy <= ap.y &&
+            ap.y <= aabbUpperBoundy) {
           final Vector2 av = particle.velocity;
           final Vector2 temp = Transform.mulTransVec2(body._xf0, ap);
           input.p1.setFrom(Transform.mulVec2(body._transform, temp));
