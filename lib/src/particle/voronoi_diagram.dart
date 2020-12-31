@@ -1,16 +1,14 @@
 part of forge2d;
 
 abstract class VoronoiDiagramCallback {
-  void call(int aTag, int bTag, int cTag);
+  void call(Particle particleA, Particle particleB, Particle particleC);
 }
 
 class VoronoiGenerator {
-  final Vector2 center = Vector2.zero();
-  int tag = 0;
+  final Vector2 center;
+  final Particle particle;
 
-  VoronoiGenerator(Vector2 center, this.tag) {
-    this.center.setFrom(center);
-  }
+  VoronoiGenerator(this.center, this.particle);
 }
 
 class VoronoiDiagramTask {
@@ -45,18 +43,18 @@ class VoronoiDiagram {
         final VoronoiGenerator d = _diagram[i + 1 + _countX];
         if (b != c) {
           if (a != b && a != c) {
-            callback.call(a.tag, b.tag, c.tag);
+            callback.call(a.particle, b.particle, c.particle);
           }
           if (d != b && d != c) {
-            callback.call(b.tag, d.tag, c.tag);
+            callback.call(b.particle, d.particle, c.particle);
           }
         }
       }
     }
   }
 
-  void addGenerator(Vector2 center, int tag) {
-    generators.add(VoronoiGenerator(center, tag));
+  void addGenerator(Vector2 center, Particle particle) {
+    generators.add(VoronoiGenerator(center, particle));
   }
 
   final Vector2 _lower = Vector2.zero();

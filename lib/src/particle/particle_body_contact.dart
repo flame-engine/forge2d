@@ -2,7 +2,7 @@ part of forge2d;
 
 class ParticleBodyContact {
   /// Index of the particle making contact.
-  int index = 0;
+  final Particle particle;
 
   /// The body making contact.
   Body body;
@@ -15,4 +15,6 @@ class ParticleBodyContact {
 
   /// The effective mass used in calculating force.
   double mass = 0.0;
+
+  ParticleBodyContact(this.particle);
 }

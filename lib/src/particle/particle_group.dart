@@ -4,36 +4,23 @@ class ParticleGroup {
   ParticleSystem _system;
   final List<Particle> particles = [];
   int groupFlags = 0;
-  double _strength = 0.0;
+  double _strength = 1.0;
 
-  int _timestamp = 0;
+  int _timestamp = -1;
   double _mass = 0.0;
   double _inertia = 0.0;
   final Vector2 _center = Vector2.zero();
   final Vector2 _linearVelocity = Vector2.zero();
   double _angularVelocity = 0.0;
-  final Transform _transform = Transform.zero();
+  final Transform _transform = Transform.zero().setIdentity();
 
-  bool _destroyAutomatically = false;
+  bool _destroyAutomatically = true;
   bool _toBeDestroyed = false;
   bool _toBeSplit = false;
 
   Object userData;
 
-  ParticleGroup() {
-    _groupFlags = 0;
-    _strength = 1.0;
-
-    _timestamp = -1;
-    _mass = 0.0;
-    _inertia = 0.0;
-    _angularVelocity = 0.0;
-    _transform.setIdentity();
-
-    _destroyAutomatically = true;
-    _toBeDestroyed = false;
-    _toBeSplit = false;
-  }
+  ParticleGroup();
 
   void add(Particle particle) {
     particles.add(particle);

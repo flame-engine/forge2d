@@ -115,8 +115,9 @@ part 'src/dynamics/joints/wheel_joint_def.dart';
 
 part 'src/particle/particle_body_contact.dart';
 part 'src/particle/particle_color.dart';
+part 'src/particle/particle_callbacks.dart';
 part 'src/particle/particle_contact.dart';
-part 'src/particle/particle_def.dart';
+part 'src/particle/particle.dart';
 part 'src/particle/particle_group.dart';
 part 'src/particle/particle_group_def.dart';
 part 'src/particle/particle_group_type.dart';

@@ -19,10 +19,9 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   }
 
   @override
-  bool reportParticle(int index) {
-    assert(index >= 0 && index < system._particleCount);
-    if (shape.testPoint(xf, system.positionBuffer[index])) {
-      system.destroyParticle(index, callDestructionListener);
+  bool reportParticle(Particle particle) {
+    if (shape.testPoint(xf, particle.position)) {
+      system.destroyParticle(particle, callDestructionListener);
       destroyed++;
     }
     return true;
@@ -72,9 +71,9 @@ class UpdateBodyContactsCallback implements QueryCallback {
         ),
       );
 
-      for (int proxy = firstProxy; proxy != lastProxy; ++proxy) {
-        final int a = system.proxyBuffer[proxy].index;
-        final Vector2 ap = system.positionBuffer[a];
+      for (int i = firstProxy; i != lastProxy; ++i) {
+        final Particle particle = system.proxyBuffer[i].particle;
+        final Vector2 ap = particle.position;
         if (aabbLowerBoundX <= ap.x &&
             ap.x <= aabbUpperBoundX &&
             aabbLowerBoundY <= ap.y &&
@@ -84,7 +83,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
           d = fixture.computeDistance(ap, childIndex, n);
           if (d < system.particleDiameter) {
             final double invAm =
-                (system.flagsBuffer[a] & ParticleType.wallParticle) != 0
+                (particle.flags & ParticleType.wallParticle) != 0
                     ? 0.0
                     : system.getParticleInvMass();
             final double rpx = ap.x - bp.x;
@@ -108,11 +107,14 @@ class UpdateBodyContactsCallback implements QueryCallback {
 
 // Callback used with VoronoiDiagram.
 class CreateParticleGroupCallback implements VoronoiDiagramCallback {
+  ParticleSystem system;
+  ParticleGroupDef def;
+
   @override
-  void call(int a, int b, int c) {
-    final Vector2 pa = system.positionBuffer[a];
-    final Vector2 pb = system.positionBuffer[b];
-    final Vector2 pc = system.positionBuffer[c];
+  void call(Particle particleA, Particle particleB, Particle particleC) {
+    final Vector2 pa = particleA.position;
+    final Vector2 pb = particleB.position;
+    final Vector2 pc = particleC.position;
     final double dabx = pa.x - pb.x;
     final double daby = pa.y - pb.y;
     final double dbcx = pb.x - pc.x;
@@ -126,13 +128,8 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
         dcax * dcax + dcay * dcay < maxDistanceSquared) {
       final double midPointX = 1.0 / 3.0 * (pa.x + pb.x + pc.x);
       final double midPointY = 1.0 / 3.0 * (pa.y + pb.y + pc.y);
-      final PsTriad triad = PsTriad()
-        ..indexA = a
-        ..indexB = b
-        ..indexC = c
-        ..flags = system.flagsBuffer[a] |
-            system.flagsBuffer[b] |
-            system.flagsBuffer[c]
+      final PsTriad triad = PsTriad(particleA, particleB, particleC)
+        ..flags = particleA.flags | particleB.flags | particleC.flags
         ..strength = def.strength
         ..pa.x = pa.x - midPointX
         ..pa.y = pa.y - midPointY
@@ -147,28 +144,30 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
       system.triadBuffer.add(triad);
     }
   }
-
-  ParticleSystem system;
-  ParticleGroupDef def;
-  int firstIndex;
 }
 
 // Callback used with VoronoiDiagram.
 class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
+  ParticleSystem system;
+  ParticleGroup groupA;
+  ParticleGroup groupB;
+
   @override
-  void call(int a, int b, int c) {
+  void call(Particle particleA, Particle particleB, Particle particleC) {
+    final callParticles = [particleA, particleB, particleC];
+    bool hasCallParticle(ParticleGroup group) {
+      return group.particles.any((p) => callParticles.contains(p));
+    }
+
     // Create a triad if it will contain particles from both groups.
-    final int countA = ((a < groupB._firstIndex) ? 1 : 0) +
-        ((b < groupB._firstIndex) ? 1 : 0) +
-        ((c < groupB._firstIndex) ? 1 : 0);
-    if (countA > 0 && countA < 3) {
-      final int af = system.flagsBuffer[a];
-      final int bf = system.flagsBuffer[b];
-      final int cf = system.flagsBuffer[c];
+    if (hasCallParticle(groupA) && hasCallParticle(groupB)) {
+      final int af = particleA.flags;
+      final int bf = particleB.flags;
+      final int cf = particleC.flags;
       if ((af & bf & cf & ParticleSystem.k_triadFlags) != 0) {
-        final Vector2 pa = system.positionBuffer[a];
-        final Vector2 pb = system.positionBuffer[b];
-        final Vector2 pc = system.positionBuffer[c];
+        final Vector2 pa = particleA.position;
+        final Vector2 pb = particleB.position;
+        final Vector2 pc = particleC.position;
         final double dabx = pa.x - pb.x;
         final double daby = pa.y - pb.y;
         final double dbcx = pb.x - pc.x;
@@ -182,10 +181,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
             dcax * dcax + dcay * dcay < maxDistanceSquared) {
           final double midPointX = 1.0 / 3.0 * (pa.x + pb.x + pc.x);
           final double midPointY = 1.0 / 3.0 * (pa.y + pb.y + pc.y);
-          final PsTriad triad = PsTriad()
-            ..indexA = a
-            ..indexB = b
-            ..indexC = c
+          final PsTriad triad = PsTriad(particleA, particleB, particleC)
             ..flags = af | bf | cf
             ..strength = math.min(groupA._strength, groupB._strength)
             ..pa.x = pa.x - midPointX
@@ -203,10 +199,6 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
       }
     }
   }
-
-  ParticleSystem system;
-  ParticleGroup groupA;
-  ParticleGroup groupB;
 }
 
 class SolveCollisionCallback implements QueryCallback {
@@ -226,14 +218,11 @@ class SolveCollisionCallback implements QueryCallback {
     final int childCount = shape.getChildCount();
     for (int childIndex = 0; childIndex < childCount; childIndex++) {
       final AABB aabb = fixture.getAABB(childIndex);
-      final double aabblowerBoundx =
-          aabb.lowerBound.x - system.particleDiameter;
-      final double aabblowerBoundy =
-          aabb.lowerBound.y - system.particleDiameter;
-      final double aabbupperBoundx =
-          aabb.upperBound.x + system.particleDiameter;
-      final double aabbupperBoundy =
-          aabb.upperBound.y + system.particleDiameter;
+      final particleDiameter = system.particleDiameter;
+      final double aabbLowerBoundx = aabb.lowerBound.x - particleDiameter;
+      final double aabbLowerBoundy = aabb.lowerBound.y - particleDiameter;
+      final double aabbUpperBoundx = aabb.upperBound.x + particleDiameter;
+      final double aabbUpperBoundy = aabb.upperBound.y + particleDiameter;
       final int firstProxy = ParticleSystem._lowerBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
@@ -249,14 +238,14 @@ class SolveCollisionCallback implements QueryCallback {
         ),
       );
 
-      for (int proxy = firstProxy; proxy != lastProxy; ++proxy) {
-        final int a = system.proxyBuffer[proxy].index;
-        final Vector2 ap = system.positionBuffer[a];
+      for (int i = firstProxy; i != lastProxy; ++i) {
+        final particle = system.proxyBuffer[i].particle
+        final Vector2 ap = particle.position;
         if (aabblowerBoundx <= ap.x &&
             ap.x <= aabbupperBoundx &&
             aabblowerBoundy <= ap.y &&
             ap.y <= aabbupperBoundy) {
-          final Vector2 av = system.velocityBuffer[a];
+          final Vector2 av = particle.velocity;
           final Vector2 temp = Transform.mulTransVec2(body._xf0, ap);
           input.p1.setFrom(Transform.mulVec2(body._transform, temp));
           input.p2.x = ap.x + step.dt * av.x;

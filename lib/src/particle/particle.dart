@@ -18,6 +18,8 @@ class Particle {
   // TODO: No idea what this is used for
   double accumulation = 0.0;
 
+  final Vector2 accumulationVector = Vector2.zero();
+
   /// TODO: The depth of the particle?
   double depth = 0.0;
 

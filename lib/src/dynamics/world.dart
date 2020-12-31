@@ -1106,111 +1106,28 @@ class World {
     final int particleCount = system.particleCount;
     if (particleCount != 0) {
       final double particleRadius = system.getParticleRadius();
-      final List<Vector2> positionBuffer = system.positionBuffer;
-      final List<ParticleColor> colorBuffer = system.colorBuffer;
+      final List<Vector2> positionBuffer = system.particles.map(
+        (p) => p.position,
+      );
+      final List<ParticleColor> colorBuffer = system.particles.map(
+        (p) => p.color,
+      );
       if (wireframe) {
         debugDraw.drawParticlesWireframe(
-            positionBuffer, particleRadius, colorBuffer, particleCount);
+          positionBuffer,
+          particleRadius,
+          colorBuffer,
+          particleCount,
+        );
       } else {
         debugDraw.drawParticles(
-            positionBuffer, particleRadius, colorBuffer, particleCount);
+          positionBuffer,
+          particleRadius,
+          colorBuffer,
+          particleCount,
+        );
       }
     }
-  }
-
-  // TODO.spydon: all the following method in this class should be moved to the particle system
-  /// Create a particle whose properties have been defined. No reference to the definition is
-  /// retained. A simulation step must occur before it's possible to interact with a newly created
-  /// particle. For example, DestroyParticleInShape() will not destroy a particle until Step() has
-  /// been called.
-  ///
-  /// @warning This function is locked during callbacks.
-  /// @return the index of the particle.
-  int createParticle(ParticleDef def) {
-    assert(isLocked() == false);
-    return particleSystem.createParticle(def);
-  }
-
-  /// Destroy a particle. The particle is removed after the next step.
-  ///
-  /// @param index
-  void destroyParticle(int index) {
-    destroyParticleFlag(index, false);
-  }
-
-  /// Destroy a particle. The particle is removed after the next step.
-  ///
-  /// @param Index of the particle to destroy.
-  /// @param Whether to call the destruction listener just before the particle is destroyed.
-  void destroyParticleFlag(int index, bool callDestructionListener) {
-    particleSystem.destroyParticle(index, callDestructionListener);
-  }
-
-  /// Destroy particles inside a shape without enabling the destruction callback for destroyed
-  /// particles. This function is locked during callbacks. For more information see
-  /// DestroyParticleInShape(Shape&, Transform&,bool).
-  ///
-  /// @param Shape which encloses particles that should be destroyed.
-  /// @param Transform applied to the shape.
-  /// @warning This function is locked during callbacks.
-  /// @return Number of particles destroyed.
-  int destroyParticlesInShape(Shape shape, Transform xf) {
-    return destroyParticlesInShapeFlag(shape, xf, false);
-  }
-
-  /// Destroy particles inside a shape. This function is locked during callbacks. In addition, this
-  /// function immediately destroys particles in the shape in contrast to DestroyParticle() which
-  /// defers the destruction until the next simulation step.
-  ///
-  /// @param Shape which encloses particles that should be destroyed.
-  /// @param Transform applied to the shape.
-  /// @param Whether to call the world b2DestructionListener for each particle destroyed.
-  /// @warning This function is locked during callbacks.
-  /// @return Number of particles destroyed.
-  int destroyParticlesInShapeFlag(
-      Shape shape, Transform xf, bool callDestructionListener) {
-    assert(isLocked() == false);
-    return particleSystem.destroyParticlesInShape(
-        shape, xf, callDestructionListener);
-  }
-
-  /// Create a particle group whose properties have been defined. No reference to the definition is
-  /// retained.
-  ///
-  /// @warning This function is locked during callbacks.
-  ParticleGroup createParticleGroup(ParticleGroupDef def) {
-    assert(isLocked() == false);
-    return particleSystem.createParticleGroup(def);
-  }
-
-  /// Join two particle groups.
-  ///
-  /// @param the first group. Expands to encompass the second group.
-  /// @param the second group. It is destroyed.
-  /// @warning This function is locked during callbacks.
-  void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
-    assert(isLocked() == false);
-    particleSystem.joinParticleGroups(groupA, groupB);
-  }
-
-  /// Destroy particles in a group. This function is locked during callbacks.
-  ///
-  /// @param The particle group to destroy.
-  /// @param Whether to call the world b2DestructionListener for each particle is destroyed.
-  /// @warning This function is locked during callbacks.
-  void destroyParticlesInGroupFlag(
-      ParticleGroup group, bool callDestructionListener) {
-    assert(isLocked() == false);
-    particleSystem.destroyParticlesInGroup(group, callDestructionListener);
-  }
-
-  /// Destroy particles in a group without enabling the destruction callback for destroyed particles.
-  /// This function is locked during callbacks.
-  ///
-  /// @param The particle group to destroy.
-  /// @warning This function is locked during callbacks.
-  void destroyParticlesInGroup(ParticleGroup group) {
-    destroyParticlesInGroupFlag(group, false);
   }
 }
 

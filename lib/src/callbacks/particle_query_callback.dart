@@ -6,5 +6,5 @@ abstract class ParticleQueryCallback {
   /// Called for each particle found in the query AABB.
   ///
   /// @return false to terminate the query.
-  bool reportParticle(int index);
+  bool reportParticle(Particle particle);
 }
