@@ -2,6 +2,7 @@ part of forge2d;
 
 /// A particle group definition holds all the data needed to construct a particle group. You can
 /// safely re-use these definitions.
+// TODO: Remove this and only ues ParticleGroup directly
 class ParticleGroupDef {
   /// The particle-behavior flags.
   int flags = 0;
@@ -24,7 +25,7 @@ class ParticleGroupDef {
   double angularVelocity = 0.0;
 
   /// The color of all particles in the group.
-  ParticleColor color;
+  ParticleColor color = ParticleColor.black();
 
   /// The strength of cohesion among the particles in a group with flag elasticParticle or
   /// springParticle.

@@ -32,12 +32,20 @@ class ParticleColor {
     _data[3] = 50;
   }
 
+  ParticleColor.black() {
+    setRGBA(255, 255, 255, 255);
+  }
+
   ParticleColor.rgba(int r, int g, int b, int a) {
     setRGBA(r, g, b, a);
   }
 
   ParticleColor.color3i(Color3i color) {
     setColor3i(color);
+  }
+
+  Color3i toColor3i() {
+    return Color3i(r, g, b);
   }
 
   void setColor3i(Color3i color) {

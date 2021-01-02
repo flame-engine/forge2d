@@ -1,22 +1,14 @@
 part of forge2d;
 
 class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
-  ParticleSystem system;
-  Shape shape;
-  Transform xf;
-  bool callDestructionListener = false;
+  final ParticleSystem system;
+  final Shape shape;
+  final Transform xf;
+  bool callDestructionListener;
   int destroyed = 0;
 
-  DestroyParticlesInShapeCallback();
-
-  void init(ParticleSystem system, Shape shape, Transform xf,
-      bool callDestructionListener) {
-    this.system = system;
-    this.shape = shape;
-    this.xf = xf;
-    this.callDestructionListener = callDestructionListener;
-    destroyed = 0;
-  }
+  DestroyParticlesInShapeCallback(this.system, this.shape, this.xf,
+      {this.callDestructionListener = false});
 
   @override
   bool reportParticle(Particle particle) {
@@ -71,7 +63,11 @@ class UpdateBodyContactsCallback implements QueryCallback {
         ),
       );
 
-      for (int i = firstProxy; i != lastProxy; ++i) {
+      //print("first: $firstProxy");
+      //print("last: $lastProxy");
+      //print("size of proxies: ${system.proxyBuffer.length}");
+      //print("size of particles: ${system.particles.length}");
+      for (int i = firstProxy; i < lastProxy; ++i) {
         final Particle particle = system.proxyBuffer[i].particle;
         final Vector2 ap = particle.position;
         if (aabbLowerBoundX <= ap.x &&
@@ -237,7 +233,7 @@ class SolveCollisionCallback implements QueryCallback {
         ),
       );
 
-      for (int i = firstProxy; i != lastProxy; ++i) {
+      for (int i = firstProxy; i < lastProxy; ++i) {
         final particle = system.proxyBuffer[i].particle;
         final Vector2 ap = particle.position;
         if (aabbLowerBoundx <= ap.x &&

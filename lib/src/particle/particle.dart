@@ -6,6 +6,9 @@ class Particle {
   /// ParticleType.viscousParticle.
   int flags = 0;
 
+  /// The ParticleSystem which the particle belongs to
+  final ParticleSystem system;
+
   /// The world position of the particle.
   final Vector2 position = Vector2.zero();
 
@@ -13,7 +16,7 @@ class Particle {
   final Vector2 velocity = Vector2.zero();
 
   /// The group which the particle belongs to
-  ParticleGroup group = ParticleGroup();
+  ParticleGroup group;
 
   // TODO: No idea what this is used for
   double accumulation = 0.0;
@@ -24,19 +27,22 @@ class Particle {
   double depth = 0.0;
 
   /// The color of the particle.
-  ParticleColor color;
+  ParticleColor color = ParticleColor.black();
 
   /// Use this to store application-specific body data.
   Object userData;
 
+  Particle(this.system, {this.group}) {
+    group ??= ParticleGroup(system);
+  }
+
   Particle clone() {
-    return Particle()
+    return Particle(system, group: group)
       ..flags = flags
       ..position.setFrom(position)
       ..velocity.setFrom(velocity)
-      ..group = group
       ..depth = depth
-      ..color = color.clone()
+      ..color = color?.clone()
       ..userData = userData;
   }
 }

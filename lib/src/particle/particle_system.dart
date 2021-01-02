@@ -135,9 +135,10 @@ class ParticleSystem {
   }
 
   void createParticle(Particle particle) {
+    particle.group.add(particle);
     groupBuffer.add(particle.group);
     proxyBuffer.add(PsProxy(particle));
-    particles.add(particle);
+    _particles.add(particle);
   }
 
   void destroyParticle(Particle particle, bool callDestructionListener) {
@@ -149,8 +150,6 @@ class ParticleSystem {
   }
 
   final AABB _temp = AABB();
-  final DestroyParticlesInShapeCallback _dpcallback =
-      DestroyParticlesInShapeCallback();
 
   /// Destroy particles inside a shape. In addition, this function immediately
   /// destroys particles in the shape in contrast to DestroyParticle() which
@@ -160,10 +159,15 @@ class ParticleSystem {
     Transform xf, {
     bool callDestructionListener = false,
   }) {
-    _dpcallback.init(this, shape, xf, callDestructionListener);
+    final callback = DestroyParticlesInShapeCallback(
+      this,
+      shape,
+      xf,
+      callDestructionListener: callDestructionListener,
+    );
     shape.computeAABB(_temp, xf, 0);
-    world.queryAABBParticle(_dpcallback, _temp);
-    return _dpcallback.destroyed;
+    world.queryAABBParticle(callback, _temp);
+    return callback.destroyed;
   }
 
   void destroyParticlesInGroup(
@@ -185,8 +189,7 @@ class ParticleSystem {
     final Transform identity = _tempTransform..setIdentity();
     final Transform transform = _tempTransform2..setIdentity();
 
-    final ParticleGroup group = ParticleGroup()
-      .._system = this
+    final ParticleGroup group = ParticleGroup(this)
       ..groupFlags = groupDef.groupFlags
       ..strength = groupDef.strength
       ..userData = groupDef.userData
@@ -194,10 +197,9 @@ class ParticleSystem {
       ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
-      final Particle seedParticle = Particle()
+      final Particle seedParticle = Particle(this, group: group)
         ..flags = groupDef.flags
         ..color = groupDef.color
-        ..group = group
         ..userData = groupDef.userData;
       final Shape shape = groupDef.shape;
       transform.setVec2Angle(groupDef.position, groupDef.angle);
@@ -220,15 +222,12 @@ class ParticleSystem {
         for (double x = (aabb.lowerBound.x / stride).floor() * stride;
             x < upperBoundX;
             x += stride) {
-          final Vector2 p = _tempVec;
-          p.x = x;
-          p.y = y;
+          final Vector2 p = _tempVec..setValues(x, y);
           if (shape.testPoint(identity, p)) {
             p.setFrom(Transform.mulVec2(transform, p));
             final particle = seedParticle.clone();
-            particle.position.x = p.x;
-            particle.position.y = p.y;
             p.sub(groupDef.position);
+            particle.position.setFrom(p);
             p.scaleOrthogonalInto(
               groupDef.angularVelocity,
               particle.velocity,
@@ -258,6 +257,7 @@ class ParticleSystem {
     }
     if ((groupDef.flags & k_triadFlags) != 0) {
       final VoronoiDiagram diagram = VoronoiDiagram();
+      print("group: ${group.particles.length}");
       for (Particle particle in group.particles) {
         diagram.addGenerator(particle.position, particle);
       }
@@ -450,7 +450,7 @@ class ParticleSystem {
     aabb.lowerBound.y = double.maxFinite;
     aabb.upperBound.x = -double.maxFinite;
     aabb.upperBound.y = -double.maxFinite;
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       final position = particle.position;
       Vector2.min(aabb.lowerBound, position, aabb.lowerBound);
       Vector2.max(aabb.upperBound, position, aabb.upperBound);
@@ -475,7 +475,7 @@ class ParticleSystem {
     lowerBound.y = double.maxFinite;
     upperBound.x = -double.maxFinite;
     upperBound.y = -double.maxFinite;
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       final Vector2 v = particle.velocity;
       final Vector2 p1 = particle.position;
       final double p2x = p1.x + step.dt * v.x;
@@ -496,17 +496,17 @@ class ParticleSystem {
 
   void solve(TimeStep step) {
     ++timestamp;
-    if (particles.isEmpty) {
+    if (_particles.isEmpty) {
       return;
     }
     allParticleFlags = 0;
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       allParticleFlags |= particle.flags;
     }
     if ((allParticleFlags & ParticleType.zombieParticle) != 0) {
       solveZombie();
     }
-    if (particles.isEmpty) {
+    if (_particles.isEmpty) {
       return;
     }
     allGroupFlags = 0;
@@ -516,7 +516,7 @@ class ParticleSystem {
     final double gravityx = step.dt * gravityScale * world.getGravity().x;
     final double gravityy = step.dt * gravityScale * world.getGravity().y;
     final double criticalVelocitySquared = getCriticalVelocitySquared(step);
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       final Vector2 v = particle.velocity;
       v.x += gravityx;
       v.y += gravityy;
@@ -536,7 +536,7 @@ class ParticleSystem {
     if ((allParticleFlags & ParticleType.wallParticle) != 0) {
       solveWall(step);
     }
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       particle.position.setFrom(
         particle.position + (particle.velocity * step.dt),
       );
@@ -571,7 +571,7 @@ class ParticleSystem {
   void solvePressure(TimeStep step) {
     // calculates the sum of contact-weights for each particle
     // that means dimensionless density
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       particle.accumulation = 0.0;
     }
     for (ParticleBodyContact contact in bodyContactBuffer) {
@@ -583,7 +583,7 @@ class ParticleSystem {
     }
     // ignores powder particles
     if ((allParticleFlags & k_noPressureFlags) != 0) {
-      for (Particle particle in particles) {
+      for (Particle particle in _particles) {
         if ((particle.flags & k_noPressureFlags) != 0) {
           particle.accumulation = 0.0;
         }
@@ -592,7 +592,7 @@ class ParticleSystem {
     // calculates pressure as a linear function of density
     final double pressurePerWeight =
         pressureStrength * getCriticalPressure(step);
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       final double w = particle.accumulation;
       final double h = pressurePerWeight *
           math.max(
@@ -691,7 +691,7 @@ class ParticleSystem {
   }
 
   void solveWall(TimeStep step) {
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       if ((particle.flags & ParticleType.wallParticle) != 0) {
         particle.velocity.setZero();
       }
@@ -800,7 +800,7 @@ class ParticleSystem {
   }
 
   void solveTensile(final TimeStep step) {
-    for (Particle particle in particles) {
+    for (Particle particle in _particles) {
       particle.accumulation = 0.0;
       particle.accumulationVector.setZero();
     }
@@ -1000,7 +1000,7 @@ class ParticleSystem {
       return (particle.flags & ParticleType.zombieParticle) != 0;
     }
 
-    particles.removeWhere((p) {
+    _particles.removeWhere((p) {
       if (isZombie(p)) {
         if ((p.flags & ParticleType.destructionListener) != 0) {
           world.particleDestructionListener?.sayGoodbyeParticle(p);

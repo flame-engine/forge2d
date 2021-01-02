@@ -25,9 +25,9 @@ abstract class DebugDraw {
   static const int WIREFRAME_DRAWING_BIT = 1 << 7;
 
   int drawFlags = SHAPE_BIT;
-  ViewportTransform viewportTransform;
+  ViewportTransform viewport;
 
-  DebugDraw(this.viewportTransform);
+  DebugDraw(this.viewport);
 
   DebugDraw.zero();
 
@@ -85,20 +85,10 @@ abstract class DebugDraw {
   void drawStringXY(double x, double y, String s, Color3i color);
 
   /// Draw a particle array
-  /// @param colors can be null
-  void drawParticles(
-    Iterable<Vector2> centers,
-    double radius,
-    Iterable<ParticleColor> colors,
-  );
+  void drawParticles(List<Particle> particles, double radius);
 
   /// Draw a particle array
-  /// @param colors can be null
-  void drawParticlesWireframe(
-    Iterable<Vector2> centers,
-    double radius,
-    Iterable<ParticleColor> colors,
-  );
+  void drawParticlesWireframe(List<Particle> particles, double radius);
 
   /// Called at the end of drawing a world
   void flush() {}
@@ -109,13 +99,13 @@ abstract class DebugDraw {
 
   /// Takes the world coordinate and returns the screen coordinates.
   Vector2 getWorldToScreen(Vector2 argWorld) =>
-      viewportTransform.getWorldToScreen(argWorld);
+      viewport.getWorldToScreen(argWorld);
 
   /// Takes the world coordinates and returns the screen coordinates
   Vector2 getWorldToScreenXY(double worldX, double worldY) =>
-      viewportTransform.getWorldToScreen(Vector2(worldX, worldY));
+      viewport.getWorldToScreen(Vector2(worldX, worldY));
 
   /// Takes the screen coordinates (argScreen) and returns the world coordinates
   Vector2 getScreenToWorld(Vector2 argScreen) =>
-      viewportTransform.getScreenToWorld(argScreen);
+      viewport.getScreenToWorld(argScreen);
 }

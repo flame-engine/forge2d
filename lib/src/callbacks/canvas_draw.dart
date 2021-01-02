@@ -65,36 +65,43 @@ class CanvasDraw extends DebugDraw {
     ctx.stroke();
   }
 
-  /// Draw a circle. WARNING: This mutates [center].
+  /// Draw a circle.
   @override
   void drawCircle(Vector2 center, num radius, Color3i color, [Vector2 axis]) {
-    radius *= viewportTransform.scale;
+    radius *= viewport.scale;
     _pathCircle(center, radius, color);
     ctx.stroke();
   }
 
-  /// Draw a solid circle. WARNING: This mutates [center].
+  /// Draw a solid circle.
   @override
   void drawSolidCircle(
-      Vector2 center, num radius, Vector2 axis, Color3i color) {
-    radius *= viewportTransform.scale;
+    Vector2 center,
+    num radius,
+    Vector2 axis,
+    Color3i color,
+  ) {
+    radius *= viewport.scale;
     drawPoint(center, radius, color);
   }
 
   /// Draws the given point with the given *unscaled* radius, in the given [color].
-  /// WARNING: This mutates [point].
   @override
-  void drawPoint(Vector2 point, num radiusOnScreen, Color3i color) {
+  void drawPoint(
+    Vector2 point,
+    num radiusOnScreen,
+    Color3i color,
+  ) {
     _pathCircle(point, radiusOnScreen, color);
     ctx.fill();
   }
 
   void _pathCircle(Vector2 center, num radius, Color3i color) {
     _setColor(color);
-    center = getWorldToScreen(center);
+    final screenCenter = getWorldToScreen(center);
 
     ctx.beginPath();
-    ctx.arc(center.x, center.y, radius, 0, pi * 2, true);
+    ctx.arc(screenCenter.x, screenCenter.y, radius, 0, pi * 2, true);
     ctx.closePath();
   }
 
@@ -120,20 +127,18 @@ class CanvasDraw extends DebugDraw {
   }
 
   @override
-  void drawParticles(
-    Iterable<Vector2> centers,
-    double radius,
-    Iterable<ParticleColor> colors,
-  ) {
-    throw "Unimplemented";
+  void drawParticles(List<Particle> particles, double radius) {
+    particles.forEach((p) {
+      drawCircle(
+        p.position,
+        radius,
+        p.color.toColor3i(),
+      );
+    });
   }
 
   @override
-  void drawParticlesWireframe(
-    Iterable<Vector2> centers,
-    double radius,
-    Iterable<ParticleColor> colors,
-  ) {
+  void drawParticlesWireframe(List<Particle> particles, double radius) {
     throw "Unimplemented";
   }
 }

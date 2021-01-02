@@ -432,7 +432,7 @@ class World {
     particleSystem.queryAABB(particleCallback, aabb);
   }
 
-  final WorldRayCastWrapper wrcwrapper = WorldRayCastWrapper();
+  final WorldRayCastWrapper raycastWrapper = WorldRayCastWrapper();
   final RayCastInput input = RayCastInput();
 
   /// Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
@@ -443,12 +443,12 @@ class World {
   /// @param point1 the ray starting point
   /// @param point2 the ray ending point
   void raycast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
-    wrcwrapper.broadPhase = _contactManager.broadPhase;
-    wrcwrapper.callback = callback;
+    raycastWrapper.broadPhase = _contactManager.broadPhase;
+    raycastWrapper.callback = callback;
     input.maxFraction = 1.0;
     input.p1.setFrom(point1);
     input.p2.setFrom(point2);
-    _contactManager.broadPhase.raycast(wrcwrapper, input);
+    _contactManager.broadPhase.raycast(raycastWrapper, input);
   }
 
   /// Ray-cast the world for all fixtures and particles in the path of the ray. Your callback
@@ -464,12 +464,12 @@ class World {
       ParticleRaycastCallback particleCallback,
       Vector2 point1,
       Vector2 point2) {
-    wrcwrapper.broadPhase = _contactManager.broadPhase;
-    wrcwrapper.callback = callback;
+    raycastWrapper.broadPhase = _contactManager.broadPhase;
+    raycastWrapper.callback = callback;
     input.maxFraction = 1.0;
     input.p1.setFrom(point1);
     input.p2.setFrom(point2);
-    _contactManager.broadPhase.raycast(wrcwrapper, input);
+    _contactManager.broadPhase.raycast(raycastWrapper, input);
     particleSystem.raycast(particleCallback, point1, point2);
   }
 
@@ -1105,24 +1105,10 @@ class World {
         (debugDraw.drawFlags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
     if (system.particles.isNotEmpty) {
       final double particleRadius = system.getParticleRadius();
-      final Iterable<Vector2> positionBuffer = system.particles.map(
-        (p) => p.position,
-      );
-      final Iterable<ParticleColor> colorBuffer = system.particles.map(
-        (p) => p.color,
-      );
       if (wireframe) {
-        debugDraw.drawParticlesWireframe(
-          positionBuffer,
-          particleRadius,
-          colorBuffer,
-        );
+        debugDraw.drawParticlesWireframe(system.particles, particleRadius);
       } else {
-        debugDraw.drawParticles(
-          positionBuffer,
-          particleRadius,
-          colorBuffer,
-        );
+        debugDraw.drawParticles(system.particles, particleRadius);
       }
     }
   }

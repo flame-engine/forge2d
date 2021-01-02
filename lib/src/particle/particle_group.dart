@@ -1,7 +1,7 @@
 part of forge2d;
 
 class ParticleGroup {
-  ParticleSystem _system;
+  final ParticleSystem _system;
   final List<Particle> particles = [];
   int groupFlags = 0;
   double strength = 1.0;
@@ -20,7 +20,7 @@ class ParticleGroup {
 
   Object userData;
 
-  ParticleGroup();
+  ParticleGroup(this._system);
 
   void add(Particle particle) {
     particles.add(particle);
