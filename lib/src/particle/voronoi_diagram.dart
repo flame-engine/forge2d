@@ -62,7 +62,7 @@ class VoronoiDiagram {
   final ListQueue<VoronoiDiagramTask> _queue = ListQueue<VoronoiDiagramTask>();
 
   void generate(double radius) {
-    if(generators.isEmpty) {
+    if (generators.isEmpty) {
       print("We do return");
       return;
     } else {

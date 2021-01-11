@@ -25,8 +25,12 @@ abstract class Shape {
   /// @param argTransform the transform to be applied to the shape.
   /// @param argChildIndex the child shape index
   /// @return if hit
-  bool raycast(RayCastOutput output, RayCastInput input, Transform transform,
-      int childIndex,);
+  bool raycast(
+    RayCastOutput output,
+    RayCastInput input,
+    Transform transform,
+    int childIndex,
+  );
 
   /// Given a transform, compute the associated axis aligned bounding box for a child shape.
   ///
@@ -49,7 +53,11 @@ abstract class Shape {
   /// @param normalOut returns the direction in which the distance increases.
   /// @return distance returns the distance from the current shape.
   double computeDistanceToOut(
-      Transform xf, Vector2 p, int childIndex, Vector2 normalOut,);
+    Transform xf,
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  );
 
   Shape clone();
 }
