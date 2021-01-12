@@ -976,8 +976,8 @@ class ParticleSystem {
               particleB.flags &
               ParticleType.colorMixingParticle) !=
           0) {
-        final ParticleColor colorA = particleA.color;
-        final ParticleColor colorB = particleB.color;
+        final Color3i colorA = particleA.color;
+        final Color3i colorB = particleB.color;
         final int dr = (colorMixing256 * (colorB.r - colorA.r)).toInt() >> 8;
         final int dg = (colorMixing256 * (colorB.g - colorA.g)).toInt() >> 8;
         final int db = (colorMixing256 * (colorB.b - colorA.b)).toInt() >> 8;

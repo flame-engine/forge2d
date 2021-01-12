@@ -27,7 +27,7 @@ class Particle {
   double depth = 0.0;
 
   /// The color of the particle.
-  ParticleColor color = ParticleColor.black();
+  Color3i color = Color3i.black;
 
   /// Use this to store application-specific body data.
   Object userData;

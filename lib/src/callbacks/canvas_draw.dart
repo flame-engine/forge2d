@@ -67,7 +67,7 @@ class CanvasDraw extends DebugDraw {
 
   /// Draw a circle.
   @override
-  void drawCircle(Vector2 center, num radius, Color3i color, [Vector2 axis]) {
+  void drawCircle(Vector2 center, num radius, Color3i color) {
     radius *= viewport.scale;
     _pathCircle(center, radius, color);
     ctx.stroke();
@@ -75,12 +75,7 @@ class CanvasDraw extends DebugDraw {
 
   /// Draw a solid circle.
   @override
-  void drawSolidCircle(
-    Vector2 center,
-    num radius,
-    Vector2 axis,
-    Color3i color,
-  ) {
+  void drawSolidCircle(Vector2 center, num radius, Color3i color) {
     radius *= viewport.scale;
     drawPoint(center, radius, color);
   }
@@ -122,18 +117,14 @@ class CanvasDraw extends DebugDraw {
 
   /// Sets the rendering context stroke and fill color to [color].
   void _setColor(Color3i color) {
-    ctx.setStrokeColorRgb(color.x, color.y, color.z, 0.9);
-    ctx.setFillColorRgb(color.x, color.y, color.z, 0.8);
+    ctx.setStrokeColorRgb(color.r, color.g, color.b, color.a);
+    ctx.setFillColorRgb(color.r, color.g, color.b, color.a);
   }
 
   @override
   void drawParticles(List<Particle> particles, double radius) {
     particles.forEach((p) {
-      drawCircle(
-        p.position,
-        radius,
-        p.color.toColor3i(),
-      );
+      drawSolidCircle(p.position, radius, p.color);
     });
   }
 

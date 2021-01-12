@@ -67,13 +67,16 @@ abstract class DebugDraw {
 
   /// Draws a circle with an axis
   void drawCircleAxis(
-      Vector2 center, double radius, Vector2 axis, Color3i color) {
+    Vector2 center,
+    double radius,
+    Vector2 axis,
+    Color3i color,
+  ) {
     drawCircle(center, radius, color);
   }
 
   /// Draw a solid circle.
-  void drawSolidCircle(
-      Vector2 center, double radius, Vector2 axis, Color3i color);
+  void drawSolidCircle(Vector2 center, double radius, Color3i color);
 
   /// Draw a line segment.
   void drawSegment(Vector2 p1, Vector2 p2, Color3i color);

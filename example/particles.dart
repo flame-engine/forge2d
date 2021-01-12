@@ -1,4 +1,4 @@
-library ball_cage;
+library particles;
 
 import 'package:forge2d/forge2d.dart';
 
@@ -86,7 +86,6 @@ class Particles extends Demo {
     activeBodyDef.linearVelocity = Vector2(0.0, -20.0);
     activeBodyDef.position = Vector2(15.0, 15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
-    activeBodyDef.bullet = true;
     final activeBody = world.createBody(activeBodyDef);
     bodies.add(activeBody);
     activeBody.createFixture(activeFixtureDef);
@@ -97,9 +96,10 @@ class Particles extends Demo {
 
     final shape = CircleShape()..radius = 5;
     final particleGroup = ParticleGroupDef()
-      ..position.setFrom(world.center - Vector2(-15, -15))
+      ..position.setFrom(world.center)
       ..destroyAutomatically = true
-      ..flags = ParticleType.elasticParticle
+      ..color = Color3i.black
+      ..flags = ParticleType.waterParticle
       ..shape = shape;
     world.particleSystem.createParticleGroup(particleGroup);
   }

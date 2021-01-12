@@ -25,7 +25,7 @@ class ParticleGroupDef {
   double angularVelocity = 0.0;
 
   /// The color of all particles in the group.
-  ParticleColor color = ParticleColor.black();
+  Color3i color = Color3i.black;
 
   /// The strength of cohesion among the particles in a group with flag elasticParticle or
   /// springParticle.
