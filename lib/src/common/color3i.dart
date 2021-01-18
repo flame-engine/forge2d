@@ -11,7 +11,7 @@ class Color3i {
   int g = 0;
   int b = 0;
   double a = 1.0;
-  Color3i(this.r, this.g, this.b, {this.a});
+  Color3i(this.r, this.g, this.b, {this.a = 1.0});
 
   Color3i.zero();
 
@@ -42,4 +42,7 @@ class Color3i {
   }
   
   Color3i clone() => Color3i(r, g, b, a: a);
+
+  @override
+  String toString() => "Color3i($r, $g, $b, $a)";
 }

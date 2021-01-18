@@ -84,7 +84,7 @@ class Particles extends Demo {
     // Create the active ball body.
     final activeBodyDef = BodyDef();
     activeBodyDef.linearVelocity = Vector2(0.0, -20.0);
-    activeBodyDef.position = Vector2(15.0, 15.0);
+    activeBodyDef.position = Vector2(0.0, -15.0);
     activeBodyDef.type = BodyType.DYNAMIC;
     final activeBody = world.createBody(activeBodyDef);
     bodies.add(activeBody);
@@ -98,7 +98,7 @@ class Particles extends Demo {
     final particleGroup = ParticleGroupDef()
       ..position.setFrom(world.center)
       ..destroyAutomatically = true
-      ..color = Color3i.black
+      ..color = Color3i.blue
       ..flags = ParticleType.waterParticle
       ..shape = shape;
     world.particleSystem.createParticleGroup(particleGroup);
