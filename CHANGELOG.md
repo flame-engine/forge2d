@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [next]
+## 0.6.1
  - Fix bug that throws error during World.destroyBody(), Body.setType() and Body.setActive() if body has some contacts
 
 ## 0.6.0
