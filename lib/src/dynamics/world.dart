@@ -161,7 +161,9 @@ class World {
     }
 
     // Delete the attached contacts.
-    body.contacts.forEach(_contactManager.destroy);
+    while (body.contacts.isNotEmpty) {
+      _contactManager.destroy(body.contacts.first);
+    }
     body.contacts.clear();
 
     for (Fixture f in body.fixtures) {

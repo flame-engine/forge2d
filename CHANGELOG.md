@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [next]
+ - Fix bug that throws error during World.destroyBody(), Body.setType() and Body.setActive() if body has some contacts
+
 ## 0.6.0
  - Refactor joints, fixtures and contacts not to be linked lists
  - Make force/impulses default to the center of a body

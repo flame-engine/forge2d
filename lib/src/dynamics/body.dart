@@ -581,7 +581,9 @@ class Body {
     _torque = 0.0;
 
     // Delete the attached contacts.
-    contacts.forEach(world._contactManager.destroy);
+    while (contacts.isNotEmpty) {
+      world._contactManager.destroy(contacts.first);
+    }
     contacts.clear();
 
     // Touch the proxies so that new contacts will be created (when appropriate)
@@ -688,7 +690,9 @@ class Body {
       }
 
       // Destroy the attached contacts.
-      contacts.forEach(world._contactManager.destroy);
+      while (contacts.isNotEmpty) {
+        world._contactManager.destroy(contacts.first);
+      }
       contacts.clear();
     }
   }
