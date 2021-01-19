@@ -31,6 +31,7 @@ class Body {
 
   /// The angular velocity in radians/second.
   double _angularVelocity = 0.0;
+
   double get angularVelocity => _angularVelocity;
 
   final Vector2 _force = Vector2.zero();
@@ -42,10 +43,12 @@ class Body {
   final List<Joint> joints = [];
   final List<Contact> contacts = [];
 
-  double _mass = 0.0, _invMass = 0.0;
+  double _mass = 0.0,
+      _invMass = 0.0;
 
   // Rotational inertia about the center of mass.
-  double inertia = 0.0, inverseInertia = 0.0;
+  double inertia = 0.0,
+      inverseInertia = 0.0;
 
   double linearDamping = 0.0;
   double angularDamping = 0.0;
@@ -183,16 +186,22 @@ class Body {
 
     // You tried to remove a shape that is not attached to this body.
     assert(
-      removed,
-      "You tried to remove a fixture that is not attached to this body",
+    removed,
+    "You tried to remove a fixture that is not attached to this body",
     );
 
     // Destroy any contacts associated with the fixture.
-    for (Contact contact in contacts) {
+    int i = 0;
+    while (i < contacts.length) {
+      final contact = contacts[i];
       if (fixture == contact.fixtureA || fixture == contact.fixtureB) {
         // This destroys the contact and removes it from
         // this body's contact list.
         world._contactManager.destroy(contact);
+      } else {
+        /// Increase index only if contact was not deleted and need move to next one.
+        /// If contact was deleted, then index should not be increased.
+        i++;
       }
     }
 
@@ -422,7 +431,8 @@ class Body {
     _sweep.c.setFrom(_sweep.c0);
 
     // Update center of mass velocity.
-    final Vector2 temp = Vector2.copy(_sweep.c)..sub(oldCenter);
+    final Vector2 temp = Vector2.copy(_sweep.c)
+      ..sub(oldCenter);
     temp.scaleOrthogonalInto(_angularVelocity, temp);
     linearVelocity.add(temp);
   }
