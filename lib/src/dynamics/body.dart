@@ -43,12 +43,10 @@ class Body {
   final List<Joint> joints = [];
   final List<Contact> contacts = [];
 
-  double _mass = 0.0,
-      _invMass = 0.0;
+  double _mass = 0.0, _invMass = 0.0;
 
   // Rotational inertia about the center of mass.
-  double inertia = 0.0,
-      inverseInertia = 0.0;
+  double inertia = 0.0, inverseInertia = 0.0;
 
   double linearDamping = 0.0;
   double angularDamping = 0.0;
@@ -186,8 +184,8 @@ class Body {
 
     // You tried to remove a shape that is not attached to this body.
     assert(
-    removed,
-    "You tried to remove a fixture that is not attached to this body",
+      removed,
+      "You tried to remove a fixture that is not attached to this body",
     );
 
     // Destroy any contacts associated with the fixture.
@@ -431,8 +429,7 @@ class Body {
     _sweep.c.setFrom(_sweep.c0);
 
     // Update center of mass velocity.
-    final Vector2 temp = Vector2.copy(_sweep.c)
-      ..sub(oldCenter);
+    final Vector2 temp = Vector2.copy(_sweep.c)..sub(oldCenter);
     temp.scaleOrthogonalInto(_angularVelocity, temp);
     linearVelocity.add(temp);
   }
