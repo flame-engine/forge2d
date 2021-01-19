@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [next]
+ - One more bug fix with deleting contacts when called Body.removeFixture() when it's in contact
+
 ## 0.6.1
  - Fix bug that throws error during World.destroyBody(), Body.setType() and Body.setActive() if body has some contacts
 
