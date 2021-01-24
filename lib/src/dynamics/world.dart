@@ -230,8 +230,6 @@ class World {
 
     Joint.destroy(joint);
 
-    assert(joints.isNotEmpty);
-
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (collideConnected == false) {
       for (Contact contact in bodyB.contacts) {
