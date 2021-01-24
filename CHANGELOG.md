@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [next]
+ - Remove faulty assert in world.destroyJoint
+
 ## 0.6.2
  - One more bug fix with deleting contacts when called Body.removeFixture() when it's in contact
 
