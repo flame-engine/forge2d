@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [next]
+## 0.6.3
  - Remove faulty assert in world.destroyJoint
 
 ## 0.6.2
