@@ -15,23 +15,23 @@ class Color3i {
 
   Color3i.zero();
 
-  Color3i.fromRGBd(double r, double g, double b, {double a = 1.0})
-      : this.r = (r * 255).floor().toInt(),
-        this.g = (g * 255).floor().toInt(),
-        this.b = (b * 255).floor().toInt();
+  Color3i.fromRGBd(double red, double green, double blue, {double alpha = 1.0})
+      : r = (red * 255).floor().toInt(),
+        g = (green * 255).floor().toInt(),
+        b = (blue * 255).floor().toInt();
 
-  void setRGB(int r, int g, int b, {double a}) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.a = a ?? this.a;
+  void setRGB(int red, int green, int blue, {double alpha}) {
+    r = red;
+    g = green;
+    b = blue;
+    a = alpha ?? a;
   }
 
-  void setFromRGBd(double r, double g, double b, {double a}) {
-    this.r = (r * 255).floor().toInt();
-    this.g = (g * 255).floor().toInt();
-    this.b = (b * 255).floor().toInt();
-    this.a = a ?? this.a;
+  void setFromRGBd(double red, double green, double blue, {double alpha}) {
+    r = (red * 255).floor().toInt();
+    g = (green * 255).floor().toInt();
+    b = (blue * 255).floor().toInt();
+    a = alpha ?? a;
   }
 
   void setFromColor3i(Color3i argColor) {
