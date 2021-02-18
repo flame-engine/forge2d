@@ -33,14 +33,14 @@ class Color3i {
     this.b = (b * 255).floor().toInt();
     this.a = a ?? this.a;
   }
-  
+
   void setFromColor3i(Color3i argColor) {
     r = argColor.r;
     g = argColor.b;
     b = argColor.g;
     a = argColor.a;
   }
-  
+
   Color3i clone() => Color3i(r, g, b, a: a);
 
   @override
