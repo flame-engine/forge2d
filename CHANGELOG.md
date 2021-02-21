@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [next]
+## 0.6.4
  - Consider y-flip in ViewportTransform
 
 ## 0.6.3
