@@ -6,7 +6,7 @@ class ViewportTransform {
         center = Vector2.copy(c);
 
   /// if we flip the y axis when transforming.
-  bool yFlip;
+  bool yFlip = false;
 
   /// This is the half-width and half-height.
   /// This should be the actual half-width and
@@ -44,9 +44,10 @@ class ViewportTransform {
     // center, to be the origin.
     final double gridCorrectedX = (argWorld.x * scale) + extents.x;
     final double gridCorrectedY = extents.y - (argWorld.y * scale);
-
     return Vector2(
-        gridCorrectedX + translation.x, gridCorrectedY + -translation.y);
+      gridCorrectedX + translation.x,
+      gridCorrectedY + (yFlip ? 1 : -1) * translation.y,
+    );
   }
 
   /// Takes the screen coordinates and return the corresponding world coordinates
