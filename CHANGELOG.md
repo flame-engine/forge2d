@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [next]
+ - Consider y-flip in ViewportTransform
+
 ## 0.6.3
  - Remove faulty assert in world.destroyJoint
 
