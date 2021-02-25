@@ -31,7 +31,7 @@ class ViewportTransform {
   /// actual center of the canvas and the currently specified center. For
   /// example, if the actual canvas center is (5, 5) but the current center is
   /// (6, 6), the translation is (1, 1).
-  Vector2 get translation => extents - center;
+  Vector2 get translation => (extents - center)..y *= (yFlip ? -1 : 1);
 
   set translation(Vector2 translation) {
     center.setFrom(extents);
@@ -46,7 +46,7 @@ class ViewportTransform {
     final double gridCorrectedY = extents.y - (argWorld.y * scale);
     return Vector2(
       gridCorrectedX + translation.x,
-      gridCorrectedY + (yFlip ? 1 : -1) * translation.y,
+      gridCorrectedY + -translation.y,
     );
   }
 
