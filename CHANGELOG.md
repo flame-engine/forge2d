@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.6.5
+ - Consider y-flip for all translation in the viewport
+ 
 ## 0.6.4
  - Consider y-flip in ViewportTransform
 
