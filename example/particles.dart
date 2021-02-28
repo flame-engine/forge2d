@@ -6,14 +6,14 @@ import 'demo.dart';
 
 class Particles extends Demo {
   /// Starting position of ball cage in the world.
-  static const double START_X = -20.0;
-  static const double START_Y = -20.0;
+  static const double startX = -20.0;
+  static const double startY = -20.0;
 
   /// The radius of the balls forming the arena.
-  static const double WALL_BALL_RADIUS = 2.0;
+  static const double wallBallRadius = 2.0;
 
   /// Radius of the active ball.
-  static const double ACTIVE_BALL_RADIUS = 1.0;
+  static const double activeBallRadius = 1.0;
 
   /// Constructs a new Particles example.
   Particles() : super("Particles");
@@ -29,7 +29,7 @@ class Particles extends Demo {
   void initialize() {
     // Define the circle shape.
     final circleShape = CircleShape();
-    circleShape.radius = WALL_BALL_RADIUS;
+    circleShape.radius = wallBallRadius;
 
     // Create fixture using the circle shape.
     final circleFixtureDef = FixtureDef();
@@ -42,15 +42,15 @@ class Particles extends Demo {
 
     const int maxShapeInRow = 10;
     final double borderLimitX =
-        START_X + maxShapeInRow * 2 * circleShape.radius;
+        startX + maxShapeInRow * 2 * circleShape.radius;
     final double borderLimitY =
-        START_Y + maxShapeInRow * 2 * circleShape.radius;
+        startY + maxShapeInRow * 2 * circleShape.radius;
 
     for (int i = 0; i < maxShapeInRow; i++) {
-      final double shiftX = START_X + circleShape.radius * 2 * i;
-      final double shiftY = START_Y + circleShape.radius * 2 * i;
+      final double shiftX = startX + circleShape.radius * 2 * i;
+      final double shiftY = startY + circleShape.radius * 2 * i;
 
-      circleBodyDef.position = Vector2(shiftX, START_Y);
+      circleBodyDef.position = Vector2(shiftX, startY);
       Body circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixture(circleFixtureDef);
@@ -60,7 +60,7 @@ class Particles extends Demo {
       bodies.add(circleBody);
       circleBody.createFixture(circleFixtureDef);
 
-      circleBodyDef.position = Vector2(START_X, shiftY);
+      circleBodyDef.position = Vector2(startX, shiftY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixture(circleFixtureDef);
@@ -73,7 +73,7 @@ class Particles extends Demo {
 
     // Create a bouncing ball.
     final bouncingCircle = CircleShape();
-    bouncingCircle.radius = ACTIVE_BALL_RADIUS;
+    bouncingCircle.radius = activeBallRadius;
 
     // Create fixture for that ball shape.
     final activeFixtureDef = FixtureDef();
