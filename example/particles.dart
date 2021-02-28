@@ -41,10 +41,8 @@ class Particles extends Demo {
     final circleBodyDef = BodyDef();
 
     const int maxShapeInRow = 10;
-    final double borderLimitX =
-        startX + maxShapeInRow * 2 * circleShape.radius;
-    final double borderLimitY =
-        startY + maxShapeInRow * 2 * circleShape.radius;
+    final double borderLimitX = startX + maxShapeInRow * 2 * circleShape.radius;
+    final double borderLimitY = startY + maxShapeInRow * 2 * circleShape.radius;
 
     for (int i = 0; i < maxShapeInRow; i++) {
       final double shiftX = startX + circleShape.radius * 2 * i;

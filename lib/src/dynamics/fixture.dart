@@ -198,7 +198,7 @@ class Fixture {
       final int newLength = math.max(old.length * 2, childCount);
       _proxies = List<FixtureProxy>.generate(
         newLength,
-        (_) => FixtureProxy()..proxyId = BroadPhase.NULL_PROXY,
+        (_) => FixtureProxy()..proxyId = BroadPhase.nullProxy,
       );
     }
     _proxyCount = 0;
@@ -229,7 +229,7 @@ class Fixture {
     for (int i = 0; i < _proxyCount; ++i) {
       final FixtureProxy proxy = _proxies[i];
       broadPhase.destroyProxy(proxy.proxyId);
-      proxy.proxyId = BroadPhase.NULL_PROXY;
+      proxy.proxyId = BroadPhase.nullProxy;
     }
 
     _proxyCount = 0;

@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
-FORMAT_ISSUES=$(dartfmt --set-exit-if-changed -n .)
+
+./scripts/format.sh
 if [ $? -eq 1 ]; then
-  echo "dart format issues on: (please run 'dartfmt -w .'"
-  echo $FORMAT_ISSUES
+  echo "Formatting failed!"
+  exit 1
+fi
+./scripts/analyze.sh
+if [ $? -eq 1 ]; then
+  echo "Analyzing failed!"
   exit 1
 fi
 
-pub get
-result=$(dartanalyzer .)
-if ! echo "$result" | grep -q "No issues found!"; then
-  echo "$result"
-  echo "dart analyze issue: $1"
-  exit 1
-fi
-
-echo "success"
-exit 0
+echo "Succesfully linted!"

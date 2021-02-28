@@ -33,13 +33,13 @@ class VoronoiDiagram {
   final Map<int, VoronoiGenerator> _diagram = {};
 
   void getNodes(VoronoiDiagramCallback callback) {
-    for (int y = 0; y < _countY - 1; y++) {
-      for (int x = 0; x < _countX - 1; x++) {
-        final int i = x + y * _countX;
-        final VoronoiGenerator a = _diagram[i];
-        final VoronoiGenerator b = _diagram[i + 1];
-        final VoronoiGenerator c = _diagram[i + _countX];
-        final VoronoiGenerator d = _diagram[i + 1 + _countX];
+    for (var y = 0; y < _countY - 1; y++) {
+      for (var x = 0; x < _countX - 1; x++) {
+        final i = x + y * _countX;
+        final a = _diagram[i];
+        final b = _diagram[i + 1];
+        final c = _diagram[i + _countX];
+        final d = _diagram[i + 1 + _countX];
         if (b != c) {
           if (a != b && a != c) {
             callback.call(a.particle, b.particle, c.particle);

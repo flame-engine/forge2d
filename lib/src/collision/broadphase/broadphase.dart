@@ -1,7 +1,7 @@
 part of forge2d;
 
 abstract class BroadPhase {
-  static const int NULL_PROXY = -1;
+  static const int nullProxy = -1;
 
   /// Create a proxy with an initial AABB. Pairs are not reported until updatePairs is called.
   int createProxy(AABB aabb, Object userData);

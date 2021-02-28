@@ -36,7 +36,7 @@ Float64List reallocateBuffer(
 
 /// Rotate an array
 void rotate<T>(List<T> ray, int first, int newFirst, int last) {
-  int next = newFirst;
+  var next = newFirst;
   while (next != first) {
     final temp = ray[first];
     ray[first] = ray[next];
@@ -54,7 +54,7 @@ void rotate<T>(List<T> ray, int first, int newFirst, int last) {
 // Replace Java's Arrays::sort.
 // TODO(srdjan): Make a version that does not require copying.
 void sort<T>(List<T> list, int fromPos, int toPos) {
-  final List<T> temp = List.from(list.getRange(fromPos, toPos));
+  final temp = List<T>.from(list.getRange(fromPos, toPos));
   temp.sort();
   list.setRange(fromPos, toPos, temp);
 }

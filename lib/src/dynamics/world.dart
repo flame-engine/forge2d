@@ -314,9 +314,9 @@ class World {
     }
 
     final int flags = debugDraw.drawFlags;
-    final bool wireframe = (flags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
+    final bool wireframe = (flags & DebugDraw.wireFrameDrawingBit) != 0;
 
-    if ((flags & DebugDraw.SHAPE_BIT) != 0) {
+    if ((flags & DebugDraw.shapeBit) != 0) {
       for (Body b in bodies) {
         xf.set(b._transform);
         for (Fixture f in b.fixtures) {
@@ -341,11 +341,11 @@ class World {
       drawParticleSystem(particleSystem);
     }
 
-    if ((flags & DebugDraw.JOINT_BIT) != 0) {
+    if ((flags & DebugDraw.jointBit) != 0) {
       joints.forEach(drawJoint);
     }
 
-    if ((flags & DebugDraw.PAIR_BIT) != 0) {
+    if ((flags & DebugDraw.pairBit) != 0) {
       color.setFromRGBd(0.3, 0.9, 0.9);
       for (Contact c in _contactManager.contacts) {
         final Fixture fixtureA = c.fixtureA;
@@ -356,7 +356,7 @@ class World {
       }
     }
 
-    if ((flags & DebugDraw.AABB_BIT) != 0) {
+    if ((flags & DebugDraw.aabbBit) != 0) {
       color.setFromRGBd(0.9, 0.3, 0.9);
 
       for (Body b in bodies) {
@@ -383,7 +383,7 @@ class World {
       }
     }
 
-    if ((flags & DebugDraw.CENTER_OF_MASS_BIT) != 0) {
+    if ((flags & DebugDraw.centerOfMassBit) != 0) {
       final Color3i xfColor = Color3i(255, 0, 0);
       for (Body b in bodies) {
         xf.set(b._transform);
@@ -392,7 +392,7 @@ class World {
       }
     }
 
-    if ((flags & DebugDraw.DYNAMIC_TREE_BIT) != 0) {
+    if ((flags & DebugDraw.dynamicTreeBit) != 0) {
       _contactManager.broadPhase.drawTree(debugDraw);
     }
 
@@ -1102,7 +1102,7 @@ class World {
 
   void drawParticleSystem(ParticleSystem system) {
     final bool wireframe =
-        (debugDraw.drawFlags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
+        (debugDraw.drawFlags & DebugDraw.wireFrameDrawingBit) != 0;
     if (system.particles.isNotEmpty) {
       final double particleRadius = system.getParticleRadius();
       if (wireframe) {

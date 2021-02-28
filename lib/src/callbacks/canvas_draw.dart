@@ -40,7 +40,7 @@ class CanvasDraw extends DebugDraw {
     ctx.moveTo(vertices[0].x, vertices[0].y);
 
     // Draw lines to all of the remaining points.
-    for (int i = 1; i < vertices.length; ++i) {
+    for (var i = 1; i < vertices.length; ++i) {
       ctx.lineTo(vertices[i].x, vertices[i].y);
     }
 
@@ -130,6 +130,6 @@ class CanvasDraw extends DebugDraw {
 
   @override
   void drawParticlesWireframe(List<Particle> particles, double radius) {
-    throw "Unimplemented";
+    throw 'Unimplemented';
   }
 }
