@@ -29,7 +29,7 @@ class Rot {
   double getSin() => s;
 
   @override
-  String toString() => "Rot(s:$s, c:$c)";
+  String toString() => 'Rot(s:$s, c:$c)';
 
   double getCos() => c;
 

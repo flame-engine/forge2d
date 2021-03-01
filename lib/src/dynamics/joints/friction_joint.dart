@@ -68,17 +68,17 @@ class FrictionJoint extends Joint {
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
-    final double aA = data.positions[_indexA].a;
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
+    final aA = data.positions[_indexA].a;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
 
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Vector2 temp = Vector2.zero();
-    final Rot qA = Rot();
-    final Rot qB = Rot();
+    final temp = Vector2.zero();
+    final qA = Rot();
+    final qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -96,11 +96,11 @@ class FrictionJoint extends Joint {
     final double mA = _invMassA, mB = _invMassB;
     final double iA = _invIA, iB = _invIB;
 
-    final Matrix2 K = Matrix2.zero();
-    final double a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
-    final double a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
-    final double a12 = a21;
-    final double a22 = mA + mB + iA * _rA.x * _rA.x + iB * _rB.x * _rB.x;
+    final K = Matrix2.zero();
+    final a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
+    final a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
+    final a12 = a21;
+    final a22 = mA + mB + iA * _rA.x * _rA.x + iB * _rB.x * _rB.x;
 
     K.setValues(a11, a12, a21, a22);
     _linearMass.setFrom(K);
@@ -116,7 +116,7 @@ class FrictionJoint extends Joint {
       _linearImpulse.scale(data.step.dtRatio);
       _angularImpulse *= data.step.dtRatio;
 
-      final Vector2 P = Vector2.zero();
+      final P = Vector2.zero();
       P.setFrom(_linearImpulse);
 
       temp
@@ -143,23 +143,23 @@ class FrictionJoint extends Joint {
 
   @override
   void solveVelocityConstraints(final SolverData data) {
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
     final double mA = _invMassA, mB = _invMassB;
     final double iA = _invIA, iB = _invIB;
 
-    final double dt = data.step.dt;
+    final dt = data.step.dt;
 
     // Solve angular friction
     {
-      final double cDot = wB - wA;
-      double impulse = -_angularMass * cDot;
+      final cDot = wB - wA;
+      var impulse = -_angularMass * cDot;
 
-      final double oldImpulse = _angularImpulse;
-      final double maxImpulse = dt * _maxTorque;
+      final oldImpulse = _angularImpulse;
+      final maxImpulse = dt * _maxTorque;
       _angularImpulse =
           (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _angularImpulse - oldImpulse;
@@ -170,8 +170,8 @@ class FrictionJoint extends Joint {
 
     // Solve linear friction
     {
-      final Vector2 cDot = Vector2.zero();
-      final Vector2 temp = Vector2.zero();
+      final cDot = Vector2.zero();
+      final temp = Vector2.zero();
 
       _rA.scaleOrthogonalInto(wA, temp);
       _rB.scaleOrthogonalInto(wB, cDot);
@@ -180,15 +180,15 @@ class FrictionJoint extends Joint {
         ..sub(vA)
         ..sub(temp);
 
-      final Vector2 impulse = Vector2.zero();
+      final impulse = Vector2.zero();
       _linearMass.transformed(cDot, impulse);
       impulse.negate();
 
-      final Vector2 oldImpulse = Vector2.zero();
+      final oldImpulse = Vector2.zero();
       oldImpulse.setFrom(_linearImpulse);
       _linearImpulse.add(impulse);
 
-      final double maxImpulse = dt * _maxForce;
+      final maxImpulse = dt * _maxForce;
 
       if (_linearImpulse.length2 > maxImpulse * maxImpulse) {
         _linearImpulse.normalize();

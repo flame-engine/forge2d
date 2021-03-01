@@ -35,7 +35,7 @@ class ProfileEntry {
 
   @override
   String toString() {
-    return "$shortAvg ($longAvg) [$min,$max]";
+    return '$shortAvg ($longAvg) [$min,$max]';
   }
 }
 
@@ -52,16 +52,16 @@ class Profile {
   final ProfileEntry solveTOI = ProfileEntry();
 
   void toDebugStrings(List<String> strings) {
-    strings.add("Profile:");
-    strings.add(" step: $step");
-    strings.add("  init: $stepInit");
-    strings.add("  collide: $collide");
-    strings.add("  particles: $solveParticleSystem");
-    strings.add("  solve: $solve");
-    strings.add("   solveInit: $solveInit");
-    strings.add("   solveVelocity: $solveVelocity");
-    strings.add("   solvePosition: $solvePosition");
-    strings.add("   broadphase: $broadphase");
-    strings.add("  solveTOI: $solveTOI");
+    strings.add('Profile:');
+    strings.add(' step: $step');
+    strings.add('  init: $stepInit');
+    strings.add('  collide: $collide');
+    strings.add('  particles: $solveParticleSystem');
+    strings.add('  solve: $solve');
+    strings.add('   solveInit: $solveInit');
+    strings.add('   solveVelocity: $solveVelocity');
+    strings.add('   solvePosition: $solvePosition');
+    strings.add('   broadphase: $broadphase');
+    strings.add('  solveTOI: $solveTOI');
   }
 }

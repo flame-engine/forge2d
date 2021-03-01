@@ -22,11 +22,11 @@ class MotorJointDef extends JointDef {
   void initialize(Body bA, Body bB) {
     bodyA = bA;
     bodyB = bB;
-    final Vector2 xB = bodyB.position;
+    final xB = bodyB.position;
     linearOffset.setFrom(bodyA.getLocalPoint(xB));
 
-    final double angleA = bodyA.getAngle();
-    final double angleB = bodyB.getAngle();
+    final angleA = bodyA.getAngle();
+    final angleB = bodyB.getAngle();
     angularOffset = angleB - angleA;
   }
 }

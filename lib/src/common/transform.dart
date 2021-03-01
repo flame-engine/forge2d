@@ -49,13 +49,13 @@ class Transform {
   }
 
   static Vector2 mulTransVec2(final Transform t, final Vector2 v) {
-    final double pX = v.x - t.p.x;
-    final double pY = v.y - t.p.y;
+    final pX = v.x - t.p.x;
+    final pY = v.y - t.p.y;
     return Vector2(t.q.c * pX + t.q.s * pY, -t.q.s * pX + t.q.c * pY);
   }
 
   static Transform mul(final Transform a, final Transform b) {
-    final Transform c = Transform.zero();
+    final c = Transform.zero();
     c.q.setFrom(Rot.mul(a.q, b.q));
     c.p.setFrom(Rot.mulVec2(a.q, b.p));
     c.p.add(a.p);
@@ -63,15 +63,15 @@ class Transform {
   }
 
   static Transform mulTrans(final Transform a, final Transform b) {
-    final Vector2 v = b.p - a.p;
+    final v = b.p - a.p;
     return Transform.from(Rot.mulTransVec2(a.q, v), Rot.mulTrans(a.q, b.q));
   }
 
   @override
   String toString() {
-    String s = "XForm:\n";
-    s += "Position: $p\n";
-    s += "R: \t$q\n";
+    var s = 'XForm:\n';
+    s += 'Position: $p\n';
+    s += 'R: \t$q\n';
     return s;
   }
 }

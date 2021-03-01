@@ -72,7 +72,7 @@ abstract class Joint {
 
   /// Get the other body than the argument in the joint
   Body getOtherBody(Body body) {
-    assert(containsBody(body), "Body is not in the joint");
+    assert(containsBody(body), 'Body is not in the joint');
     return body == bodyA ? bodyB : bodyB;
   }
 

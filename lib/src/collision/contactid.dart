@@ -50,7 +50,7 @@ class ContactID implements Comparable<ContactID> {
   }
 
   void flip() {
-    int tempA = indexA;
+    var tempA = indexA;
     indexA = indexB;
     indexB = tempA;
     tempA = typeA;

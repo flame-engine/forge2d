@@ -61,18 +61,18 @@ class DistanceJoint extends Joint {
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
-    final Vector2 cA = data.positions[_indexA].c;
-    final double aA = data.positions[_indexA].a;
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
+    final cA = data.positions[_indexA].c;
+    final aA = data.positions[_indexA].a;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
 
-    final Vector2 cB = data.positions[_indexB].c;
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final cB = data.positions[_indexB].c;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
+    final qA = Rot();
+    final qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -93,7 +93,7 @@ class DistanceJoint extends Joint {
       ..sub(_rA);
 
     // Handle singularity.
-    final double length = _u.length;
+    final length = _u.length;
     if (length > settings.linearSlop) {
       _u.x *= 1.0 / length;
       _u.y *= 1.0 / length;
@@ -101,28 +101,28 @@ class DistanceJoint extends Joint {
       _u.setValues(0.0, 0.0);
     }
 
-    final double crAu = _rA.cross(_u);
-    final double crBu = _rB.cross(_u);
-    double invMass =
+    final crAu = _rA.cross(_u);
+    final crBu = _rB.cross(_u);
+    var invMass =
         _invMassA + _invIA * crAu * crAu + _invMassB + _invIB * crBu * crBu;
 
     // Compute the effective mass matrix.
     _mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
 
     if (_frequencyHz > 0.0) {
-      final double c = length - _length;
+      final c = length - _length;
 
       // Frequency
-      final double omega = 2.0 * pi * _frequencyHz;
+      final omega = 2.0 * pi * _frequencyHz;
 
       // Damping coefficient
-      final double d = 2.0 * _mass * _dampingRatio * omega;
+      final d = 2.0 * _mass * _dampingRatio * omega;
 
       // Spring stiffness
-      final double k = _mass * omega * omega;
+      final k = _mass * omega * omega;
 
       // magic formulas
-      final double dt = data.step.dt;
+      final dt = data.step.dt;
       _gamma = dt * (d + dt * k);
       _gamma = _gamma != 0.0 ? 1.0 / _gamma : 0.0;
       _bias = c * dt * k * _gamma;
@@ -137,7 +137,7 @@ class DistanceJoint extends Joint {
       // Scale the impulse to support a variable time step.
       _impulse *= data.step.dtRatio;
 
-      final Vector2 p = Vector2.copy(_u)..scale(_impulse);
+      final p = Vector2.copy(_u)..scale(_impulse);
 
       vA.x -= _invMassA * p.x;
       vA.y -= _invMassA * p.y;
@@ -155,26 +155,26 @@ class DistanceJoint extends Joint {
 
   @override
   void solveVelocityConstraints(final SolverData data) {
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Vector2 vpA = Vector2.zero();
-    final Vector2 vpB = Vector2.zero();
+    final vpA = Vector2.zero();
+    final vpB = Vector2.zero();
 
     // Cdot = dot(u, v + cross(w, r))
     _rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
     _rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
-    final double cDot = _u.dot(vpB..sub(vpA));
+    final cDot = _u.dot(vpB..sub(vpA));
 
-    final double impulse = -_mass * (cDot + _bias + _gamma * _impulse);
+    final impulse = -_mass * (cDot + _bias + _gamma * _impulse);
     _impulse += impulse;
 
-    final double pX = impulse * _u.x;
-    final double pY = impulse * _u.y;
+    final pX = impulse * _u.x;
+    final pY = impulse * _u.y;
 
     vA.x -= _invMassA * pX;
     vA.y -= _invMassA * pY;
@@ -192,16 +192,16 @@ class DistanceJoint extends Joint {
     if (_frequencyHz > 0.0) {
       return true;
     }
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Vector2 rA = Vector2.zero();
-    final Vector2 rB = Vector2.zero();
-    final Vector2 u = Vector2.zero();
+    final qA = Rot();
+    final qB = Rot();
+    final rA = Vector2.zero();
+    final rB = Vector2.zero();
+    final u = Vector2.zero();
 
-    final Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    final Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
+    final cA = data.positions[_indexA].c;
+    var aA = data.positions[_indexA].a;
+    final cB = data.positions[_indexB].c;
+    var aB = data.positions[_indexB].a;
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -220,13 +220,13 @@ class DistanceJoint extends Joint {
       ..sub(cA)
       ..sub(rA);
 
-    final double length = u.normalize();
+    final length = u.normalize();
     final C = (length - _length)
         .clamp(-settings.maxLinearCorrection, settings.maxLinearCorrection);
 
-    final double impulse = -_mass * C;
-    final double pX = impulse * u.x;
-    final double pY = impulse * u.y;
+    final impulse = -_mass * C;
+    final pX = impulse * u.x;
+    final pY = impulse * u.y;
 
     cA.x -= _invMassA * pX;
     cA.y -= _invMassA * pY;

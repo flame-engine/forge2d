@@ -60,8 +60,8 @@ class TimeOfImpact {
     output.state = TOIOutputState.UNKNOWN;
     output.t = input.tMax;
 
-    final DistanceProxy proxyA = input.proxyA;
-    final DistanceProxy proxyB = input.proxyB;
+    final proxyA = input.proxyA;
+    final proxyB = input.proxyB;
 
     _sweepA.set(input.sweepA);
     _sweepB.set(input.sweepB);
@@ -71,18 +71,18 @@ class TimeOfImpact {
     _sweepA.normalize();
     _sweepB.normalize();
 
-    final double tMax = input.tMax;
+    final tMax = input.tMax;
 
-    final double totalRadius = proxyA.radius + proxyB.radius;
+    final totalRadius = proxyA.radius + proxyB.radius;
     // djm: whats with all these constants?
-    final double target =
+    final target =
         max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
-    final double tolerance = 0.25 * settings.linearSlop;
+    final tolerance = 0.25 * settings.linearSlop;
 
     assert(target > tolerance);
 
-    double t1 = 0.0;
-    int iter = 0;
+    var t1 = 0.0;
+    var iter = 0;
 
     _cache.count = 0;
     _distanceInput.proxyA = input.proxyA;
@@ -121,12 +121,12 @@ class TimeOfImpact {
       // Compute the TOI on the separating axis. We do this by successively
       // resolving the deepest point. This loop is bounded by the number of
       // vertices.
-      bool done = false;
-      double t2 = tMax;
-      int pushBackIter = 0;
+      var done = false;
+      var t2 = tMax;
+      var pushBackIter = 0;
       for (;;) {
         // Find the deepest point at t2. Store the witness point indices.
-        double s2 = _fcn.findMinSeparation(_indexes, t2);
+        var s2 = _fcn.findMinSeparation(_indexes, t2);
         // Is the final configuration separated?
         if (s2 > target + tolerance) {
           // Victory!
@@ -144,7 +144,7 @@ class TimeOfImpact {
         }
 
         // Compute the initial separation of the witness points.
-        double s1 = _fcn.evaluate(_indexes[0], _indexes[1], t1);
+        var s1 = _fcn.evaluate(_indexes[0], _indexes[1], t1);
         // Check for initial overlap. This might happen if the root finder
         // runs out of iterations.
         if (s1 < target - tolerance) {
@@ -164,7 +164,7 @@ class TimeOfImpact {
         }
 
         // Compute 1D root of: f(x) - target = 0
-        int rootIterCount = 0;
+        var rootIterCount = 0;
         double a1 = t1, a2 = t2;
         for (;;) {
           // Use a mix of the secant rule and bisection.
@@ -180,7 +180,7 @@ class TimeOfImpact {
           ++rootIterCount;
           ++toiRootIters;
 
-          final double s = _fcn.evaluate(_indexes[0], _indexes[1], t);
+          final s = _fcn.evaluate(_indexes[0], _indexes[1], t);
 
           if ((s - target).abs() < tolerance) {
             // t2 holds a tentative value for t1
@@ -267,7 +267,7 @@ class SeparationFunction {
       double t1) {
     this.proxyA = proxyA;
     this.proxyB = proxyB;
-    final int count = cache.count;
+    final count = cache.count;
     assert(0 < count && count < 3);
 
     this.sweepA = sweepA;
@@ -313,7 +313,7 @@ class SeparationFunction {
       _temp
         ..setFrom(_pointA)
         ..sub(_pointB);
-      double s = _temp.dot(_normal);
+      var s = _temp.dot(_normal);
       if (s < 0.0) {
         axis.negate();
         s = -s;
@@ -346,7 +346,7 @@ class SeparationFunction {
       _temp
         ..setFrom(_pointB)
         ..sub(_pointA);
-      double s = _temp.dot(_normal);
+      var s = _temp.dot(_normal);
       if (s < 0.0) {
         axis.negate();
         s = -s;

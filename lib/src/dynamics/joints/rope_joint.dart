@@ -51,19 +51,19 @@ class RopeJoint extends Joint {
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
-    final Vector2 cA = data.positions[_indexA].c;
-    final double aA = data.positions[_indexA].a;
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
+    final cA = data.positions[_indexA].c;
+    final aA = data.positions[_indexA].a;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
 
-    final Vector2 cB = data.positions[_indexB].c;
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final cB = data.positions[_indexB].c;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Vector2 temp = Vector2.zero();
+    final qA = Rot();
+    final qB = Rot();
+    final temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -86,7 +86,7 @@ class RopeJoint extends Joint {
 
     _length = _u.length;
 
-    final double c = _length - _maxLength;
+    final c = _length - _maxLength;
     if (c > 0.0) {
       _state = LimitState.AT_UPPER;
     } else {
@@ -103,9 +103,9 @@ class RopeJoint extends Joint {
     }
 
     // Compute effective mass.
-    final double crA = _rA.cross(_u);
-    final double crB = _rB.cross(_u);
-    final double invMass =
+    final crA = _rA.cross(_u);
+    final crB = _rB.cross(_u);
+    final invMass =
         _invMassA + _invIA * crA * crA + _invMassB + _invIB * crB * crB;
 
     _mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
@@ -114,8 +114,8 @@ class RopeJoint extends Joint {
       // Scale the impulse to support a variable time step.
       _impulse *= data.step.dtRatio;
 
-      final double pX = _impulse * _u.x;
-      final double pY = _impulse * _u.y;
+      final pX = _impulse * _u.x;
+      final pY = _impulse * _u.y;
       vA.x -= _invMassA * pX;
       vA.y -= _invMassA * pY;
       wA -= _invIA * (_rA.x * pY - _rA.y * pX);
@@ -133,22 +133,22 @@ class RopeJoint extends Joint {
 
   @override
   void solveVelocityConstraints(final SolverData data) {
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Vector2 vpA = Vector2.zero();
-    final Vector2 vpB = Vector2.zero();
-    final Vector2 temp = Vector2.zero();
+    final vpA = Vector2.zero();
+    final vpB = Vector2.zero();
+    final temp = Vector2.zero();
 
     _rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
     _rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
 
-    final double c = _length - _maxLength;
-    double cDot = _u.dot(temp
+    final c = _length - _maxLength;
+    var cDot = _u.dot(temp
       ..setFrom(vpB)
       ..sub(vpA));
 
@@ -157,13 +157,13 @@ class RopeJoint extends Joint {
       cDot += data.step.invDt * c;
     }
 
-    double impulse = -_mass * cDot;
-    final double oldImpulse = _impulse;
+    var impulse = -_mass * cDot;
+    final oldImpulse = _impulse;
     _impulse = min<double>(0.0, _impulse + impulse);
     impulse = _impulse - oldImpulse;
 
-    final double pX = impulse * _u.x;
-    final double pY = impulse * _u.y;
+    final pX = impulse * _u.x;
+    final pY = impulse * _u.y;
     vA.x -= _invMassA * pX;
     vA.y -= _invMassA * pY;
     wA -= _invIA * (_rA.x * pY - _rA.y * pX);
@@ -179,17 +179,17 @@ class RopeJoint extends Joint {
 
   @override
   bool solvePositionConstraints(final SolverData data) {
-    final Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    final Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
+    final cA = data.positions[_indexA].c;
+    var aA = data.positions[_indexA].a;
+    final cB = data.positions[_indexB].c;
+    var aB = data.positions[_indexB].a;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Vector2 u = Vector2.zero();
-    final Vector2 rA = Vector2.zero();
-    final Vector2 rB = Vector2.zero();
-    final Vector2 temp = Vector2.zero();
+    final qA = Rot();
+    final qB = Rot();
+    final u = Vector2.zero();
+    final rA = Vector2.zero();
+    final rB = Vector2.zero();
+    final temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -210,14 +210,14 @@ class RopeJoint extends Joint {
       ..sub(cA)
       ..sub(rA);
 
-    final double length = u.normalize();
-    double c = length - _maxLength;
+    final length = u.normalize();
+    var c = length - _maxLength;
 
     c = c.clamp(0.0, settings.maxLinearCorrection).toDouble();
 
-    final double impulse = -_mass * c;
-    final double pX = impulse * u.x;
-    final double pY = impulse * u.y;
+    final impulse = -_mass * c;
+    final pX = impulse * u.x;
+    final pY = impulse * u.y;
 
     cA.x -= _invMassA * pX;
     cA.y -= _invMassA * pY;

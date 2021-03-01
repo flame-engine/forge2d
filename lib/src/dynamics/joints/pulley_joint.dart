@@ -59,14 +59,14 @@ class PulleyJoint extends Joint {
   }
 
   double getCurrentLengthA() {
-    final Vector2 p = Vector2.zero();
+    final p = Vector2.zero();
     p.setFrom(bodyA.getWorldPoint(localAnchorA));
     p.sub(_groundAnchorA);
     return p.length;
   }
 
   double getCurrentLengthB() {
-    final Vector2 p = Vector2.zero();
+    final p = Vector2.zero();
     p.setFrom(bodyB.getWorldPoint(localAnchorB));
     p.sub(_groundAnchorB);
     return p.length;
@@ -105,19 +105,19 @@ class PulleyJoint extends Joint {
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
-    final Vector2 cA = data.positions[_indexA].c;
-    final double aA = data.positions[_indexA].a;
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
+    final cA = data.positions[_indexA].c;
+    final aA = data.positions[_indexA].a;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
 
-    final Vector2 cB = data.positions[_indexB].c;
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final cB = data.positions[_indexB].c;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Vector2 temp = Vector2.zero();
+    final qA = Rot();
+    final qB = Rot();
+    final temp = Vector2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -141,8 +141,8 @@ class PulleyJoint extends Joint {
       ..add(_rB)
       ..sub(_groundAnchorB);
 
-    final double lengthA = _uA.length;
-    final double lengthB = _uB.length;
+    final lengthA = _uA.length;
+    final lengthB = _uB.length;
 
     if (lengthA > 10.0 * settings.linearSlop) {
       _uA.scale(1.0 / lengthA);
@@ -157,11 +157,11 @@ class PulleyJoint extends Joint {
     }
 
     // Compute effective mass.
-    final double ruA = _rA.cross(_uA);
-    final double ruB = _rB.cross(_uB);
+    final ruA = _rA.cross(_uA);
+    final ruB = _rB.cross(_uB);
 
-    final double mA = _invMassA + _invIA * ruA * ruA;
-    final double mB = _invMassB + _invIB * ruB * ruB;
+    final mA = _invMassA + _invIA * ruA * ruA;
+    final mB = _invMassB + _invIB * ruB * ruB;
 
     _mass = mA + _ratio * _ratio * mB;
 
@@ -174,8 +174,8 @@ class PulleyJoint extends Joint {
       _impulse *= data.step.dtRatio;
 
       // Warm starting.
-      final Vector2 pA = Vector2.zero();
-      final Vector2 pB = Vector2.zero();
+      final pA = Vector2.zero();
+      final pB = Vector2.zero();
 
       pA
         ..setFrom(_uA)
@@ -199,23 +199,23 @@ class PulleyJoint extends Joint {
 
   @override
   void solveVelocityConstraints(final SolverData data) {
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Vector2 vpA = Vector2.zero();
-    final Vector2 vpB = Vector2.zero();
-    final Vector2 pA = Vector2.zero();
-    final Vector2 pB = Vector2.zero();
+    final vpA = Vector2.zero();
+    final vpB = Vector2.zero();
+    final pA = Vector2.zero();
+    final pB = Vector2.zero();
 
     _rA.scaleOrthogonalInto(wA, vpA);
     vpA.add(vA);
     _rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
 
-    final double cDot = -_uA.dot(vpA) - _ratio * _uB.dot(vpB);
-    final double impulse = -_mass * cDot;
+    final cDot = -_uA.dot(vpA) - _ratio * _uB.dot(vpB);
+    final impulse = -_mass * cDot;
     _impulse += impulse;
 
     pA
@@ -237,20 +237,20 @@ class PulleyJoint extends Joint {
 
   @override
   bool solvePositionConstraints(final SolverData data) {
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Vector2 rA = Vector2.zero();
-    final Vector2 rB = Vector2.zero();
-    final Vector2 uA = Vector2.zero();
-    final Vector2 uB = Vector2.zero();
-    final Vector2 temp = Vector2.zero();
-    final Vector2 pA = Vector2.zero();
-    final Vector2 pB = Vector2.zero();
+    final qA = Rot();
+    final qB = Rot();
+    final rA = Vector2.zero();
+    final rB = Vector2.zero();
+    final uA = Vector2.zero();
+    final uB = Vector2.zero();
+    final temp = Vector2.zero();
+    final pA = Vector2.zero();
+    final pB = Vector2.zero();
 
-    final Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    final Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
+    final cA = data.positions[_indexA].c;
+    var aA = data.positions[_indexA].a;
+    final cB = data.positions[_indexB].c;
+    var aB = data.positions[_indexB].a;
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -272,8 +272,8 @@ class PulleyJoint extends Joint {
       ..add(rB)
       ..sub(_groundAnchorB);
 
-    final double lengthA = uA.length;
-    final double lengthB = uB.length;
+    final lengthA = uA.length;
+    final lengthB = uB.length;
 
     if (lengthA > 10.0 * settings.linearSlop) {
       uA.scale(1.0 / lengthA);
@@ -288,22 +288,22 @@ class PulleyJoint extends Joint {
     }
 
     // Compute effective mass.
-    final double ruA = rA.cross(uA);
-    final double ruB = rB.cross(uB);
+    final ruA = rA.cross(uA);
+    final ruB = rB.cross(uB);
 
-    final double mA = _invMassA + _invIA * ruA * ruA;
-    final double mB = _invMassB + _invIB * ruB * ruB;
+    final mA = _invMassA + _invIA * ruA * ruA;
+    final mB = _invMassB + _invIB * ruB * ruB;
 
-    double mass = mA + _ratio * _ratio * mB;
+    var mass = mA + _ratio * _ratio * mB;
 
     if (mass > 0.0) {
       mass = 1.0 / mass;
     }
 
-    final double c = _constant - lengthA - _ratio * lengthB;
-    final double linearError = c.abs();
+    final c = _constant - lengthA - _ratio * lengthB;
+    final linearError = c.abs();
 
-    final double impulse = -mass * c;
+    final impulse = -mass * c;
 
     pA
       ..setFrom(uA)

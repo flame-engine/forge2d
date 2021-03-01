@@ -42,5 +42,5 @@ class Color3i {
   Color3i clone() => Color3i(r, g, b, a: a);
 
   @override
-  String toString() => "Color3i($r, $g, $b, $a)";
+  String toString() => 'Color3i($r, $g, $b, $a)';
 }

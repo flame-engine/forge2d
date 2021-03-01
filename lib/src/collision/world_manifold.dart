@@ -31,15 +31,15 @@ class WorldManifold {
     switch (manifold.type) {
       case ManifoldType.CIRCLES:
         {
-          final Vector2 pointA = _pool3;
-          final Vector2 pointB = _pool4;
+          final pointA = _pool3;
+          final pointB = _pool4;
 
           normal.x = 1.0;
           normal.y = 0.0;
-          final Vector2 v = manifold.localPoint;
+          final v = manifold.localPoint;
           pointA.x = (xfA.q.c * v.x - xfA.q.s * v.y) + xfA.p.x;
           pointA.y = (xfA.q.s * v.x + xfA.q.c * v.y) + xfA.p.y;
-          final Vector2 mp0p = manifold.points[0].localPoint;
+          final mp0p = manifold.points[0].localPoint;
           pointB.x = (xfB.q.c * mp0p.x - xfB.q.s * mp0p.y) + xfB.p.x;
           pointB.y = (xfB.q.s * mp0p.x + xfB.q.c * mp0p.y) + xfB.p.y;
 
@@ -50,11 +50,11 @@ class WorldManifold {
             normal.normalize();
           }
 
-          final double cAx = normal.x * radiusA + pointA.x;
-          final double cAy = normal.y * radiusA + pointA.y;
+          final cAx = normal.x * radiusA + pointA.x;
+          final cAy = normal.y * radiusA + pointA.y;
 
-          final double cBx = -normal.x * radiusB + pointB.x;
-          final double cBy = -normal.y * radiusB + pointB.y;
+          final cBx = -normal.x * radiusB + pointB.x;
+          final cBy = -normal.y * radiusB + pointB.y;
 
           points[0].x = (cAx + cBx) * .5;
           points[0].y = (cAy + cBy) * .5;
@@ -63,26 +63,26 @@ class WorldManifold {
         break;
       case ManifoldType.FACE_A:
         {
-          final Vector2 planePoint = _pool3;
+          final planePoint = _pool3;
 
           normal.setFrom(Rot.mulVec2(xfA.q, manifold.localNormal));
           planePoint.setFrom(Transform.mulVec2(xfA, manifold.localPoint));
 
-          final Vector2 clipPoint = _pool4;
+          final clipPoint = _pool4;
 
-          for (int i = 0; i < manifold.pointCount; i++) {
+          for (var i = 0; i < manifold.pointCount; i++) {
             clipPoint
                 .setFrom(Transform.mulVec2(xfB, manifold.points[i].localPoint));
 
-            final double scalar = radiusA -
+            final scalar = radiusA -
                 ((clipPoint.x - planePoint.x) * normal.x +
                     (clipPoint.y - planePoint.y) * normal.y);
 
-            final double cAx = normal.x * scalar + clipPoint.x;
-            final double cAy = normal.y * scalar + clipPoint.y;
+            final cAx = normal.x * scalar + clipPoint.x;
+            final cAy = normal.y * scalar + clipPoint.y;
 
-            final double cBx = -normal.x * radiusB + clipPoint.x;
-            final double cBy = -normal.y * radiusB + clipPoint.y;
+            final cBx = -normal.x * radiusB + clipPoint.x;
+            final cBy = -normal.y * radiusB + clipPoint.y;
 
             points[i].x = (cAx + cBx) * .5;
             points[i].y = (cAy + cBy) * .5;
@@ -91,25 +91,25 @@ class WorldManifold {
         }
         break;
       case ManifoldType.FACE_B:
-        final Vector2 planePoint = _pool3;
+        final planePoint = _pool3;
         normal.setFrom(Rot.mulVec2(xfB.q, manifold.localNormal));
         planePoint.setFrom(Transform.mulVec2(xfB, manifold.localPoint));
 
-        final Vector2 clipPoint = _pool4;
+        final clipPoint = _pool4;
 
-        for (int i = 0; i < manifold.pointCount; i++) {
+        for (var i = 0; i < manifold.pointCount; i++) {
           clipPoint
               .setFrom(Transform.mulVec2(xfA, manifold.points[i].localPoint));
 
-          final double scalar = radiusB -
+          final scalar = radiusB -
               ((clipPoint.x - planePoint.x) * normal.x +
                   (clipPoint.y - planePoint.y) * normal.y);
 
-          final double cBx = normal.x * scalar + clipPoint.x;
-          final double cBy = normal.y * scalar + clipPoint.y;
+          final cBx = normal.x * scalar + clipPoint.x;
+          final cBy = normal.y * scalar + clipPoint.y;
 
-          final double cAx = -normal.x * radiusA + clipPoint.x;
-          final double cAy = -normal.y * radiusA + clipPoint.y;
+          final cAx = -normal.x * radiusA + clipPoint.x;
+          final cAy = -normal.y * radiusA + clipPoint.y;
 
           points[i].x = (cAx + cBx) * .5;
           points[i].y = (cAy + cBy) * .5;

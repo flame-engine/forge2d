@@ -62,11 +62,11 @@ class ParticleGroup {
 
   void updateStatistics() {
     if (_timestamp != _system.timestamp) {
-      final double m = _system.getParticleMass();
+      final m = _system.getParticleMass();
       final _mass = m * particles.length;
       _center.setZero();
       _linearVelocity.setZero();
-      for (Particle particle in particles) {
+      for (var particle in particles) {
         _center.setFrom(_center + (particle.position * m));
         _linearVelocity.setFrom(_linearVelocity + (particle.velocity * m));
       }
@@ -78,13 +78,13 @@ class ParticleGroup {
       }
       _inertia = 0.0;
       _angularVelocity = 0.0;
-      for (Particle particle in particles) {
-        final Vector2 position = particle.position;
-        final Vector2 velocity = particle.velocity;
-        final double px = position.x - _center.x;
-        final double py = position.y - _center.y;
-        final double vx = velocity.x - _linearVelocity.x;
-        final double vy = velocity.y - _linearVelocity.y;
+      for (var particle in particles) {
+        final position = particle.position;
+        final velocity = particle.velocity;
+        final px = position.x - _center.x;
+        final py = position.y - _center.y;
+        final vx = velocity.x - _linearVelocity.x;
+        final vy = velocity.y - _linearVelocity.y;
         _inertia += m * (px * px + py * py);
         _angularVelocity += m * (px * vy - py * vx);
       }

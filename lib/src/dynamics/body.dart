@@ -135,11 +135,11 @@ class Body {
   Fixture createFixture(FixtureDef def) {
     assert(world.isLocked() == false);
 
-    final Fixture fixture = Fixture();
+    final fixture = Fixture();
     fixture.create(this, def);
 
     if ((flags & activeFlag) == activeFlag) {
-      final BroadPhase broadPhase = world.contactManager.broadPhase;
+      final broadPhase = world.contactManager.broadPhase;
       fixture.createProxies(broadPhase, transform);
     }
 
@@ -192,11 +192,11 @@ class Body {
     // You tried to remove a shape that is not attached to this body.
     assert(
       removed,
-      "You tried to remove a fixture that is not attached to this body",
+      'You tried to remove a fixture that is not attached to this body',
     );
 
     // Destroy any contacts associated with the fixture.
-    int i = 0;
+    var i = 0;
     while (i < contacts.length) {
       final contact = contacts[i];
       if (fixture == contact.fixtureA || fixture == contact.fixtureB) {
@@ -211,7 +211,7 @@ class Body {
     }
 
     if ((flags & activeFlag) == activeFlag) {
-      final BroadPhase broadPhase = world.contactManager.broadPhase;
+      final broadPhase = world.contactManager.broadPhase;
       fixture.destroyProxies(broadPhase);
     }
 
@@ -236,8 +236,8 @@ class Body {
     sweep.c0.setFrom(sweep.c);
     sweep.a0 = sweep.a;
 
-    final BroadPhase broadPhase = world.contactManager.broadPhase;
-    for (Fixture f in fixtures) {
+    final broadPhase = world.contactManager.broadPhase;
+    for (var f in fixtures) {
       f.synchronize(broadPhase, transform, transform);
     }
   }
@@ -429,13 +429,13 @@ class Body {
     }
 
     // Move center of mass.
-    final Vector2 oldCenter = Vector2.copy(sweep.c);
+    final oldCenter = Vector2.copy(sweep.c);
     sweep.localCenter.setFrom(massData.center);
     sweep.c0.setFrom(Transform.mulVec2(transform, sweep.localCenter));
     sweep.c.setFrom(sweep.c0);
 
     // Update center of mass velocity.
-    final Vector2 temp = Vector2.copy(sweep.c)..sub(oldCenter);
+    final temp = Vector2.copy(sweep.c)..sub(oldCenter);
     temp.scaleOrthogonalInto(_angularVelocity, temp);
     linearVelocity.add(temp);
   }
@@ -464,10 +464,10 @@ class Body {
     assert(_bodyType == BodyType.DYNAMIC);
 
     // Accumulate mass over all fixtures.
-    final Vector2 localCenter = Vector2.zero();
-    final Vector2 temp = Vector2.zero();
-    final MassData massData = _pmd;
-    for (Fixture f in fixtures) {
+    final localCenter = Vector2.zero();
+    final temp = Vector2.zero();
+    final massData = _pmd;
+    for (var f in fixtures) {
       if (f.density == 0.0) {
         continue;
       }
@@ -499,7 +499,7 @@ class Body {
     }
 
     // Move center of mass.
-    final Vector2 oldCenter = Vector2.copy(sweep.c);
+    final oldCenter = Vector2.copy(sweep.c);
     sweep.localCenter.setFrom(localCenter);
     sweep.c0.setFrom(Transform.mulVec2(transform, sweep.localCenter));
     sweep.c.setFrom(sweep.c0);
@@ -507,7 +507,7 @@ class Body {
     // Update center of mass velocity.
     (temp..setFrom(sweep.c)).sub(oldCenter);
 
-    final Vector2 temp2 = oldCenter;
+    final temp2 = oldCenter;
     temp.scaleOrthogonalInto(_angularVelocity, temp2);
     linearVelocity.add(temp2);
   }
@@ -602,10 +602,10 @@ class Body {
     contacts.clear();
 
     // Touch the proxies so that new contacts will be created (when appropriate)
-    final BroadPhase broadPhase = world.contactManager.broadPhase;
-    for (Fixture f in fixtures) {
-      final int proxyCount = f.proxyCount;
-      for (int i = 0; i < proxyCount; ++i) {
+    final broadPhase = world.contactManager.broadPhase;
+    for (var f in fixtures) {
+      final proxyCount = f.proxyCount;
+      for (var i = 0; i < proxyCount; ++i) {
         broadPhase.touchProxy(f.proxies[i].proxyId);
       }
     }
@@ -689,8 +689,8 @@ class Body {
       flags |= activeFlag;
 
       // Create all proxies.
-      final BroadPhase broadPhase = world.contactManager.broadPhase;
-      for (Fixture f in fixtures) {
+      final broadPhase = world.contactManager.broadPhase;
+      for (var f in fixtures) {
         f.createProxies(broadPhase, transform);
       }
 
@@ -699,8 +699,8 @@ class Body {
       flags &= ~activeFlag;
 
       // Destroy all proxies.
-      final BroadPhase broadPhase = world.contactManager.broadPhase;
-      for (Fixture f in fixtures) {
+      final broadPhase = world.contactManager.broadPhase;
+      for (var f in fixtures) {
         f.destroyProxies(broadPhase);
       }
 
@@ -743,7 +743,7 @@ class Body {
   final Transform _pxf = Transform.zero();
 
   void synchronizeFixtures() {
-    final Transform xf1 = _pxf;
+    final xf1 = _pxf;
     xf1.q.s = sin(sweep.a0);
     xf1.q.c = cos(sweep.a0);
     xf1.p.x = sweep.c0.x -
@@ -753,7 +753,7 @@ class Body {
         xf1.q.s * sweep.localCenter.x -
         xf1.q.c * sweep.localCenter.y;
 
-    for (Fixture f in fixtures) {
+    for (var f in fixtures) {
       f.synchronize(world.contactManager.broadPhase, xf1, transform);
     }
   }
@@ -761,8 +761,8 @@ class Body {
   void synchronizeTransform() {
     transform.q.s = sin(sweep.a);
     transform.q.c = cos(sweep.a);
-    final Rot q = transform.q;
-    final Vector2 v = sweep.localCenter;
+    final q = transform.q;
+    final v = sweep.localCenter;
     transform.p.x = sweep.c.x - q.c * v.x + q.s * v.y;
     transform.p.y = sweep.c.y - q.s * v.x - q.c * v.y;
   }
@@ -779,7 +779,7 @@ class Body {
     }
 
     // Does a joint prevent collision?
-    for (Joint joint in joints) {
+    for (var joint in joints) {
       if (joint.containsBody(other) && !joint.getCollideConnected()) {
         return false;
       }
@@ -800,6 +800,6 @@ class Body {
 
   @override
   String toString() {
-    return "Body[pos: $position linVel: $linearVelocity angVel: $angularVelocity]";
+    return 'Body[pos: $position linVel: $linearVelocity angVel: $angularVelocity]';
   }
 }

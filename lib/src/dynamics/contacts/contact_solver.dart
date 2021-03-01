@@ -32,21 +32,21 @@ class ContactSolver {
     _velocities = def.velocities;
     _contacts = def.contacts;
 
-    for (Contact contact in _contacts) {
-      final Fixture fixtureA = contact.fixtureA;
-      final Fixture fixtureB = contact.fixtureB;
-      final Shape shapeA = fixtureA.shape;
-      final Shape shapeB = fixtureB.shape;
-      final double radiusA = shapeA.radius;
-      final double radiusB = shapeB.radius;
-      final Body bodyA = fixtureA.body;
-      final Body bodyB = fixtureB.body;
-      final Manifold manifold = contact.manifold;
+    for (var contact in _contacts) {
+      final fixtureA = contact.fixtureA;
+      final fixtureB = contact.fixtureB;
+      final shapeA = fixtureA.shape;
+      final shapeB = fixtureB.shape;
+      final radiusA = shapeA.radius;
+      final radiusB = shapeB.radius;
+      final bodyA = fixtureA.body;
+      final bodyB = fixtureB.body;
+      final manifold = contact.manifold;
 
-      final int pointCount = manifold.pointCount;
+      final pointCount = manifold.pointCount;
       assert(pointCount > 0);
 
-      final ContactVelocityConstraint velocityConstraint =
+      final velocityConstraint =
           contact.velocityConstraint
             ..friction = contact.friction
             ..restitution = contact.restitution
@@ -62,7 +62,7 @@ class ContactSolver {
             ..K.setZero()
             ..normalMass.setZero();
 
-      final ContactPositionConstraint positionConstraint =
+      final positionConstraint =
           contact.positionConstraint
             ..indexA = bodyA.islandIndex
             ..indexB = bodyB.islandIndex
@@ -79,9 +79,9 @@ class ContactSolver {
             ..radiusB = radiusB
             ..type = manifold.type;
 
-      for (int j = 0; j < pointCount; j++) {
-        final ManifoldPoint cp = manifold.points[j];
-        final VelocityConstraintPoint vcp = velocityConstraint.points[j];
+      for (var j = 0; j < pointCount; j++) {
+        final cp = manifold.points[j];
+        final vcp = velocityConstraint.points[j];
 
         if (_step.warmStarting) {
           vcp.normalImpulse = _step.dtRatio * cp.normalImpulse;
@@ -104,32 +104,32 @@ class ContactSolver {
 
   void warmStart() {
     // Warm start.
-    for (Contact contact in _contacts) {
-      final ContactVelocityConstraint velocityConstraint =
+    for (var contact in _contacts) {
+      final velocityConstraint =
           contact.velocityConstraint;
 
-      final int indexA = velocityConstraint.indexA;
-      final int indexB = velocityConstraint.indexB;
-      final double mA = velocityConstraint.invMassA;
-      final double iA = velocityConstraint.invIA;
-      final double mB = velocityConstraint.invMassB;
-      final double iB = velocityConstraint.invIB;
-      final int pointCount = velocityConstraint.pointCount;
+      final indexA = velocityConstraint.indexA;
+      final indexB = velocityConstraint.indexB;
+      final mA = velocityConstraint.invMassA;
+      final iA = velocityConstraint.invIA;
+      final mB = velocityConstraint.invMassB;
+      final iB = velocityConstraint.invIB;
+      final pointCount = velocityConstraint.pointCount;
 
-      final Vector2 vA = _velocities[indexA].v;
-      double wA = _velocities[indexA].w;
-      final Vector2 vB = _velocities[indexB].v;
-      double wB = _velocities[indexB].w;
+      final vA = _velocities[indexA].v;
+      var wA = _velocities[indexA].w;
+      final vB = _velocities[indexB].v;
+      var wB = _velocities[indexB].w;
 
-      final Vector2 normal = velocityConstraint.normal;
-      final double tangentX = 1.0 * normal.y;
-      final double tangentY = -1.0 * normal.x;
+      final normal = velocityConstraint.normal;
+      final tangentX = 1.0 * normal.y;
+      final tangentY = -1.0 * normal.x;
 
-      for (int j = 0; j < pointCount; ++j) {
-        final VelocityConstraintPoint vcp = velocityConstraint.points[j];
-        final double pX =
+      for (var j = 0; j < pointCount; ++j) {
+        final vcp = velocityConstraint.points[j];
+        final pX =
             tangentX * vcp.tangentImpulse + normal.x * vcp.normalImpulse;
-        final double pY =
+        final pY =
             tangentY * vcp.tangentImpulse + normal.y * vcp.normalImpulse;
 
         wA -= iA * (vcp.rA.x * pY - vcp.rA.y * pX);
@@ -152,41 +152,41 @@ class ContactSolver {
 
   void initializeVelocityConstraints() {
     // Warm start.
-    for (Contact contact in _contacts) {
-      final ContactVelocityConstraint velocityConstraint =
+    for (var contact in _contacts) {
+      final velocityConstraint =
           contact.velocityConstraint;
-      final ContactPositionConstraint positionConstraint =
+      final positionConstraint =
           contact.positionConstraint;
 
-      final double radiusA = positionConstraint.radiusA;
-      final double radiusB = positionConstraint.radiusB;
-      final Manifold manifold =
+      final radiusA = positionConstraint.radiusA;
+      final radiusB = positionConstraint.radiusB;
+      final manifold =
           _contacts[velocityConstraint.contactIndex].manifold;
 
-      final int indexA = velocityConstraint.indexA;
-      final int indexB = velocityConstraint.indexB;
+      final indexA = velocityConstraint.indexA;
+      final indexB = velocityConstraint.indexB;
 
-      final double mA = velocityConstraint.invMassA;
-      final double mB = velocityConstraint.invMassB;
-      final double iA = velocityConstraint.invIA;
-      final double iB = velocityConstraint.invIB;
-      final Vector2 localCenterA = positionConstraint.localCenterA;
-      final Vector2 localCenterB = positionConstraint.localCenterB;
+      final mA = velocityConstraint.invMassA;
+      final mB = velocityConstraint.invMassB;
+      final iA = velocityConstraint.invIA;
+      final iB = velocityConstraint.invIB;
+      final localCenterA = positionConstraint.localCenterA;
+      final localCenterB = positionConstraint.localCenterB;
 
-      final Vector2 cA = _positions[indexA].c;
-      final double aA = _positions[indexA].a;
-      final Vector2 vA = _velocities[indexA].v;
-      final double wA = _velocities[indexA].w;
+      final cA = _positions[indexA].c;
+      final aA = _positions[indexA].a;
+      final vA = _velocities[indexA].v;
+      final wA = _velocities[indexA].w;
 
-      final Vector2 cB = _positions[indexB].c;
-      final double aB = _positions[indexB].a;
-      final Vector2 vB = _velocities[indexB].v;
-      final double wB = _velocities[indexB].w;
+      final cB = _positions[indexB].c;
+      final aB = _positions[indexB].a;
+      final vB = _velocities[indexB].v;
+      final wB = _velocities[indexB].w;
 
       assert(manifold.pointCount > 0);
 
-      final Rot xfAq = xfA.q;
-      final Rot xfBq = xfB.q;
+      final xfAq = xfA.q;
+      final xfBq = xfB.q;
       xfAq.setAngle(aA);
       xfBq.setAngle(aB);
       xfA.p.x = cA.x - (xfAq.c * localCenterA.x - xfAq.s * localCenterA.y);
@@ -196,43 +196,43 @@ class ContactSolver {
 
       worldManifold.initialize(manifold, xfA, radiusA, xfB, radiusB);
 
-      final Vector2 vcNormal = velocityConstraint.normal;
+      final vcNormal = velocityConstraint.normal;
       vcNormal.x = worldManifold.normal.x;
       vcNormal.y = worldManifold.normal.y;
 
-      final int pointCount = velocityConstraint.pointCount;
-      for (int j = 0; j < pointCount; ++j) {
-        final VelocityConstraintPoint vcp = velocityConstraint.points[j];
-        final Vector2 wmPj = worldManifold.points[j];
-        final Vector2 vcprA = vcp.rA;
-        final Vector2 vcprB = vcp.rB;
+      final pointCount = velocityConstraint.pointCount;
+      for (var j = 0; j < pointCount; ++j) {
+        final vcp = velocityConstraint.points[j];
+        final wmPj = worldManifold.points[j];
+        final vcprA = vcp.rA;
+        final vcprB = vcp.rB;
         vcprA.x = wmPj.x - cA.x;
         vcprA.y = wmPj.y - cA.y;
         vcprB.x = wmPj.x - cB.x;
         vcprB.y = wmPj.y - cB.y;
 
-        final double rnA = vcprA.x * vcNormal.y - vcprA.y * vcNormal.x;
-        final double rnB = vcprB.x * vcNormal.y - vcprB.y * vcNormal.x;
+        final rnA = vcprA.x * vcNormal.y - vcprA.y * vcNormal.x;
+        final rnB = vcprB.x * vcNormal.y - vcprB.y * vcNormal.x;
 
-        final double kNormal = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
+        final kNormal = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
         vcp.normalMass = kNormal > 0.0 ? 1.0 / kNormal : 0.0;
 
-        final double tangentX = 1.0 * vcNormal.y;
-        final double tangentY = -1.0 * vcNormal.x;
+        final tangentX = 1.0 * vcNormal.y;
+        final tangentY = -1.0 * vcNormal.x;
 
-        final double rtA = vcprA.x * tangentY - vcprA.y * tangentX;
-        final double rtB = vcprB.x * tangentY - vcprB.y * tangentX;
+        final rtA = vcprA.x * tangentY - vcprA.y * tangentX;
+        final rtB = vcprB.x * tangentY - vcprB.y * tangentX;
 
-        final double kTangent = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
+        final kTangent = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
 
         vcp.tangentMass = kTangent > 0.0 ? 1.0 / kTangent : 0.0;
 
         // Setup a velocity bias for restitution.
         vcp.velocityBias = 0.0;
-        final double tempX = vB.x + -wB * vcprB.y - vA.x - (-wA * vcprA.y);
-        final double tempY = vB.y + wB * vcprB.x - vA.y - (wA * vcprA.x);
-        final double vRel = vcNormal.x * tempX + vcNormal.y * tempY;
+        final tempX = vB.x + -wB * vcprB.y - vA.x - (-wA * vcprA.y);
+        final tempY = vB.y + wB * vcprB.x - vA.y - (wA * vcprA.x);
+        final vRel = vcNormal.x * tempX + vcNormal.y * tempY;
         if (vRel < -settings.velocityThreshold) {
           vcp.velocityBias = -velocityConstraint.restitution * vRel;
         }
@@ -240,16 +240,16 @@ class ContactSolver {
 
       // If we have two points, then prepare the block solver.
       if (velocityConstraint.pointCount == 2) {
-        final VelocityConstraintPoint vcp1 = velocityConstraint.points[0];
-        final VelocityConstraintPoint vcp2 = velocityConstraint.points[1];
-        final double rn1A = vcp1.rA.x * vcNormal.y - vcp1.rA.y * vcNormal.x;
-        final double rn1B = vcp1.rB.x * vcNormal.y - vcp1.rB.y * vcNormal.x;
-        final double rn2A = vcp2.rA.x * vcNormal.y - vcp2.rA.y * vcNormal.x;
-        final double rn2B = vcp2.rB.x * vcNormal.y - vcp2.rB.y * vcNormal.x;
+        final vcp1 = velocityConstraint.points[0];
+        final vcp2 = velocityConstraint.points[1];
+        final rn1A = vcp1.rA.x * vcNormal.y - vcp1.rA.y * vcNormal.x;
+        final rn1B = vcp1.rB.x * vcNormal.y - vcp1.rB.y * vcNormal.x;
+        final rn2A = vcp2.rA.x * vcNormal.y - vcp2.rA.y * vcNormal.x;
+        final rn2B = vcp2.rB.x * vcNormal.y - vcp2.rB.y * vcNormal.x;
 
-        final double k11 = mA + mB + iA * rn1A * rn1A + iB * rn1B * rn1B;
-        final double k22 = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
-        final double k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
+        final k11 = mA + mB + iA * rn1A * rn1A + iB * rn1B * rn1B;
+        final k22 = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
+        final k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
         if (k11 * k11 < kMaxConditionNumber * (k11 * k22 - k12 * k12)) {
           // K is safe to invert.
           velocityConstraint.K.setValues(k11, k12, k12, k22);
@@ -265,46 +265,46 @@ class ContactSolver {
   }
 
   void solveVelocityConstraints() {
-    for (Contact contact in _contacts) {
-      final ContactVelocityConstraint vc = contact.velocityConstraint;
+    for (var contact in _contacts) {
+      final vc = contact.velocityConstraint;
 
-      final int indexA = vc.indexA;
-      final int indexB = vc.indexB;
+      final indexA = vc.indexA;
+      final indexB = vc.indexB;
 
-      final double mA = vc.invMassA;
-      final double mB = vc.invMassB;
-      final double iA = vc.invIA;
-      final double iB = vc.invIB;
-      final int pointCount = vc.pointCount;
+      final mA = vc.invMassA;
+      final mB = vc.invMassB;
+      final iA = vc.invIA;
+      final iB = vc.invIB;
+      final pointCount = vc.pointCount;
 
-      final Vector2 vA = _velocities[indexA].v;
-      double wA = _velocities[indexA].w;
-      final Vector2 vB = _velocities[indexB].v;
-      double wB = _velocities[indexB].w;
+      final vA = _velocities[indexA].v;
+      var wA = _velocities[indexA].w;
+      final vB = _velocities[indexB].v;
+      var wB = _velocities[indexB].w;
 
-      final Vector2 normal = vc.normal;
-      final double normalX = normal.x;
-      final double normalY = normal.y;
-      final double tangentX = 1.0 * vc.normal.y;
-      final double tangentY = -1.0 * vc.normal.x;
-      final double friction = vc.friction;
+      final normal = vc.normal;
+      final normalX = normal.x;
+      final normalY = normal.y;
+      final tangentX = 1.0 * vc.normal.y;
+      final tangentY = -1.0 * vc.normal.x;
+      final friction = vc.friction;
 
       assert(pointCount == 1 || pointCount == 2);
 
       // Solve tangent constraints
-      for (int j = 0; j < pointCount; ++j) {
-        final VelocityConstraintPoint vcp = vc.points[j];
-        final Vector2 a = vcp.rA;
-        final double dvx = -wB * vcp.rB.y + vB.x - vA.x + wA * a.y;
-        final double dvy = wB * vcp.rB.x + vB.y - vA.y - wA * a.x;
+      for (var j = 0; j < pointCount; ++j) {
+        final vcp = vc.points[j];
+        final a = vcp.rA;
+        final dvx = -wB * vcp.rB.y + vB.x - vA.x + wA * a.y;
+        final dvy = wB * vcp.rB.x + vB.y - vA.y - wA * a.x;
 
         // Compute tangent force
-        final double vt = dvx * tangentX + dvy * tangentY - vc.tangentSpeed;
-        double lambda = vcp.tangentMass * (-vt);
+        final vt = dvx * tangentX + dvy * tangentY - vc.tangentSpeed;
+        var lambda = vcp.tangentMass * (-vt);
 
         // Clamp the accumulated force
-        final double maxFriction = (friction * vcp.normalImpulse).abs();
-        final double newImpulse = (vcp.tangentImpulse + lambda)
+        final maxFriction = (friction * vcp.normalImpulse).abs();
+        final newImpulse = (vcp.tangentImpulse + lambda)
             .clamp(-maxFriction, maxFriction)
             .toDouble();
         lambda = newImpulse - vcp.tangentImpulse;
@@ -313,8 +313,8 @@ class ContactSolver {
         // Apply contact impulse
         // Vec2 P = lambda * tangent;
 
-        final double pX = tangentX * lambda;
-        final double pY = tangentY * lambda;
+        final pX = tangentX * lambda;
+        final pY = tangentY * lambda;
 
         // vA -= invMassA * P;
         vA.x -= pX * mA;
@@ -329,27 +329,27 @@ class ContactSolver {
 
       // Solve normal constraints
       if (vc.pointCount == 1) {
-        final VelocityConstraintPoint vcp = vc.points[0];
+        final vcp = vc.points[0];
 
         // Relative velocity at contact
         // Vec2 dv = vB + Cross(wB, vcp.rB) - vA - Cross(wA, vcp.rA);
 
-        final double dvx = -wB * vcp.rB.y + vB.x - vA.x + wA * vcp.rA.y;
-        final double dvy = wB * vcp.rB.x + vB.y - vA.y - wA * vcp.rA.x;
+        final dvx = -wB * vcp.rB.y + vB.x - vA.x + wA * vcp.rA.y;
+        final dvy = wB * vcp.rB.x + vB.y - vA.y - wA * vcp.rA.x;
 
         // Compute normal impulse
-        final double vn = dvx * normalX + dvy * normalY;
-        double lambda = -vcp.normalMass * (vn - vcp.velocityBias);
+        final vn = dvx * normalX + dvy * normalY;
+        var lambda = -vcp.normalMass * (vn - vcp.velocityBias);
 
         // Clamp the accumulated impulse
-        final double a = vcp.normalImpulse + lambda;
-        final double newImpulse = a > 0.0 ? a : 0.0;
+        final a = vcp.normalImpulse + lambda;
+        final newImpulse = a > 0.0 ? a : 0.0;
         lambda = newImpulse - vcp.normalImpulse;
         vcp.normalImpulse = newImpulse;
 
         // Apply contact impulse
-        final double pX = normalX * lambda;
-        final double pY = normalY * lambda;
+        final pX = normalX * lambda;
+        final pY = normalY * lambda;
 
         vA.x -= pX * mA;
         vA.y -= pY * mA;
@@ -399,34 +399,34 @@ class ContactSolver {
         // = A * x + b'
         // b' = b - A * a;
 
-        final VelocityConstraintPoint cp1 = vc.points[0];
-        final VelocityConstraintPoint cp2 = vc.points[1];
-        final Vector2 cp1rA = cp1.rA;
-        final Vector2 cp1rB = cp1.rB;
-        final Vector2 cp2rA = cp2.rA;
-        final Vector2 cp2rB = cp2.rB;
-        final double ax = cp1.normalImpulse;
-        final double ay = cp2.normalImpulse;
+        final cp1 = vc.points[0];
+        final cp2 = vc.points[1];
+        final cp1rA = cp1.rA;
+        final cp1rB = cp1.rB;
+        final cp2rA = cp2.rA;
+        final cp2rB = cp2.rB;
+        final ax = cp1.normalImpulse;
+        final ay = cp2.normalImpulse;
 
         assert(ax >= 0.0 && ay >= 0.0);
         // Relative velocity at contact
         // Vec2 dv1 = vB + Cross(wB, cp1.rB) - vA - Cross(wA, cp1.rA);
-        final double dv1x = -wB * cp1rB.y + vB.x - vA.x + wA * cp1rA.y;
-        final double dv1y = wB * cp1rB.x + vB.y - vA.y - wA * cp1rA.x;
+        final dv1x = -wB * cp1rB.y + vB.x - vA.x + wA * cp1rA.y;
+        final dv1y = wB * cp1rB.x + vB.y - vA.y - wA * cp1rA.x;
 
         // Vec2 dv2 = vB + Cross(wB, cp2.rB) - vA - Cross(wA, cp2.rA);
-        final double dv2x = -wB * cp2rB.y + vB.x - vA.x + wA * cp2rA.y;
-        final double dv2y = wB * cp2rB.x + vB.y - vA.y - wA * cp2rA.x;
+        final dv2x = -wB * cp2rB.y + vB.x - vA.x + wA * cp2rA.y;
+        final dv2y = wB * cp2rB.x + vB.y - vA.y - wA * cp2rA.x;
 
         // Compute normal velocity
-        double vn1 = dv1x * normalX + dv1y * normalY;
-        double vn2 = dv2x * normalX + dv2y * normalY;
+        var vn1 = dv1x * normalX + dv1y * normalY;
+        var vn2 = dv2x * normalX + dv2y * normalY;
 
-        double bx = vn1 - cp1.velocityBias;
-        double by = vn2 - cp2.velocityBias;
+        var bx = vn1 - cp1.velocityBias;
+        var by = vn2 - cp2.velocityBias;
 
         // Compute b'
-        final Matrix2 r = vc.K;
+        final r = vc.K;
         bx -= r.entry(0, 0) * ax + r.entry(0, 1) * ay;
         by -= r.entry(1, 0) * ax + r.entry(1, 1) * ay;
 
@@ -443,22 +443,22 @@ class ContactSolver {
           // x' = - inv(A) * b'
           //
           // Vec2 x = - Mul(c.normalMass, b);
-          final Matrix2 r1 = vc.normalMass;
-          double xx = r1.entry(0, 0) * bx + r1.entry(0, 1) * by;
-          double xy = r1.entry(1, 0) * bx + r1.entry(1, 1) * by;
+          final r1 = vc.normalMass;
+          var xx = r1.entry(0, 0) * bx + r1.entry(0, 1) * by;
+          var xy = r1.entry(1, 0) * bx + r1.entry(1, 1) * by;
           xx *= -1;
           xy *= -1;
 
           if (xx >= 0.0 && xy >= 0.0) {
             // Get the incremental impulse
-            final double dx = xx - ax;
-            final double dy = xy - ay;
+            final dx = xx - ax;
+            final dy = xy - ay;
 
             // Apply incremental impulse
-            final double p1x = dx * normalX;
-            final double p1y = dx * normalY;
-            final double p2x = dy * normalX;
-            final double p2y = dy * normalY;
+            final p1x = dx * normalX;
+            final p1y = dx * normalY;
+            final p2x = dy * normalX;
+            final p2y = dy * normalY;
 
             /*
              * vA -= invMassA * (P1 + P2); wA -= invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
@@ -495,10 +495,10 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              final Vector2 dv1 = vB + _crossDoubleVector2(wB, cp1rB)
+              final dv1 = vB + _crossDoubleVector2(wB, cp1rB)
                 ..sub(vA)
                 ..sub(_crossDoubleVector2(wA, cp1rA));
-              final Vector2 dv2 = vB + _crossDoubleVector2(wB, cp2rB)
+              final dv2 = vB + _crossDoubleVector2(wB, cp2rB)
                 ..sub(vA)
                 ..sub(_crossDoubleVector2(wA, cp2rA));
               // Compute normal velocity
@@ -524,14 +524,14 @@ class ContactSolver {
 
           if (xx >= 0.0 && vn2 >= 0.0) {
             // Get the incremental impulse
-            final double dx = xx - ax;
-            final double dy = xy - ay;
+            final dx = xx - ax;
+            final dy = xy - ay;
 
             // Apply incremental impulse
-            final double p1x = normalX * dx;
-            final double p1y = normalY * dx;
-            final double p2x = normalX * dy;
-            final double p2y = normalY * dy;
+            final p1x = normalX * dx;
+            final p1y = normalY * dx;
+            final p2x = normalX * dy;
+            final p2y = normalY * dy;
 
             /*
              * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
@@ -568,7 +568,7 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              final Vector2 dv1 = vB + _crossDoubleVector2(wB, cp1rB)
+              final dv1 = vB + _crossDoubleVector2(wB, cp1rB)
                 ..sub(vA)
                 ..sub(_crossDoubleVector2(wA, cp1rA));
               // Compute normal velocity
@@ -592,8 +592,8 @@ class ContactSolver {
 
           if (xy >= 0.0 && vn1 >= 0.0) {
             // Resubstitute for the incremental impulse
-            final double dx = xx - ax;
-            final double dy = xy - ay;
+            final dx = xx - ax;
+            final dy = xy - ay;
 
             // Apply incremental impulse
             /*
@@ -603,10 +603,10 @@ class ContactSolver {
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
-            final double p1x = normalX * dx;
-            final double p1y = normalY * dx;
-            final double p2x = normalX * dy;
-            final double p2y = normalY * dy;
+            final p1x = normalX * dx;
+            final p1y = normalY * dx;
+            final p2x = normalX * dy;
+            final p2y = normalY * dy;
 
             vA.x -= mA * (p1x + p2x);
             vA.y -= mA * (p1y + p2y);
@@ -636,7 +636,7 @@ class ContactSolver {
              */
             if (DEBUG_SOLVER) {
               // Postconditions
-              final Vector2 dv2 = vB + _crossDoubleVector2(wB, cp2rB)
+              final dv2 = vB + _crossDoubleVector2(wB, cp2rB)
                 ..sub(vA)
                 ..sub(_crossDoubleVector2(wA, cp2rA));
               // Compute normal velocity
@@ -659,8 +659,8 @@ class ContactSolver {
 
           if (vn1 >= 0.0 && vn2 >= 0.0) {
             // Resubstitute for the incremental impulse
-            final double dx = xx - ax;
-            final double dy = xy - ay;
+            final dx = xx - ax;
+            final dy = xy - ay;
 
             // Apply incremental impulse
             /*
@@ -670,10 +670,10 @@ class ContactSolver {
              * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
              */
 
-            final double p1x = normalX * dx;
-            final double p1y = normalY * dx;
-            final double p2x = normalX * dy;
-            final double p2y = normalY * dy;
+            final p1x = normalX * dx;
+            final p1y = normalY * dx;
+            final p2x = normalX * dy;
+            final p2y = normalY * dy;
 
             vA.x -= mA * (p1x + p2x);
             vA.y -= mA * (p1y + p2y);
@@ -707,11 +707,11 @@ class ContactSolver {
   }
 
   void storeImpulses() {
-    for (Contact contact in _contacts) {
-      final ContactVelocityConstraint vc = contact.velocityConstraint;
-      final Manifold manifold = _contacts[vc.contactIndex].manifold;
+    for (var contact in _contacts) {
+      final vc = contact.velocityConstraint;
+      final manifold = _contacts[vc.contactIndex].manifold;
 
-      for (int j = 0; j < vc.pointCount; j++) {
+      for (var j = 0; j < vc.pointCount; j++) {
         manifold.points[j].normalImpulse = vc.points[j].normalImpulse;
         manifold.points[j].tangentImpulse = vc.points[j].tangentImpulse;
       }
@@ -722,35 +722,35 @@ class ContactSolver {
 
   /// Sequential solver.
   bool solvePositionConstraints() {
-    double minSeparation = 0.0;
+    var minSeparation = 0.0;
 
-    for (Contact contact in _contacts) {
-      final ContactPositionConstraint pc = contact.positionConstraint;
+    for (var contact in _contacts) {
+      final pc = contact.positionConstraint;
 
-      final int indexA = pc.indexA;
-      final int indexB = pc.indexB;
+      final indexA = pc.indexA;
+      final indexB = pc.indexB;
 
-      final double mA = pc.invMassA;
-      final double iA = pc.invIA;
-      final Vector2 localCenterA = pc.localCenterA;
-      final double localCenterAx = localCenterA.x;
-      final double localCenterAy = localCenterA.y;
-      final double mB = pc.invMassB;
-      final double iB = pc.invIB;
-      final Vector2 localCenterB = pc.localCenterB;
-      final double localCenterBx = localCenterB.x;
-      final double localCenterBy = localCenterB.y;
-      final int pointCount = pc.pointCount;
+      final mA = pc.invMassA;
+      final iA = pc.invIA;
+      final localCenterA = pc.localCenterA;
+      final localCenterAx = localCenterA.x;
+      final localCenterAy = localCenterA.y;
+      final mB = pc.invMassB;
+      final iB = pc.invIB;
+      final localCenterB = pc.localCenterB;
+      final localCenterBx = localCenterB.x;
+      final localCenterBy = localCenterB.y;
+      final pointCount = pc.pointCount;
 
-      final Vector2 cA = _positions[indexA].c;
-      double aA = _positions[indexA].a;
-      final Vector2 cB = _positions[indexB].c;
-      double aB = _positions[indexB].a;
+      final cA = _positions[indexA].c;
+      var aA = _positions[indexA].a;
+      final cB = _positions[indexB].c;
+      var aB = _positions[indexB].a;
 
       // Solve normal constraints
-      for (int j = 0; j < pointCount; ++j) {
-        final Rot xfAq = xfA.q;
-        final Rot xfBq = xfB.q;
+      for (var j = 0; j < pointCount; ++j) {
+        final xfAq = xfA.q;
+        final xfBq = xfB.q;
         xfAq.setAngle(aA);
         xfBq.setAngle(aB);
         xfA.p.x = cA.x - xfAq.c * localCenterAx + xfAq.s * localCenterAy;
@@ -758,16 +758,16 @@ class ContactSolver {
         xfB.p.x = cB.x - xfBq.c * localCenterBx + xfBq.s * localCenterBy;
         xfB.p.y = cB.y - xfBq.s * localCenterBx - xfBq.c * localCenterBy;
 
-        final PositionSolverManifold psm = _pSolver;
+        final psm = _pSolver;
         psm.initialize(pc, xfA, xfB, j);
-        final Vector2 normal = psm.normal;
-        final Vector2 point = psm.point;
-        final double separation = psm.separation;
+        final normal = psm.normal;
+        final point = psm.point;
+        final separation = psm.separation;
 
-        final double rAx = point.x - cA.x;
-        final double rAy = point.y - cA.y;
-        final double rBx = point.x - cB.x;
-        final double rBy = point.y - cB.y;
+        final rAx = point.x - cA.x;
+        final rAy = point.y - cA.y;
+        final rBx = point.x - cB.x;
+        final rBy = point.y - cB.y;
 
         // Track max constraint error.
         minSeparation = min(minSeparation, separation);
@@ -777,15 +777,15 @@ class ContactSolver {
             .clamp(-settings.maxLinearCorrection, 0.0);
 
         // Compute the effective mass.
-        final double rnA = rAx * normal.y - rAy * normal.x;
-        final double rnB = rBx * normal.y - rBy * normal.x;
-        final double K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
+        final rnA = rAx * normal.y - rAy * normal.x;
+        final rnB = rBx * normal.y - rBy * normal.x;
+        final K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
         // Compute normal impulse
-        final double impulse = K > 0.0 ? -C / K : 0.0;
+        final impulse = K > 0.0 ? -C / K : 0.0;
 
-        final double pX = normal.x * impulse;
-        final double pY = normal.y * impulse;
+        final pX = normal.x * impulse;
+        final pY = normal.y * impulse;
 
         cA.x -= pX * mA;
         cA.y -= pY * mA;
@@ -807,45 +807,45 @@ class ContactSolver {
 
   // Sequential position solver for position constraints.
   bool solveTOIPositionConstraints(int toiIndexA, int toiIndexB) {
-    double minSeparation = 0.0;
+    var minSeparation = 0.0;
 
-    for (Contact contact in _contacts) {
-      final ContactPositionConstraint pc = contact.positionConstraint;
+    for (var contact in _contacts) {
+      final pc = contact.positionConstraint;
 
-      final int indexA = pc.indexA;
-      final int indexB = pc.indexB;
-      final Vector2 localCenterA = pc.localCenterA;
-      final Vector2 localCenterB = pc.localCenterB;
-      final double localCenterAx = localCenterA.x;
-      final double localCenterAy = localCenterA.y;
-      final double localCenterBx = localCenterB.x;
-      final double localCenterBy = localCenterB.y;
-      final int pointCount = pc.pointCount;
+      final indexA = pc.indexA;
+      final indexB = pc.indexB;
+      final localCenterA = pc.localCenterA;
+      final localCenterB = pc.localCenterB;
+      final localCenterAx = localCenterA.x;
+      final localCenterAy = localCenterA.y;
+      final localCenterBx = localCenterB.x;
+      final localCenterBy = localCenterB.y;
+      final pointCount = pc.pointCount;
 
-      double mA = 0.0;
-      double iA = 0.0;
+      var mA = 0.0;
+      var iA = 0.0;
       if (indexA == toiIndexA || indexA == toiIndexB) {
         mA = pc.invMassA;
         iA = pc.invIA;
       }
 
-      double mB = 0.0;
-      double iB = 0.0;
+      var mB = 0.0;
+      var iB = 0.0;
       if (indexB == toiIndexA || indexB == toiIndexB) {
         mB = pc.invMassB;
         iB = pc.invIB;
       }
 
-      final Vector2 cA = _positions[indexA].c;
-      double aA = _positions[indexA].a;
+      final cA = _positions[indexA].c;
+      var aA = _positions[indexA].a;
 
-      final Vector2 cB = _positions[indexB].c;
-      double aB = _positions[indexB].a;
+      final cB = _positions[indexB].c;
+      var aB = _positions[indexB].a;
 
       // Solve normal constraints
-      for (int j = 0; j < pointCount; ++j) {
-        final Rot xfAq = xfA.q;
-        final Rot xfBq = xfB.q;
+      for (var j = 0; j < pointCount; ++j) {
+        final xfAq = xfA.q;
+        final xfBq = xfB.q;
         xfAq.setAngle(aA);
         xfBq.setAngle(aB);
         xfA.p.x = cA.x - xfAq.c * localCenterAx + xfAq.s * localCenterAy;
@@ -853,17 +853,17 @@ class ContactSolver {
         xfB.p.x = cB.x - xfBq.c * localCenterBx + xfBq.s * localCenterBy;
         xfB.p.y = cB.y - xfBq.s * localCenterBx - xfBq.c * localCenterBy;
 
-        final PositionSolverManifold psm = _pSolver;
+        final psm = _pSolver;
         psm.initialize(pc, xfA, xfB, j);
-        final Vector2 normal = psm.normal;
+        final normal = psm.normal;
 
-        final Vector2 point = psm.point;
-        final double separation = psm.separation;
+        final point = psm.point;
+        final separation = psm.separation;
 
-        final double rAx = point.x - cA.x;
-        final double rAy = point.y - cA.y;
-        final double rBx = point.x - cB.x;
-        final double rBy = point.y - cB.y;
+        final rAx = point.x - cA.x;
+        final rAy = point.y - cA.y;
+        final rBx = point.x - cB.x;
+        final rBy = point.y - cB.y;
 
         // Track max constraint error.
         minSeparation = min(minSeparation, separation);
@@ -874,15 +874,15 @@ class ContactSolver {
             .clamp(-settings.maxLinearCorrection, 0.0);
 
         // Compute the effective mass.
-        final double rnA = rAx * normal.y - rAy * normal.x;
-        final double rnB = rBx * normal.y - rBy * normal.x;
-        final double k = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
+        final rnA = rAx * normal.y - rAy * normal.x;
+        final rnB = rBx * normal.y - rBy * normal.x;
+        final k = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
         // Compute normal impulse
-        final double impulse = k > 0.0 ? -C / k : 0.0;
+        final impulse = k > 0.0 ? -C / k : 0.0;
 
-        final double pX = normal.x * impulse;
-        final double pY = normal.y * impulse;
+        final pX = normal.x * impulse;
+        final pY = normal.y * impulse;
 
         cA.x -= pX * mA;
         cA.y -= pY * mA;
@@ -916,20 +916,20 @@ class PositionSolverManifold {
       ContactPositionConstraint pc, Transform xfA, Transform xfB, int index) {
     assert(pc.pointCount > 0);
 
-    final Rot xfAq = xfA.q;
-    final Rot xfBq = xfB.q;
-    final Vector2 pcLocalPointsI = pc.localPoints[index];
+    final xfAq = xfA.q;
+    final xfBq = xfB.q;
+    final pcLocalPointsI = pc.localPoints[index];
     switch (pc.type) {
       case ManifoldType.CIRCLES:
-        final Vector2 pLocalPoint = pc.localPoint;
-        final Vector2 pLocalPoints0 = pc.localPoints[0];
-        final double pointAx =
+        final pLocalPoint = pc.localPoint;
+        final pLocalPoints0 = pc.localPoints[0];
+        final pointAx =
             (xfAq.c * pLocalPoint.x - xfAq.s * pLocalPoint.y) + xfA.p.x;
-        final double pointAy =
+        final pointAy =
             (xfAq.s * pLocalPoint.x + xfAq.c * pLocalPoint.y) + xfA.p.y;
-        final double pointBx =
+        final pointBx =
             (xfBq.c * pLocalPoints0.x - xfBq.s * pLocalPoints0.y) + xfB.p.x;
-        final double pointBy =
+        final pointBy =
             (xfBq.s * pLocalPoints0.x + xfBq.c * pLocalPoints0.y) + xfB.p.y;
         normal.x = pointBx - pointAx;
         normal.y = pointBy - pointAy;
@@ -937,28 +937,28 @@ class PositionSolverManifold {
 
         point.x = (pointAx + pointBx) * .5;
         point.y = (pointAy + pointBy) * .5;
-        final double tempX = pointBx - pointAx;
-        final double tempY = pointBy - pointAy;
+        final tempX = pointBx - pointAx;
+        final tempY = pointBy - pointAy;
         separation =
             tempX * normal.x + tempY * normal.y - pc.radiusA - pc.radiusB;
         break;
 
       case ManifoldType.FACE_A:
-        final Vector2 pcLocalNormal = pc.localNormal;
-        final Vector2 pcLocalPoint = pc.localPoint;
+        final pcLocalNormal = pc.localNormal;
+        final pcLocalPoint = pc.localPoint;
         normal.x = xfAq.c * pcLocalNormal.x - xfAq.s * pcLocalNormal.y;
         normal.y = xfAq.s * pcLocalNormal.x + xfAq.c * pcLocalNormal.y;
-        final double planePointX =
+        final planePointX =
             (xfAq.c * pcLocalPoint.x - xfAq.s * pcLocalPoint.y) + xfA.p.x;
-        final double planePointY =
+        final planePointY =
             (xfAq.s * pcLocalPoint.x + xfAq.c * pcLocalPoint.y) + xfA.p.y;
 
-        final double clipPointX =
+        final clipPointX =
             (xfBq.c * pcLocalPointsI.x - xfBq.s * pcLocalPointsI.y) + xfB.p.x;
-        final double clipPointY =
+        final clipPointY =
             (xfBq.s * pcLocalPointsI.x + xfBq.c * pcLocalPointsI.y) + xfB.p.y;
-        final double tempX = clipPointX - planePointX;
-        final double tempY = clipPointY - planePointY;
+        final tempX = clipPointX - planePointX;
+        final tempY = clipPointY - planePointY;
         separation =
             tempX * normal.x + tempY * normal.y - pc.radiusA - pc.radiusB;
         point.x = clipPointX;
@@ -966,21 +966,21 @@ class PositionSolverManifold {
         break;
 
       case ManifoldType.FACE_B:
-        final Vector2 pcLocalNormal = pc.localNormal;
-        final Vector2 pcLocalPoint = pc.localPoint;
+        final pcLocalNormal = pc.localNormal;
+        final pcLocalPoint = pc.localPoint;
         normal.x = xfBq.c * pcLocalNormal.x - xfBq.s * pcLocalNormal.y;
         normal.y = xfBq.s * pcLocalNormal.x + xfBq.c * pcLocalNormal.y;
-        final double planePointX =
+        final planePointX =
             (xfBq.c * pcLocalPoint.x - xfBq.s * pcLocalPoint.y) + xfB.p.x;
-        final double planePointY =
+        final planePointY =
             (xfBq.s * pcLocalPoint.x + xfBq.c * pcLocalPoint.y) + xfB.p.y;
 
-        final double clipPointX =
+        final clipPointX =
             (xfAq.c * pcLocalPointsI.x - xfAq.s * pcLocalPointsI.y) + xfA.p.x;
-        final double clipPointY =
+        final clipPointY =
             (xfAq.s * pcLocalPointsI.x + xfAq.c * pcLocalPointsI.y) + xfA.p.y;
-        final double tempX = clipPointX - planePointX;
-        final double tempY = clipPointY - planePointY;
+        final tempX = clipPointX - planePointX;
+        final tempY = clipPointY - planePointY;
         separation =
             tempX * normal.x + tempY * normal.y - pc.radiusA - pc.radiusB;
         point.x = clipPointX;

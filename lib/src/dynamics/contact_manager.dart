@@ -17,17 +17,17 @@ class ContactManager implements PairCallback {
   /// Broad-phase callback.
   @override
   void addPair(FixtureProxy proxyUserDataA, FixtureProxy proxyUserDataB) {
-    final FixtureProxy proxyA = proxyUserDataA;
-    final FixtureProxy proxyB = proxyUserDataB;
+    final proxyA = proxyUserDataA;
+    final proxyB = proxyUserDataB;
 
-    final Fixture fixtureA = proxyA.fixture;
-    final Fixture fixtureB = proxyB.fixture;
+    final fixtureA = proxyA.fixture;
+    final fixtureB = proxyB.fixture;
 
-    final int indexA = proxyA.childIndex;
-    final int indexB = proxyB.childIndex;
+    final indexA = proxyA.childIndex;
+    final indexB = proxyB.childIndex;
 
-    final Body bodyA = fixtureA.body;
-    final Body bodyB = fixtureB.body;
+    final bodyA = fixtureA.body;
+    final bodyB = fixtureB.body;
 
     // Are the fixtures on the same body?
     if (bodyA == bodyB) {
@@ -35,7 +35,7 @@ class ContactManager implements PairCallback {
     }
 
     // Check whether a contact already exists
-    for (Contact contact in bodyB.contacts) {
+    for (var contact in bodyB.contacts) {
       if (contact.containsBody(bodyA)) {
         if (contact.representsArguments(fixtureA, indexA, fixtureB, indexB)) {
           // A contact already exists.
@@ -55,7 +55,7 @@ class ContactManager implements PairCallback {
       return;
     }
 
-    final Contact contact = Contact.init(fixtureA, indexA, fixtureB, indexB);
+    final contact = Contact.init(fixtureA, indexA, fixtureB, indexB);
 
     // Insert into the world.
     contacts.add(contact);
@@ -78,8 +78,8 @@ class ContactManager implements PairCallback {
   }
 
   void destroy(Contact c) {
-    final Fixture fixtureA = c.fixtureA;
-    final Fixture fixtureB = c.fixtureB;
+    final fixtureA = c.fixtureA;
+    final fixtureB = c.fixtureB;
 
     if (c.isTouching()) {
       contactListener?.endContact(c);
@@ -98,15 +98,15 @@ class ContactManager implements PairCallback {
   /// This is the top level collision call for the time step. Here all the narrow phase collision is
   /// processed for the world contact list.
   void collide() {
-    final List<Contact> contactRemovals = [];
+    final contactRemovals = <Contact>[];
     // Update awake contacts.
-    for (Contact c in contacts) {
-      final Fixture fixtureA = c.fixtureA;
-      final Fixture fixtureB = c.fixtureB;
-      final int indexA = c.indexA;
-      final int indexB = c.indexB;
-      final Body bodyA = fixtureA.body;
-      final Body bodyB = fixtureB.body;
+    for (var c in contacts) {
+      final fixtureA = c.fixtureA;
+      final fixtureB = c.fixtureB;
+      final indexA = c.indexA;
+      final indexB = c.indexB;
+      final bodyA = fixtureA.body;
+      final bodyB = fixtureB.body;
 
       // is this contact flagged for filtering?
       if ((c.flags & Contact.FILTER_FLAG) == Contact.FILTER_FLAG) {
@@ -127,16 +127,16 @@ class ContactManager implements PairCallback {
         c.flags &= ~Contact.FILTER_FLAG;
       }
 
-      final bool activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.STATIC;
-      final bool activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.STATIC;
+      final activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.STATIC;
+      final activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.STATIC;
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {
         continue;
       }
 
-      final int proxyIdA = fixtureA.proxies[indexA].proxyId;
-      final int proxyIdB = fixtureB.proxies[indexB].proxyId;
+      final proxyIdA = fixtureA.proxies[indexA].proxyId;
+      final proxyIdB = fixtureB.proxies[indexB].proxyId;
 
       // Here we destroy contacts that cease to overlap in the broad-phase.
       if (!broadPhase.testOverlap(proxyIdA, proxyIdB)) {

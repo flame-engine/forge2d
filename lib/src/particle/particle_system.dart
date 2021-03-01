@@ -148,7 +148,7 @@ class ParticleSystem {
   }
 
   void destroyParticle(Particle particle, bool callDestructionListener) {
-    int flags = ParticleType.zombieParticle;
+    var flags = ParticleType.zombieParticle;
     if (callDestructionListener) {
       flags |= ParticleType.destructionListener;
     }
@@ -191,11 +191,11 @@ class ParticleSystem {
       CreateParticleGroupCallback();
 
   ParticleGroup createParticleGroup(ParticleGroupDef groupDef) {
-    final double stride = getParticleStride();
-    final Transform identity = _tempTransform..setIdentity();
-    final Transform transform = _tempTransform2..setIdentity();
+    final stride = getParticleStride();
+    final identity = _tempTransform..setIdentity();
+    final transform = _tempTransform2..setIdentity();
 
-    final ParticleGroup group = ParticleGroup(this)
+    final group = ParticleGroup(this)
       ..groupFlags = groupDef.groupFlags
       ..strength = groupDef.strength
       ..userData = groupDef.userData
@@ -203,32 +203,32 @@ class ParticleSystem {
       ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
-      final Particle seedParticle = Particle(this, group: group)
+      final seedParticle = Particle(this, group: group)
         ..flags = groupDef.flags
         ..color = groupDef.color
         ..userData = groupDef.userData;
-      final Shape shape = groupDef.shape;
+      final shape = groupDef.shape;
       transform.setVec2Angle(groupDef.position, groupDef.angle);
-      final AABB aabb = _temp;
-      final int childCount = shape.getChildCount();
-      for (int childIndex = 0; childIndex < childCount; childIndex++) {
+      final aabb = _temp;
+      final childCount = shape.getChildCount();
+      for (var childIndex = 0; childIndex < childCount; childIndex++) {
         if (childIndex == 0) {
           shape.computeAABB(aabb, identity, childIndex);
         } else {
-          final AABB childAABB = _temp2;
+          final childAABB = _temp2;
           shape.computeAABB(childAABB, identity, childIndex);
           aabb.combine(childAABB);
         }
       }
-      final double upperBoundY = aabb.upperBound.y;
-      final double upperBoundX = aabb.upperBound.x;
-      for (double y = (aabb.lowerBound.y / stride).floor() * stride;
+      final upperBoundY = aabb.upperBound.y;
+      final upperBoundX = aabb.upperBound.x;
+      for (var y = (aabb.lowerBound.y / stride).floor() * stride;
           y < upperBoundY;
           y += stride) {
-        for (double x = (aabb.lowerBound.x / stride).floor() * stride;
+        for (var x = (aabb.lowerBound.x / stride).floor() * stride;
             x < upperBoundX;
             x += stride) {
-          final Vector2 p = _tempVec..setValues(x, y);
+          final p = _tempVec..setValues(x, y);
           if (shape.testPoint(identity, p)) {
             p.setFrom(Transform.mulVec2(transform, p));
             final particle = seedParticle.clone();
@@ -248,12 +248,12 @@ class ParticleSystem {
 
     updateContacts(true);
     if ((groupDef.flags & k_pairFlags) != 0) {
-      for (ParticleContact contact in contactBuffer) {
+      for (var contact in contactBuffer) {
         final particleA = contact.particleA;
         final particleB = contact.particleB;
         if (group.particles.contains(particleA) &&
             group.particles.contains(particleB)) {
-          final PsPair pair = PsPair(particleA, particleB)
+          final pair = PsPair(particleA, particleB)
             ..flags = contact.flags
             ..strength = groupDef.strength
             ..distance = particleA.position.distanceTo(particleB.position);
@@ -262,9 +262,9 @@ class ParticleSystem {
       }
     }
     if ((groupDef.flags & k_triadFlags) != 0) {
-      final VoronoiDiagram diagram = VoronoiDiagram();
-      print("group: ${group.particles.length}");
-      for (Particle particle in group.particles) {
+      final diagram = VoronoiDiagram();
+      print('group: ${group.particles.length}');
+      for (var particle in group.particles) {
         diagram.addGenerator(particle.position, particle);
       }
       diagram.generate(stride / 2);
@@ -280,20 +280,20 @@ class ParticleSystem {
   }
 
   void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
-    int particleFlags = 0;
+    var particleFlags = 0;
     final joinedParticles = groupA.particles + groupB.particles;
-    for (Particle particle in joinedParticles) {
+    for (var particle in joinedParticles) {
       particleFlags |= particle.flags;
     }
 
     updateContacts(true);
     if ((particleFlags & k_pairFlags) != 0) {
-      for (ParticleContact contact in contactBuffer) {
+      for (var contact in contactBuffer) {
         final particleA = contact.particleA;
         final particleB = contact.particleB;
         if (groupA.particles.contains(particleA) &&
             groupB.particles.contains(particleB)) {
-          final PsPair pair = PsPair(particleA, particleB)
+          final pair = PsPair(particleA, particleB)
             ..flags = contact.flags
             ..strength = min(groupA.strength, groupB.strength)
             ..distance = particleA.position.distanceTo(particleB.position);
@@ -302,25 +302,25 @@ class ParticleSystem {
       }
     }
     if ((particleFlags & k_triadFlags) != 0) {
-      final VoronoiDiagram diagram = VoronoiDiagram();
-      for (Particle particle in joinedParticles) {
+      final diagram = VoronoiDiagram();
+      for (var particle in joinedParticles) {
         if ((particle.flags & ParticleType.zombieParticle) == 0) {
           diagram.addGenerator(particle.position, particle);
         }
       }
       diagram.generate(getParticleStride() / 2);
-      final JoinParticleGroupsCallback callback = JoinParticleGroupsCallback();
+      final callback = JoinParticleGroupsCallback();
       callback.system = this;
       callback.groupA = groupA;
       callback.groupB = groupB;
       diagram.getNodes(callback);
     }
 
-    for (Particle particle in groupB.particles) {
+    for (var particle in groupB.particles) {
       groupA.add(particle);
       particle.group = groupA;
     }
-    final int groupFlags = groupA.groupFlags | groupB.groupFlags;
+    final groupFlags = groupA.groupFlags | groupB.groupFlags;
     groupA.groupFlags = groupFlags;
     // Remove group b, since all its particles are in group a now
     world.particleDestructionListener?.sayGoodbyeParticleGroup(groupB);
@@ -332,28 +332,28 @@ class ParticleSystem {
   }
 
   void computeDepthForGroup(ParticleGroup group) {
-    for (Particle particle in group.particles) {
+    for (var particle in group.particles) {
       particle.accumulation = 0.0;
     }
-    for (ParticleContact contact in contactBuffer) {
-      final Particle particleA = contact.particleA;
-      final Particle particleB = contact.particleB;
+    for (var contact in contactBuffer) {
+      final particleA = contact.particleA;
+      final particleB = contact.particleB;
       if (group.contains(particleA) && group.contains(particleB)) {
-        final double w = contact.weight;
+        final w = contact.weight;
         particleA.accumulation += w;
         particleB.accumulation += w;
       }
     }
-    for (Particle particle in group.particles) {
+    for (var particle in group.particles) {
       particle.depth = particle.accumulation < 0.8 ? 0.0 : double.maxFinite;
     }
-    for (int t = 0; t < group.particles.length; t++) {
-      bool updated = false;
-      for (ParticleContact contact in contactBuffer) {
-        final Particle particleA = contact.particleA;
-        final Particle particleB = contact.particleB;
+    for (var t = 0; t < group.particles.length; t++) {
+      var updated = false;
+      for (var contact in contactBuffer) {
+        final particleA = contact.particleA;
+        final particleB = contact.particleB;
         if (group.contains(particleA) && group.contains(particleB)) {
-          final double r = 1 - contact.weight;
+          final r = 1 - contact.weight;
           if (particleA.depth > particleB.depth + r) {
             particleA.depth = particleB.depth + r;
             updated = true;
@@ -368,7 +368,7 @@ class ParticleSystem {
         break;
       }
     }
-    for (Particle particle in group.particles) {
+    for (var particle in group.particles) {
       if (particle.depth < double.maxFinite) {
         // TODO.spydon: it will always go into this case?
         particle.depth *= particleDiameter;
@@ -383,14 +383,14 @@ class ParticleSystem {
       particleA != particleB,
       "The particles in contact can't be the same",
     );
-    final Vector2 pa = particleA.position;
-    final Vector2 pb = particleB.position;
-    final double dx = pb.x - pa.x;
-    final double dy = pb.y - pa.y;
-    final double d2 = dx * dx + dy * dy;
+    final pa = particleA.position;
+    final pb = particleB.position;
+    final dx = pb.x - pa.x;
+    final dy = pb.y - pa.y;
+    final d2 = dx * dx + dy * dy;
     if (d2 < squaredDiameter) {
-      final double invD = d2 != 0 ? sqrt(1 / d2) : double.maxFinite;
-      final ParticleContact contact = ParticleContact(particleA, particleB)
+      final invD = d2 != 0 ? sqrt(1 / d2) : double.maxFinite;
+      final contact = ParticleContact(particleA, particleB)
         ..flags = particleA.flags | particleB.flags
         ..weight = 1 - d2 * invD * inverseDiameter
         ..normal.x = invD * dx
@@ -400,34 +400,34 @@ class ParticleSystem {
   }
 
   void updateContacts(bool exceptZombie) {
-    for (PsProxy proxy in proxyBuffer) {
-      final Vector2 pos = proxy.particle.position;
+    for (var proxy in proxyBuffer) {
+      final pos = proxy.particle.position;
       proxy.tag = computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
     }
     proxyBuffer.sort();
     contactBuffer.clear();
-    int cIndex = 0;
-    for (int i = 0; i < proxyBuffer.length; i++) {
-      final PsProxy proxyA = proxyBuffer[i];
-      final int rightTag = computeRelativeTag(proxyA.tag, 1, 0);
-      for (int j = i + 1; j < proxyBuffer.length; j++) {
-        final PsProxy proxyB = proxyBuffer[j];
+    var cIndex = 0;
+    for (var i = 0; i < proxyBuffer.length; i++) {
+      final proxyA = proxyBuffer[i];
+      final rightTag = computeRelativeTag(proxyA.tag, 1, 0);
+      for (var j = i + 1; j < proxyBuffer.length; j++) {
+        final proxyB = proxyBuffer[j];
         if (rightTag < proxyB.tag) {
           break;
         }
         addContact(proxyA.particle, proxyB.particle);
       }
-      final int bottomLeftTag = computeRelativeTag(proxyA.tag, -1, 1);
+      final bottomLeftTag = computeRelativeTag(proxyA.tag, -1, 1);
       for (; cIndex < proxyBuffer.length; cIndex++) {
-        final PsProxy c = proxyBuffer[cIndex];
+        final c = proxyBuffer[cIndex];
         if (bottomLeftTag <= c.tag) {
           break;
         }
       }
-      final int bottomRightTag = computeRelativeTag(proxyA.tag, 1, 1);
+      final bottomRightTag = computeRelativeTag(proxyA.tag, 1, 1);
 
-      for (int bIndex = cIndex; bIndex < proxyBuffer.length; bIndex++) {
-        final PsProxy proxyB = proxyBuffer[bIndex];
+      for (var bIndex = cIndex; bIndex < proxyBuffer.length; bIndex++) {
+        final proxyB = proxyBuffer[bIndex];
         if (bottomRightTag < proxyB.tag) {
           break;
         }
@@ -435,11 +435,11 @@ class ParticleSystem {
       }
     }
     if (exceptZombie) {
-      int j = contactBuffer.length;
-      for (int i = 0; i < j; i++) {
+      var j = contactBuffer.length;
+      for (var i = 0; i < j; i++) {
         if ((contactBuffer[i].flags & ParticleType.zombieParticle) != 0) {
           --j;
-          final ParticleContact temp = contactBuffer[j];
+          final temp = contactBuffer[j];
           contactBuffer[j] = contactBuffer[i];
           contactBuffer[i] = temp;
           --i;
@@ -451,12 +451,12 @@ class ParticleSystem {
   final UpdateBodyContactsCallback _ubccallback = UpdateBodyContactsCallback();
 
   void updateBodyContacts() {
-    final AABB aabb = _temp;
+    final aabb = _temp;
     aabb.lowerBound.x = double.maxFinite;
     aabb.lowerBound.y = double.maxFinite;
     aabb.upperBound.x = -double.maxFinite;
     aabb.upperBound.y = -double.maxFinite;
-    for (Particle particle in _particles) {
+    for (var particle in _particles) {
       final position = particle.position;
       Vector2.min(aabb.lowerBound, position, aabb.lowerBound);
       Vector2.max(aabb.upperBound, position, aabb.upperBound);
@@ -474,24 +474,24 @@ class ParticleSystem {
       SolveCollisionCallback();
 
   void solveCollision(TimeStep step) {
-    final AABB aabb = _temp;
-    final Vector2 lowerBound = aabb.lowerBound;
-    final Vector2 upperBound = aabb.upperBound;
+    final aabb = _temp;
+    final lowerBound = aabb.lowerBound;
+    final upperBound = aabb.upperBound;
     lowerBound.x = double.maxFinite;
     lowerBound.y = double.maxFinite;
     upperBound.x = -double.maxFinite;
     upperBound.y = -double.maxFinite;
-    for (Particle particle in _particles) {
-      final Vector2 v = particle.velocity;
-      final Vector2 p1 = particle.position;
-      final double p2x = p1.x + step.dt * v.x;
-      final double p2y = p1.y + step.dt * v.y;
-      final double bx = p1.x < p2x ? p1.x : p2x;
-      final double by = p1.y < p2y ? p1.y : p2y;
+    for (var particle in _particles) {
+      final v = particle.velocity;
+      final p1 = particle.position;
+      final p2x = p1.x + step.dt * v.x;
+      final p2y = p1.y + step.dt * v.y;
+      final bx = p1.x < p2x ? p1.x : p2x;
+      final by = p1.y < p2y ? p1.y : p2y;
       lowerBound.x = lowerBound.x < bx ? lowerBound.x : bx;
       lowerBound.y = lowerBound.y < by ? lowerBound.y : by;
-      final double b1x = p1.x > p2x ? p1.x : p2x;
-      final double b1y = p1.y > p2y ? p1.y : p2y;
+      final b1x = p1.x > p2x ? p1.x : p2x;
+      final b1y = p1.y > p2y ? p1.y : p2y;
       upperBound.x = upperBound.x > b1x ? upperBound.x : b1x;
       upperBound.y = upperBound.y > b1y ? upperBound.y : b1y;
     }
@@ -506,7 +506,7 @@ class ParticleSystem {
       return;
     }
     allParticleFlags = 0;
-    for (Particle particle in _particles) {
+    for (var particle in _particles) {
       allParticleFlags |= particle.flags;
     }
     if ((allParticleFlags & ParticleType.zombieParticle) != 0) {
@@ -516,19 +516,19 @@ class ParticleSystem {
       return;
     }
     allGroupFlags = 0;
-    for (ParticleGroup group in groupBuffer) {
+    for (var group in groupBuffer) {
       allGroupFlags |= group.groupFlags;
     }
-    final double gravityx = step.dt * gravityScale * world.getGravity().x;
-    final double gravityy = step.dt * gravityScale * world.getGravity().y;
-    final double criticalVelocitySquared = getCriticalVelocitySquared(step);
-    for (Particle particle in _particles) {
-      final Vector2 v = particle.velocity;
+    final gravityx = step.dt * gravityScale * world.getGravity().x;
+    final gravityy = step.dt * gravityScale * world.getGravity().y;
+    final criticalVelocitySquared = getCriticalVelocitySquared(step);
+    for (var particle in _particles) {
+      final v = particle.velocity;
       v.x += gravityx;
       v.y += gravityy;
-      final double v2 = v.x * v.x + v.y * v.y;
+      final v2 = v.x * v.x + v.y * v.y;
       if (v2 > criticalVelocitySquared) {
-        final double a =
+        final a =
             v2 == 0 ? double.maxFinite : sqrt(criticalVelocitySquared / v2);
         v.x *= a;
         v.y *= a;
@@ -541,7 +541,7 @@ class ParticleSystem {
     if ((allParticleFlags & ParticleType.wallParticle) != 0) {
       solveWall(step);
     }
-    for (Particle particle in _particles) {
+    for (var particle in _particles) {
       particle.position.setFrom(
         particle.position + (particle.velocity * step.dt),
       );
@@ -576,30 +576,30 @@ class ParticleSystem {
   void solvePressure(TimeStep step) {
     // calculates the sum of contact-weights for each particle
     // that means dimensionless density
-    for (Particle particle in _particles) {
+    for (var particle in _particles) {
       particle.accumulation = 0.0;
     }
-    for (ParticleBodyContact contact in bodyContactBuffer) {
+    for (var contact in bodyContactBuffer) {
       contact.particle.accumulation += contact.weight;
     }
-    for (ParticleContact contact in contactBuffer) {
+    for (var contact in contactBuffer) {
       contact.particleA.accumulation += contact.weight;
       contact.particleB.accumulation += contact.weight;
     }
     // ignores powder particles
     if ((allParticleFlags & k_noPressureFlags) != 0) {
-      for (Particle particle in _particles) {
+      for (var particle in _particles) {
         if ((particle.flags & k_noPressureFlags) != 0) {
           particle.accumulation = 0.0;
         }
       }
     }
     // calculates pressure as a linear function of density
-    final double pressurePerWeight =
+    final pressurePerWeight =
         pressureStrength * getCriticalPressure(step);
-    for (Particle particle in _particles) {
-      final double w = particle.accumulation;
-      final double h = pressurePerWeight *
+    for (var particle in _particles) {
+      final w = particle.accumulation;
+      final h = pressurePerWeight *
           max(
             0.0,
             min(w, settings.maxParticleWeight) - settings.minParticleWeight,
@@ -607,35 +607,35 @@ class ParticleSystem {
       particle.accumulation = h;
     }
     // applies pressure between each particles in contact
-    final double velocityPerPressure = step.dt / (density * particleDiameter);
-    for (ParticleBodyContact contact in bodyContactBuffer) {
-      final Particle particle = contact.particle;
-      final Body b = contact.body;
-      final double w = contact.weight;
-      final double m = contact.mass;
-      final Vector2 n = contact.normal;
-      final Vector2 p = particle.position;
-      final double h = particle.accumulation + pressurePerWeight * w;
-      final Vector2 f = _tempVec;
-      final double coef = velocityPerPressure * w * m * h;
+    final velocityPerPressure = step.dt / (density * particleDiameter);
+    for (var contact in bodyContactBuffer) {
+      final particle = contact.particle;
+      final b = contact.body;
+      final w = contact.weight;
+      final m = contact.mass;
+      final n = contact.normal;
+      final p = particle.position;
+      final h = particle.accumulation + pressurePerWeight * w;
+      final f = _tempVec;
+      final coef = velocityPerPressure * w * m * h;
       f.x = coef * n.x;
       f.y = coef * n.y;
-      final Vector2 velData = particle.velocity;
-      final double particleInvMass = getParticleInvMass();
+      final velData = particle.velocity;
+      final particleInvMass = getParticleInvMass();
       velData.x -= particleInvMass * f.x;
       velData.y -= particleInvMass * f.y;
       b.applyLinearImpulse(f, point: p);
     }
-    for (ParticleContact contact in contactBuffer) {
-      final Particle particleA = contact.particleA;
-      final Particle particleB = contact.particleB;
-      final double w = contact.weight;
-      final Vector2 n = contact.normal;
-      final double h = particleA.accumulation + particleB.accumulation;
-      final double fx = velocityPerPressure * w * h * n.x;
-      final double fy = velocityPerPressure * w * h * n.y;
-      final Vector2 velDataA = particleA.velocity;
-      final Vector2 velDataB = particleB.velocity;
+    for (var contact in contactBuffer) {
+      final particleA = contact.particleA;
+      final particleB = contact.particleB;
+      final w = contact.weight;
+      final n = contact.normal;
+      final h = particleA.accumulation + particleB.accumulation;
+      final fx = velocityPerPressure * w * h * n.x;
+      final fy = velocityPerPressure * w * h * n.y;
+      final velDataA = particleA.velocity;
+      final velDataB = particleB.velocity;
       velDataA.x -= fx;
       velDataA.y -= fy;
       velDataB.x += fx;
@@ -645,26 +645,26 @@ class ParticleSystem {
 
   void solveDamping(TimeStep step) {
     // reduces normal velocity of each contact
-    final double damping = dampingStrength;
-    for (ParticleBodyContact contact in bodyContactBuffer) {
-      final Particle particle = contact.particle;
-      final Body b = contact.body;
-      final double w = contact.weight;
-      final double m = contact.mass;
-      final Vector2 n = contact.normal;
-      final Vector2 p = particle.position;
-      final double tempX = p.x - b.sweep.c.x;
-      final double tempY = p.y - b.sweep.c.y;
-      final Vector2 velA = particle.velocity;
-      final double vx =
+    final damping = dampingStrength;
+    for (var contact in bodyContactBuffer) {
+      final particle = contact.particle;
+      final b = contact.body;
+      final w = contact.weight;
+      final m = contact.mass;
+      final n = contact.normal;
+      final p = particle.position;
+      final tempX = p.x - b.sweep.c.x;
+      final tempY = p.y - b.sweep.c.y;
+      final velA = particle.velocity;
+      final vx =
           -b.angularVelocity * tempY + b.linearVelocity.x - velA.x;
-      final double vy = b.angularVelocity * tempX + b.linearVelocity.y - velA.y;
-      final double vn = vx * n.x + vy * n.y;
+      final vy = b.angularVelocity * tempX + b.linearVelocity.y - velA.y;
+      final vn = vx * n.x + vy * n.y;
       if (vn < 0) {
-        final Vector2 f = _tempVec;
+        final f = _tempVec;
         f.x = damping * w * m * vn * n.x;
         f.y = damping * w * m * vn * n.y;
-        final double invMass = getParticleInvMass();
+        final invMass = getParticleInvMass();
         velA.x += invMass * f.x;
         velA.y += invMass * f.y;
         f.x = -f.x;
@@ -672,19 +672,19 @@ class ParticleSystem {
         b.applyLinearImpulse(f, point: p);
       }
     }
-    for (ParticleContact contact in contactBuffer) {
-      final Particle particleA = contact.particleA;
-      final Particle particleB = contact.particleB;
-      final double w = contact.weight;
-      final Vector2 n = contact.normal;
-      final Vector2 velA = particleA.velocity;
-      final Vector2 velB = particleB.velocity;
-      final double vx = velB.x - velA.x;
-      final double vy = velB.y - velA.y;
-      final double vn = vx * n.x + vy * n.y;
+    for (var contact in contactBuffer) {
+      final particleA = contact.particleA;
+      final particleB = contact.particleB;
+      final w = contact.weight;
+      final n = contact.normal;
+      final velA = particleA.velocity;
+      final velB = particleB.velocity;
+      final vx = velB.x - velA.x;
+      final vy = velB.y - velA.y;
+      final vn = vx * n.x + vy * n.y;
       if (vn < 0) {
-        final double fx = damping * w * vn * n.x;
-        final double fy = damping * w * vn * n.y;
+        final fx = damping * w * vn * n.x;
+        final fy = damping * w * vn * n.y;
         velA.x += fx;
         velA.y += fy;
         velB.x -= fx;
@@ -694,7 +694,7 @@ class ParticleSystem {
   }
 
   void solveWall(TimeStep step) {
-    for (Particle particle in _particles) {
+    for (var particle in _particles) {
       if ((particle.flags & ParticleType.wallParticle) != 0) {
         particle.velocity.setZero();
       }
@@ -706,13 +706,13 @@ class ParticleSystem {
   final Transform _tempXf2 = Transform.zero();
 
   void solveRigid(final TimeStep step) {
-    for (ParticleGroup group in groupBuffer) {
+    for (var group in groupBuffer) {
       if ((group.groupFlags & ParticleGroupType.rigidParticleGroup) != 0) {
         group.updateStatistics();
-        final Vector2 temp = _tempVec;
-        final Rot rotation = _tempRot;
+        final temp = _tempVec;
+        final rotation = _tempRot;
         rotation.setAngle(step.dt * group.angularVelocity);
-        final Vector2 cross = Rot.mulVec2(rotation, group.center);
+        final cross = Rot.mulVec2(rotation, group.center);
         temp
           ..setFrom(group.linearVelocity)
           ..scale(step.dt)
@@ -721,12 +721,12 @@ class ParticleSystem {
         _tempXf.p.setFrom(temp);
         _tempXf.q.setFrom(rotation);
         group.transform.set(Transform.mul(_tempXf, group.transform));
-        final Transform velocityTransform = _tempXf2
+        final velocityTransform = _tempXf2
           ..p.x = step.invDt * _tempXf.p.x
           ..p.y = step.invDt * _tempXf.p.y
           ..q.s = step.invDt * _tempXf.q.s
           ..q.c = step.invDt * (_tempXf.q.c - 1);
-        for (Particle particle in group.particles) {
+        for (var particle in group.particles) {
           particle.velocity.setFrom(
             Transform.mulVec2(velocityTransform, particle.position),
           );
@@ -736,36 +736,36 @@ class ParticleSystem {
   }
 
   void solveElastic(final TimeStep step) {
-    final double elasticStrength = step.invDt * this.elasticStrength;
-    for (PsTriad triad in triadBuffer) {
+    final elasticStrength = step.invDt * this.elasticStrength;
+    for (var triad in triadBuffer) {
       if ((triad.flags & ParticleType.elasticParticle) != 0) {
-        final Particle particleA = triad.particleA;
-        final Particle particleB = triad.particleB;
-        final Particle particleC = triad.particleC;
-        final Vector2 oa = triad.pa;
-        final Vector2 ob = triad.pb;
-        final Vector2 oc = triad.pc;
-        final Vector2 pa = particleA.position;
-        final Vector2 pb = particleB.position;
-        final Vector2 pc = particleC.position;
-        final double px = 1.0 / 3 * (pa.x + pb.x + pc.x);
-        final double py = 1.0 / 3 * (pa.y + pb.y + pc.y);
-        double rs = oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
-        double rc = oa.dot(pa) + ob.dot(pb) + oc.dot(pc);
-        final double r2 = rs * rs + rc * rc;
-        final double invR = r2 == 0 ? double.maxFinite : sqrt(1.0 / r2);
+        final particleA = triad.particleA;
+        final particleB = triad.particleB;
+        final particleC = triad.particleC;
+        final oa = triad.pa;
+        final ob = triad.pb;
+        final oc = triad.pc;
+        final pa = particleA.position;
+        final pb = particleB.position;
+        final pc = particleC.position;
+        final px = 1.0 / 3 * (pa.x + pb.x + pc.x);
+        final py = 1.0 / 3 * (pa.y + pb.y + pc.y);
+        var rs = oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
+        var rc = oa.dot(pa) + ob.dot(pb) + oc.dot(pc);
+        final r2 = rs * rs + rc * rc;
+        final invR = r2 == 0 ? double.maxFinite : sqrt(1.0 / r2);
         rs *= invR;
         rc *= invR;
-        final double strength = elasticStrength * triad.strength;
-        final double roax = rc * oa.x - rs * oa.y;
-        final double roay = rs * oa.x + rc * oa.y;
-        final double robx = rc * ob.x - rs * ob.y;
-        final double roby = rs * ob.x + rc * ob.y;
-        final double rocx = rc * oc.x - rs * oc.y;
-        final double rocy = rs * oc.x + rc * oc.y;
-        final Vector2 va = particleA.velocity;
-        final Vector2 vb = particleB.velocity;
-        final Vector2 vc = particleC.velocity;
+        final strength = elasticStrength * triad.strength;
+        final roax = rc * oa.x - rs * oa.y;
+        final roay = rs * oa.x + rc * oa.y;
+        final robx = rc * ob.x - rs * ob.y;
+        final roby = rs * ob.x + rc * ob.y;
+        final rocx = rc * oc.x - rs * oc.y;
+        final rocy = rs * oc.x + rc * oc.y;
+        final va = particleA.velocity;
+        final vb = particleB.velocity;
+        final vc = particleC.velocity;
         va.x += strength * (roax - (pa.x - px));
         va.y += strength * (roay - (pa.y - py));
         vb.x += strength * (robx - (pb.x - px));
@@ -777,23 +777,23 @@ class ParticleSystem {
   }
 
   void solveSpring(final TimeStep step) {
-    final double springStrength = step.invDt * this.springStrength;
-    for (PsPair pair in pairBuffer) {
+    final springStrength = step.invDt * this.springStrength;
+    for (var pair in pairBuffer) {
       if ((pair.flags & ParticleType.springParticle) != 0) {
-        final Particle particleA = pair.particleA;
-        final Particle particleB = pair.particleB;
-        final Vector2 pa = particleA.position;
-        final Vector2 pb = particleB.position;
-        final double dx = pb.x - pa.x;
-        final double dy = pb.y - pa.y;
-        final double r0 = pair.distance;
-        double r1 = sqrt(dx * dx + dy * dy);
+        final particleA = pair.particleA;
+        final particleB = pair.particleB;
+        final pa = particleA.position;
+        final pb = particleB.position;
+        final dx = pb.x - pa.x;
+        final dy = pb.y - pa.y;
+        final r0 = pair.distance;
+        var r1 = sqrt(dx * dx + dy * dy);
         r1 = r1 == 0 ? double.maxFinite : r1;
-        final double strength = springStrength * pair.strength;
-        final double fx = strength * (r0 - r1) / r1 * dx;
-        final double fy = strength * (r0 - r1) / r1 * dy;
-        final Vector2 va = particleA.velocity;
-        final Vector2 vb = particleB.velocity;
+        final strength = springStrength * pair.strength;
+        final fx = strength * (r0 - r1) / r1 * dx;
+        final fy = strength * (r0 - r1) / r1 * dy;
+        final va = particleA.velocity;
+        final vb = particleB.velocity;
         va.x -= fx;
         va.y -= fy;
         vb.x += fx;
@@ -803,48 +803,48 @@ class ParticleSystem {
   }
 
   void solveTensile(final TimeStep step) {
-    for (Particle particle in _particles) {
+    for (var particle in _particles) {
       particle.accumulation = 0.0;
       particle.accumulationVector.setZero();
     }
-    for (ParticleContact contact in contactBuffer) {
+    for (var contact in contactBuffer) {
       if ((contact.flags & ParticleType.tensileParticle) != 0) {
-        final Particle particleA = contact.particleA;
-        final Particle particleB = contact.particleB;
-        final double w = contact.weight;
-        final Vector2 n = contact.normal;
+        final particleA = contact.particleA;
+        final particleB = contact.particleB;
+        final w = contact.weight;
+        final n = contact.normal;
         particleA.accumulation += w;
         particleB.accumulation += w;
-        final Vector2 a2A = particleA.accumulationVector;
-        final Vector2 a2B = particleB.accumulationVector;
-        final double inter = (1 - w) * w;
+        final a2A = particleA.accumulationVector;
+        final a2B = particleB.accumulationVector;
+        final inter = (1 - w) * w;
         a2A.x -= inter * n.x;
         a2A.y -= inter * n.y;
         a2B.x += inter * n.x;
         a2B.y += inter * n.y;
       }
     }
-    final double strengthA =
+    final strengthA =
         surfaceTensionStrengthA * getCriticalVelocity(step);
-    final double strengthB =
+    final strengthB =
         surfaceTensionStrengthB * getCriticalVelocity(step);
-    for (ParticleContact contact in contactBuffer) {
+    for (var contact in contactBuffer) {
       if ((contact.flags & ParticleType.tensileParticle) != 0) {
-        final Particle particleA = contact.particleA;
-        final Particle particleB = contact.particleB;
-        final double w = contact.weight;
-        final Vector2 n = contact.normal;
-        final Vector2 a2A = particleA.accumulationVector;
-        final Vector2 a2B = particleB.accumulationVector;
-        final double h = particleA.accumulation + particleB.accumulation;
-        final double sx = a2B.x - a2A.x;
-        final double sy = a2B.y - a2A.y;
-        final double fn =
+        final particleA = contact.particleA;
+        final particleB = contact.particleB;
+        final w = contact.weight;
+        final n = contact.normal;
+        final a2A = particleA.accumulationVector;
+        final a2B = particleB.accumulationVector;
+        final h = particleA.accumulation + particleB.accumulation;
+        final sx = a2B.x - a2A.x;
+        final sy = a2B.y - a2A.y;
+        final fn =
             (strengthA * (h - 2) + strengthB * (sx * n.x + sy * n.y)) * w;
-        final double fx = fn * n.x;
-        final double fy = fn * n.y;
-        final Vector2 va = particleA.velocity;
-        final Vector2 vb = particleB.velocity;
+        final fx = fn * n.x;
+        final fy = fn * n.y;
+        final va = particleA.velocity;
+        final vb = particleB.velocity;
         va.x -= fx;
         va.y -= fy;
         vb.x += fx;
@@ -854,21 +854,21 @@ class ParticleSystem {
   }
 
   void solveViscous(final TimeStep step) {
-    for (ParticleBodyContact contact in bodyContactBuffer) {
-      final Particle particle = contact.particle;
+    for (var contact in bodyContactBuffer) {
+      final particle = contact.particle;
       if ((particle.flags & ParticleType.viscousParticle) != 0) {
-        final Body b = contact.body;
-        final double w = contact.weight;
-        final double m = contact.mass;
-        final Vector2 p = particle.position;
-        final Vector2 va = particle.velocity;
-        final double tempX = p.x - b.sweep.c.x;
-        final double tempY = p.y - b.sweep.c.y;
-        final double vx =
+        final b = contact.body;
+        final w = contact.weight;
+        final m = contact.mass;
+        final p = particle.position;
+        final va = particle.velocity;
+        final tempX = p.x - b.sweep.c.x;
+        final tempY = p.y - b.sweep.c.y;
+        final vx =
             -b.angularVelocity * tempY + b.linearVelocity.x - va.x;
-        final double vy = b.angularVelocity * tempX + b.linearVelocity.y - va.y;
-        final Vector2 f = _tempVec;
-        final double pInvMass = getParticleInvMass();
+        final vy = b.angularVelocity * tempX + b.linearVelocity.y - va.y;
+        final f = _tempVec;
+        final pInvMass = getParticleInvMass();
         f.x = viscousStrength * m * w * vx;
         f.y = viscousStrength * m * w * vy;
         va.x += pInvMass * f.x;
@@ -878,17 +878,17 @@ class ParticleSystem {
         b.applyLinearImpulse(f, point: p);
       }
     }
-    for (ParticleContact contact in contactBuffer) {
+    for (var contact in contactBuffer) {
       if ((contact.flags & ParticleType.viscousParticle) != 0) {
-        final Particle particleA = contact.particleA;
-        final Particle particleB = contact.particleB;
-        final double w = contact.weight;
-        final Vector2 va = particleA.velocity;
-        final Vector2 vb = particleB.velocity;
-        final double vx = vb.x - va.x;
-        final double vy = vb.y - va.y;
-        final double fx = viscousStrength * w * vx;
-        final double fy = viscousStrength * w * vy;
+        final particleA = contact.particleA;
+        final particleB = contact.particleB;
+        final w = contact.weight;
+        final va = particleA.velocity;
+        final vb = particleB.velocity;
+        final vx = vb.x - va.x;
+        final vy = vb.y - va.y;
+        final fx = viscousStrength * w * vx;
+        final fy = viscousStrength * w * vy;
         va.x += fx;
         va.y += fy;
         vb.x -= fx;
@@ -898,22 +898,22 @@ class ParticleSystem {
   }
 
   void solvePowder(final TimeStep step) {
-    final double powderStrength =
+    final powderStrength =
         this.powderStrength * getCriticalVelocity(step);
-    final double minWeight = 1.0 - settings.particleStride;
-    for (ParticleBodyContact contact in bodyContactBuffer) {
-      final Particle particle = contact.particle;
+    final minWeight = 1.0 - settings.particleStride;
+    for (var contact in bodyContactBuffer) {
+      final particle = contact.particle;
       if ((particle.flags & ParticleType.powderParticle) != 0) {
-        final double w = contact.weight;
+        final w = contact.weight;
         if (w > minWeight) {
-          final Body b = contact.body;
-          final double m = contact.mass;
-          final Vector2 p = particle.position;
-          final Vector2 n = contact.normal;
-          final Vector2 f = _tempVec;
-          final Vector2 va = particle.velocity;
-          final double inter = powderStrength * m * (w - minWeight);
-          final double pInvMass = getParticleInvMass();
+          final b = contact.body;
+          final m = contact.mass;
+          final p = particle.position;
+          final n = contact.normal;
+          final f = _tempVec;
+          final va = particle.velocity;
+          final inter = powderStrength * m * (w - minWeight);
+          final pInvMass = getParticleInvMass();
           f.x = inter * n.x;
           f.y = inter * n.y;
           va.x -= pInvMass * f.x;
@@ -922,18 +922,18 @@ class ParticleSystem {
         }
       }
     }
-    for (ParticleContact contact in contactBuffer) {
+    for (var contact in contactBuffer) {
       if ((contact.flags & ParticleType.powderParticle) != 0) {
-        final double w = contact.weight;
+        final w = contact.weight;
         if (w > minWeight) {
-          final Particle particleA = contact.particleA;
-          final Particle particleB = contact.particleB;
-          final Vector2 n = contact.normal;
-          final Vector2 va = particleA.velocity;
-          final Vector2 vb = particleB.velocity;
-          final double inter = powderStrength * (w - minWeight);
-          final double fx = inter * n.x;
-          final double fy = inter * n.y;
+          final particleA = contact.particleA;
+          final particleB = contact.particleB;
+          final n = contact.normal;
+          final va = particleA.velocity;
+          final vb = particleB.velocity;
+          final inter = powderStrength * (w - minWeight);
+          final fx = inter * n.x;
+          final fy = inter * n.y;
           va.x -= fx;
           va.y -= fy;
           vb.x += fx;
@@ -947,19 +947,19 @@ class ParticleSystem {
     // applies extra repulsive force from solid particle groups
     // TODO.spydon: Why was this separate depth buffer used?
     //final depthBuffer = Float64List(_particleCount);
-    final double ejectionStrength = step.invDt * this.ejectionStrength;
-    for (ParticleContact contact in contactBuffer) {
-      final Particle particleA = contact.particleA;
-      final Particle particleB = contact.particleB;
+    final ejectionStrength = step.invDt * this.ejectionStrength;
+    for (var contact in contactBuffer) {
+      final particleA = contact.particleA;
+      final particleB = contact.particleB;
       if (particleA.group != particleB.group) {
-        final double w = contact.weight;
-        final Vector2 n = contact.normal;
-        final double h = particleA.depth + particleB.depth;
-        final Vector2 va = particleA.velocity;
-        final Vector2 vb = particleA.velocity;
-        final double inter = ejectionStrength * h * w;
-        final double fx = inter * n.x;
-        final double fy = inter * n.y;
+        final w = contact.weight;
+        final n = contact.normal;
+        final h = particleA.depth + particleB.depth;
+        final va = particleA.velocity;
+        final vb = particleA.velocity;
+        final inter = ejectionStrength * h * w;
+        final fx = inter * n.x;
+        final fy = inter * n.y;
         va.x -= fx;
         va.y -= fy;
         vb.x += fx;
@@ -970,20 +970,20 @@ class ParticleSystem {
 
   void solveColorMixing(final TimeStep step) {
     // mixes color between contacting particles
-    final int colorMixing256 = (256 * colorMixingStrength).toInt();
-    for (ParticleContact contact in contactBuffer) {
-      final Particle particleA = contact.particleA;
-      final Particle particleB = contact.particleA;
+    final colorMixing256 = (256 * colorMixingStrength).toInt();
+    for (var contact in contactBuffer) {
+      final particleA = contact.particleA;
+      final particleB = contact.particleA;
       if ((particleA.flags &
               particleB.flags &
               ParticleType.colorMixingParticle) !=
           0) {
-        final Color3i colorA = particleA.color;
-        final Color3i colorB = particleB.color;
-        final int dr = (colorMixing256 * (colorB.r - colorA.r)).toInt() >> 8;
-        final int dg = (colorMixing256 * (colorB.g - colorA.g)).toInt() >> 8;
-        final int db = (colorMixing256 * (colorB.b - colorA.b)).toInt() >> 8;
-        final int da = (colorMixing256 * (colorB.a - colorA.a)).toInt() >> 8;
+        final colorA = particleA.color;
+        final colorB = particleB.color;
+        final dr = (colorMixing256 * (colorB.r - colorA.r)).toInt() >> 8;
+        final dg = (colorMixing256 * (colorB.g - colorA.g)).toInt() >> 8;
+        final db = (colorMixing256 * (colorB.b - colorA.b)).toInt() >> 8;
+        final da = (colorMixing256 * (colorB.a - colorA.a)).toInt() >> 8;
         colorA.r += dr;
         colorA.g += dg;
         colorA.b += db;
@@ -1072,7 +1072,7 @@ class ParticleSystem {
   }
 
   double getCriticalVelocitySquared(final TimeStep step) {
-    final double velocity = getCriticalVelocity(step);
+    final velocity = getCriticalVelocity(step);
     return velocity * velocity;
   }
 
@@ -1085,7 +1085,7 @@ class ParticleSystem {
   }
 
   double getParticleMass() {
-    final double stride = getParticleStride();
+    final stride = getParticleStride();
     return density * stride * stride;
   }
 
@@ -1106,9 +1106,9 @@ class ParticleSystem {
     int tag,
     bool compare(int a, int b),
   ) {
-    int left = 0;
+    var left = 0;
     int step, current;
-    int length = ray.length;
+    var length = ray.length;
     final rayList = ray.toList(growable: false);
     while (length > 0) {
       step = length ~/ 2;
@@ -1128,28 +1128,28 @@ class ParticleSystem {
       return;
     }
 
-    final double lowerBoundX = aabb.lowerBound.x;
-    final double lowerBoundY = aabb.lowerBound.y;
-    final double upperBoundX = aabb.upperBound.x;
-    final double upperBoundY = aabb.upperBound.y;
-    final int firstProxy = lowerBound(
+    final lowerBoundX = aabb.lowerBound.x;
+    final lowerBoundY = aabb.lowerBound.y;
+    final upperBoundX = aabb.upperBound.x;
+    final upperBoundY = aabb.upperBound.y;
+    final firstProxy = lowerBound(
       proxyBuffer,
       computeTag(
         inverseDiameter * lowerBoundX,
         inverseDiameter * lowerBoundY,
       ),
     );
-    final int lastProxy = upperBound(
+    final lastProxy = upperBound(
       proxyBuffer,
       computeTag(
         inverseDiameter * upperBoundX,
         inverseDiameter * upperBoundY,
       ),
     );
-    for (int i = firstProxy; i < lastProxy; ++i) {
+    for (var i = firstProxy; i < lastProxy; ++i) {
       // TODO: Does this still work now when we don't rotate the buffers?
-      final Particle particle = proxyBuffer[i].particle;
-      final Vector2 p = particle.position;
+      final particle = proxyBuffer[i].particle;
+      final p = particle.position;
       if (lowerBoundX < p.x &&
           p.x < upperBoundX &&
           lowerBoundY < p.y &&
@@ -1169,40 +1169,40 @@ class ParticleSystem {
     if (proxyBuffer.isEmpty) {
       return;
     }
-    final int firstProxy = lowerBound(
+    final firstProxy = lowerBound(
       proxyBuffer,
       computeTag(
         inverseDiameter * min(point1.x, point2.x) - 1,
         inverseDiameter * min(point1.y, point2.y) - 1,
       ),
     );
-    final int lastProxy = upperBound(
+    final lastProxy = upperBound(
       proxyBuffer,
       computeTag(
         inverseDiameter * max(point1.x, point2.x) + 1,
         inverseDiameter * max(point1.y, point2.y) + 1,
       ),
     );
-    double fraction = 1.0;
+    var fraction = 1.0;
     // solving the following equation:
     // ((1-t)*point1+t*point2-position)^2=diameter^2
     // where t is a potential fraction
-    final double vx = point2.x - point1.x;
-    final double vy = point2.y - point1.y;
-    double v2 = vx * vx + vy * vy;
+    final vx = point2.x - point1.x;
+    final vy = point2.y - point1.y;
+    var v2 = vx * vx + vy * vy;
     v2 = v2 == 0 ? double.maxFinite : v2;
-    for (int i = firstProxy; i < lastProxy; ++i) {
+    for (var i = firstProxy; i < lastProxy; ++i) {
       // TODO: Is this correct now when we are not rotating the buffers?
       final positionI = proxyBuffer[i].particle.position;
-      final double px = point1.x - positionI.x;
-      final double py = point1.y - positionI.y;
-      final double pv = px * vx + py * vy;
-      final double p2 = px * px + py * py;
-      final double determinant = pv * pv - v2 * (p2 - squaredDiameter);
+      final px = point1.x - positionI.x;
+      final py = point1.y - positionI.y;
+      final pv = px * vx + py * vy;
+      final p2 = px * px + py * py;
+      final determinant = pv * pv - v2 * (p2 - squaredDiameter);
       if (determinant >= 0) {
-        final double sqrtDeterminant = sqrt(determinant);
+        final sqrtDeterminant = sqrt(determinant);
         // find a solution between 0 and fraction
-        double t = (-pv - sqrtDeterminant) / v2;
+        var t = (-pv - sqrtDeterminant) / v2;
         if (t > fraction) {
           continue;
         }
@@ -1212,12 +1212,12 @@ class ParticleSystem {
             continue;
           }
         }
-        final Vector2 n = _tempVec;
+        final n = _tempVec;
         _tempVec.x = px + t * vx;
         _tempVec.y = py + t * vy;
         n.normalize();
-        final Vector2 point = Vector2(point1.x + t * vx, point1.y + t * vy);
-        final double f = callback.reportParticle(i, point, n, t);
+        final point = Vector2(point1.x + t * vx, point1.y + t * vy);
+        final f = callback.reportParticle(i, point, n, t);
         fraction = min(fraction, f);
         if (fraction <= 0) {
           break;
@@ -1227,11 +1227,11 @@ class ParticleSystem {
   }
 
   double computeParticleCollisionEnergy() {
-    double sumV2 = 0.0;
-    for (ParticleContact contact in contactBuffer) {
-      final Vector2 collisionVelocity =
+    var sumV2 = 0.0;
+    for (var contact in contactBuffer) {
+      final collisionVelocity =
           contact.particleA.velocity - contact.particleB.velocity;
-      final double vn = collisionVelocity.dot(contact.normal);
+      final vn = collisionVelocity.dot(contact.normal);
       if (vn < 0) {
         sumV2 += vn * vn;
       }

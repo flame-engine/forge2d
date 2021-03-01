@@ -68,13 +68,13 @@ abstract class Contact {
     // order the arguments should come in the different contact classes.
     // { CIRCLE, EDGE, POLYGON, CHAIN }
     /// TODO.spydon: Clean this mess up.
-    final ShapeType typeA =
+    final typeA =
         fA.getType().index < fB.getType().index ? fA.getType() : fB.getType();
-    final ShapeType typeB = fA.getType() == typeA ? fB.getType() : fA.getType();
-    final int indexTemp = indexA;
+    final typeB = fA.getType() == typeA ? fB.getType() : fA.getType();
+    final indexTemp = indexA;
     indexA = fA.getType() == typeA ? indexA : indexB;
     indexB = fB.getType() == typeB ? indexB : indexTemp;
-    final Fixture temp = fA;
+    final temp = fA;
     fA = fA.getType() == typeA ? fA : fB;
     fB = fB.getType() == typeB ? fB : temp;
 
@@ -93,7 +93,7 @@ abstract class Contact {
     } else if (typeA == ShapeType.POLYGON && typeB == ShapeType.CHAIN) {
       return ChainAndPolygonContact(fB, indexB, fA, indexA);
     } else {
-      assert(false, "Not compatible contact type");
+      assert(false, 'Not compatible contact type');
       return CircleContact(fA, fB);
     }
   }
@@ -114,7 +114,7 @@ abstract class Contact {
 
   /// Get the other body than the argument in the contact
   Body getOtherBody(Body body) {
-    assert(containsBody(body), "Body is not in contact");
+    assert(containsBody(body), 'Body is not in contact');
     return body == bodyA ? bodyB : bodyA;
   }
 
@@ -175,21 +175,21 @@ abstract class Contact {
     // Re-enable this contact.
     flags |= ENABLED_FLAG;
 
-    bool touching = false;
-    final bool wasTouching = (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+    var touching = false;
+    final wasTouching = (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
-    final bool sensorA = fixtureA.isSensor;
-    final bool sensorB = fixtureB.isSensor;
-    final bool sensor = sensorA || sensorB;
+    final sensorA = fixtureA.isSensor;
+    final sensorB = fixtureB.isSensor;
+    final sensor = sensorA || sensorB;
 
-    final Body bodyA = fixtureA.body;
-    final Body bodyB = fixtureB.body;
-    final Transform xfA = bodyA.transform;
-    final Transform xfB = bodyB.transform;
+    final bodyA = fixtureA.body;
+    final bodyB = fixtureB.body;
+    final xfA = bodyA.transform;
+    final xfB = bodyB.transform;
 
     if (sensor) {
-      final Shape shapeA = fixtureA.shape;
-      final Shape shapeB = fixtureB.shape;
+      final shapeA = fixtureA.shape;
+      final shapeB = fixtureB.shape;
       touching =
           World.collision.testOverlap(shapeA, indexA, shapeB, indexB, xfA, xfB);
 
@@ -201,14 +201,14 @@ abstract class Contact {
 
       // Match old contact ids to new contact ids and copy the
       // stored impulses to warm start the solver.
-      for (int i = 0; i < manifold.pointCount; ++i) {
-        final ManifoldPoint mp2 = manifold.points[i];
+      for (var i = 0; i < manifold.pointCount; ++i) {
+        final mp2 = manifold.points[i];
         mp2.normalImpulse = 0.0;
         mp2.tangentImpulse = 0.0;
-        final ContactID id2 = mp2.id;
+        final id2 = mp2.id;
 
-        for (int j = 0; j < _oldManifold.pointCount; ++j) {
-          final ManifoldPoint mp1 = _oldManifold.points[j];
+        for (var j = 0; j < _oldManifold.pointCount; ++j) {
+          final mp1 = _oldManifold.points[j];
 
           if (mp1.id.isEqual(id2)) {
             mp2.normalImpulse = mp1.normalImpulse;

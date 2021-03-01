@@ -72,23 +72,23 @@ class Fixture {
     }
 
     // Flag associated contacts for filtering.
-    for (Contact contact in body.contacts) {
-      final Fixture fixtureA = contact.fixtureA;
-      final Fixture fixtureB = contact.fixtureB;
+    for (var contact in body.contacts) {
+      final fixtureA = contact.fixtureA;
+      final fixtureB = contact.fixtureB;
       if (fixtureA == this || fixtureB == this) {
         contact.flagForFiltering();
       }
     }
 
-    final World world = body.world;
+    final world = body.world;
 
     if (world == null) {
       return;
     }
 
     // Touch each proxy so that new pairs may be created
-    final BroadPhase broadPhase = world.contactManager.broadPhase;
-    for (int i = 0; i < _proxyCount; ++i) {
+    final broadPhase = world.contactManager.broadPhase;
+    for (var i = 0; i < _proxyCount; ++i) {
       broadPhase.touchProxy(proxies[i].proxyId);
     }
   }
@@ -158,10 +158,10 @@ class Fixture {
     shape = def.shape.clone();
 
     // Reserve proxy space
-    final int childCount = shape.getChildCount();
+    final childCount = shape.getChildCount();
     if (proxies.length < childCount) {
-      final List<FixtureProxy> old = proxies;
-      final int newLength = max(old.length * 2, childCount);
+      final old = proxies;
+      final newLength = max(old.length * 2, childCount);
       proxies.clear();
       for (var x = 0; x < newLength; x++) {
         proxies.add(FixtureProxy()..proxyId = BroadPhase.nullProxy);
@@ -178,8 +178,8 @@ class Fixture {
     // Create proxies in the broad-phase.
     _proxyCount = shape.getChildCount();
 
-    for (int i = 0; i < _proxyCount; ++i) {
-      final FixtureProxy proxy = proxies[i];
+    for (var i = 0; i < _proxyCount; ++i) {
+      final proxy = proxies[i];
       shape.computeAABB(proxy.aabb, xf, i);
       proxy.proxyId = broadPhase.createProxy(proxy.aabb, proxy);
       proxy.fixture = this;
@@ -192,8 +192,8 @@ class Fixture {
   /// @param broadPhase
   void destroyProxies(BroadPhase broadPhase) {
     // Destroy proxies in the broad-phase.
-    for (int i = 0; i < _proxyCount; ++i) {
-      final FixtureProxy proxy = proxies[i];
+    for (var i = 0; i < _proxyCount; ++i) {
+      final proxy = proxies[i];
       broadPhase.destroyProxy(proxy.proxyId);
       proxy.proxyId = BroadPhase.nullProxy;
     }
@@ -216,12 +216,12 @@ class Fixture {
       return;
     }
 
-    for (int i = 0; i < _proxyCount; ++i) {
-      final FixtureProxy proxy = proxies[i];
+    for (var i = 0; i < _proxyCount; ++i) {
+      final proxy = proxies[i];
 
       // Compute an AABB that covers the swept shape (may miss some rotation effect).
-      final AABB aabb1 = _pool1;
-      final AABB aab = _pool2;
+      final aabb1 = _pool1;
+      final aab = _pool2;
       shape.computeAABB(aabb1, transform1, proxy.childIndex);
       shape.computeAABB(aab, transform2, proxy.childIndex);
 

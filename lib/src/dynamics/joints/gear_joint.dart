@@ -85,10 +85,10 @@ class GearJoint extends Joint {
     bodyA = _joint1.bodyB;
 
     // Get geometry of joint1
-    final Transform xfA = bodyA.transform;
-    final double aA = bodyA.sweep.a;
-    final Transform xfC = _bodyC.transform;
-    final double aC = _bodyC.sweep.a;
+    final xfA = bodyA.transform;
+    final aA = bodyA.sweep.a;
+    final xfC = _bodyC.transform;
+    final aC = _bodyC.sweep.a;
 
     if (_typeA == JointType.REVOLUTE) {
       final revolute = def.joint1 as RevoluteJoint;
@@ -99,15 +99,15 @@ class GearJoint extends Joint {
 
       coordinateA = aA - aC - _referenceAngleA;
     } else {
-      final Vector2 pA = Vector2.zero();
-      final Vector2 temp = Vector2.zero();
+      final pA = Vector2.zero();
+      final temp = Vector2.zero();
       final prismatic = def.joint1 as PrismaticJoint;
       _localAnchorC.setFrom(prismatic.localAnchorA);
       localAnchorA.setFrom(prismatic.localAnchorB);
       _referenceAngleA = prismatic.referenceAngle;
       _localAxisC.setFrom(prismatic.localXAxisA);
 
-      final Vector2 pC = _localAnchorC;
+      final pC = _localAnchorC;
       temp
         ..setFrom(Rot.mulVec2(xfA.q, localAnchorA))
         ..add(xfA.p)
@@ -119,10 +119,10 @@ class GearJoint extends Joint {
     bodyB = _joint2.bodyB;
 
     // Get geometry of joint2
-    final Transform xfB = bodyB.transform;
-    final double aB = bodyB.sweep.a;
-    final Transform xfD = _bodyD.transform;
-    final double aD = _bodyD.sweep.a;
+    final xfB = bodyB.transform;
+    final aB = bodyB.sweep.a;
+    final xfD = _bodyD.transform;
+    final aD = _bodyD.sweep.a;
 
     if (_typeB == JointType.REVOLUTE) {
       final revolute = def.joint2 as RevoluteJoint;
@@ -133,15 +133,15 @@ class GearJoint extends Joint {
 
       coordinateB = aB - aD - _referenceAngleB;
     } else {
-      final Vector2 pB = Vector2.zero();
-      final Vector2 temp = Vector2.zero();
+      final pB = Vector2.zero();
+      final temp = Vector2.zero();
       final prismatic = def.joint2 as PrismaticJoint;
       _localAnchorD.setFrom(prismatic.localAnchorA);
       localAnchorB.setFrom(prismatic.localAnchorB);
       _referenceAngleB = prismatic.referenceAngle;
       _localAxisD.setFrom(prismatic.localXAxisA);
 
-      final Vector2 pD = _localAnchorD;
+      final pD = _localAnchorD;
       temp
         ..setFrom(Rot.mulVec2(xfB.q, localAnchorB))
         ..add(xfB.p)
@@ -194,29 +194,29 @@ class GearJoint extends Joint {
     _iD = _bodyD.inverseInertia;
 
     // Vec2 cA = data.positions[_indexA].c;
-    final double aA = data.positions[_indexA].a;
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
+    final aA = data.positions[_indexA].a;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
 
     // Vec2 cB = data.positions[_indexB].c;
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
     // Vec2 cC = data.positions[_indexC].c;
-    final double aC = data.positions[_indexC].a;
-    final Vector2 vC = data.velocities[_indexC].v;
-    double wC = data.velocities[_indexC].w;
+    final aC = data.positions[_indexC].a;
+    final vC = data.velocities[_indexC].v;
+    var wC = data.velocities[_indexC].w;
 
     // Vec2 cD = data.positions[_indexD].c;
-    final double aD = data.positions[_indexD].a;
-    final Vector2 vD = data.velocities[_indexD].v;
-    double wD = data.velocities[_indexD].w;
+    final aD = data.positions[_indexD].a;
+    final vD = data.velocities[_indexD].v;
+    var wD = data.velocities[_indexD].w;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Rot qC = Rot();
-    final Rot qD = Rot();
+    final qA = Rot();
+    final qB = Rot();
+    final qC = Rot();
+    final qD = Rot();
     qA.setAngle(aA);
     qB.setAngle(aB);
     qC.setAngle(aC);
@@ -224,7 +224,7 @@ class GearJoint extends Joint {
 
     _mass = 0.0;
 
-    final Vector2 temp = Vector2.zero();
+    final temp = Vector2.zero();
 
     if (_typeA == JointType.REVOLUTE) {
       _jvAC.setZero();
@@ -232,8 +232,8 @@ class GearJoint extends Joint {
       _jwC = 1.0;
       _mass += _iA + _iC;
     } else {
-      final Vector2 rC = Vector2.zero();
-      final Vector2 rA = Vector2.zero();
+      final rC = Vector2.zero();
+      final rA = Vector2.zero();
       _jvAC.setFrom(Rot.mulVec2(qC, _localAxisC));
       temp
         ..setFrom(_localAnchorC)
@@ -254,9 +254,9 @@ class GearJoint extends Joint {
       _jwD = _ratio;
       _mass += _ratio * _ratio * (_iB + _iD);
     } else {
-      final Vector2 u = Vector2.zero();
-      final Vector2 rD = Vector2.zero();
-      final Vector2 rB = Vector2.zero();
+      final u = Vector2.zero();
+      final rD = Vector2.zero();
+      final rB = Vector2.zero();
       u.setFrom(Rot.mulVec2(qD, _localAxisD));
       temp
         ..setFrom(_localAnchorD)
@@ -306,18 +306,18 @@ class GearJoint extends Joint {
 
   @override
   void solveVelocityConstraints(SolverData data) {
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
-    final Vector2 vC = data.velocities[_indexC].v;
-    double wC = data.velocities[_indexC].w;
-    final Vector2 vD = data.velocities[_indexD].v;
-    double wD = data.velocities[_indexD].w;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
+    final vC = data.velocities[_indexC].v;
+    var wC = data.velocities[_indexC].w;
+    final vD = data.velocities[_indexD].v;
+    var wD = data.velocities[_indexD].w;
 
-    final Vector2 temp1 = Vector2.zero();
-    final Vector2 temp2 = Vector2.zero();
-    double cDot = _jvAC.dot(temp1
+    final temp1 = Vector2.zero();
+    final temp2 = Vector2.zero();
+    var cDot = _jvAC.dot(temp1
           ..setFrom(vA)
           ..sub(vC)) +
         _jvBD.dot(temp2
@@ -325,7 +325,7 @@ class GearJoint extends Joint {
           ..sub(vD));
     cDot += (_jwA * wA - _jwC * wC) + (_jwB * wB - _jwD * wD);
 
-    final double impulse = -_mass * cDot;
+    final impulse = -_mass * cDot;
     _impulse += impulse;
 
     vA.x += (_mA * impulse) * _jvAC.x;
@@ -364,34 +364,34 @@ class GearJoint extends Joint {
 
   @override
   bool solvePositionConstraints(SolverData data) {
-    final Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    final Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
-    final Vector2 cC = data.positions[_indexC].c;
-    double aC = data.positions[_indexC].a;
-    final Vector2 cD = data.positions[_indexD].c;
-    double aD = data.positions[_indexD].a;
+    final cA = data.positions[_indexA].c;
+    var aA = data.positions[_indexA].a;
+    final cB = data.positions[_indexB].c;
+    var aB = data.positions[_indexB].a;
+    final cC = data.positions[_indexC].c;
+    var aC = data.positions[_indexC].a;
+    final cD = data.positions[_indexD].c;
+    var aD = data.positions[_indexD].a;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Rot qC = Rot();
-    final Rot qD = Rot();
+    final qA = Rot();
+    final qB = Rot();
+    final qC = Rot();
+    final qD = Rot();
     qA.setAngle(aA);
     qB.setAngle(aB);
     qC.setAngle(aC);
     qD.setAngle(aD);
 
     // TODO: Is this really needed
-    const double linearError = 0.0;
+    const linearError = 0.0;
 
     double coordinateA, coordinateB;
 
-    final Vector2 temp = Vector2.zero();
-    final Vector2 jvBC = Vector2.zero();
-    final Vector2 jvBD = Vector2.zero();
+    final temp = Vector2.zero();
+    final jvBC = Vector2.zero();
+    final jvBD = Vector2.zero();
     double jwA, jwB, jwC, jwD;
-    double mass = 0.0;
+    var mass = 0.0;
 
     if (_typeA == JointType.REVOLUTE) {
       jvBC.setZero();
@@ -401,10 +401,10 @@ class GearJoint extends Joint {
 
       coordinateA = aA - aC - _referenceAngleA;
     } else {
-      final Vector2 rC = Vector2.zero();
-      final Vector2 rA = Vector2.zero();
-      final Vector2 pC = Vector2.zero();
-      final Vector2 pA = Vector2.zero();
+      final rC = Vector2.zero();
+      final rA = Vector2.zero();
+      final pC = Vector2.zero();
+      final pA = Vector2.zero();
       jvBC.setFrom(Rot.mulVec2(qC, _localAxisC));
       temp
         ..setFrom(_localAnchorC)
@@ -437,11 +437,11 @@ class GearJoint extends Joint {
 
       coordinateB = aB - aD - _referenceAngleB;
     } else {
-      final Vector2 u = Vector2.zero();
-      final Vector2 rD = Vector2.zero();
-      final Vector2 rB = Vector2.zero();
-      final Vector2 pD = Vector2.zero();
-      final Vector2 pB = Vector2.zero();
+      final u = Vector2.zero();
+      final rD = Vector2.zero();
+      final rB = Vector2.zero();
+      final pD = Vector2.zero();
+      final pB = Vector2.zero();
       u.setFrom(Rot.mulVec2(qD, _localAxisD));
       temp
         ..setFrom(_localAnchorD)
@@ -469,9 +469,9 @@ class GearJoint extends Joint {
       coordinateB = (pB..sub(pD)).dot(_localAxisD);
     }
 
-    final double c = (coordinateA + _ratio * coordinateB) - _constant;
+    final c = (coordinateA + _ratio * coordinateB) - _constant;
 
-    double impulse = 0.0;
+    var impulse = 0.0;
     if (mass > 0.0) {
       impulse = -c / mass;
     }

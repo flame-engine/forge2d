@@ -171,16 +171,16 @@ class Island {
   final ContactSolverDef _solverDef = ContactSolverDef();
 
   void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
-    final double dt = step.dt;
+    final dt = step.dt;
 
     // Integrate velocities and apply damping. Initialize the body state.
-    for (BodyMeta bodyMeta in bodies) {
-      final Body b = bodyMeta.body;
-      final Sweep bmSweep = b.sweep;
-      final Vector2 c = bmSweep.c;
-      final double a = bmSweep.a;
-      final Vector2 v = b.linearVelocity;
-      double w = b.angularVelocity;
+    for (var bodyMeta in bodies) {
+      final b = bodyMeta.body;
+      final bmSweep = b.sweep;
+      final c = bmSweep.c;
+      final a = bmSweep.a;
+      final v = b.linearVelocity;
+      var w = b.angularVelocity;
 
       // Store positions for continuous collision.
       bmSweep.c0.setFrom(bmSweep.c);
@@ -231,12 +231,12 @@ class Island {
       _contactSolver.warmStart();
     }
 
-    for (Joint joint in _joints) {
+    for (var joint in _joints) {
       joint.initVelocityConstraints(_solverData);
     }
 
-    for (int i = 0; i < step.velocityIterations; ++i) {
-      for (Joint joint in _joints) {
+    for (var i = 0; i < step.velocityIterations; ++i) {
+      for (var joint in _joints) {
         joint.solveVelocityConstraints(_solverData);
       }
 
@@ -247,27 +247,27 @@ class Island {
     _contactSolver.storeImpulses();
 
     // Integrate positions
-    for (BodyMeta bodyMeta in bodies) {
-      final Vector2 c = bodyMeta.position.c;
-      double a = bodyMeta.position.a;
-      final Vector2 v = bodyMeta.velocity.v;
-      double w = bodyMeta.velocity.w;
+    for (var bodyMeta in bodies) {
+      final c = bodyMeta.position.c;
+      var a = bodyMeta.position.a;
+      final v = bodyMeta.velocity.v;
+      var w = bodyMeta.velocity.w;
 
       // Check for large velocities
-      final double translationX = v.x * dt;
-      final double translationY = v.y * dt;
+      final translationX = v.x * dt;
+      final translationY = v.y * dt;
 
       if (translationX * translationX + translationY * translationY >
           settings.maxTranslationSquared) {
-        final double ratio = settings.maxTranslation /
+        final ratio = settings.maxTranslation /
             sqrt(translationX * translationX + translationY * translationY);
         v.x *= ratio;
         v.y *= ratio;
       }
 
-      final double rotation = dt * w;
+      final rotation = dt * w;
       if (rotation * rotation > settings.maxRotationSquared) {
-        final double ratio = settings.maxRotation / rotation.abs();
+        final ratio = settings.maxRotation / rotation.abs();
         w *= ratio;
       }
 
@@ -281,13 +281,13 @@ class Island {
     }
 
     // Solve position constraints
-    bool positionSolved = false;
-    for (int i = 0; i < step.positionIterations; ++i) {
-      final bool contactsOkay = _contactSolver.solvePositionConstraints();
+    var positionSolved = false;
+    for (var i = 0; i < step.positionIterations; ++i) {
+      final contactsOkay = _contactSolver.solvePositionConstraints();
 
-      bool jointsOkay = true;
-      for (Joint joint in _joints) {
-        final bool jointOkay = joint.solvePositionConstraints(_solverData);
+      var jointsOkay = true;
+      for (var joint in _joints) {
+        final jointOkay = joint.solvePositionConstraints(_solverData);
         jointsOkay = jointsOkay && jointOkay;
       }
 
@@ -299,8 +299,8 @@ class Island {
     }
 
     // Copy state buffers back to the bodies
-    for (BodyMeta bodyMeta in bodies) {
-      final Body body = bodyMeta.body;
+    for (var bodyMeta in bodies) {
+      final body = bodyMeta.body;
       body.sweep.c.x = bodyMeta.position.c.x;
       body.sweep.c.y = bodyMeta.position.c.y;
       body.sweep.a = bodyMeta.position.a;
@@ -313,15 +313,15 @@ class Island {
     reportVelocityConstraints();
 
     if (allowSleep) {
-      double minSleepTime = double.maxFinite;
+      var minSleepTime = double.maxFinite;
 
-      const double linTolSqr =
+      const linTolSqr =
           settings.linearSleepTolerance * settings.linearSleepTolerance;
-      const double angTolSqr =
+      const angTolSqr =
           settings.angularSleepTolerance * settings.angularSleepTolerance;
 
-      for (BodyMeta bodyMeta in bodies) {
-        final Body b = bodyMeta.body;
+      for (var bodyMeta in bodies) {
+        final b = bodyMeta.body;
         if (b.bodyType == BodyType.STATIC) {
           continue;
         }
@@ -351,8 +351,8 @@ class Island {
     assert(toiIndexB < bodies.length);
 
     // Initialize the body state.
-    for (BodyMeta bodyMeta in bodies) {
-      final Body body = bodyMeta.body;
+    for (var bodyMeta in bodies) {
+      final body = bodyMeta.body;
       bodyMeta.position.c.x = body.sweep.c.x;
       bodyMeta.position.c.y = body.sweep.c.y;
       bodyMeta.position.a = body.sweep.a;
@@ -369,8 +369,8 @@ class Island {
     _toiContactSolver.init(_toiSolverDef);
 
     // Solve position constraints.
-    for (int i = 0; i < subStep.positionIterations; ++i) {
-      final bool contactsOkay =
+    for (var i = 0; i < subStep.positionIterations; ++i) {
+      final contactsOkay =
           _toiContactSolver.solveTOIPositionConstraints(toiIndexA, toiIndexB);
       if (contactsOkay) {
         break;
@@ -389,37 +389,37 @@ class Island {
     _toiContactSolver.initializeVelocityConstraints();
 
     // Solve velocity constraints.
-    for (int i = 0; i < subStep.velocityIterations; ++i) {
+    for (var i = 0; i < subStep.velocityIterations; ++i) {
       _toiContactSolver.solveVelocityConstraints();
     }
 
     // Don't store the TOI contact forces for warm starting
     // because they can be quite large.
 
-    final double dt = subStep.dt;
+    final dt = subStep.dt;
 
     // Integrate positions
-    for (BodyMeta bodyMeta in bodies) {
-      final Position position = bodyMeta.position;
-      final Velocity velocity = bodyMeta.velocity;
-      final Vector2 c = position.c;
-      double a = position.a;
-      final Vector2 v = velocity.v;
-      double w = velocity.w;
+    for (var bodyMeta in bodies) {
+      final position = bodyMeta.position;
+      final velocity = bodyMeta.velocity;
+      final c = position.c;
+      var a = position.a;
+      final v = velocity.v;
+      var w = velocity.w;
 
       // Check for large velocities
-      final double translationX = v.x * dt;
-      final double translationY = v.y * dt;
+      final translationX = v.x * dt;
+      final translationY = v.y * dt;
       if (translationX * translationX + translationY * translationY >
           settings.maxTranslationSquared) {
-        final double ratio = settings.maxTranslation /
+        final ratio = settings.maxTranslation /
             sqrt(translationX * translationX + translationY * translationY);
         v.scale(ratio);
       }
 
-      final double rotation = dt * w;
+      final rotation = dt * w;
       if (rotation * rotation > settings.maxRotationSquared) {
-        final double ratio = settings.maxRotation / rotation.abs();
+        final ratio = settings.maxRotation / rotation.abs();
         w *= ratio;
       }
 
@@ -436,7 +436,7 @@ class Island {
       velocity.w = w;
 
       // Sync bodies
-      final Body body = bodyMeta.body;
+      final body = bodyMeta.body;
       body.sweep.c.x = c.x;
       body.sweep.c.y = c.y;
       body.sweep.a = a;
@@ -469,10 +469,10 @@ class Island {
       return;
     }
 
-    for (Contact contact in _contacts) {
-      final ContactVelocityConstraint vc = contact.velocityConstraint;
+    for (var contact in _contacts) {
+      final vc = contact.velocityConstraint;
       _impulse.count = vc.pointCount;
-      for (int j = 0; j < vc.pointCount; ++j) {
+      for (var j = 0; j < vc.pointCount; ++j) {
         _impulse.normalImpulses[j] = vc.points[j].normalImpulse;
         _impulse.tangentImpulses[j] = vc.points[j].tangentImpulse;
       }

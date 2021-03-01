@@ -72,12 +72,12 @@ class _Simplex {
     // Copy data from cache.
     count = cache.count;
 
-    for (int i = 0; i < count; ++i) {
-      final _SimplexVertex v = vertices[i];
+    for (var i = 0; i < count; ++i) {
+      final v = vertices[i];
       v.indexA = cache.indexA[i];
       v.indexB = cache.indexB[i];
-      final Vector2 wALocal = proxyA.getVertex(v.indexA);
-      final Vector2 wBLocal = proxyB.getVertex(v.indexB);
+      final wALocal = proxyA.getVertex(v.indexA);
+      final wBLocal = proxyB.getVertex(v.indexB);
       v.wA.setFrom(Transform.mulVec2(transformA, wALocal));
       v.wB.setFrom(Transform.mulVec2(transformB, wBLocal));
       v.w
@@ -89,8 +89,8 @@ class _Simplex {
     // Compute the new simplex metric, if it is substantially different than
     // old metric then flush the simplex.
     if (count > 1) {
-      final double metric1 = cache.metric;
-      final double metric2 = getMetric();
+      final metric1 = cache.metric;
+      final metric2 = getMetric();
       if (metric2 < 0.5 * metric1 ||
           2.0 * metric1 < metric2 ||
           metric2 < settings.EPSILON) {
@@ -101,11 +101,11 @@ class _Simplex {
 
     // If the cache is empty or invalid ...
     if (count == 0) {
-      final _SimplexVertex v = vertices[0];
+      final v = vertices[0];
       v.indexA = 0;
       v.indexB = 0;
-      final Vector2 wALocal = proxyA.getVertex(0);
-      final Vector2 wBLocal = proxyB.getVertex(0);
+      final wALocal = proxyA.getVertex(0);
+      final wBLocal = proxyB.getVertex(0);
       v.wA.setFrom(Transform.mulVec2(transformA, wALocal));
       v.wB.setFrom(Transform.mulVec2(transformB, wBLocal));
       v.w
@@ -119,7 +119,7 @@ class _Simplex {
     cache.metric = getMetric();
     cache.count = count;
 
-    for (int i = 0; i < count; ++i) {
+    for (var i = 0; i < count; ++i) {
       cache.indexA[i] = (vertices[i].indexA).toInt();
       cache.indexB[i] = (vertices[i].indexB).toInt();
     }
@@ -142,7 +142,7 @@ class _Simplex {
         out
           ..setFrom(vertex1.w)
           ..negate();
-        final double sgn = _e12.cross(out);
+        final sgn = _e12.cross(out);
 
         if (sgn > 0.0) {
           // Origin is left of e12.
@@ -294,14 +294,14 @@ class _Simplex {
     // Solution
     // a1 = d12_1 / d12
     // a2 = d12_2 / d12
-    final Vector2 w1 = vertex1.w;
-    final Vector2 w2 = vertex2.w;
+    final w1 = vertex1.w;
+    final w2 = vertex2.w;
     _e12
       ..setFrom(w2)
       ..sub(w1);
 
     // w1 region
-    final double d12n2 = -w1.dot(_e12);
+    final d12n2 = -w1.dot(_e12);
     if (d12n2 <= 0.0) {
       // a2 <= 0, so we clamp it to 0
       vertex1.a = 1.0;
@@ -310,7 +310,7 @@ class _Simplex {
     }
 
     // w2 region
-    final double d12n1 = w2.dot(_e12);
+    final d12n1 = w2.dot(_e12);
     if (d12n1 <= 0.0) {
       // a1 <= 0, so we clamp it to 0
       vertex2.a = 1.0;
@@ -320,7 +320,7 @@ class _Simplex {
     }
 
     // Must be in e12 region.
-    final double invD12 = 1.0 / (d12n1 + d12n2);
+    final invD12 = 1.0 / (d12n1 + d12n2);
     vertex1.a = d12n1 * invD12;
     vertex2.a = d12n2 * invD12;
     count = 2;
@@ -351,10 +351,10 @@ class _Simplex {
     _e12
       ..setFrom(_w2)
       ..sub(_w1);
-    final double w1e12 = _w1.dot(_e12);
-    final double w2e12 = _w2.dot(_e12);
-    final double d12n1 = w2e12;
-    final double d12n2 = -w1e12;
+    final w1e12 = _w1.dot(_e12);
+    final w2e12 = _w2.dot(_e12);
+    final d12n1 = w2e12;
+    final d12n2 = -w1e12;
 
     // Edge13
     // [1 1 ][a1] = [1]
@@ -363,10 +363,10 @@ class _Simplex {
     _e13
       ..setFrom(_w3)
       ..sub(_w1);
-    final double w1e13 = _w1.dot(_e13);
-    final double w3e13 = _w3.dot(_e13);
-    final double d13n1 = w3e13;
-    final double d13n2 = -w1e13;
+    final w1e13 = _w1.dot(_e13);
+    final w3e13 = _w3.dot(_e13);
+    final d13n1 = w3e13;
+    final d13n2 = -w1e13;
 
     // Edge23
     // [1 1 ][a2] = [1]
@@ -375,17 +375,17 @@ class _Simplex {
     _e23
       ..setFrom(_w3)
       ..sub(_w2);
-    final double w2e23 = _w2.dot(_e23);
-    final double w3e23 = _w3.dot(_e23);
-    final double d23n1 = w3e23;
-    final double d23n2 = -w2e23;
+    final w2e23 = _w2.dot(_e23);
+    final w3e23 = _w3.dot(_e23);
+    final d23n1 = w3e23;
+    final d23n2 = -w2e23;
 
     // Triangle123
-    final double n123 = _e12.cross(_e13);
+    final n123 = _e12.cross(_e13);
 
-    final double d123n1 = n123 * _w2.cross(_w3);
-    final double d123n2 = n123 * _w3.cross(_w1);
-    final double d123n3 = n123 * _w1.cross(_w2);
+    final d123n1 = n123 * _w2.cross(_w3);
+    final d123n2 = n123 * _w3.cross(_w1);
+    final d123n3 = n123 * _w1.cross(_w2);
 
     // w1 region
     if (d12n2 <= 0.0 && d13n2 <= 0.0) {
@@ -396,7 +396,7 @@ class _Simplex {
 
     // e12
     if (d12n1 > 0.0 && d12n2 > 0.0 && d123n3 <= 0.0) {
-      final double invD12 = 1.0 / (d12n1 + d12n2);
+      final invD12 = 1.0 / (d12n1 + d12n2);
       vertex1.a = d12n1 * invD12;
       vertex2.a = d12n2 * invD12;
       count = 2;
@@ -405,7 +405,7 @@ class _Simplex {
 
     // e13
     if (d13n1 > 0.0 && d13n2 > 0.0 && d123n2 <= 0.0) {
-      final double invD13 = 1.0 / (d13n1 + d13n2);
+      final invD13 = 1.0 / (d13n1 + d13n2);
       vertex1.a = d13n1 * invD13;
       vertex3.a = d13n2 * invD13;
       count = 2;
@@ -431,7 +431,7 @@ class _Simplex {
 
     // e23
     if (d23n1 > 0.0 && d23n2 > 0.0 && d123n1 <= 0.0) {
-      final double invD23 = 1.0 / (d23n1 + d23n2);
+      final invD23 = 1.0 / (d23n1 + d23n2);
       vertex2.a = d23n1 * invD23;
       vertex3.a = d23n2 * invD23;
       count = 2;
@@ -440,7 +440,7 @@ class _Simplex {
     }
 
     // Must be in triangle123
-    final double invD123 = 1.0 / (d123n1 + d123n2 + d123n3);
+    final invD123 = 1.0 / (d123n1 + d123n2 + d123n3);
     vertex1.a = d123n1 * invD123;
     vertex2.a = d123n2 * invD123;
     vertex3.a = d123n3 * invD123;
@@ -472,7 +472,7 @@ class DistanceProxy {
         final poly = shape as PolygonShape;
         _count = poly.vertices.length;
         radius = poly.radius;
-        for (int i = 0; i < _count; i++) {
+        for (var i = 0; i < _count; i++) {
           vertices[i].setFrom(poly.vertices[i]);
         }
         break;
@@ -506,10 +506,10 @@ class DistanceProxy {
 
   /// Get the supporting vertex index in the given direction.
   int getSupport(final Vector2 d) {
-    int bestIndex = 0;
-    double bestValue = vertices[0].dot(d);
-    for (int i = 1; i < _count; i++) {
-      final double value = vertices[i].dot(d);
+    var bestIndex = 0;
+    var bestValue = vertices[0].dot(d);
+    for (var i = 1; i < _count; i++) {
+      final value = vertices[i].dot(d);
       if (value > bestValue) {
         bestIndex = i;
         bestValue = value;
@@ -521,10 +521,10 @@ class DistanceProxy {
 
   /// Get the supporting vertex in the given direction.
   Vector2 getSupportVertex(final Vector2 d) {
-    int bestIndex = 0;
-    double bestValue = vertices[0].dot(d);
-    for (int i = 1; i < _count; i++) {
-      final double value = vertices[i].dot(d);
+    var bestIndex = 0;
+    var bestValue = vertices[0].dot(d);
+    for (var i = 1; i < _count; i++) {
+      final value = vertices[i].dot(d);
       if (value > bestValue) {
         bestIndex = i;
         bestValue = value;
@@ -568,33 +568,33 @@ class Distance {
       final DistanceInput input) {
     gjkCalls++;
 
-    final DistanceProxy proxyA = input.proxyA;
-    final DistanceProxy proxyB = input.proxyB;
+    final proxyA = input.proxyA;
+    final proxyB = input.proxyB;
 
-    final Transform transformA = input.transformA;
-    final Transform transformB = input.transformB;
+    final transformA = input.transformA;
+    final transformB = input.transformB;
 
     // Initialize the simplex.
     _simplex.readCache(cache, proxyA, transformA, proxyB, transformB);
 
     // Get simplex vertices as an array.
-    final List<_SimplexVertex> vertices = _simplex.vertices;
+    final vertices = _simplex.vertices;
 
     // These store the vertices of the last simplex so that we
     // can check for duplicates and prevent cycling.
     // (pooled above)
-    int saveCount = 0;
+    var saveCount = 0;
 
     _simplex.getClosestPoint(_closestPoint);
-    double distanceSqr1 = _closestPoint.length2;
-    double distanceSqr2 = distanceSqr1;
+    var distanceSqr1 = _closestPoint.length2;
+    var distanceSqr2 = distanceSqr1;
 
     // Main iteration loop
-    int iter = 0;
+    var iter = 0;
     while (iter < maxIterations) {
       // Copy simplex so we can identify duplicates.
       saveCount = _simplex.count;
-      for (int i = 0; i < saveCount; i++) {
+      for (var i = 0; i < saveCount; i++) {
         _saveA[i] = vertices[i].indexA;
         _saveB[i] = vertices[i].indexB;
       }
@@ -649,7 +649,7 @@ class Distance {
        */
 
       // Compute a tentative new simplex vertex using support points.
-      final _SimplexVertex vertex = vertices[_simplex.count];
+      final vertex = vertices[_simplex.count];
 
       _temp.setFrom(Rot.mulTransVec2(transformA.q, _d..negate()));
       vertex.indexA = proxyA.getSupport(_temp);
@@ -667,8 +667,8 @@ class Distance {
       ++gjkIterations;
 
       // Check for duplicate support points. This is the main termination criteria.
-      bool duplicate = false;
-      for (int i = 0; i < saveCount; ++i) {
+      var duplicate = false;
+      for (var i = 0; i < saveCount; ++i) {
         if (vertex.indexA == _saveA[i] && vertex.indexB == _saveB[i]) {
           duplicate = true;
           break;
@@ -696,8 +696,8 @@ class Distance {
 
     // Apply radii if requested.
     if (input.useRadii) {
-      final double rA = proxyA.radius;
-      final double rB = proxyB.radius;
+      final rA = proxyA.radius;
+      final rB = proxyB.radius;
 
       if (output.distance > rA + rB && output.distance > settings.EPSILON) {
         // Shapes are still no overlapped.

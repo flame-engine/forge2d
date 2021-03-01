@@ -9,8 +9,8 @@ class ChainAndPolygonContact extends Contact {
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    final ChainShape chain = fixtureA.shape as ChainShape;
-    final EdgeShape edge = chain.getChildEdge(indexA);
+    final chain = fixtureA.shape as ChainShape;
+    final edge = chain.getChildEdge(indexA);
     World.collision.collideEdgeAndPolygon(
       manifold,
       edge,

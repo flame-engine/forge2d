@@ -52,7 +52,7 @@ class Manifold {
     type = other.type;
     pointCount = other.pointCount;
     // djm: this is correct now
-    for (int i = 0; i < settings.maxManifoldPoints; i++) {
+    for (var i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = ManifoldPoint.copy(other.points[i]);
     }
   }
@@ -61,7 +61,7 @@ class Manifold {
   ///
   /// @param cp manifold to copy from
   void set(Manifold cp) {
-    for (int i = 0; i < cp.pointCount; i++) {
+    for (var i = 0; i < cp.pointCount; i++) {
       points[i].set(cp.points[i]);
     }
 

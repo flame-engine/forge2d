@@ -31,18 +31,18 @@ class ChainShape extends Shape {
   /// Get a child edge.
   EdgeShape getChildEdge(int index) {
     assert(0 <= index && index < vertexCount - 1);
-    final EdgeShape edge = EdgeShape();
+    final edge = EdgeShape();
 
     edge.radius = radius;
-    final Vector2 v0 = vertices[index + 0];
-    final Vector2 v1 = vertices[index + 1];
+    final v0 = vertices[index + 0];
+    final v1 = vertices[index + 1];
     edge.vertex1.x = v0.x;
     edge.vertex1.y = v0.y;
     edge.vertex2.x = v1.x;
     edge.vertex2.y = v1.y;
 
     if (index > 0) {
-      final Vector2 v = vertices[index - 1];
+      final v = vertices[index - 1];
       edge.vertex0.x = v.x;
       edge.vertex0.y = v.y;
       edge.hasVertex0 = true;
@@ -53,7 +53,7 @@ class ChainShape extends Shape {
     }
 
     if (index < vertexCount - 2) {
-      final Vector2 v = vertices[index + 2];
+      final v = vertices[index + 2];
       edge.vertex3.x = v.x;
       edge.vertex3.y = v.y;
       edge.hasVertex3 = true;
@@ -72,7 +72,7 @@ class ChainShape extends Shape {
     int childIndex,
     Vector2 normalOut,
   ) {
-    final EdgeShape edge = getChildEdge(childIndex);
+    final edge = getChildEdge(childIndex);
     return edge.computeDistanceToOut(xf, p, 0, normalOut);
   }
 
@@ -90,17 +90,17 @@ class ChainShape extends Shape {
   ) {
     assert(childIndex < vertexCount);
 
-    final EdgeShape edgeShape = EdgeShape();
+    final edgeShape = EdgeShape();
 
-    final int i1 = childIndex;
-    int i2 = childIndex + 1;
+    final i1 = childIndex;
+    var i2 = childIndex + 1;
     if (i2 == vertexCount) {
       i2 = 0;
     }
-    final Vector2 v = vertices[i1];
+    final v = vertices[i1];
     edgeShape.vertex1.x = v.x;
     edgeShape.vertex1.y = v.y;
-    final Vector2 v1 = vertices[i2];
+    final v1 = vertices[i2];
     edgeShape.vertex2.x = v1.x;
     edgeShape.vertex2.y = v1.y;
 
@@ -110,23 +110,23 @@ class ChainShape extends Shape {
   @override
   void computeAABB(AABB aabb, Transform xf, int childIndex) {
     assert(childIndex < vertexCount);
-    final Vector2 lower = aabb.lowerBound;
-    final Vector2 upper = aabb.upperBound;
+    final lower = aabb.lowerBound;
+    final upper = aabb.upperBound;
 
-    final int i1 = childIndex;
-    int i2 = childIndex + 1;
+    final i1 = childIndex;
+    var i2 = childIndex + 1;
     if (i2 == vertexCount) {
       i2 = 0;
     }
 
-    final Vector2 vi1 = vertices[i1];
-    final Vector2 vi2 = vertices[i2];
-    final Rot xfq = xf.q;
-    final Vector2 xfp = xf.p;
-    final double v1x = (xfq.c * vi1.x - xfq.s * vi1.y) + xfp.x;
-    final double v1y = (xfq.s * vi1.x + xfq.c * vi1.y) + xfp.y;
-    final double v2x = (xfq.c * vi2.x - xfq.s * vi2.y) + xfp.x;
-    final double v2y = (xfq.s * vi2.x + xfq.c * vi2.y) + xfp.y;
+    final vi1 = vertices[i1];
+    final vi2 = vertices[i2];
+    final xfq = xf.q;
+    final xfp = xf.p;
+    final v1x = (xfq.c * vi1.x - xfq.s * vi1.y) + xfp.x;
+    final v1y = (xfq.s * vi1.x + xfq.c * vi1.y) + xfp.y;
+    final v2x = (xfq.c * vi2.x - xfq.s * vi2.y) + xfp.x;
+    final v2y = (xfq.s * vi2.x + xfq.c * vi2.y) + xfp.y;
 
     lower.x = v1x < v2x ? v1x : v2x;
     lower.y = v1y < v2y ? v1y : v2y;
@@ -143,7 +143,7 @@ class ChainShape extends Shape {
 
   @override
   Shape clone() {
-    final ChainShape clone = ChainShape();
+    final clone = ChainShape();
     clone.createChain(vertices);
     clone._prevVertex.setFrom(_prevVertex);
     clone._nextVertex.setFrom(_nextVertex);
@@ -204,13 +204,13 @@ class ChainShape extends Shape {
   }
 
   void _validateDistances(final List<Vector2> vertices) {
-    for (int i = 1; i < vertices.length; i++) {
-      final Vector2 v1 = vertices[i - 1];
-      final Vector2 v2 = vertices[i];
+    for (var i = 1; i < vertices.length; i++) {
+      final v1 = vertices[i - 1];
+      final v2 = vertices[i];
       // If the code crashes here, it means your vertices are too close together.
       if (v1.distanceToSquared(v2) <
           settings.linearSlop * settings.linearSlop) {
-        throw "Vertices of chain shape are too close together";
+        throw 'Vertices of chain shape are too close together';
       }
     }
   }
