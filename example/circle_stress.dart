@@ -108,10 +108,8 @@ class CircleStress extends Demo {
       bodies.add(body);
 
       for (var i = 0; i < numPieces; i++) {
-        final xPos =
-            radius * cos(2 * pi * (i / numPieces.toDouble()));
-        final yPos =
-            radius * sin(2 * pi * (i / numPieces.toDouble()));
+        final xPos = radius * cos(2 * pi * (i / numPieces.toDouble()));
+        final yPos = radius * sin(2 * pi * (i / numPieces.toDouble()));
 
         final cd = CircleShape()
           ..radius = 1.2

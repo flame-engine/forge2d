@@ -89,9 +89,7 @@ class ContactManager implements PairCallback {
     c.bodyA.contacts.remove(c);
     c.bodyB.contacts.remove(c);
 
-    if (c.manifold.pointCount > 0 &&
-        !fixtureA.isSensor &&
-        !fixtureB.isSensor) {
+    if (c.manifold.pointCount > 0 && !fixtureA.isSensor && !fixtureB.isSensor) {
       fixtureA.body.setAwake(true);
       fixtureB.body.setAwake(true);
     }
@@ -129,10 +127,8 @@ class ContactManager implements PairCallback {
         c.flags &= ~Contact.FILTER_FLAG;
       }
 
-      final bool activeA =
-          bodyA.isAwake() && bodyA.bodyType != BodyType.STATIC;
-      final bool activeB =
-          bodyB.isAwake() && bodyB.bodyType != BodyType.STATIC;
+      final bool activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.STATIC;
+      final bool activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.STATIC;
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {

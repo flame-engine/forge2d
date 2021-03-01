@@ -90,13 +90,12 @@ class DominoTower extends Demo {
       double currX;
       // Make base
       for (var i = 0; i < baseCount; ++i) {
-        currX =
-            i * 1.5 * dominoHeight - (1.5 * dominoHeight * baseCount / 2);
+        currX = i * 1.5 * dominoHeight - (1.5 * dominoHeight * baseCount / 2);
         makeDomino(currX, dominoHeight / 2.0, false);
         makeDomino(currX, dominoHeight + dominoWidth / 2.0, true);
       }
-      currX = baseCount * 1.5 * dominoHeight -
-          (1.5 * dominoHeight * baseCount / 2);
+      currX =
+          baseCount * 1.5 * dominoHeight - (1.5 * dominoHeight * baseCount / 2);
 
       // Make 'I's
       for (var j = 1; j < baseCount; ++j) {

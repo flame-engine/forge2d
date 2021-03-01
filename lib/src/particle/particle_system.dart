@@ -528,9 +528,8 @@ class ParticleSystem {
       v.y += gravityy;
       final double v2 = v.x * v.x + v.y * v.y;
       if (v2 > criticalVelocitySquared) {
-        final double a = v2 == 0
-            ? double.maxFinite
-            : sqrt(criticalVelocitySquared / v2);
+        final double a =
+            v2 == 0 ? double.maxFinite : sqrt(criticalVelocitySquared / v2);
         v.x *= a;
         v.y *= a;
       }
@@ -603,8 +602,7 @@ class ParticleSystem {
       final double h = pressurePerWeight *
           max(
             0.0,
-            min(w, settings.maxParticleWeight) -
-                settings.minParticleWeight,
+            min(w, settings.maxParticleWeight) - settings.minParticleWeight,
           );
       particle.accumulation = h;
     }
@@ -660,8 +658,7 @@ class ParticleSystem {
       final Vector2 velA = particle.velocity;
       final double vx =
           -b.angularVelocity * tempY + b.linearVelocity.x - velA.x;
-      final double vy =
-          b.angularVelocity * tempX + b.linearVelocity.y - velA.y;
+      final double vy = b.angularVelocity * tempX + b.linearVelocity.y - velA.y;
       final double vn = vx * n.x + vy * n.y;
       if (vn < 0) {
         final Vector2 f = _tempVec;
@@ -869,8 +866,7 @@ class ParticleSystem {
         final double tempY = p.y - b.sweep.c.y;
         final double vx =
             -b.angularVelocity * tempY + b.linearVelocity.x - va.x;
-        final double vy =
-            b.angularVelocity * tempX + b.linearVelocity.y - va.y;
+        final double vy = b.angularVelocity * tempX + b.linearVelocity.y - va.y;
         final Vector2 f = _tempVec;
         final double pInvMass = getParticleInvMass();
         f.x = viscousStrength * m * w * vx;

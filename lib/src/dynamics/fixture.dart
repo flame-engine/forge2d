@@ -138,8 +138,7 @@ class Fixture {
   /// @param p a point in world coordinates.
   /// @return distance
   double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) {
-    return shape.computeDistanceToOut(
-        body.transform, p, childIndex, normalOut);
+    return shape.computeDistanceToOut(body.transform, p, childIndex, normalOut);
   }
 
   // We need separation create/destroy functions from the constructor/destructor because
@@ -164,7 +163,7 @@ class Fixture {
       final List<FixtureProxy> old = proxies;
       final int newLength = max(old.length * 2, childCount);
       proxies.clear();
-      for(var x = 0; x < newLength; x++) {
+      for (var x = 0; x < newLength; x++) {
         proxies.add(FixtureProxy()..proxyId = BroadPhase.nullProxy);
       }
     }

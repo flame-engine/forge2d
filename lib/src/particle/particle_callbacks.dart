@@ -244,7 +244,10 @@ class SolveCollisionCallback implements QueryCallback {
             aabbLowerBoundy <= ap.y &&
             ap.y <= aabbUpperBoundy) {
           final Vector2 av = particle.velocity;
-          final Vector2 temp = Transform.mulTransVec2(body.previousTransform, ap,);
+          final Vector2 temp = Transform.mulTransVec2(
+            body.previousTransform,
+            ap,
+          );
           input.p1.setFrom(Transform.mulVec2(body.transform, temp));
           input.p2.x = ap.x + step.dt * av.x;
           input.p2.y = ap.y + step.dt * av.y;

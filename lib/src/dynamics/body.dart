@@ -356,8 +356,7 @@ class Body {
 
     linearVelocity += impulse * _inverseMass;
     _angularVelocity += inverseInertia *
-        ((point.x - sweep.c.x) * impulse.y -
-            (point.y - sweep.c.y) * impulse.x);
+        ((point.x - sweep.c.x) * impulse.y - (point.y - sweep.c.y) * impulse.x);
   }
 
   /// Apply an angular impulse.

@@ -413,8 +413,7 @@ class Island {
       if (translationX * translationX + translationY * translationY >
           settings.maxTranslationSquared) {
         final double ratio = settings.maxTranslation /
-            sqrt(
-                translationX * translationX + translationY * translationY);
+            sqrt(translationX * translationX + translationY * translationY);
         v.scale(ratio);
       }
 
