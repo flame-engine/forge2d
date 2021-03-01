@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
+# Fast fail the script on failures.
+set -e
 
-# run this first time:
-# flutter update-packages
-
-flutter analyze --flutter-repo
-flutter format .
-flutter test
+# Run the benchmark script as a simple sanity check
+dart benchmark/bench2d.dart
