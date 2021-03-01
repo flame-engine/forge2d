@@ -67,7 +67,7 @@ class ContactManager implements PairCallback {
     bodyB.contacts.add(contact);
 
     // Wake up the bodies
-    if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
+    if (!fixtureA.isSensor && !fixtureB.isSensor) {
       bodyA.setAwake(true);
       bodyB.setAwake(true);
     }

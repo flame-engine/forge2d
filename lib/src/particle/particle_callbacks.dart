@@ -208,7 +208,7 @@ class SolveCollisionCallback implements QueryCallback {
 
   @override
   bool reportFixture(Fixture fixture) {
-    if (fixture.isSensor()) {
+    if (fixture.isSensor) {
       return true;
     }
     final Shape shape = fixture.shape;

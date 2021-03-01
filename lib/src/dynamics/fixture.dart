@@ -17,7 +17,7 @@ class Fixture {
   double friction = 0.0;
   double restitution = 0.0;
 
-  final List<FixtureProxy> proxies = List.empty();
+  final List<FixtureProxy> proxies = [];
   int _proxyCount = 0;
   int get proxyCount => _proxyCount;
 

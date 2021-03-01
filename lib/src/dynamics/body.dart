@@ -312,8 +312,8 @@ class Body {
       setAwake(true);
     }
 
-    force.x += force.x;
-    force.y += force.y;
+    this.force.x += force.x;
+    this.force.y += force.y;
   }
 
   /// Apply a torque. This affects the angular velocity without affecting the linear velocity of the
