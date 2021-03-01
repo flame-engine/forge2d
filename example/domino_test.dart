@@ -1,5 +1,3 @@
-library domino_test;
-
 import 'demo.dart';
 
 import 'package:forge2d/forge2d.dart';

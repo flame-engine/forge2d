@@ -1,5 +1,3 @@
-library friction_joint_test;
-
 import 'dart:math' as math;
 
 import 'demo.dart';

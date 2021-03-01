@@ -1,5 +1,3 @@
-library demo;
-
 import 'dart:async';
 import 'dart:html' hide Body;
 import 'package:forge2d/forge2d_browser.dart' hide Timer;
@@ -10,19 +8,19 @@ abstract class Demo {
   List<Body> bodies = <Body>[];
 
   /// The default canvas width and height.
-  static const int CANVAS_WIDTH = 900;
-  static const int CANVAS_HEIGHT = 600;
+  static const int canvasWidth = 900;
+  static const int canvasHeight = 600;
 
   /// Scale of the viewport.
-  static const double _VIEWPORT_SCALE = 10.0;
+  static const double viewportScale = 10.0;
 
   /// The gravity vector's y value.
-  static const double GRAVITY = -10.0;
+  static const double _gravity = -10.0;
 
   /// The timestep and iteration numbers.
-  static const double TIME_STEP = 1 / 60;
-  static const int VELOCITY_ITERATIONS = 10;
-  static const int POSITION_ITERATIONS = 10;
+  static const double timeStep = 1 / 60;
+  static const int velocityIterations = 10;
+  static const int positionIterations = 10;
 
   /// The physics world.
   final World world;
@@ -57,8 +55,8 @@ abstract class Demo {
   /// HTML element used to display the world step time
   Element worldStepTime;
 
-  Demo(String name, [Vector2 gravity, this._viewportScale = _VIEWPORT_SCALE])
-      : world = World(gravity ?? Vector2(0.0, GRAVITY)),
+  Demo(String name, [Vector2 gravity, this._viewportScale = viewportScale])
+      : world = World(gravity ?? Vector2(0.0, _gravity)),
         _stopwatch = Stopwatch()..start() {
     world.setAllowSleep(true);
     querySelector('#title').innerHtml = name;
@@ -67,11 +65,11 @@ abstract class Demo {
   /// Advances the world forward by timestep seconds.
   void step(num timestamp) {
     _stopwatch.reset();
-    world.stepDt(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+    world.stepDt(timeStep, velocityIterations, positionIterations);
     elapsedUs = _stopwatch.elapsedMicroseconds;
 
     // Clear the animation panel and draw new frame.
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     world.drawDebugData();
     frameCount++;
 
@@ -83,13 +81,13 @@ abstract class Demo {
   void initializeAnimation() {
     // Setup the canvas.
     canvas = (Element.tag('canvas') as CanvasElement)
-      ..width = CANVAS_WIDTH
-      ..height = CANVAS_HEIGHT;
+      ..width = canvasWidth
+      ..height = canvasHeight;
     document.body.nodes.add(canvas);
     ctx = canvas.context2D;
 
     // Create the viewport transform with the center at extents.
-    final extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    final extents = Vector2(canvasWidth / 2, canvasHeight / 2);
     viewport = CanvasViewportTransform(extents, extents)
       ..scale = _viewportScale;
 

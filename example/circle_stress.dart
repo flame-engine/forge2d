@@ -1,19 +1,14 @@
-library circle_stress;
-
 import 'dart:math' as math;
 import 'demo.dart';
 
 import 'package:forge2d/forge2d.dart';
 
-/// Scale of the viewport for this Demo.
-const double _MY_VIEWPORT_SCALE = 4.0;
-
 class CircleStress extends Demo {
   /// The number of columns of balls in the pen.
-  static const int COLUMNS = 8;
+  static const int columns = 8;
 
   /// This number of balls will be created on each layer.
-  static const int LOAD_SIZE = 20;
+  static const int loadSize = 20;
 
   /// Construct a new Circle Stress Demo.
   CircleStress() : super('Circle stress');
@@ -145,8 +140,8 @@ class CircleStress extends Demo {
 
       world.createJoint(rjd);
 
-      for (var j = 0; j < COLUMNS; j++) {
-        for (var i = 0; i < LOAD_SIZE; i++) {
+      for (var j = 0; j < columns; j++) {
+        for (var i = 0; i < loadSize; i++) {
           final circleShape = CircleShape()
             ..radius = 1.0 + (i % 2 == 0 ? 1.0 : -1.0) * .5 * .75;
           final fd2 = FixtureDef()
@@ -172,6 +167,6 @@ void main() {
   CircleStress()
     ..initialize()
     ..initializeAnimation()
-    ..viewport.scale = _MY_VIEWPORT_SCALE
+    ..viewport.scale = 4.0
     ..runAnimation();
 }

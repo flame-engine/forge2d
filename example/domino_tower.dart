@@ -1,15 +1,13 @@
-library domino_tower;
-
 import 'dart:math' as math;
 
 import 'demo.dart';
 import 'package:forge2d/forge2d.dart';
 
 class DominoTower extends Demo {
-  static const double DOMINO_WIDTH = .2;
-  static const double DOMINO_FRICTION = 0.1;
-  static const double DOMINO_HEIGHT = 1.0;
-  static const int BASE_COUNT = 25;
+  static const double dominoWidth = .2;
+  static const double dominoFriction = 0.1;
+  static const double dominoHeight = 1.0;
+  static const int baseCount = 25;
 
   /// The density of the dominos under construction. Varies for different parts
   /// of the tower.
@@ -28,13 +26,13 @@ class DominoTower extends Demo {
 
   void makeDomino(double x, double y, bool horizontal) {
     final sd = PolygonShape();
-    sd.setAsBoxXY(.5 * DOMINO_WIDTH, .5 * DOMINO_HEIGHT);
+    sd.setAsBoxXY(.5 * dominoWidth, .5 * dominoHeight);
     final fd = FixtureDef();
     fd.shape = sd;
     fd.density = dominoDensity;
     final bd = BodyDef();
     bd.type = BodyType.DYNAMIC;
-    fd.friction = DOMINO_FRICTION;
+    fd.friction = dominoFriction;
     fd.restitution = 0.65;
     bd.position = Vector2(x, y);
     bd.angle = horizontal ? (math.pi / 2.0) : 0.0;
@@ -90,42 +88,42 @@ class DominoTower extends Demo {
     {
       double currX;
       // Make base
-      for (var i = 0; i < BASE_COUNT; ++i) {
+      for (var i = 0; i < baseCount; ++i) {
         currX =
-            i * 1.5 * DOMINO_HEIGHT - (1.5 * DOMINO_HEIGHT * BASE_COUNT / 2);
-        makeDomino(currX, DOMINO_HEIGHT / 2.0, false);
-        makeDomino(currX, DOMINO_HEIGHT + DOMINO_WIDTH / 2.0, true);
+            i * 1.5 * dominoHeight - (1.5 * dominoHeight * baseCount / 2);
+        makeDomino(currX, dominoHeight / 2.0, false);
+        makeDomino(currX, dominoHeight + dominoWidth / 2.0, true);
       }
-      currX = BASE_COUNT * 1.5 * DOMINO_HEIGHT -
-          (1.5 * DOMINO_HEIGHT * BASE_COUNT / 2);
+      currX = baseCount * 1.5 * dominoHeight -
+          (1.5 * dominoHeight * baseCount / 2);
 
       // Make 'I's
-      for (var j = 1; j < BASE_COUNT; ++j) {
+      for (var j = 1; j < baseCount; ++j) {
         if (j > 3) {
           dominoDensity *= .8;
         }
 
         // The y at the center of the I structure.
         final currY =
-            DOMINO_HEIGHT * .5 + (DOMINO_HEIGHT + 2 * DOMINO_WIDTH) * .99 * j;
+            dominoHeight * .5 + (dominoHeight + 2 * dominoWidth) * .99 * j;
 
-        for (var i = 0; i < BASE_COUNT - j; ++i) {
-          currX = i * 1.5 * DOMINO_HEIGHT -
-              (1.5 * DOMINO_HEIGHT * (BASE_COUNT - j) / 2);
+        for (var i = 0; i < baseCount - j; ++i) {
+          currX = i * 1.5 * dominoHeight -
+              (1.5 * dominoHeight * (baseCount - j) / 2);
           dominoDensity *= 2.5;
           if (i == 0) {
-            makeDomino(currX - (1.25 * DOMINO_HEIGHT) + .5 * DOMINO_WIDTH,
-                currY - DOMINO_WIDTH, false);
+            makeDomino(currX - (1.25 * dominoHeight) + .5 * dominoWidth,
+                currY - dominoWidth, false);
           }
-          if (i == BASE_COUNT - j - 1) {
-            makeDomino(currX + (1.25 * DOMINO_HEIGHT) - .5 * DOMINO_WIDTH,
-                currY - DOMINO_WIDTH, false);
+          if (i == baseCount - j - 1) {
+            makeDomino(currX + (1.25 * dominoHeight) - .5 * dominoWidth,
+                currY - dominoWidth, false);
           }
 
           dominoDensity /= 2.5;
           makeDomino(currX, currY, false);
-          makeDomino(currX, currY + .5 * (DOMINO_WIDTH + DOMINO_HEIGHT), true);
-          makeDomino(currX, currY - .5 * (DOMINO_WIDTH + DOMINO_HEIGHT), true);
+          makeDomino(currX, currY + .5 * (dominoWidth + dominoHeight), true);
+          makeDomino(currX, currY - .5 * (dominoWidth + dominoHeight), true);
         }
       }
     }

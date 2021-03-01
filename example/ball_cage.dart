@@ -1,19 +1,17 @@
-library ball_cage;
-
 import 'package:forge2d/forge2d.dart';
 
 import 'demo.dart';
 
 class BallCage extends Demo {
   /// Starting position of ball cage in the world.
-  static const double START_X = -20.0;
-  static const double START_Y = -20.0;
+  static const double startX = -20.0;
+  static const double startY = -20.0;
 
   /// The radius of the balls forming the arena.
-  static const double WALL_BALL_RADIUS = 2.0;
+  static const double wallBallRadius = 2.0;
 
   /// Radius of the active ball.
-  static const double ACTIVE_BALL_RADIUS = 1.0;
+  static const double activeBallRadius = 1.0;
 
   /// Constructs a new BallCage.
   BallCage() : super('Ball cage');
@@ -30,7 +28,7 @@ class BallCage extends Demo {
   void initialize() {
     // Define the circle shape.
     final circleShape = CircleShape();
-    circleShape.radius = WALL_BALL_RADIUS;
+    circleShape.radius = wallBallRadius;
 
     // Create fixture using the circle shape.
     final circleFixtureDef = FixtureDef();
@@ -42,16 +40,14 @@ class BallCage extends Demo {
     final circleBodyDef = BodyDef();
 
     const maxShapeInRow = 10;
-    final borderLimitX =
-        START_X + maxShapeInRow * 2 * circleShape.radius;
-    final borderLimitY =
-        START_Y + maxShapeInRow * 2 * circleShape.radius;
+    final borderLimitX = startX + maxShapeInRow * 2 * circleShape.radius;
+    final borderLimitY = startY + maxShapeInRow * 2 * circleShape.radius;
 
     for (var i = 0; i < maxShapeInRow; i++) {
-      final shiftX = START_X + circleShape.radius * 2 * i;
-      final shiftY = START_Y + circleShape.radius * 2 * i;
+      final shiftX = startX + circleShape.radius * 2 * i;
+      final shiftY = startY + circleShape.radius * 2 * i;
 
-      circleBodyDef.position = Vector2(shiftX, START_Y);
+      circleBodyDef.position = Vector2(shiftX, startY);
       var circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixture(circleFixtureDef);
@@ -61,7 +57,7 @@ class BallCage extends Demo {
       bodies.add(circleBody);
       circleBody.createFixture(circleFixtureDef);
 
-      circleBodyDef.position = Vector2(START_X, shiftY);
+      circleBodyDef.position = Vector2(startX, shiftY);
       circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixture(circleFixtureDef);
@@ -74,7 +70,7 @@ class BallCage extends Demo {
 
     // Create a bouncing ball.
     final bouncingCircle = CircleShape();
-    bouncingCircle.radius = ACTIVE_BALL_RADIUS;
+    bouncingCircle.radius = activeBallRadius;
 
     // Create fixture for that ball shape.
     final activeFixtureDef = FixtureDef();
