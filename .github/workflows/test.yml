@@ -16,4 +16,4 @@ jobs:
     - name: Run linting
       run: ./scripts/lint.sh
     - name: Run sanity check build
-      run: ./scripts/build.sh
+      run: ./scripts/build_test.sh
