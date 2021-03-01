@@ -16,7 +16,7 @@ class BallCage extends Demo {
   static const double ACTIVE_BALL_RADIUS = 1.0;
 
   /// Constructs a new BallCage.
-  BallCage() : super("Ball cage");
+  BallCage() : super('Ball cage');
 
   /// Entrypoint.
   static void main() {
@@ -41,18 +41,18 @@ class BallCage extends Demo {
     // Create a body def.
     final circleBodyDef = BodyDef();
 
-    const int maxShapeInRow = 10;
-    final double borderLimitX =
+    const maxShapeInRow = 10;
+    final borderLimitX =
         START_X + maxShapeInRow * 2 * circleShape.radius;
-    final double borderLimitY =
+    final borderLimitY =
         START_Y + maxShapeInRow * 2 * circleShape.radius;
 
-    for (int i = 0; i < maxShapeInRow; i++) {
-      final double shiftX = START_X + circleShape.radius * 2 * i;
-      final double shiftY = START_Y + circleShape.radius * 2 * i;
+    for (var i = 0; i < maxShapeInRow; i++) {
+      final shiftX = START_X + circleShape.radius * 2 * i;
+      final shiftY = START_Y + circleShape.radius * 2 * i;
 
       circleBodyDef.position = Vector2(shiftX, START_Y);
-      Body circleBody = world.createBody(circleBodyDef);
+      var circleBody = world.createBody(circleBodyDef);
       bodies.add(circleBody);
       circleBody.createFixture(circleFixtureDef);
 

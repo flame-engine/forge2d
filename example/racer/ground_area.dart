@@ -1,5 +1,3 @@
-part of racer;
-
 class GroundArea {
   GroundArea(this.frictionModifier, this.outOfCourse) : hashCode = _lastHash++;
 

@@ -16,7 +16,7 @@ class DominoTower extends Demo {
   double dominoDensity;
 
   /// Construct a DominoTower.
-  DominoTower() : super("Domino tower");
+  DominoTower() : super('Domino tower');
 
   /// Entrypoint.
   static void main() {
@@ -27,18 +27,18 @@ class DominoTower extends Demo {
   }
 
   void makeDomino(double x, double y, bool horizontal) {
-    final PolygonShape sd = PolygonShape();
+    final sd = PolygonShape();
     sd.setAsBoxXY(.5 * DOMINO_WIDTH, .5 * DOMINO_HEIGHT);
-    final FixtureDef fd = FixtureDef();
+    final fd = FixtureDef();
     fd.shape = sd;
     fd.density = dominoDensity;
-    final BodyDef bd = BodyDef();
+    final bd = BodyDef();
     bd.type = BodyType.DYNAMIC;
     fd.friction = DOMINO_FRICTION;
     fd.restitution = 0.65;
     bd.position = Vector2(x, y);
     bd.angle = horizontal ? (math.pi / 2.0) : 0.0;
-    final Body body = world.createBody(bd);
+    final body = world.createBody(bd);
     body.createFixture(fd);
     bodies.add(body);
   }
@@ -48,10 +48,10 @@ class DominoTower extends Demo {
   void initialize() {
     // Create the floor.
     {
-      final PolygonShape sd = PolygonShape();
+      final sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
 
-      final BodyDef bd = BodyDef();
+      final bd = BodyDef();
       bd.position = Vector2(0.0, -10.0);
       final body = world.createBody(bd);
       body.createFixtureFromShape(sd);
@@ -61,18 +61,18 @@ class DominoTower extends Demo {
     {
       dominoDensity = 10.0;
       // Make bullet
-      final PolygonShape sd = PolygonShape();
+      final sd = PolygonShape();
       sd.setAsBoxXY(.7, .7);
-      final FixtureDef fd = FixtureDef();
+      final fd = FixtureDef();
       fd.density = 35.0;
-      final BodyDef bd = BodyDef();
+      final bd = BodyDef();
       bd.type = BodyType.DYNAMIC;
       fd.shape = sd;
       fd.friction = 0.0;
       fd.restitution = 0.85;
       bd.bullet = true;
       bd.position = Vector2(30.0, 5.00);
-      Body b = world.createBody(bd);
+      var b = world.createBody(bd);
       bodies.add(b);
       b.createFixture(fd);
       b.linearVelocity = Vector2(-25.0, -25.0);
@@ -90,7 +90,7 @@ class DominoTower extends Demo {
     {
       double currX;
       // Make base
-      for (int i = 0; i < BASE_COUNT; ++i) {
+      for (var i = 0; i < BASE_COUNT; ++i) {
         currX =
             i * 1.5 * DOMINO_HEIGHT - (1.5 * DOMINO_HEIGHT * BASE_COUNT / 2);
         makeDomino(currX, DOMINO_HEIGHT / 2.0, false);
@@ -100,16 +100,16 @@ class DominoTower extends Demo {
           (1.5 * DOMINO_HEIGHT * BASE_COUNT / 2);
 
       // Make 'I's
-      for (int j = 1; j < BASE_COUNT; ++j) {
+      for (var j = 1; j < BASE_COUNT; ++j) {
         if (j > 3) {
           dominoDensity *= .8;
         }
 
         // The y at the center of the I structure.
-        final double currY =
+        final currY =
             DOMINO_HEIGHT * .5 + (DOMINO_HEIGHT + 2 * DOMINO_WIDTH) * .99 * j;
 
-        for (int i = 0; i < BASE_COUNT - j; ++i) {
+        for (var i = 0; i < BASE_COUNT - j; ++i) {
           currX = i * 1.5 * DOMINO_HEIGHT -
               (1.5 * DOMINO_HEIGHT * (BASE_COUNT - j) / 2);
           dominoDensity *= 2.5;

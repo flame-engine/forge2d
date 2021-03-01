@@ -1,15 +1,13 @@
-library racer;
-
 import 'dart:html' hide Body;
 import 'dart:math';
 
-import 'demo.dart';
 import 'package:forge2d/forge2d.dart';
 
-part 'racer/car.dart';
-part 'racer/control_state.dart';
-part 'racer/ground_area.dart';
-part 'racer/tire.dart';
+import 'demo.dart';
+import 'racer/car.dart';
+import 'racer/control_state.dart';
+import 'racer/ground_area.dart';
+import 'racer/tire.dart';
 
 class Racer extends Demo implements ContactListener {
   static void main() {
@@ -17,11 +15,11 @@ class Racer extends Demo implements ContactListener {
     racer.initialize();
     racer.initializeAnimation();
     document.body.nodes
-        .add(Element.html("<p>Use the arrow keys to drive the car.</p>"));
+        .add(Element.html('<p>Use the arrow keys to drive the car.</p>'));
     racer.runAnimation();
   }
 
-  Racer() : super("Racer", Vector2.zero(), 2.5);
+  Racer() : super('Racer', Vector2.zero(), 2.5);
 
   @override
   void initialize() {
@@ -65,13 +63,13 @@ class Racer extends Demo implements ContactListener {
   double radians(double deg) => deg * (pi / 180.0);
 
   void _createGround() {
-    final BodyDef def = BodyDef();
+    final def = BodyDef();
     _groundBody = world.createBody(def);
-    _groundBody.userData = "Ground";
+    _groundBody.userData = 'Ground';
 
-    final PolygonShape shape = PolygonShape();
+    final shape = PolygonShape();
 
-    final FixtureDef fixtureDef = FixtureDef();
+    final fixtureDef = FixtureDef();
     fixtureDef.shape = shape;
     fixtureDef.isSensor = true;
 
@@ -85,17 +83,17 @@ class Racer extends Demo implements ContactListener {
   }
 
   void _createBoundary() {
-    final BodyDef def = BodyDef();
-    final Body boundaryBody = world.createBody(def);
-    boundaryBody.userData = "Boundary";
+    final def = BodyDef();
+    final boundaryBody = world.createBody(def);
+    boundaryBody.userData = 'Boundary';
 
-    final PolygonShape shape = PolygonShape();
+    final shape = PolygonShape();
 
-    final FixtureDef fixtureDef = FixtureDef();
+    final fixtureDef = FixtureDef();
     fixtureDef.shape = shape;
 
-    const double boundaryX = 150.0;
-    const double boundaryY = 100.0;
+    const boundaryX = 150.0;
+    const boundaryY = 100.0;
 
     shape.setAsEdge(
         Vector2(-boundaryX, -boundaryY), Vector2(boundaryX, -boundaryY));
@@ -153,8 +151,8 @@ class Racer extends Demo implements ContactListener {
   //   Tire with Boundary
   //   Tire with GroundArea
   void _handleContact(Contact contact, bool began) {
-    final Object fudA = contact.fixtureA.userData;
-    final Object fudB = contact.fixtureB.userData;
+    final fudA = contact.fixtureA.userData;
+    final fudB = contact.fixtureB.userData;
 
     // Check for ground area collision.
     // TODO: named parameters instead of swapping order?

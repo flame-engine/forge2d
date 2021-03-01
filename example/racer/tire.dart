@@ -1,16 +1,21 @@
-part of racer;
+import 'dart:math';
+
+import 'package:forge2d/forge2d.dart';
+
+import 'control_state.dart';
+import 'ground_area.dart';
 
 class Tire {
   Tire(World world, this._maxForwardSpeed, this._maxBackwardSpeed,
       this._maxDriveForce, this._maxLateralImpulse) {
-    final BodyDef def = BodyDef();
+    final def = BodyDef();
     def.type = BodyType.DYNAMIC;
-    _body = world.createBody(def);
-    _body.userData = "Tire";
+    body = world.createBody(def);
+    body.userData = 'Tire';
 
-    final PolygonShape polygonShape = PolygonShape();
+    final polygonShape = PolygonShape();
     polygonShape.setAsBoxXY(0.5, 1.25);
-    final Fixture fixture = _body.createFixtureFromShape(polygonShape, 1.0);
+    final fixture = body.createFixtureFromShape(polygonShape, 1.0);
     fixture.userData = this;
 
     _currentTraction = 1.0;
@@ -30,25 +35,25 @@ class Tire {
   }
 
   void updateFriction() {
-    final Vector2 impulse = _lateralVelocity..scale(-_body.mass);
+    final impulse = _lateralVelocity..scale(-body.mass);
     if (impulse.length > _maxLateralImpulse) {
       impulse.scale(_maxLateralImpulse / impulse.length);
     }
-    _body.applyLinearImpulse(impulse..scale(_currentTraction));
-    _body.applyAngularImpulse(
-        0.1 * _currentTraction * _body.getInertia() * (-_body.angularVelocity));
+    body.applyLinearImpulse(impulse..scale(_currentTraction));
+    body.applyAngularImpulse(
+        0.1 * _currentTraction * body.getInertia() * (-body.angularVelocity));
 
-    final Vector2 currentForwardNormal = _forwardVelocity;
-    final double currentForwardSpeed = currentForwardNormal.length;
+    final currentForwardNormal = _forwardVelocity;
+    final currentForwardSpeed = currentForwardNormal.length;
     currentForwardNormal.normalize();
-    final double dragForceMagnitude = -2 * currentForwardSpeed;
-    _body.applyForce(
+    final dragForceMagnitude = -2 * currentForwardSpeed;
+    body.applyForce(
       currentForwardNormal..scale(_currentTraction * dragForceMagnitude),
     );
   }
 
   void updateDrive(int controlState) {
-    double desiredSpeed = 0.0;
+    var desiredSpeed = 0.0;
     switch (controlState & (ControlState.UP | ControlState.DOWN)) {
       case ControlState.UP:
         desiredSpeed = _maxForwardSpeed;
@@ -60,10 +65,10 @@ class Tire {
         return;
     }
 
-    final Vector2 currentForwardNormal =
-        _body.getWorldVector(Vector2(0.0, 1.0));
-    final double currentSpeed = _forwardVelocity.dot(currentForwardNormal);
-    double force = 0.0;
+    final currentForwardNormal =
+        body.getWorldVector(Vector2(0.0, 1.0));
+    final currentSpeed = _forwardVelocity.dot(currentForwardNormal);
+    var force = 0.0;
     if (desiredSpeed < currentSpeed) {
       force = -_maxDriveForce;
     } else if (desiredSpeed > currentSpeed) {
@@ -71,12 +76,12 @@ class Tire {
     }
 
     if (force.abs() > 0) {
-      _body.applyForce(currentForwardNormal..scale(_currentTraction * force));
+      body.applyForce(currentForwardNormal..scale(_currentTraction * force));
     }
   }
 
   void updateTurn(int controlState) {
-    double desiredTorque = 0.0;
+    var desiredTorque = 0.0;
     switch (controlState & (ControlState.LEFT | ControlState.RIGHT)) {
       case ControlState.LEFT:
         desiredTorque = 15.0;
@@ -85,7 +90,7 @@ class Tire {
         desiredTorque = -15.0;
         break;
     }
-    _body.applyTorque(desiredTorque);
+    body.applyTorque(desiredTorque);
   }
 
   void _updateTraction() {
@@ -100,18 +105,18 @@ class Tire {
   }
 
   Vector2 get _lateralVelocity {
-    final Vector2 currentRightNormal = _body.getWorldVector(_worldLeft);
+    final currentRightNormal = body.getWorldVector(_worldLeft);
     return currentRightNormal
-      ..scale(currentRightNormal.dot(_body.linearVelocity));
+      ..scale(currentRightNormal.dot(body.linearVelocity));
   }
 
   Vector2 get _forwardVelocity {
-    final Vector2 currentForwardNormal = _body.getWorldVector(_worldUp);
+    final currentForwardNormal = body.getWorldVector(_worldUp);
     return currentForwardNormal
-      ..scale(currentForwardNormal.dot(_body.linearVelocity));
+      ..scale(currentForwardNormal.dot(body.linearVelocity));
   }
 
-  Body _body;
+  Body body;
   final double _maxForwardSpeed;
   final double _maxBackwardSpeed;
   final double _maxDriveForce;

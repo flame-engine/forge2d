@@ -61,7 +61,7 @@ abstract class Demo {
       : world = World(gravity ?? Vector2(0.0, GRAVITY)),
         _stopwatch = Stopwatch()..start() {
     world.setAllowSleep(true);
-    querySelector("#title").innerHtml = name;
+    querySelector('#title').innerHtml = name;
   }
 
   /// Advances the world forward by timestep seconds.
@@ -89,7 +89,7 @@ abstract class Demo {
     ctx = canvas.context2D;
 
     // Create the viewport transform with the center at extents.
-    final Vector2 extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    final extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
     viewport = CanvasViewportTransform(extents, extents)
       ..scale = _viewportScale;
 
@@ -100,8 +100,8 @@ abstract class Demo {
     world.debugDraw = debugDraw;
 
     frameCount = 0;
-    fpsCounter = querySelector("#fps-counter");
-    worldStepTime = querySelector("#world-step-time");
+    fpsCounter = querySelector('#fps-counter');
+    worldStepTime = querySelector('#world-step-time');
     Timer.periodic(const Duration(seconds: 1), (Timer t) {
       fpsCounter.innerHtml = frameCount.toString();
       frameCount = 0;
@@ -110,7 +110,7 @@ abstract class Demo {
       if (elapsedUs == null) {
         return;
       }
-      worldStepTime.innerHtml = "${elapsedUs / 1000} ms";
+      worldStepTime.innerHtml = '${elapsedUs / 1000} ms';
     });
   }
 
