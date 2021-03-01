@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   final ParticleSystem system;
@@ -27,7 +30,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
 
   @override
   bool reportFixture(Fixture fixture) {
-    if (fixture.isSensor()) {
+    if (fixture.isSensor) {
       return true;
     }
     final Shape shape = fixture.shape;
@@ -48,14 +51,14 @@ class UpdateBodyContactsCallback implements QueryCallback {
           aabb.upperBound.x + system.particleDiameter;
       final double aabbUpperBoundY =
           aabb.upperBound.y + system.particleDiameter;
-      final int firstProxy = ParticleSystem._lowerBound(
+      final int firstProxy = ParticleSystem.lowerBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
           system.inverseDiameter * aabbLowerBoundX,
           system.inverseDiameter * aabbLowerBoundY,
         ),
       );
-      final int lastProxy = ParticleSystem._upperBound(
+      final int lastProxy = ParticleSystem.upperBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
           system.inverseDiameter * aabbUpperBoundX,
@@ -178,7 +181,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
           final double midPointY = 1.0 / 3.0 * (pa.y + pb.y + pc.y);
           final PsTriad triad = PsTriad(particleA, particleB, particleC)
             ..flags = af | bf | cf
-            ..strength = math.min(groupA.strength, groupB.strength)
+            ..strength = min(groupA.strength, groupB.strength)
             ..pa.x = pa.x - midPointX
             ..pa.y = pa.y - midPointY
             ..pb.x = pb.x - midPointX
@@ -218,14 +221,14 @@ class SolveCollisionCallback implements QueryCallback {
       final double aabbLowerBoundy = aabb.lowerBound.y - particleDiameter;
       final double aabbUpperBoundx = aabb.upperBound.x + particleDiameter;
       final double aabbUpperBoundy = aabb.upperBound.y + particleDiameter;
-      final int firstProxy = ParticleSystem._lowerBound(
+      final int firstProxy = ParticleSystem.lowerBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
           system.inverseDiameter * aabbLowerBoundx,
           system.inverseDiameter * aabbLowerBoundy,
         ),
       );
-      final int lastProxy = ParticleSystem._upperBound(
+      final int lastProxy = ParticleSystem.upperBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
           system.inverseDiameter * aabbUpperBoundx,
@@ -241,8 +244,8 @@ class SolveCollisionCallback implements QueryCallback {
             aabbLowerBoundy <= ap.y &&
             ap.y <= aabbUpperBoundy) {
           final Vector2 av = particle.velocity;
-          final Vector2 temp = Transform.mulTransVec2(body._xf0, ap);
-          input.p1.setFrom(Transform.mulVec2(body._transform, temp));
+          final Vector2 temp = Transform.mulTransVec2(body.previousTransform, ap,);
+          input.p1.setFrom(Transform.mulVec2(body.transform, temp));
           input.p2.x = ap.x + step.dt * av.x;
           input.p2.y = ap.y + step.dt * av.y;
           input.maxFraction = 1.0;

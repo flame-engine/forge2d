@@ -1,12 +1,15 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A chain shape is a free form sequence of line segments. The chain has two-sided collision, so you
 /// can use inside and outside collision. Therefore, you may use any winding order. Connectivity
 /// information is used to create smooth collisions. WARNING: The chain will not collide properly if
 /// there are self-intersections.
 class ChainShape extends Shape {
-  final List<Vector2> _vertices = <Vector2>[];
-  int get vertexCount => _vertices.length;
+  /// Do not modify directly
+  final List<Vector2> vertices = <Vector2>[];
+  int get vertexCount => vertices.length;
+  // TODO: Rely on order of list instead
   final Vector2 _prevVertex = Vector2.zero();
   final Vector2 _nextVertex = Vector2.zero();
   bool _hasPrevVertex = false;
@@ -17,7 +20,7 @@ class ChainShape extends Shape {
   }
 
   void clear() {
-    _vertices.clear();
+    vertices.clear();
   }
 
   @override
@@ -31,15 +34,15 @@ class ChainShape extends Shape {
     final EdgeShape edge = EdgeShape();
 
     edge.radius = radius;
-    final Vector2 v0 = _vertices[index + 0];
-    final Vector2 v1 = _vertices[index + 1];
+    final Vector2 v0 = vertices[index + 0];
+    final Vector2 v1 = vertices[index + 1];
     edge.vertex1.x = v0.x;
     edge.vertex1.y = v0.y;
     edge.vertex2.x = v1.x;
     edge.vertex2.y = v1.y;
 
     if (index > 0) {
-      final Vector2 v = _vertices[index - 1];
+      final Vector2 v = vertices[index - 1];
       edge.vertex0.x = v.x;
       edge.vertex0.y = v.y;
       edge.hasVertex0 = true;
@@ -50,7 +53,7 @@ class ChainShape extends Shape {
     }
 
     if (index < vertexCount - 2) {
-      final Vector2 v = _vertices[index + 2];
+      final Vector2 v = vertices[index + 2];
       edge.vertex3.x = v.x;
       edge.vertex3.y = v.y;
       edge.hasVertex3 = true;
@@ -94,10 +97,10 @@ class ChainShape extends Shape {
     if (i2 == vertexCount) {
       i2 = 0;
     }
-    final Vector2 v = _vertices[i1];
+    final Vector2 v = vertices[i1];
     edgeShape.vertex1.x = v.x;
     edgeShape.vertex1.y = v.y;
-    final Vector2 v1 = _vertices[i2];
+    final Vector2 v1 = vertices[i2];
     edgeShape.vertex2.x = v1.x;
     edgeShape.vertex2.y = v1.y;
 
@@ -116,8 +119,8 @@ class ChainShape extends Shape {
       i2 = 0;
     }
 
-    final Vector2 vi1 = _vertices[i1];
-    final Vector2 vi2 = _vertices[i2];
+    final Vector2 vi1 = vertices[i1];
+    final Vector2 vi2 = vertices[i2];
     final Rot xfq = xf.q;
     final Vector2 xfp = xf.p;
     final double v1x = (xfq.c * vi1.x - xfq.s * vi1.y) + xfp.x;
@@ -141,7 +144,7 @@ class ChainShape extends Shape {
   @override
   Shape clone() {
     final ChainShape clone = ChainShape();
-    clone.createChain(_vertices);
+    clone.createChain(vertices);
     clone._prevVertex.setFrom(_prevVertex);
     clone._nextVertex.setFrom(_nextVertex);
     clone._hasPrevVertex = _hasPrevVertex;
@@ -154,22 +157,22 @@ class ChainShape extends Shape {
   /// @param index the index of the vertex 0 <= index < getVertexCount( )
   /// @param vertex output vertex object, must be initialized
   Vector2 getVertex(int index) {
-    assert(index >= 0 && index < _vertices.length);
-    return _vertices[index].clone();
+    assert(index >= 0 && index < vertices.length);
+    return vertices[index].clone();
   }
 
   /// Create a loop. This automatically adjusts connectivity.
   ///
   /// @param vertices an array of vertices, these are copied
   void createLoop(final List<Vector2> vertices) {
-    assert(_vertices != null && vertexCount == 0);
+    assert(this.vertices != null && vertexCount == 0);
     assert(vertices.length >= 3,
         "A loop can't be created with less than 3 vectors");
-    _vertices.addAll(vertices.map((Vector2 v) => v.clone()));
-    _validateDistances(_vertices);
-    _vertices.add(_vertices[0].clone());
-    prevVertex = _vertices[vertexCount - 2];
-    nextVertex = _vertices[1];
+    this.vertices.addAll(vertices.map((Vector2 v) => v.clone()));
+    _validateDistances(this.vertices);
+    this.vertices.add(this.vertices[0].clone());
+    prevVertex = this.vertices[vertexCount - 2];
+    nextVertex = this.vertices[1];
     _hasPrevVertex = true;
     _hasNextVertex = true;
   }
@@ -178,10 +181,10 @@ class ChainShape extends Shape {
   ///
   /// @param vertices an array of vertices, these are copied
   void createChain(final List<Vector2> vertices) {
-    assert(_vertices != null && vertexCount == 0);
+    assert(vertices != null && vertexCount == 0);
     assert(vertices.length >= 2);
-    _vertices.addAll(vertices.map((Vector2 v) => v.clone()));
-    _validateDistances(_vertices);
+    this.vertices.addAll(vertices.map((Vector2 v) => v.clone()));
+    _validateDistances(this.vertices);
     _prevVertex.setZero();
     _nextVertex.setZero();
     _hasPrevVertex = false;

@@ -1,4 +1,7 @@
-part of forge2d;
+import '../../forge2d.dart';
+import '../callbacks/pair_callback.dart';
+import '../callbacks/contact_filter.dart';
+import '../callbacks/contact_listener.dart';
 
 /// Delegate of World.
 class ContactManager implements PairCallback {
@@ -86,9 +89,9 @@ class ContactManager implements PairCallback {
     c.bodyA.contacts.remove(c);
     c.bodyB.contacts.remove(c);
 
-    if (c._manifold.pointCount > 0 &&
-        !fixtureA.isSensor() &&
-        !fixtureB.isSensor()) {
+    if (c.manifold.pointCount > 0 &&
+        !fixtureA.isSensor &&
+        !fixtureB.isSensor) {
       fixtureA.body.setAwake(true);
       fixtureB.body.setAwake(true);
     }
@@ -127,17 +130,17 @@ class ContactManager implements PairCallback {
       }
 
       final bool activeA =
-          bodyA.isAwake() && bodyA._bodyType != BodyType.STATIC;
+          bodyA.isAwake() && bodyA.bodyType != BodyType.STATIC;
       final bool activeB =
-          bodyB.isAwake() && bodyB._bodyType != BodyType.STATIC;
+          bodyB.isAwake() && bodyB.bodyType != BodyType.STATIC;
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {
         continue;
       }
 
-      final int proxyIdA = fixtureA._proxies[indexA].proxyId;
-      final int proxyIdB = fixtureB._proxies[indexB].proxyId;
+      final int proxyIdA = fixtureA.proxies[indexA].proxyId;
+      final int proxyIdB = fixtureB.proxies[indexB].proxyId;
 
       // Here we destroy contacts that cease to overlap in the broad-phase.
       if (!broadPhase.testOverlap(proxyIdA, proxyIdB)) {

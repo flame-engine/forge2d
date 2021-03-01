@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// The particle type. Can be combined with | operator. Zero means liquid.
 class ParticleType {

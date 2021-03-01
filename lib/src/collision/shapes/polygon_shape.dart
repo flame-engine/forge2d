@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A convex polygon shape. Polygons have a maximum number of vertices equal to _maxPolygonVertices.
 /// In most cases you should not need many vertices for a convex polygon.
@@ -305,7 +308,7 @@ class PolygonShape extends Shape {
           minDistance2 = distance2;
         }
       }
-      distance = math.sqrt(minDistance2);
+      distance = sqrt(minDistance2);
       normalOut.x = xfqc * minDistanceX - xfqs * minDistanceY;
       normalOut.y = xfqs * minDistanceX + xfqc * minDistanceY;
       normalOut.normalize();

@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// Callback class for AABB queries.
 /// See {@link World#queryAABB(QueryCallback, org.jbox2d.collision.AABB)}.

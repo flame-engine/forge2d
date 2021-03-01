@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 //Point-to-point constraint
 //Cdot = v2 - v1
@@ -134,10 +134,10 @@ class MotorJoint extends Joint {
   void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
-    _localCenterA.setFrom(bodyA._sweep.localCenter);
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassA = bodyA._invMass;
-    _invMassB = bodyB._invMass;
+    _localCenterA.setFrom(bodyA.sweep.localCenter);
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassA = bodyA.inverseMass;
+    _invMassB = bodyB.inverseMass;
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 

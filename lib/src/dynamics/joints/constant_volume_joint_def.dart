@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Definition for a {@link ConstantVolumeJoint}, which connects a group a bodies together so they
 /// maintain a constant volume within them.

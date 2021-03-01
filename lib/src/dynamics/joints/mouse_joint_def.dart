@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Mouse joint definition. This requires a world target point, tuning parameters, and the time step.
 class MouseJointDef extends JointDef {

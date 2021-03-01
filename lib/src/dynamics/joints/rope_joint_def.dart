@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Rope joint definition. This requires two body anchor points and a maximum lengths. Note: by
 /// default the connected objects will not collide. see collideConnected in b2JointDef.

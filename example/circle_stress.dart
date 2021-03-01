@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import 'dart:math';
 import 'demo.dart';
 
 import 'package:forge2d/forge2d.dart';
@@ -55,12 +55,12 @@ class CircleStress extends Demo {
       // Corners
       final cornerDef = BodyDef();
       sd.setAsBoxXY(20.0, 3.0);
-      cornerDef.angle = -math.pi / 4.0;
+      cornerDef.angle = -pi / 4.0;
       cornerDef.position = Vector2(-35.0, 8.0);
       var myBod = world.createBody(cornerDef);
       bodies.add(myBod);
       myBod.createFixtureFromShape(sd);
-      cornerDef.angle = math.pi / 4.0;
+      cornerDef.angle = pi / 4.0;
       cornerDef.position = Vector2(35.0, 8.0);
       myBod = world.createBody(cornerDef);
       bodies.add(myBod);
@@ -109,9 +109,9 @@ class CircleStress extends Demo {
 
       for (var i = 0; i < numPieces; i++) {
         final xPos =
-            radius * math.cos(2 * math.pi * (i / numPieces.toDouble()));
+            radius * cos(2 * pi * (i / numPieces.toDouble()));
         final yPos =
-            radius * math.sin(2 * math.pi * (i / numPieces.toDouble()));
+            radius * sin(2 * pi * (i / numPieces.toDouble()));
 
         final cd = CircleShape()
           ..radius = 1.2
@@ -134,7 +134,7 @@ class CircleStress extends Demo {
 
       final rjd = RevoluteJointDef()
         ..initialize(body, groundBody, body.position)
-        ..motorSpeed = -math.pi
+        ..motorSpeed = -pi
         ..maxMotorTorque = 1000000.0
         ..enableMotor = true;
 

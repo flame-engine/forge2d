@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Revolute joint definition. This requires defining an anchor point where the bodies are joined.
 /// The definition uses local anchor points so that the initial configuration can violate the

@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 // TODO.spydon: Create constructor for this
 class Velocity {

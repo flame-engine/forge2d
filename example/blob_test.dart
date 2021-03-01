@@ -1,6 +1,8 @@
-import 'dart:math' as math;
-import 'demo.dart';
+import 'dart:math';
+
 import 'package:forge2d/forge2d.dart';
+
+import 'demo.dart';
 
 class BlobTest extends Demo {
   /// Constructs a new BlobTest.
@@ -41,12 +43,12 @@ class BlobTest extends Demo {
     const nBodies = 20.0;
     const bodyRadius = 0.5;
     for (var i = 0; i < nBodies; ++i) {
-      final angle = (i / nBodies) * math.pi * 2;
+      final angle = (i / nBodies) * pi * 2;
       final bd = BodyDef();
       bd.fixedRotation = true;
 
-      final x = cx + rx * math.sin(angle);
-      final y = cy + ry * math.cos(angle);
+      final x = cx + rx * sin(angle);
+      final y = cy + ry * cos(angle);
       bd.position.setFrom(Vector2(x, y));
       bd.type = BodyType.DYNAMIC;
       final body = world.createBody(bd);

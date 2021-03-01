@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:typed_data';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// This is used to compute the current state of a contact manifold.
 class WorldManifold {

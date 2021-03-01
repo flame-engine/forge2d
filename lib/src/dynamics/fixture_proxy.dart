@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// This proxy is used internally to connect fixtures to the broad-phase.
 class FixtureProxy {

@@ -1,7 +1,7 @@
 import 'dart:html' hide Body;
 import 'dart:math';
 
-import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/forge2d_browser.dart';
 
 import 'demo.dart';
 import 'racer/car.dart';

@@ -1,4 +1,7 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../../src/callbacks/debug_draw.dart';
+import '../../../src/callbacks/tree_callback.dart';
+import '../../../src/callbacks/tree_raycast_callback.dart';
 
 abstract class BroadPhaseStrategy {
   /// Create a proxy. Provide a tight fitting AABB and a userData pointer.

@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 class Particle {
   /// Specifies the type of particle. A particle may be more than one type. Multiple types are

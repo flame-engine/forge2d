@@ -1,4 +1,8 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../../src/callbacks/debug_draw.dart';
+import '../../../src/callbacks/pair_callback.dart';
+import '../../../src/callbacks/tree_callback.dart';
+import '../../../src/callbacks/tree_raycast_callback.dart';
 
 abstract class BroadPhase {
   static const int nullProxy = -1;

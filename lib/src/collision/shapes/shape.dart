@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// A shape is used for collision detection. You can create a shape however you like. Shapes used for
 /// simulation in World are created automatically when a Fixture is created. Shapes may encapsulate a

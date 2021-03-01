@@ -1,4 +1,5 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 //Gear Joint:
 //C0 = (coordinate1 + ratio * coordinate2)_initial
@@ -84,16 +85,16 @@ class GearJoint extends Joint {
     bodyA = _joint1.bodyB;
 
     // Get geometry of joint1
-    final Transform xfA = bodyA._transform;
-    final double aA = bodyA._sweep.a;
-    final Transform xfC = _bodyC._transform;
-    final double aC = _bodyC._sweep.a;
+    final Transform xfA = bodyA.transform;
+    final double aA = bodyA.sweep.a;
+    final Transform xfC = _bodyC.transform;
+    final double aC = _bodyC.sweep.a;
 
     if (_typeA == JointType.REVOLUTE) {
       final revolute = def.joint1 as RevoluteJoint;
       _localAnchorC.setFrom(revolute.localAnchorA);
       localAnchorA.setFrom(revolute.localAnchorB);
-      _referenceAngleA = revolute._referenceAngle;
+      _referenceAngleA = revolute.referenceAngle;
       _localAxisC.setZero();
 
       coordinateA = aA - aC - _referenceAngleA;
@@ -103,8 +104,8 @@ class GearJoint extends Joint {
       final prismatic = def.joint1 as PrismaticJoint;
       _localAnchorC.setFrom(prismatic.localAnchorA);
       localAnchorA.setFrom(prismatic.localAnchorB);
-      _referenceAngleA = prismatic._referenceAngle;
-      _localAxisC.setFrom(prismatic._localXAxisA);
+      _referenceAngleA = prismatic.referenceAngle;
+      _localAxisC.setFrom(prismatic.localXAxisA);
 
       final Vector2 pC = _localAnchorC;
       temp
@@ -118,16 +119,16 @@ class GearJoint extends Joint {
     bodyB = _joint2.bodyB;
 
     // Get geometry of joint2
-    final Transform xfB = bodyB._transform;
-    final double aB = bodyB._sweep.a;
-    final Transform xfD = _bodyD._transform;
-    final double aD = _bodyD._sweep.a;
+    final Transform xfB = bodyB.transform;
+    final double aB = bodyB.sweep.a;
+    final Transform xfD = _bodyD.transform;
+    final double aD = _bodyD.sweep.a;
 
     if (_typeB == JointType.REVOLUTE) {
       final revolute = def.joint2 as RevoluteJoint;
       _localAnchorD.setFrom(revolute.localAnchorA);
       localAnchorB.setFrom(revolute.localAnchorB);
-      _referenceAngleB = revolute._referenceAngle;
+      _referenceAngleB = revolute.referenceAngle;
       _localAxisD.setZero();
 
       coordinateB = aB - aD - _referenceAngleB;
@@ -137,8 +138,8 @@ class GearJoint extends Joint {
       final prismatic = def.joint2 as PrismaticJoint;
       _localAnchorD.setFrom(prismatic.localAnchorA);
       localAnchorB.setFrom(prismatic.localAnchorB);
-      _referenceAngleB = prismatic._referenceAngle;
-      _localAxisD.setFrom(prismatic._localXAxisA);
+      _referenceAngleB = prismatic.referenceAngle;
+      _localAxisD.setFrom(prismatic.localXAxisA);
 
       final Vector2 pD = _localAnchorD;
       temp
@@ -179,14 +180,14 @@ class GearJoint extends Joint {
     _indexB = bodyB.islandIndex;
     _indexC = _bodyC.islandIndex;
     _indexD = _bodyD.islandIndex;
-    _lcA.setFrom(bodyA._sweep.localCenter);
-    _lcB.setFrom(bodyB._sweep.localCenter);
-    _lcC.setFrom(_bodyC._sweep.localCenter);
-    _lcD.setFrom(_bodyD._sweep.localCenter);
-    _mA = bodyA._invMass;
-    _mB = bodyB._invMass;
-    _mC = _bodyC._invMass;
-    _mD = _bodyD._invMass;
+    _lcA.setFrom(bodyA.sweep.localCenter);
+    _lcB.setFrom(bodyB.sweep.localCenter);
+    _lcC.setFrom(_bodyC.sweep.localCenter);
+    _lcD.setFrom(_bodyD.sweep.localCenter);
+    _mA = bodyA.inverseMass;
+    _mB = bodyB.inverseMass;
+    _mC = _bodyC.inverseMass;
+    _mD = _bodyD.inverseMass;
     _iA = bodyA.inverseInertia;
     _iB = bodyB.inverseInertia;
     _iC = _bodyC.inverseInertia;

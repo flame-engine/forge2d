@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A circle shape.
 class CircleShape extends Shape {
@@ -55,7 +58,7 @@ class CircleShape extends Shape {
     final double centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
     final double dx = p.x - centerX;
     final double dy = p.y - centerY;
-    final double d1 = math.sqrt(dx * dx + dy * dy);
+    final double d1 = sqrt(dx * dx + dy * dy);
     normalOut.x = dx * 1 / d1;
     normalOut.y = dy * 1 / d1;
     return d1 - radius;
@@ -93,7 +96,7 @@ class CircleShape extends Shape {
     }
 
     // Find the point of intersection of the line with the circle.
-    double a = -(c + math.sqrt(sigma));
+    double a = -(c + sqrt(sigma));
 
     // Is the intersection point on the segment?
     if (0.0 <= a && a <= input.maxFraction * rr) {
@@ -123,7 +126,7 @@ class CircleShape extends Shape {
 
   @override
   void computeMass(final MassData massData, final double density) {
-    massData.mass = density * math.pi * radius * radius;
+    massData.mass = density * pi * radius * radius;
     massData.center.x = position.x;
     massData.center.y = position.y;
 

@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// The body type.
 /// static: zero mass, zero velocity, may be manually moved

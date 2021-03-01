@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 class Jacobian {
   final Vector2 linearA = Vector2.zero();

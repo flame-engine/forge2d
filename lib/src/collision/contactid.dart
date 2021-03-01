@@ -1,4 +1,6 @@
-part of forge2d;
+import 'dart:typed_data';
+
+import '../../forge2d.dart';
 
 enum ContactIDType { VERTEX, FACE }
 

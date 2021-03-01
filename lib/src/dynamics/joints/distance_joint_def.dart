@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Distance joint definition. This requires defining an anchor point on both bodies and the non-zero
 /// length of the distance joint. The definition uses local anchor points so that the initial

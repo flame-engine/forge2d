@@ -1,4 +1,6 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
+
 //Point-to-point constraint
 //C = p2 - p1
 //Cdot = v2 - v1
@@ -32,6 +34,7 @@ class RevoluteJoint extends Joint {
 
   bool _enableLimit = false;
   double _referenceAngle = 0.0;
+  double get referenceAngle => _referenceAngle;
   double _lowerAngle = 0.0;
   double _upperAngle = 0.0;
 
@@ -68,10 +71,10 @@ class RevoluteJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
-    _localCenterA.setFrom(bodyA._sweep.localCenter);
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassA = bodyA._invMass;
-    _invMassB = bodyB._invMass;
+    _localCenterA.setFrom(bodyA.sweep.localCenter);
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassA = bodyA.inverseMass;
+    _invMassB = bodyB.inverseMass;
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
@@ -433,13 +436,13 @@ class RevoluteJoint extends Joint {
   double getJointAngle() {
     final Body b1 = bodyA;
     final Body b2 = bodyB;
-    return b2._sweep.a - b1._sweep.a - _referenceAngle;
+    return b2.sweep.a - b1.sweep.a - referenceAngle;
   }
 
   double getJointSpeed() {
     final Body b1 = bodyA;
     final Body b2 = bodyB;
-    return b2._angularVelocity - b1._angularVelocity;
+    return b2.angularVelocity - b1.angularVelocity;
   }
 
   bool isMotorEnabled() {

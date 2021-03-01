@@ -1,4 +1,8 @@
-part of forge2d;
+import 'dart:math';
+import 'dart:typed_data';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 class ConstantVolumeJoint extends Joint {
   final List<Body> _bodies;
@@ -111,7 +115,7 @@ class ConstantVolumeJoint extends Joint {
           positions[_bodies[i].islandIndex].c.x;
       final double dy = positions[_bodies[next].islandIndex].c.y -
           positions[_bodies[i].islandIndex].c.y;
-      double dist = math.sqrt(dx * dx + dy * dy);
+      double dist = sqrt(dx * dx + dy * dy);
       if (dist < settings.EPSILON) {
         dist = 1.0;
       }
@@ -133,7 +137,7 @@ class ConstantVolumeJoint extends Joint {
       final double normSqrd = delta.length2;
       if (normSqrd >
           settings.maxLinearCorrection * settings.maxLinearCorrection) {
-        delta.scale(settings.maxLinearCorrection / math.sqrt(normSqrd));
+        delta.scale(settings.maxLinearCorrection / sqrt(normSqrd));
       }
       if (normSqrd > settings.linearSlop * settings.linearSlop) {
         done = false;
@@ -163,9 +167,9 @@ class ConstantVolumeJoint extends Joint {
       _impulse *= step.step.dtRatio;
       for (int i = 0; i < _bodies.length; ++i) {
         velocities[_bodies[i].islandIndex].v.x +=
-            _bodies[i]._invMass * d[i].y * .5 * _impulse;
+            _bodies[i].inverseMass * d[i].y * .5 * _impulse;
         velocities[_bodies[i].islandIndex].v.y +=
-            _bodies[i]._invMass * -d[i].x * .5 * _impulse;
+            _bodies[i].inverseMass * -d[i].x * .5 * _impulse;
       }
     } else {
       _impulse = 0.0;
@@ -200,9 +204,9 @@ class ConstantVolumeJoint extends Joint {
     _impulse += lambda;
     for (int i = 0; i < _bodies.length; ++i) {
       velocities[_bodies[i].islandIndex].v.x +=
-          _bodies[i]._invMass * d[i].y * .5 * lambda;
+          _bodies[i].inverseMass * d[i].y * .5 * lambda;
       velocities[_bodies[i].islandIndex].v.y +=
-          _bodies[i]._invMass * -d[i].x * .5 * lambda;
+          _bodies[i].inverseMass * -d[i].x * .5 * lambda;
     }
   }
 

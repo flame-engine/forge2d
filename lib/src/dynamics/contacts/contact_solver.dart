@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 class ContactSolverDef {
   TimeStep step;
@@ -38,20 +41,20 @@ class ContactSolver {
       final double radiusB = shapeB.radius;
       final Body bodyA = fixtureA.body;
       final Body bodyB = fixtureB.body;
-      final Manifold manifold = contact._manifold;
+      final Manifold manifold = contact.manifold;
 
       final int pointCount = manifold.pointCount;
       assert(pointCount > 0);
 
       final ContactVelocityConstraint velocityConstraint =
           contact.velocityConstraint
-            ..friction = contact._friction
-            ..restitution = contact._restitution
+            ..friction = contact.friction
+            ..restitution = contact.restitution
             ..tangentSpeed = contact.tangentSpeed
             ..indexA = bodyA.islandIndex
             ..indexB = bodyB.islandIndex
-            ..invMassA = bodyA._invMass
-            ..invMassB = bodyB._invMass
+            ..invMassA = bodyA.inverseMass
+            ..invMassB = bodyB.inverseMass
             ..invIA = bodyA.inverseInertia
             ..invIB = bodyB.inverseInertia
             ..contactIndex = _contacts.indexOf(contact)
@@ -63,10 +66,10 @@ class ContactSolver {
           contact.positionConstraint
             ..indexA = bodyA.islandIndex
             ..indexB = bodyB.islandIndex
-            ..invMassA = bodyA._invMass
-            ..invMassB = bodyB._invMass
-            ..localCenterA.setFrom(bodyA._sweep.localCenter)
-            ..localCenterB.setFrom(bodyB._sweep.localCenter)
+            ..invMassA = bodyA.inverseMass
+            ..invMassB = bodyB.inverseMass
+            ..localCenterA.setFrom(bodyA.sweep.localCenter)
+            ..localCenterB.setFrom(bodyB.sweep.localCenter)
             ..invIA = bodyA.inverseInertia
             ..invIB = bodyB.inverseInertia
             ..localNormal.setFrom(manifold.localNormal)
@@ -158,7 +161,7 @@ class ContactSolver {
       final double radiusA = positionConstraint.radiusA;
       final double radiusB = positionConstraint.radiusB;
       final Manifold manifold =
-          _contacts[velocityConstraint.contactIndex]._manifold;
+          _contacts[velocityConstraint.contactIndex].manifold;
 
       final int indexA = velocityConstraint.indexA;
       final int indexB = velocityConstraint.indexB;
@@ -706,7 +709,7 @@ class ContactSolver {
   void storeImpulses() {
     for (Contact contact in _contacts) {
       final ContactVelocityConstraint vc = contact.velocityConstraint;
-      final Manifold manifold = _contacts[vc.contactIndex]._manifold;
+      final Manifold manifold = _contacts[vc.contactIndex].manifold;
 
       for (int j = 0; j < vc.pointCount; j++) {
         manifold.points[j].normalImpulse = vc.points[j].normalImpulse;
@@ -767,7 +770,7 @@ class ContactSolver {
         final double rBy = point.y - cB.y;
 
         // Track max constraint error.
-        minSeparation = math.min(minSeparation, separation);
+        minSeparation = min(minSeparation, separation);
 
         // Prevent large corrections and allow slop.
         final C = (settings.baumgarte * (separation + settings.linearSlop))
@@ -863,7 +866,7 @@ class ContactSolver {
         final double rBy = point.y - cB.y;
 
         // Track max constraint error.
-        minSeparation = math.min(minSeparation, separation);
+        minSeparation = min(minSeparation, separation);
 
         // Prevent large corrections and allow slop.
 

@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A line segment (edge) shape. These can be connected in chains or loops to other edge shapes. The
 /// connectivity information is used to ensure correct contact normals.
@@ -65,7 +68,7 @@ class EdgeShape extends Shape {
       }
     }
 
-    final double d1 = math.sqrt(dx * dx + dy * dy);
+    final double d1 = sqrt(dx * dx + dy * dy);
     if (d1 > 0) {
       normalOut.x = 1 / d1 * dx;
       normalOut.y = 1 / d1 * dy;

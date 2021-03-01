@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A mouse joint is used to make a point on a body track a specified world point. This a soft
 /// constraint with a maximum force. This allows the constraint to stretch and without applying huge
@@ -31,7 +34,7 @@ class MouseJoint extends Joint {
         assert(def.dampingRatio >= 0),
         super(def) {
     _targetA.setFrom(def.target);
-    localAnchorB.setFrom(Transform.mulTransVec2(bodyB._transform, _targetA));
+    localAnchorB.setFrom(Transform.mulTransVec2(bodyB.transform, _targetA));
 
     _maxForce = def.maxForce;
     _impulse.setZero();
@@ -69,8 +72,8 @@ class MouseJoint extends Joint {
   @override
   void initVelocityConstraints(final SolverData data) {
     _indexB = bodyB.islandIndex;
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassB = bodyB._invMass;
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassB = bodyB.inverseMass;
     _invIB = bodyB.inverseInertia;
 
     final Vector2 cB = data.positions[_indexB].c;
@@ -85,7 +88,7 @@ class MouseJoint extends Joint {
     final double mass = bodyB.mass;
 
     // Frequency
-    final double omega = 2.0 * math.pi * _frequencyHz;
+    final double omega = 2.0 * pi * _frequencyHz;
 
     // Damping coefficient
     final double d = 2.0 * mass * _dampingRatio * omega;

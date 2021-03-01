@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// Java-specific class for returning edge results
 class _EdgeResults {
@@ -1260,7 +1263,7 @@ class EdgePolygonCollider {
       tempX = vB.x - v2.x;
       tempY = vB.y - v2.y;
       final s2 = _n.x * tempX + _n.y * tempY;
-      final s = math.min(s1, s2);
+      final s = min(s1, s2);
 
       if (s > radius) {
         // No collision

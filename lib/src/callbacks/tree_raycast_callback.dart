@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// Callback for {@link DynamicTree}
 abstract class TreeRayCastCallback {

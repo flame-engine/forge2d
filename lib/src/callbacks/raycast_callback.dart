@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// Callback class for ray casts.
 /// See {@link World#raycast(RayCastCallback, Vec2, Vec2)}

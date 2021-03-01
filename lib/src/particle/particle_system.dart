@@ -1,4 +1,10 @@
-part of forge2d;
+import 'dart:collection';
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../callbacks/particle_query_callback.dart';
+import '../callbacks/particle_raycast_callback.dart';
+import '../settings.dart' as settings;
 
 /// Connection between two particles
 class PsPair {
@@ -289,7 +295,7 @@ class ParticleSystem {
             groupB.particles.contains(particleB)) {
           final PsPair pair = PsPair(particleA, particleB)
             ..flags = contact.flags
-            ..strength = math.min(groupA.strength, groupB.strength)
+            ..strength = min(groupA.strength, groupB.strength)
             ..distance = particleA.position.distanceTo(particleB.position);
           pairBuffer.add(pair);
         }
@@ -383,7 +389,7 @@ class ParticleSystem {
     final double dy = pb.y - pa.y;
     final double d2 = dx * dx + dy * dy;
     if (d2 < squaredDiameter) {
-      final double invD = d2 != 0 ? math.sqrt(1 / d2) : double.maxFinite;
+      final double invD = d2 != 0 ? sqrt(1 / d2) : double.maxFinite;
       final ParticleContact contact = ParticleContact(particleA, particleB)
         ..flags = particleA.flags | particleB.flags
         ..weight = 1 - d2 * invD * inverseDiameter
@@ -524,7 +530,7 @@ class ParticleSystem {
       if (v2 > criticalVelocitySquared) {
         final double a = v2 == 0
             ? double.maxFinite
-            : math.sqrt(criticalVelocitySquared / v2);
+            : sqrt(criticalVelocitySquared / v2);
         v.x *= a;
         v.y *= a;
       }
@@ -595,9 +601,9 @@ class ParticleSystem {
     for (Particle particle in _particles) {
       final double w = particle.accumulation;
       final double h = pressurePerWeight *
-          math.max(
+          max(
             0.0,
-            math.min(w, settings.maxParticleWeight) -
+            min(w, settings.maxParticleWeight) -
                 settings.minParticleWeight,
           );
       particle.accumulation = h;
@@ -649,13 +655,13 @@ class ParticleSystem {
       final double m = contact.mass;
       final Vector2 n = contact.normal;
       final Vector2 p = particle.position;
-      final double tempX = p.x - b._sweep.c.x;
-      final double tempY = p.y - b._sweep.c.y;
+      final double tempX = p.x - b.sweep.c.x;
+      final double tempY = p.y - b.sweep.c.y;
       final Vector2 velA = particle.velocity;
       final double vx =
-          -b._angularVelocity * tempY + b.linearVelocity.x - velA.x;
+          -b.angularVelocity * tempY + b.linearVelocity.x - velA.x;
       final double vy =
-          b._angularVelocity * tempX + b.linearVelocity.y - velA.y;
+          b.angularVelocity * tempX + b.linearVelocity.y - velA.y;
       final double vn = vx * n.x + vy * n.y;
       if (vn < 0) {
         final Vector2 f = _tempVec;
@@ -708,12 +714,12 @@ class ParticleSystem {
         group.updateStatistics();
         final Vector2 temp = _tempVec;
         final Rot rotation = _tempRot;
-        rotation.setAngle(step.dt * group._angularVelocity);
-        final Vector2 cross = Rot.mulVec2(rotation, group._center);
+        rotation.setAngle(step.dt * group.angularVelocity);
+        final Vector2 cross = Rot.mulVec2(rotation, group.center);
         temp
-          ..setFrom(group._linearVelocity)
+          ..setFrom(group.linearVelocity)
           ..scale(step.dt)
-          ..add(group._center)
+          ..add(group.center)
           ..sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.setFrom(rotation);
@@ -750,7 +756,7 @@ class ParticleSystem {
         double rs = oa.cross(pa) + ob.cross(pb) + oc.cross(pc);
         double rc = oa.dot(pa) + ob.dot(pb) + oc.dot(pc);
         final double r2 = rs * rs + rc * rc;
-        final double invR = r2 == 0 ? double.maxFinite : math.sqrt(1.0 / r2);
+        final double invR = r2 == 0 ? double.maxFinite : sqrt(1.0 / r2);
         rs *= invR;
         rc *= invR;
         final double strength = elasticStrength * triad.strength;
@@ -784,7 +790,7 @@ class ParticleSystem {
         final double dx = pb.x - pa.x;
         final double dy = pb.y - pa.y;
         final double r0 = pair.distance;
-        double r1 = math.sqrt(dx * dx + dy * dy);
+        double r1 = sqrt(dx * dx + dy * dy);
         r1 = r1 == 0 ? double.maxFinite : r1;
         final double strength = springStrength * pair.strength;
         final double fx = strength * (r0 - r1) / r1 * dx;
@@ -859,12 +865,12 @@ class ParticleSystem {
         final double m = contact.mass;
         final Vector2 p = particle.position;
         final Vector2 va = particle.velocity;
-        final double tempX = p.x - b._sweep.c.x;
-        final double tempY = p.y - b._sweep.c.y;
+        final double tempX = p.x - b.sweep.c.x;
+        final double tempY = p.y - b.sweep.c.y;
         final double vx =
-            -b._angularVelocity * tempY + b.linearVelocity.x - va.x;
+            -b.angularVelocity * tempY + b.linearVelocity.x - va.x;
         final double vy =
-            b._angularVelocity * tempX + b.linearVelocity.y - va.y;
+            b.angularVelocity * tempX + b.linearVelocity.y - va.y;
         final Vector2 f = _tempVec;
         final double pInvMass = getParticleInvMass();
         f.x = viscousStrength * m * w * vx;
@@ -1091,11 +1097,11 @@ class ParticleSystem {
     return 1.777777 * inverseDensity * inverseDiameter * inverseDiameter;
   }
 
-  static int _lowerBound(Iterable<PsProxy> ray, int tag) {
+  static int lowerBound(Iterable<PsProxy> ray, int tag) {
     return _bound(ray, tag, (int a, int b) => a < b);
   }
 
-  static int _upperBound(Iterable<PsProxy> ray, int tag) {
+  static int upperBound(Iterable<PsProxy> ray, int tag) {
     return _bound(ray, tag, (int a, int b) => a >= b);
   }
 
@@ -1130,14 +1136,14 @@ class ParticleSystem {
     final double lowerBoundY = aabb.lowerBound.y;
     final double upperBoundX = aabb.upperBound.x;
     final double upperBoundY = aabb.upperBound.y;
-    final int firstProxy = _lowerBound(
+    final int firstProxy = lowerBound(
       proxyBuffer,
       computeTag(
         inverseDiameter * lowerBoundX,
         inverseDiameter * lowerBoundY,
       ),
     );
-    final int lastProxy = _upperBound(
+    final int lastProxy = upperBound(
       proxyBuffer,
       computeTag(
         inverseDiameter * upperBoundX,
@@ -1167,18 +1173,18 @@ class ParticleSystem {
     if (proxyBuffer.isEmpty) {
       return;
     }
-    final int firstProxy = _lowerBound(
+    final int firstProxy = lowerBound(
       proxyBuffer,
       computeTag(
-        inverseDiameter * math.min(point1.x, point2.x) - 1,
-        inverseDiameter * math.min(point1.y, point2.y) - 1,
+        inverseDiameter * min(point1.x, point2.x) - 1,
+        inverseDiameter * min(point1.y, point2.y) - 1,
       ),
     );
-    final int lastProxy = _upperBound(
+    final int lastProxy = upperBound(
       proxyBuffer,
       computeTag(
-        inverseDiameter * math.max(point1.x, point2.x) + 1,
-        inverseDiameter * math.max(point1.y, point2.y) + 1,
+        inverseDiameter * max(point1.x, point2.x) + 1,
+        inverseDiameter * max(point1.y, point2.y) + 1,
       ),
     );
     double fraction = 1.0;
@@ -1198,7 +1204,7 @@ class ParticleSystem {
       final double p2 = px * px + py * py;
       final double determinant = pv * pv - v2 * (p2 - squaredDiameter);
       if (determinant >= 0) {
-        final double sqrtDeterminant = math.sqrt(determinant);
+        final double sqrtDeterminant = sqrt(determinant);
         // find a solution between 0 and fraction
         double t = (-pv - sqrtDeterminant) / v2;
         if (t > fraction) {
@@ -1216,7 +1222,7 @@ class ParticleSystem {
         n.normalize();
         final Vector2 point = Vector2(point1.x + t * vx, point1.y + t * vy);
         final double f = callback.reportParticle(i, point, n, t);
-        fraction = math.min(fraction, f);
+        fraction = min(fraction, f);
         if (fraction <= 0) {
           break;
         }

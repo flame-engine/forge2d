@@ -1,4 +1,5 @@
-part of forge2d;
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// A manifold for two touching convex shapes. Forge2D supports multiple types of contact:
 /// <ul>

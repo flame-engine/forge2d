@@ -1,4 +1,5 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, and a
 /// pulley ratio.

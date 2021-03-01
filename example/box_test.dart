@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import 'dart:math';
 import 'demo.dart';
 
 import 'package:forge2d/forge2d.dart';
@@ -48,7 +48,7 @@ class BoxTest extends Demo {
   void _createBox() {
     // Create shape
     final shape = PolygonShape();
-    shape.setAsBox(3.0, 1.5, Vector2.zero(), math.pi / 2);
+    shape.setAsBox(3.0, 1.5, Vector2.zero(), pi / 2);
 
     // Define fixture (links body and shape)
     final activeFixtureDef = FixtureDef();

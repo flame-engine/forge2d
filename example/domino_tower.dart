@@ -1,7 +1,8 @@
-import 'dart:math' as math;
+import 'dart:math';
+
+import 'package:forge2d/forge2d.dart';
 
 import 'demo.dart';
-import 'package:forge2d/forge2d.dart';
 
 class DominoTower extends Demo {
   static const double dominoWidth = .2;
@@ -35,7 +36,7 @@ class DominoTower extends Demo {
     fd.friction = dominoFriction;
     fd.restitution = 0.65;
     bd.position = Vector2(x, y);
-    bd.angle = horizontal ? (math.pi / 2.0) : 0.0;
+    bd.angle = horizontal ? (pi / 2.0) : 0.0;
     final body = world.createBody(bd);
     body.createFixture(fd);
     bodies.add(body);

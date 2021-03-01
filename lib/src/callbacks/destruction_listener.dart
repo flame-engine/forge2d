@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// Joints and fixtures are destroyed when their associated
 /// body is destroyed. Implement this listener so that you

@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:collection';
+import 'dart:math';
+
+import '../../forge2d.dart';
 
 abstract class VoronoiDiagramCallback {
   void call(Particle particleA, Particle particleB, Particle particleC);
@@ -82,8 +85,8 @@ class VoronoiDiagram {
     _countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
     for (VoronoiGenerator g in generators) {
       g.center.setFrom((g.center - _lower)..scale(inverseRadius));
-      final int x = math.max(0, math.min(g.center.x.toInt(), _countX - 1));
-      final int y = math.max(0, math.min(g.center.y.toInt(), _countY - 1));
+      final int x = max(0, min(g.center.x.toInt(), _countX - 1));
+      final int y = max(0, min(g.center.y.toInt(), _countY - 1));
       _queue.addFirst(VoronoiDiagramTask(x, y, x + y * _countX, g));
     }
     while (_queue.isNotEmpty) {

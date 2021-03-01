@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A rope joint enforces a maximum distance between two points on two bodies. It has no other
 /// effect. Warning: if you attempt to change the maximum length during the simulation you will get
@@ -41,10 +44,10 @@ class RopeJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
-    _localCenterA.setFrom(bodyA._sweep.localCenter);
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassA = bodyA._invMass;
-    _invMassB = bodyB._invMass;
+    _localCenterA.setFrom(bodyA.sweep.localCenter);
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassA = bodyA.inverseMass;
+    _invMassB = bodyB.inverseMass;
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
@@ -156,7 +159,7 @@ class RopeJoint extends Joint {
 
     double impulse = -_mass * cDot;
     final double oldImpulse = _impulse;
-    _impulse = math.min<double>(0.0, _impulse + impulse);
+    _impulse = min<double>(0.0, _impulse + impulse);
     impulse = _impulse - oldImpulse;
 
     final double pX = impulse * _u.x;

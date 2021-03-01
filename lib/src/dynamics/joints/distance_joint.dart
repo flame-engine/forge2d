@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A distance joint constrains two points on two bodies to remain at a fixed distance from each
 /// other. You can view this as a massless, rigid rod.
@@ -51,10 +54,10 @@ class DistanceJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
-    _localCenterA.setFrom(bodyA._sweep.localCenter);
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassA = bodyA._invMass;
-    _invMassB = bodyB._invMass;
+    _localCenterA.setFrom(bodyA.sweep.localCenter);
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassA = bodyA.inverseMass;
+    _invMassB = bodyB.inverseMass;
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
@@ -110,7 +113,7 @@ class DistanceJoint extends Joint {
       final double c = length - _length;
 
       // Frequency
-      final double omega = 2.0 * math.pi * _frequencyHz;
+      final double omega = 2.0 * pi * _frequencyHz;
 
       // Damping coefficient
       final double d = 2.0 * _mass * _dampingRatio * omega;

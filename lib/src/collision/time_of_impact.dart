@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// Input parameters for TOI
 class TOIInput {
@@ -73,7 +76,7 @@ class TimeOfImpact {
     final double totalRadius = proxyA.radius + proxyB.radius;
     // djm: whats with all these constants?
     final double target =
-        math.max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
+        max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
     final double tolerance = 0.25 * settings.linearSlop;
 
     assert(target > tolerance);
@@ -199,7 +202,7 @@ class TimeOfImpact {
           }
         }
 
-        toiMaxRootIters = math.max(toiMaxRootIters, rootIterCount);
+        toiMaxRootIters = max(toiMaxRootIters, rootIterCount);
 
         ++pushBackIter;
 
@@ -224,7 +227,7 @@ class TimeOfImpact {
       }
     }
 
-    toiMaxIters = math.max(toiMaxIters, iter);
+    toiMaxIters = max(toiMaxIters, iter);
   }
 } // Class TimeOfImpact.
 

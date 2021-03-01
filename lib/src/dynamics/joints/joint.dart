@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
 /// joints also feature limits and motors.
@@ -43,7 +43,7 @@ abstract class Joint {
   Body bodyA;
   Body bodyB;
 
-  bool _islandFlag = false;
+  bool islandFlag = false;
   bool _collideConnected = false;
 
   final Vector2 localAnchorA;
@@ -57,7 +57,7 @@ abstract class Joint {
     bodyA = def.bodyA;
     bodyB = def.bodyB;
     _collideConnected = def.collideConnected;
-    _islandFlag = false;
+    islandFlag = false;
   }
 
   /// get the type of the concrete joint.

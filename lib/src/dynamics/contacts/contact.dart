@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../callbacks/contact_listener.dart';
 
 /// The class manages contact between two shapes. A contact exists for each overlapping AABB in the
 /// broad-phase (except if filtered). Therefore a contact object may exist that has no contact
@@ -35,26 +38,28 @@ abstract class Contact {
   final ContactVelocityConstraint velocityConstraint =
       ContactVelocityConstraint();
 
-  final Manifold _manifold = Manifold();
+  final Manifold manifold = Manifold();
 
   int toiCount = 0;
   double toi = 0.0;
 
   double _friction = 0.0;
+  double get friction => _friction;
   double _restitution = 0.0;
+  double get restitution => _restitution;
 
   double tangentSpeed = 0.0;
 
   Contact(this.fixtureA, this.indexA, this.fixtureB, this.indexB) {
     flags = ENABLED_FLAG;
-    _manifold.pointCount = 0;
+    manifold.pointCount = 0;
     _friction = Contact.mixFriction(
-      fixtureA._friction,
-      fixtureB._friction,
+      fixtureA.friction,
+      fixtureB.friction,
     );
     _restitution = Contact.mixRestitution(
-      fixtureA._restitution,
-      fixtureB._restitution,
+      fixtureA.restitution,
+      fixtureB.restitution,
     );
   }
 
@@ -96,10 +101,10 @@ abstract class Contact {
   /// Get the world manifold.
   void getWorldManifold(WorldManifold worldManifold) {
     worldManifold.initialize(
-      _manifold,
-      fixtureA.body._transform,
+      manifold,
+      fixtureA.body.transform,
       fixtureA.shape.radius,
-      fixtureB.body._transform,
+      fixtureB.body.transform,
       fixtureB.shape.radius,
     );
   }
@@ -146,12 +151,12 @@ abstract class Contact {
   bool isEnabled() => (flags & ENABLED_FLAG) == ENABLED_FLAG;
 
   void resetFriction() {
-    _friction = Contact.mixFriction(fixtureA._friction, fixtureB._friction);
+    _friction = Contact.mixFriction(fixtureA.friction, fixtureB.friction);
   }
 
   void resetRestitution() {
     _restitution =
-        Contact.mixRestitution(fixtureA._restitution, fixtureB._restitution);
+        Contact.mixRestitution(fixtureA.restitution, fixtureB.restitution);
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB);
@@ -165,7 +170,7 @@ abstract class Contact {
   final Manifold _oldManifold = Manifold();
 
   void update(ContactListener listener) {
-    _oldManifold.set(_manifold);
+    _oldManifold.set(manifold);
 
     // Re-enable this contact.
     flags |= ENABLED_FLAG;
@@ -173,14 +178,14 @@ abstract class Contact {
     bool touching = false;
     final bool wasTouching = (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
 
-    final bool sensorA = fixtureA.isSensor();
-    final bool sensorB = fixtureB.isSensor();
+    final bool sensorA = fixtureA.isSensor;
+    final bool sensorB = fixtureB.isSensor;
     final bool sensor = sensorA || sensorB;
 
     final Body bodyA = fixtureA.body;
     final Body bodyB = fixtureB.body;
-    final Transform xfA = bodyA._transform;
-    final Transform xfB = bodyB._transform;
+    final Transform xfA = bodyA.transform;
+    final Transform xfB = bodyB.transform;
 
     if (sensor) {
       final Shape shapeA = fixtureA.shape;
@@ -189,15 +194,15 @@ abstract class Contact {
           World.collision.testOverlap(shapeA, indexA, shapeB, indexB, xfA, xfB);
 
       // Sensors don't generate manifolds.
-      _manifold.pointCount = 0;
+      manifold.pointCount = 0;
     } else {
-      evaluate(_manifold, xfA, xfB);
-      touching = _manifold.pointCount > 0;
+      evaluate(manifold, xfA, xfB);
+      touching = manifold.pointCount > 0;
 
       // Match old contact ids to new contact ids and copy the
       // stored impulses to warm start the solver.
-      for (int i = 0; i < _manifold.pointCount; ++i) {
-        final ManifoldPoint mp2 = _manifold.points[i];
+      for (int i = 0; i < manifold.pointCount; ++i) {
+        final ManifoldPoint mp2 = manifold.points[i];
         mp2.normalImpulse = 0.0;
         mp2.tangentImpulse = 0.0;
         final ContactID id2 = mp2.id;
@@ -245,7 +250,7 @@ abstract class Contact {
   /// Friction mixing law. The idea is to allow either fixture to drive the restitution to zero. For
   /// example, anything slides on ice.
   static double mixFriction(double friction1, double friction2) {
-    return math.sqrt(friction1 * friction2);
+    return sqrt(friction1 * friction2);
   }
 
   /// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface. For

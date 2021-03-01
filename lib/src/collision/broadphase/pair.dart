@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 class Pair implements Comparable<Pair> {
   int proxyIdA = 0;

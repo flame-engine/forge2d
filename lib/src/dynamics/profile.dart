@@ -1,4 +1,6 @@
-part of forge2d;
+import 'dart:math' as math;
+
+import '../../forge2d.dart';
 
 class ProfileEntry {
   static const int _LONG_AVG_NUMS = 20;

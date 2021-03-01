@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Motor joint definition.
 class MotorJointDef extends JointDef {

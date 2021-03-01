@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// An axis-aligned bounding box.
 class AABB {
@@ -175,7 +178,7 @@ class AABB {
       }
 
       // Pull the max down
-      tMax = math.min(tMax, t2);
+      tMax = min(tMax, t2);
 
       if (tMix > tMax) {
         return false;
@@ -210,7 +213,7 @@ class AABB {
       }
 
       // Pull the max down
-      tMax = math.min(tMax, t2);
+      tMax = min(tMax, t2);
 
       if (tMix > tMax) {
         return false;

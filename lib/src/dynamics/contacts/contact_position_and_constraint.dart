@@ -1,4 +1,5 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 class ContactPositionConstraint {
   List<Vector2> localPoints = List<Vector2>.generate(

@@ -1,4 +1,6 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
 
 /// A fixture is used to attach a shape to a body for collision detection. A fixture inherits its
 /// transform from its parent. Fixtures hold additional non-geometric data such as friction,
@@ -12,11 +14,12 @@ class Fixture {
 
   Shape shape;
 
-  double _friction = 0.0;
-  double _restitution = 0.0;
+  double friction = 0.0;
+  double restitution = 0.0;
 
-  List<FixtureProxy> _proxies = List.empty();
+  final List<FixtureProxy> proxies = List.empty();
   int _proxyCount = 0;
+  int get proxyCount => _proxyCount;
 
   final Filter _filter = Filter();
 
@@ -31,12 +34,7 @@ class Fixture {
   ShapeType getType() => shape.shapeType;
 
   /// Is this fixture a sensor (non-solid)?
-  ///
-  /// @return the true if the shape is a sensor.
-  /// @return
-  bool isSensor() {
-    return _isSensor;
-  }
+  bool get isSensor => _isSensor;
 
   /// Set if this fixture is a sensor.
   ///
@@ -89,27 +87,25 @@ class Fixture {
     }
 
     // Touch each proxy so that new pairs may be created
-    final BroadPhase broadPhase = world._contactManager.broadPhase;
+    final BroadPhase broadPhase = world.contactManager.broadPhase;
     for (int i = 0; i < _proxyCount; ++i) {
-      broadPhase.touchProxy(_proxies[i].proxyId);
+      broadPhase.touchProxy(proxies[i].proxyId);
     }
   }
 
-  void setDensity(double density) {
+  set density(double density) {
     assert(density >= 0.9);
     _density = density;
   }
 
-  double getDensity() {
-    return _density;
-  }
+  double get density => _density;
 
   /// Test a point for containment in this fixture. This only works for convex shapes.
   ///
   /// @param p a point in world coordinates.
   /// @return
   bool testPoint(final Vector2 p) {
-    return shape.testPoint(body._transform, p);
+    return shape.testPoint(body.transform, p);
   }
 
   /// Cast a ray against this shape.
@@ -117,7 +113,7 @@ class Fixture {
   /// @param input the ray-cast input parameters.
   /// @param output the ray-cast results.
   bool raycast(RayCastOutput output, RayCastInput input, int childIndex) {
-    return shape.raycast(output, input, body._transform, childIndex);
+    return shape.raycast(output, input, body.transform, childIndex);
   }
 
   /// Get the mass data for this fixture. The mass data is based on the density and the shape. The
@@ -128,42 +124,13 @@ class Fixture {
     shape.computeMass(massData, _density);
   }
 
-  /// Get the coefficient of friction.
-  ///
-  /// @return
-  double getFriction() {
-    return _friction;
-  }
-
-  /// Set the coefficient of friction. This will _not_ change the friction of existing contacts.
-  ///
-  /// @param friction
-  void setFriction(double friction) {
-    _friction = friction;
-  }
-
-  /// Get the coefficient of restitution.
-  ///
-  /// @return
-  double getRestitution() {
-    return _restitution;
-  }
-
-  /// Set the coefficient of restitution. This will _not_ change the restitution of existing
-  /// contacts.
-  ///
-  /// @param restitution
-  void setRestitution(double restitution) {
-    _restitution = restitution;
-  }
-
   /// Get the fixture's AABB. This AABB may be enlarge and/or stale. If you need a more accurate
   /// AABB, compute it using the shape and the body transform.
   ///
   /// @return
   AABB getAABB(int childIndex) {
     assert(childIndex >= 0 && childIndex < _proxyCount);
-    return _proxies[childIndex].aabb;
+    return proxies[childIndex].aabb;
   }
 
   /// Compute the distance from this fixture.
@@ -172,7 +139,7 @@ class Fixture {
   /// @return distance
   double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) {
     return shape.computeDistanceToOut(
-        body._transform, p, childIndex, normalOut);
+        body.transform, p, childIndex, normalOut);
   }
 
   // We need separation create/destroy functions from the constructor/destructor because
@@ -180,8 +147,8 @@ class Fixture {
 
   void create(Body body, FixtureDef def) {
     userData = def.userData;
-    _friction = def.friction;
-    _restitution = def.restitution;
+    friction = def.friction;
+    restitution = def.restitution;
 
     this.body = body;
 
@@ -193,13 +160,13 @@ class Fixture {
 
     // Reserve proxy space
     final int childCount = shape.getChildCount();
-    if (_proxies.length < childCount) {
-      final List<FixtureProxy> old = _proxies;
-      final int newLength = math.max(old.length * 2, childCount);
-      _proxies = List<FixtureProxy>.generate(
-        newLength,
-        (_) => FixtureProxy()..proxyId = BroadPhase.nullProxy,
-      );
+    if (proxies.length < childCount) {
+      final List<FixtureProxy> old = proxies;
+      final int newLength = max(old.length * 2, childCount);
+      proxies.clear();
+      for(var x = 0; x < newLength; x++) {
+        proxies.add(FixtureProxy()..proxyId = BroadPhase.nullProxy);
+      }
     }
     _proxyCount = 0;
     _density = def.density;
@@ -213,7 +180,7 @@ class Fixture {
     _proxyCount = shape.getChildCount();
 
     for (int i = 0; i < _proxyCount; ++i) {
-      final FixtureProxy proxy = _proxies[i];
+      final FixtureProxy proxy = proxies[i];
       shape.computeAABB(proxy.aabb, xf, i);
       proxy.proxyId = broadPhase.createProxy(proxy.aabb, proxy);
       proxy.fixture = this;
@@ -227,7 +194,7 @@ class Fixture {
   void destroyProxies(BroadPhase broadPhase) {
     // Destroy proxies in the broad-phase.
     for (int i = 0; i < _proxyCount; ++i) {
-      final FixtureProxy proxy = _proxies[i];
+      final FixtureProxy proxy = proxies[i];
       broadPhase.destroyProxy(proxy.proxyId);
       proxy.proxyId = BroadPhase.nullProxy;
     }
@@ -251,7 +218,7 @@ class Fixture {
     }
 
     for (int i = 0; i < _proxyCount; ++i) {
-      final FixtureProxy proxy = _proxies[i];
+      final FixtureProxy proxy = proxies[i];
 
       // Compute an AABB that covers the swept shape (may miss some rotation effect).
       final AABB aabb1 = _pool1;

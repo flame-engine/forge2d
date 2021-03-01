@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 class ParticleContact {
   /// The respective particles making contact.

@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Wheel joint definition. This requires defining a line of motion using an axis and an anchor
 /// point. The definition uses local anchor points and a local axis so that the initial configuration

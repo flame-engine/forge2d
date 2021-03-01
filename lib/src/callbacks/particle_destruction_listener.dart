@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 abstract class ParticleDestructionListener {
   /// Called when any particle group is about to be destroyed.

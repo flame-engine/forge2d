@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
 class _SimplexVertex {
@@ -477,11 +480,11 @@ class DistanceProxy {
         final chain = shape as ChainShape;
         assert(0 <= index && index < chain.vertexCount);
 
-        buffer[0] = chain._vertices[index];
+        buffer[0] = chain.vertices[index];
         if (index + 1 < chain.vertexCount) {
-          buffer[1] = chain._vertices[index + 1];
+          buffer[1] = chain.vertices[index + 1];
         } else {
-          buffer[1] = chain._vertices[0];
+          buffer[1] = chain.vertices[0];
         }
 
         vertices[0].setFrom(buffer[0]);
@@ -681,7 +684,7 @@ class Distance {
       ++_simplex.count;
     }
 
-    gjkMaxIterations = math.max(gjkMaxIterations, iter);
+    gjkMaxIterations = max(gjkMaxIterations, iter);
 
     // Prepare output.
     _simplex.getWitnessPoints(output.pointA, output.pointB);
