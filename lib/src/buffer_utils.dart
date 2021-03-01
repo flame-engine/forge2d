@@ -1,5 +1,3 @@
-library forge2d.buffer_utils;
-
 import 'dart:typed_data';
 
 /// Reallocate a buffer.

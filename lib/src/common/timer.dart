@@ -1,5 +1,3 @@
-part of forge2d.common;
-
 class Timer {
   final _stopWatch = Stopwatch();
 

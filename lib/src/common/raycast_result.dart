@@ -1,4 +1,4 @@
-part of forge2d.common;
+import 'package:vector_math/vector_math.dart';
 
 class RaycastResult {
   double lambda = 0.0;

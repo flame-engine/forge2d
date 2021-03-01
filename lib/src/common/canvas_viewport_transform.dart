@@ -1,5 +1,3 @@
-library forge2d.common.canvas_viewport_transform;
-
 import 'dart:html';
 
 import '../../forge2d.dart';

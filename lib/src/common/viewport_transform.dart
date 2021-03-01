@@ -1,4 +1,4 @@
-part of forge2d.common;
+import '../../forge2d.dart';
 
 class ViewportTransform {
   ViewportTransform(Vector2 e, Vector2 c, this.scale)

@@ -1,5 +1,3 @@
-part of forge2d.common;
-
 class Color3i {
   static Color3i get white => Color3i(255, 255, 255);
   static Color3i get black => Color3i(0, 0, 0);

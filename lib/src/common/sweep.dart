@@ -1,4 +1,6 @@
-part of forge2d.common;
+import 'dart:math';
+
+import '../../forge2d.dart';
 
 /// This describes the motion of a body/shape for TOI computation. Shapes are defined with respect to
 /// the body origin, which may not coincide with the center of mass. However, to support dynamics we
