@@ -1,5 +1,3 @@
-import '../../forge2d.dart';
-
 /// This is an internal structure.
 class TimeStep {
   /// time step

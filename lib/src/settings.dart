@@ -1,9 +1,9 @@
 import 'dart:math';
 
-const int INTEGER_MAX_VALUE = 0x3FFFFFFF;
+const int intMaxValue = 0x3FFFFFFF;
 
 /// A "close to zero" float epsilon value for use
-const double EPSILON = 1.1920928955078125E-7;
+const double epsilon = 1.1920928955078125E-7;
 
 /// The maximum number of contact points between two convex shapes.
 const int maxManifoldPoints = 2;

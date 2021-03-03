@@ -82,7 +82,7 @@ class BallCage extends Demo {
     final activeBodyDef = BodyDef();
     activeBodyDef.linearVelocity = Vector2(0.0, -20.0);
     activeBodyDef.position = Vector2(15.0, 15.0);
-    activeBodyDef.type = BodyType.DYNAMIC;
+    activeBodyDef.type = BodyType.dynamic;
     activeBodyDef.bullet = true;
     final activeBody = world.createBody(activeBodyDef);
     bodies.add(activeBody);

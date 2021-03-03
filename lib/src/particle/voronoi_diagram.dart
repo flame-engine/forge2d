@@ -77,13 +77,13 @@ class VoronoiDiagram {
     final firstGenerator = generators.first;
     _lower.setFrom(firstGenerator.center);
     _upper.setFrom(firstGenerator.center);
-    for (var g in generators) {
+    for (final g in generators) {
       Vector2.min(_lower, g.center, _lower);
       Vector2.max(_upper, g.center, _upper);
     }
     _countX = 1 + (inverseRadius * (_upper.x - _lower.x)).toInt();
     _countY = 1 + (inverseRadius * (_upper.y - _lower.y)).toInt();
-    for (var g in generators) {
+    for (final g in generators) {
       g.center.setFrom((g.center - _lower)..scale(inverseRadius));
       final x = max(0, min(g.center.x.toInt(), _countX - 1));
       final y = max(0, min(g.center.y.toInt(), _countY - 1));

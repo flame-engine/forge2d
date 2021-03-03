@@ -34,12 +34,12 @@ class SimplexCache {
   final List<int> indexB = List<int>.filled(3, 0);
 
   SimplexCache() {
-    indexA[0] = settings.INTEGER_MAX_VALUE;
-    indexA[1] = settings.INTEGER_MAX_VALUE;
-    indexA[2] = settings.INTEGER_MAX_VALUE;
-    indexB[0] = settings.INTEGER_MAX_VALUE;
-    indexB[1] = settings.INTEGER_MAX_VALUE;
-    indexB[2] = settings.INTEGER_MAX_VALUE;
+    indexA[0] = settings.intMaxValue;
+    indexA[1] = settings.intMaxValue;
+    indexA[2] = settings.intMaxValue;
+    indexB[0] = settings.intMaxValue;
+    indexB[1] = settings.intMaxValue;
+    indexB[2] = settings.intMaxValue;
   }
 
   void set(SimplexCache sc) {
@@ -93,7 +93,7 @@ class _Simplex {
       final metric2 = getMetric();
       if (metric2 < 0.5 * metric1 ||
           2.0 * metric1 < metric2 ||
-          metric2 < settings.EPSILON) {
+          metric2 < settings.epsilon) {
         // Reset the simplex.
         count = 0;
       }
@@ -461,14 +461,14 @@ class DistanceProxy {
   /// in use.
   void set(final Shape shape, int index) {
     switch (shape.shapeType) {
-      case ShapeType.CIRCLE:
+      case ShapeType.circle:
         final circle = shape as CircleShape;
         vertices[0].setFrom(circle.position);
         _count = 1;
         radius = circle.radius;
 
         break;
-      case ShapeType.POLYGON:
+      case ShapeType.polygon:
         final poly = shape as PolygonShape;
         _count = poly.vertices.length;
         radius = poly.radius;
@@ -476,7 +476,7 @@ class DistanceProxy {
           vertices[i].setFrom(poly.vertices[i]);
         }
         break;
-      case ShapeType.CHAIN:
+      case ShapeType.chain:
         final chain = shape as ChainShape;
         assert(0 <= index && index < chain.vertexCount);
 
@@ -492,7 +492,7 @@ class DistanceProxy {
         _count = 2;
         radius = chain.radius;
         break;
-      case ShapeType.EDGE:
+      case ShapeType.edge:
         final edge = shape as EdgeShape;
         vertices[0].setFrom(edge.vertex1);
         vertices[1].setFrom(edge.vertex2);
@@ -631,7 +631,7 @@ class Distance {
       _simplex.getSearchDirection(_d);
 
       // Ensure the search direction is numerically fit.
-      if (_d.length2 < settings.EPSILON * settings.EPSILON) {
+      if (_d.length2 < settings.epsilon * settings.epsilon) {
         // The origin is probably contained by a line segment
         // or triangle. Thus the shapes are overlapped.
 
@@ -699,7 +699,7 @@ class Distance {
       final rA = proxyA.radius;
       final rB = proxyB.radius;
 
-      if (output.distance > rA + rB && output.distance > settings.EPSILON) {
+      if (output.distance > rA + rB && output.distance > settings.epsilon) {
         // Shapes are still no overlapped.
         // Move the witness points to the outer surface.
         output.distance -= rA + rB;

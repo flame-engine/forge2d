@@ -19,7 +19,7 @@ class PulleyJointDef extends JointDef {
   /// The pulley ratio, used to simulate a block-and-tackle.
   double ratio = 1.0;
 
-  PulleyJointDef() : super(JointType.PULLEY) {
+  PulleyJointDef() : super(JointType.pulley) {
     collideConnected = true;
   }
 
@@ -37,6 +37,6 @@ class PulleyJointDef extends JointDef {
     final d2 = anchor2 - ga2;
     lengthB = d2.length;
     ratio = r;
-    assert(ratio > settings.EPSILON);
+    assert(ratio > settings.epsilon);
   }
 }

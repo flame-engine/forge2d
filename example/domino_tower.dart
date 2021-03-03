@@ -32,7 +32,7 @@ class DominoTower extends Demo {
     fd.shape = sd;
     fd.density = dominoDensity;
     final bd = BodyDef();
-    bd.type = BodyType.DYNAMIC;
+    bd.type = BodyType.dynamic;
     fd.friction = dominoFriction;
     fd.restitution = 0.65;
     bd.position = Vector2(x, y);
@@ -65,7 +65,7 @@ class DominoTower extends Demo {
       final fd = FixtureDef();
       fd.density = 35.0;
       final bd = BodyDef();
-      bd.type = BodyType.DYNAMIC;
+      bd.type = BodyType.dynamic;
       fd.shape = sd;
       fd.friction = 0.0;
       fd.restitution = 0.85;

@@ -1,5 +1,3 @@
-import '../../forge2d.dart';
-
 class ParticleGroupType {
   /// resists penetration
   static const int solidParticleGroup = 1 << 0;

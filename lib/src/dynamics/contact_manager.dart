@@ -1,7 +1,7 @@
 import '../../forge2d.dart';
-import '../callbacks/pair_callback.dart';
 import '../callbacks/contact_filter.dart';
 import '../callbacks/contact_listener.dart';
+import '../callbacks/pair_callback.dart';
 
 /// Delegate of World.
 class ContactManager implements PairCallback {
@@ -35,7 +35,7 @@ class ContactManager implements PairCallback {
     }
 
     // Check whether a contact already exists
-    for (var contact in bodyB.contacts) {
+    for (final contact in bodyB.contacts) {
       if (contact.containsBody(bodyA)) {
         if (contact.representsArguments(fixtureA, indexA, fixtureB, indexB)) {
           // A contact already exists.
@@ -100,7 +100,7 @@ class ContactManager implements PairCallback {
   void collide() {
     final contactRemovals = <Contact>[];
     // Update awake contacts.
-    for (var c in contacts) {
+    for (final c in contacts) {
       final fixtureA = c.fixtureA;
       final fixtureB = c.fixtureB;
       final indexA = c.indexA;
@@ -109,7 +109,7 @@ class ContactManager implements PairCallback {
       final bodyB = fixtureB.body;
 
       // is this contact flagged for filtering?
-      if ((c.flags & Contact.FILTER_FLAG) == Contact.FILTER_FLAG) {
+      if ((c.flags & Contact.filterFlag) == Contact.filterFlag) {
         // Should these bodies collide?
         if (!bodyB.shouldCollide(bodyA)) {
           contactRemovals.add(c);
@@ -124,11 +124,11 @@ class ContactManager implements PairCallback {
         }
 
         // Clear the filtering flag.
-        c.flags &= ~Contact.FILTER_FLAG;
+        c.flags &= ~Contact.filterFlag;
       }
 
-      final activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.STATIC;
-      final activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.STATIC;
+      final activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.static;
+      final activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.static;
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {

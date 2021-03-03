@@ -116,16 +116,16 @@ class Racer extends Demo implements ContactListener {
   void _handleKeyDown(KeyboardEvent event) {
     switch (event.keyCode) {
       case 37:
-        _controlState |= ControlState.LEFT;
+        _controlState |= ControlState.left;
         break;
       case 38:
-        _controlState |= ControlState.UP;
+        _controlState |= ControlState.up;
         break;
       case 39:
-        _controlState |= ControlState.RIGHT;
+        _controlState |= ControlState.right;
         break;
       case 40:
-        _controlState |= ControlState.DOWN;
+        _controlState |= ControlState.down;
         break;
     }
   }
@@ -133,16 +133,16 @@ class Racer extends Demo implements ContactListener {
   void _handleKeyUp(KeyboardEvent event) {
     switch (event.keyCode) {
       case 37:
-        _controlState &= ~ControlState.LEFT;
+        _controlState &= ~ControlState.left;
         break;
       case 38:
-        _controlState &= ~ControlState.UP;
+        _controlState &= ~ControlState.up;
         break;
       case 39:
-        _controlState &= ~ControlState.RIGHT;
+        _controlState &= ~ControlState.right;
         break;
       case 40:
-        _controlState &= ~ControlState.DOWN;
+        _controlState &= ~ControlState.down;
         break;
     }
   }

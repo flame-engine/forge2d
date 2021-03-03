@@ -1,6 +1,6 @@
-import 'demo.dart';
-
 import 'package:forge2d/forge2d.dart';
+
+import 'demo.dart';
 
 /// Demonstration of dominoes being knocked over.
 class DominoTest extends Demo {
@@ -47,7 +47,7 @@ class DominoTest extends Demo {
       fd.density = 25.0;
 
       final bd = BodyDef();
-      bd.type = BodyType.DYNAMIC;
+      bd.type = BodyType.dynamic;
 
       const friction = .5;
       const numPerRow = 25;

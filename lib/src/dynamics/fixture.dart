@@ -72,7 +72,7 @@ class Fixture {
     }
 
     // Flag associated contacts for filtering.
-    for (var contact in body.contacts) {
+    for (final contact in body.contacts) {
       final fixtureA = contact.fixtureA;
       final fixtureB = contact.fixtureB;
       if (fixtureA == this || fixtureB == this) {

@@ -20,7 +20,7 @@ class PolygonShape extends Shape {
   /// active normals.
   final List<Vector2> normals = [];
 
-  PolygonShape() : super(ShapeType.POLYGON) {
+  PolygonShape() : super(ShapeType.polygon) {
     radius = settings.polygonRadius;
   }
 
@@ -49,7 +49,7 @@ class PolygonShape extends Shape {
 
     // Perform welding and copy vertices into local buffer.
     final points = <Vector2>[];
-    for (var v in updatedVertices) {
+    for (final v in updatedVertices) {
       var unique = true;
       for (var j = 0; j < points.length; ++j) {
         if (v.distanceToSquared(points[j]) < 0.5 * settings.linearSlop) {
@@ -77,7 +77,7 @@ class PolygonShape extends Shape {
 
     // Find the right most point on the hull
     var rightMostPoint = points.first;
-    for (var point in points) {
+    for (final point in points) {
       final x = point.x;
       final y = point.y;
       final x0 = rightMostPoint.x;
@@ -88,9 +88,9 @@ class PolygonShape extends Shape {
     }
 
     final hull = <Vector2>[rightMostPoint];
-    for (var point1 in points) {
+    for (final point1 in points) {
       var currentPoint = hull.last;
-      for (var point2 in points) {
+      for (final point2 in points) {
         if (currentPoint == hull.last) {
           currentPoint = point2;
           continue;
@@ -129,7 +129,7 @@ class PolygonShape extends Shape {
         ..setFrom(vertices[i2])
         ..sub(vertices[i1]);
 
-      assert(edge.length2 > settings.EPSILON * settings.EPSILON);
+      assert(edge.length2 > settings.epsilon * settings.epsilon);
       edge.scaleOrthogonalInto(-1.0, normals[i]);
       normals[i].normalize();
     }
@@ -209,21 +209,21 @@ class PolygonShape extends Shape {
 
     var tempX = p.x - xf.p.x;
     var tempY = p.y - xf.p.y;
-    final pLocalx = xfq.c * tempX + xfq.s * tempY;
-    final pLocaly = -xfq.s * tempX + xfq.c * tempY;
+    final pLocalX = xfq.c * tempX + xfq.s * tempY;
+    final pLocalY = -xfq.s * tempX + xfq.c * tempY;
 
     if (_debug) {
       print('--testPoint debug--');
       print('Vertices: ');
       vertices.forEach(print);
-      print('pLocal: $pLocalx, $pLocaly');
+      print('pLocal: $pLocalX, $pLocalY');
     }
 
     for (var i = 0; i < vertices.length; ++i) {
       final vertex = vertices[i];
       final normal = normals[i];
-      tempX = pLocalx - vertex.x;
-      tempY = pLocaly - vertex.y;
+      tempX = pLocalX - vertex.x;
+      tempY = pLocalY - vertex.y;
       final dot = normal.x * tempX + normal.y * tempY;
       if (dot > 0.0) {
         return false;
@@ -340,7 +340,8 @@ class PolygonShape extends Shape {
     final dx = p2x - p1x;
     final dy = p2y - p1y;
 
-    double lower = 0.0, upper = input.maxFraction;
+    var lower = 0.0;
+    var upper = input.maxFraction;
 
     var index = -1;
 
@@ -435,7 +436,7 @@ class PolygonShape extends Shape {
     }
 
     // Centroid
-    assert(area > settings.EPSILON);
+    assert(area > settings.epsilon);
     centroid.scale(1.0 / area);
   }
 
@@ -504,8 +505,10 @@ class PolygonShape extends Shape {
       center.x += triangleArea * kInv3 * (e1.x + e2.x);
       center.y += triangleArea * kInv3 * (e1.y + e2.y);
 
-      final double ex1 = e1.x, ey1 = e1.y;
-      final double ex2 = e2.x, ey2 = e2.y;
+      final ex1 = e1.x;
+      final ey1 = e1.y;
+      final ex2 = e2.x;
+      final ey2 = e2.y;
 
       final intx2 = ex1 * ex1 + ex2 * ex1 + ex2 * ex2;
       final inty2 = ey1 * ey1 + ey2 * ey1 + ey2 * ey2;
@@ -517,7 +520,7 @@ class PolygonShape extends Shape {
     massData.mass = density * area;
 
     // Center of mass
-    assert(area > settings.EPSILON);
+    assert(area > settings.epsilon);
     center.scale(1.0 / area);
     massData.center
       ..setFrom(center)

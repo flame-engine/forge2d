@@ -7,7 +7,7 @@ import '../../settings.dart' as settings;
 class CircleShape extends Shape {
   final Vector2 position = Vector2.zero();
 
-  CircleShape() : super(ShapeType.CIRCLE) {
+  CircleShape() : super(ShapeType.circle) {
     radius = 0.0;
   }
 
@@ -42,10 +42,8 @@ class CircleShape extends Shape {
   bool testPoint(final Transform transform, final Vector2 point) {
     final q = transform.q;
     final tp = transform.p;
-    final centerX =
-        -(q.c * position.x - q.s * position.y + tp.x - point.x);
-    final centerY =
-        -(q.s * position.x + q.c * position.y + tp.y - point.y);
+    final centerX = -(q.c * position.x - q.s * position.y + tp.x - point.x);
+    final centerY = -(q.s * position.x + q.c * position.y + tp.y - point.y);
 
     return centerX * centerX + centerY * centerY <= radius * radius;
   }
@@ -91,7 +89,7 @@ class CircleShape extends Shape {
     final sigma = c * c - rr * b;
 
     // Check for negative discriminant and short segment.
-    if (sigma < 0.0 || rr < settings.EPSILON) {
+    if (sigma < 0.0 || rr < settings.epsilon) {
       return false;
     }
 

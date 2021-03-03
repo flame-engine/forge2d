@@ -1,7 +1,8 @@
 import 'dart:math';
-import 'demo.dart';
 
 import 'package:forge2d/forge2d.dart';
+
+import 'demo.dart';
 
 class CircleStress extends Demo {
   /// The number of columns of balls in the pen.
@@ -31,7 +32,7 @@ class CircleStress extends Demo {
       final sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
       final bd = BodyDef();
-      bd.type = BodyType.STATIC;
+      bd.type = BodyType.static;
       bd.position = Vector2(0.0, -10.0);
       final b = world.createBody(bd);
       bodies.add(b);
@@ -69,7 +70,7 @@ class CircleStress extends Demo {
       // top
       sd.setAsBoxXY(50.0, 10.0);
       final topDef = BodyDef()
-        ..type = BodyType.STATIC
+        ..type = BodyType.static
         ..angle = 0.0
         ..position = Vector2(0.0, 75.0);
       final topBody = world.createBody(topDef);
@@ -92,7 +93,7 @@ class CircleStress extends Demo {
 
       final bodyDef = BodyDef()
         ..position = Vector2.zero()
-        ..type = BodyType.STATIC;
+        ..type = BodyType.static;
 
       final body = world.createBody(bodyDef)..createFixture(fixtureDef);
       bodies.add(body);
@@ -100,7 +101,7 @@ class CircleStress extends Demo {
 
     {
       final bd = BodyDef()
-        ..type = BodyType.DYNAMIC
+        ..type = BodyType.dynamic
         ..position = Vector2(0.0, 10.0);
       const numPieces = 5;
       const radius = 6.0;
@@ -141,7 +142,7 @@ class CircleStress extends Demo {
       for (var j = 0; j < columns; j++) {
         for (var i = 0; i < loadSize; i++) {
           final circleShape = CircleShape()
-            ..radius = 1.0 + (i % 2 == 0 ? 1.0 : -1.0) * .5 * .75;
+            ..radius = 1.0 + (i.isEven ? 1.0 : -1.0) * .5 * .75;
           final fd2 = FixtureDef()
             ..shape = circleShape
             ..density = circleShape.radius * 1.5
@@ -150,7 +151,7 @@ class CircleStress extends Demo {
           final xPos = -39.0 + 2 * i;
           final yPos = 50.0 + j;
           final bodyDef = BodyDef()
-            ..type = BodyType.DYNAMIC
+            ..type = BodyType.dynamic
             ..position = Vector2(xPos, yPos);
           final body = world.createBody(bodyDef);
           bodies.add(body);

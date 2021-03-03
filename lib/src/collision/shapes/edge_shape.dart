@@ -20,7 +20,7 @@ class EdgeShape extends Shape {
   bool hasVertex0 = false;
   bool hasVertex3 = false;
 
-  EdgeShape() : super(ShapeType.EDGE) {
+  EdgeShape() : super(ShapeType.edge) {
     radius = settings.polygonRadius;
   }
 

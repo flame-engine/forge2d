@@ -39,8 +39,7 @@ class ConstantVolumeJoint extends Joint {
     _targetLengths = Float64List(_bodies.length);
     for (var i = 0; i < _targetLengths.length; ++i) {
       final next = (i == _targetLengths.length - 1) ? 0 : i + 1;
-      final dist =
-          (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
+      final dist = (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
       _targetLengths[i] = dist;
     }
     _targetVolume = getBodyArea();
@@ -90,8 +89,7 @@ class ConstantVolumeJoint extends Joint {
       area += _bodies[i].worldCenter.x * _bodies[next].worldCenter.y -
           _bodies[next].worldCenter.x * _bodies[i].worldCenter.y;
     }
-    area *= .5;
-    return area;
+    return area *= .5;
   }
 
   double getSolverArea(List<Position> positions) {
@@ -103,8 +101,7 @@ class ConstantVolumeJoint extends Joint {
           positions[_bodies[next].islandIndex].c.x *
               positions[_bodies[i].islandIndex].c.y;
     }
-    area *= .5;
-    return area;
+    return area *= .5;
   }
 
   bool _constrainEdges(List<Position> positions) {
@@ -116,7 +113,7 @@ class ConstantVolumeJoint extends Joint {
       final dy = positions[_bodies[next].islandIndex].c.y -
           positions[_bodies[i].islandIndex].c.y;
       var dist = sqrt(dx * dx + dy * dy);
-      if (dist < settings.EPSILON) {
+      if (dist < settings.epsilon) {
         dist = 1.0;
       }
       _normals[i].x = dy / dist;

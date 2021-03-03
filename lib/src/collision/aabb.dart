@@ -150,7 +150,7 @@ class AABB {
       ..absolute();
 
     // x then y
-    if (absD.x < settings.EPSILON) {
+    if (absD.x < settings.epsilon) {
       // Parallel.
       if (p.x < lowerBound.x || upperBound.x < p.x) {
         return false;
@@ -185,7 +185,7 @@ class AABB {
       }
     }
 
-    if (absD.y < settings.EPSILON) {
+    if (absD.y < settings.epsilon) {
       // Parallel.
       if (p.y < lowerBound.y || upperBound.y < p.y) {
         return false;

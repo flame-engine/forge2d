@@ -31,7 +31,7 @@ class RevoluteJointDef extends JointDef {
   /// The maximum motor torque used to achieve the desired motor speed. Usually in N-m.
   double maxMotorTorque = 0.0;
 
-  RevoluteJointDef() : super(JointType.REVOLUTE);
+  RevoluteJointDef() : super(JointType.revolute);
 
   /// Initialize the bodies, anchors, and reference angle using the world anchor.
   ///

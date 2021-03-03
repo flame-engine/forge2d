@@ -178,8 +178,10 @@ class WheelJoint extends Joint {
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final cA = data.positions[_indexA].c;
     final aA = data.positions[_indexA].a;
@@ -318,8 +320,10 @@ class WheelJoint extends Joint {
 
   @override
   void solveVelocityConstraints(SolverData data) {
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final vA = data.velocities[_indexA].v;
     var wA = data.velocities[_indexA].w;
@@ -336,8 +340,7 @@ class WheelJoint extends Joint {
             ..sub(vA)) +
           _sBx * wB -
           _sAx * wA;
-      final impulse =
-          -_springMass * (cDot + _bias + _gamma * _springImpulse);
+      final impulse = -_springMass * (cDot + _bias + _gamma * _springImpulse);
       _springImpulse += impulse;
 
       p.x = impulse * _ax.x;

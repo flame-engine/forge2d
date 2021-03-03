@@ -12,7 +12,7 @@ class Body {
   static const int activeFlag = 0x0020;
   static const int toiFlag = 0x0040;
 
-  BodyType _bodyType = BodyType.STATIC;
+  BodyType _bodyType = BodyType.static;
   BodyType get bodyType => _bodyType;
 
   int flags = 0;
@@ -111,7 +111,7 @@ class Body {
 
     _bodyType = bd.type;
 
-    if (_bodyType == BodyType.DYNAMIC) {
+    if (_bodyType == BodyType.dynamic) {
       _mass = 1.0;
       _inverseMass = 1.0;
     } else {
@@ -153,7 +153,7 @@ class Body {
 
     // Let the world know we have a new fixture. This will cause new contacts
     // to be created at the beginning of the next time step.
-    world.flags |= World.NEW_FIXTURE;
+    world.flags |= World.newFixture;
 
     return fixture;
   }
@@ -237,7 +237,7 @@ class Body {
     sweep.a0 = sweep.a;
 
     final broadPhase = world.contactManager.broadPhase;
-    for (var f in fixtures) {
+    for (final f in fixtures) {
       f.synchronize(broadPhase, transform, transform);
     }
   }
@@ -262,7 +262,7 @@ class Body {
   ///
   /// @param v the new linear velocity of the center of mass.
   set linearVelocity(Vector2 v) {
-    if (_bodyType == BodyType.STATIC) {
+    if (_bodyType == BodyType.static) {
       return;
     }
 
@@ -277,7 +277,7 @@ class Body {
   ///
   /// @param omega the new angular velocity in radians/second.
   set angularVelocity(double w) {
-    if (_bodyType == BodyType.STATIC) {
+    if (_bodyType == BodyType.static) {
       return;
     }
 
@@ -304,7 +304,7 @@ class Body {
   ///
   /// @param force the world force vector, usually in Newtons (N).
   void _applyForceToCenter(Vector2 force) {
-    if (_bodyType != BodyType.DYNAMIC) {
+    if (_bodyType != BodyType.dynamic) {
       return;
     }
 
@@ -321,7 +321,7 @@ class Body {
   ///
   /// @param torque about the z-axis (out of the screen), usually in N-m.
   void applyTorque(double torque) {
-    if (_bodyType != BodyType.DYNAMIC) {
+    if (_bodyType != BodyType.dynamic) {
       return;
     }
 
@@ -341,7 +341,7 @@ class Body {
   /// @param point the world position of the point of application (default: center of mass)
   /// @param wake also wake up the body (default: true)
   void applyLinearImpulse(Vector2 impulse, {Vector2 point, bool wake = true}) {
-    if (_bodyType != BodyType.DYNAMIC) {
+    if (_bodyType != BodyType.dynamic) {
       return;
     }
     point ??= worldCenter;
@@ -363,7 +363,7 @@ class Body {
   ///
   /// @param impulse the angular impulse in units of kg*m*m/s
   void applyAngularImpulse(double impulse) {
-    if (_bodyType != BodyType.DYNAMIC) {
+    if (_bodyType != BodyType.dynamic) {
       return;
     }
 
@@ -407,7 +407,7 @@ class Body {
   void setMassData(MassData massData) {
     // TODO_ERIN adjust linear velocity and torque to account for movement of center.
     assert(world.isLocked() == false);
-    if (_bodyType != BodyType.DYNAMIC) {
+    if (_bodyType != BodyType.dynamic) {
       return;
     }
 
@@ -454,20 +454,20 @@ class Body {
     sweep.localCenter.setZero();
 
     // Static and kinematic bodies have zero mass.
-    if (_bodyType == BodyType.STATIC || _bodyType == BodyType.KINEMATIC) {
+    if (_bodyType == BodyType.static || _bodyType == BodyType.kinematic) {
       sweep.c0.setFrom(transform.p);
       sweep.c.setFrom(transform.p);
       sweep.a0 = sweep.a;
       return;
     }
 
-    assert(_bodyType == BodyType.DYNAMIC);
+    assert(_bodyType == BodyType.dynamic);
 
     // Accumulate mass over all fixtures.
     final localCenter = Vector2.zero();
     final temp = Vector2.zero();
     final massData = _pmd;
-    for (var f in fixtures) {
+    for (final f in fixtures) {
       if (f.density == 0.0) {
         continue;
       }
@@ -582,7 +582,7 @@ class Body {
 
     resetMassData();
 
-    if (_bodyType == BodyType.STATIC) {
+    if (_bodyType == BodyType.static) {
       linearVelocity.setZero();
       _angularVelocity = 0.0;
       sweep.a0 = sweep.a;
@@ -603,7 +603,7 @@ class Body {
 
     // Touch the proxies so that new contacts will be created (when appropriate)
     final broadPhase = world.contactManager.broadPhase;
-    for (var f in fixtures) {
+    for (final f in fixtures) {
       final proxyCount = f.proxyCount;
       for (var i = 0; i < proxyCount; ++i) {
         broadPhase.touchProxy(f.proxies[i].proxyId);
@@ -690,7 +690,7 @@ class Body {
 
       // Create all proxies.
       final broadPhase = world.contactManager.broadPhase;
-      for (var f in fixtures) {
+      for (final f in fixtures) {
         f.createProxies(broadPhase, transform);
       }
 
@@ -700,7 +700,7 @@ class Body {
 
       // Destroy all proxies.
       final broadPhase = world.contactManager.broadPhase;
-      for (var f in fixtures) {
+      for (final f in fixtures) {
         f.destroyProxies(broadPhase);
       }
 
@@ -753,7 +753,7 @@ class Body {
         xf1.q.s * sweep.localCenter.x -
         xf1.q.c * sweep.localCenter.y;
 
-    for (var f in fixtures) {
+    for (final f in fixtures) {
       f.synchronize(world.contactManager.broadPhase, xf1, transform);
     }
   }
@@ -774,12 +774,12 @@ class Body {
   /// @return
   bool shouldCollide(Body other) {
     // At least one body should be dynamic.
-    if (_bodyType != BodyType.DYNAMIC && other._bodyType != BodyType.DYNAMIC) {
+    if (_bodyType != BodyType.dynamic && other._bodyType != BodyType.dynamic) {
       return false;
     }
 
     // Does a joint prevent collision?
-    for (var joint in joints) {
+    for (final joint in joints) {
       if (joint.containsBody(other) && !joint.getCollideConnected()) {
         return false;
       }

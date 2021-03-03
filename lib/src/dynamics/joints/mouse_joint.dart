@@ -99,7 +99,7 @@ class MouseJoint extends Joint {
     // gamma has units of inverse mass.
     // beta has units of inverse time.
     final dt = data.step.dt;
-    assert(d + dt * springStiffness > settings.EPSILON);
+    assert(d + dt * springStiffness > settings.epsilon);
     _gamma = dt * (d + dt * springStiffness);
     if (_gamma != 0.0) {
       _gamma = 1.0 / _gamma;
@@ -107,8 +107,7 @@ class MouseJoint extends Joint {
     _beta = dt * springStiffness * _gamma;
 
     // Compute the effective mass matrix.
-    final effectiveMassMatrix = Vector2.copy(localAnchorB)
-      ..sub(_localCenterB);
+    final effectiveMassMatrix = Vector2.copy(localAnchorB)..sub(_localCenterB);
 
     _rB.setFrom(Rot.mulVec2(qB, effectiveMassMatrix));
 

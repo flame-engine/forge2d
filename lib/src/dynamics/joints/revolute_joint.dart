@@ -52,7 +52,7 @@ class RevoluteJoint extends Joint {
   final Matrix3 _mass =
       Matrix3.zero(); // effective mass for point-to-point constraint.
   double _motorMass = 0.0; // effective mass for motor/limit angular constraint.
-  LimitState _limitState = LimitState.INACTIVE;
+  LimitState _limitState = LimitState.inactive;
 
   RevoluteJoint(RevoluteJointDef def) : super(def) {
     localAnchorA.setFrom(def.localAnchorA);
@@ -104,8 +104,10 @@ class RevoluteJoint extends Joint {
       ..sub(_localCenterB);
     _rB.setFrom(Rot.mulVec2(qB, temp));
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final fixedRotation = iA + iB == 0.0;
 
@@ -133,23 +135,23 @@ class RevoluteJoint extends Joint {
     if (_enableLimit && fixedRotation == false) {
       final jointAngle = aB - aA - _referenceAngle;
       if ((_upperAngle - _lowerAngle).abs() < 2.0 * settings.angularSlop) {
-        _limitState = LimitState.EQUAL;
+        _limitState = LimitState.equal;
       } else if (jointAngle <= _lowerAngle) {
-        if (_limitState != LimitState.AT_LOWER) {
+        if (_limitState != LimitState.atLower) {
           _impulse.z = 0.0;
         }
-        _limitState = LimitState.AT_LOWER;
+        _limitState = LimitState.atLower;
       } else if (jointAngle >= _upperAngle) {
-        if (_limitState != LimitState.AT_UPPER) {
+        if (_limitState != LimitState.atUpper) {
           _impulse.z = 0.0;
         }
-        _limitState = LimitState.AT_UPPER;
+        _limitState = LimitState.atUpper;
       } else {
-        _limitState = LimitState.INACTIVE;
+        _limitState = LimitState.inactive;
         _impulse.z = 0.0;
       }
     } else {
-      _limitState = LimitState.INACTIVE;
+      _limitState = LimitState.inactive;
     }
 
     if (data.step.warmStarting) {
@@ -186,14 +188,16 @@ class RevoluteJoint extends Joint {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final fixedRotation = iA + iB == 0.0;
 
     // Solve motor constraint.
     if (_enableMotor &&
-        _limitState != LimitState.EQUAL &&
+        _limitState != LimitState.equal &&
         fixedRotation == false) {
       final cDot = wB - wA - _motorSpeed;
       var impulse = -_motorMass * cDot;
@@ -210,7 +214,7 @@ class RevoluteJoint extends Joint {
 
     // Solve limit constraint.
     if (_enableLimit &&
-        _limitState != LimitState.INACTIVE &&
+        _limitState != LimitState.inactive &&
         fixedRotation == false) {
       final cDot1 = Vector2.zero();
       final cDot = Vector3.zero();
@@ -229,9 +233,9 @@ class RevoluteJoint extends Joint {
       Matrix3.solve(_mass, impulse, cDot);
       impulse.negate();
 
-      if (_limitState == LimitState.EQUAL) {
+      if (_limitState == LimitState.equal) {
         _impulse.add(impulse);
-      } else if (_limitState == LimitState.AT_LOWER) {
+      } else if (_limitState == LimitState.atLower) {
         final newImpulse = _impulse.z + impulse.z;
         if (newImpulse < 0.0) {
           final rhs = Vector2.zero();
@@ -249,7 +253,7 @@ class RevoluteJoint extends Joint {
         } else {
           _impulse.add(impulse);
         }
-      } else if (_limitState == LimitState.AT_UPPER) {
+      } else if (_limitState == LimitState.atUpper) {
         final newImpulse = _impulse.z + impulse.z;
         if (newImpulse > 0.0) {
           final rhs = Vector2.zero();
@@ -329,12 +333,12 @@ class RevoluteJoint extends Joint {
 
     // Solve angular limit constraint.
     if (_enableLimit &&
-        _limitState != LimitState.INACTIVE &&
+        _limitState != LimitState.inactive &&
         fixedRotation == false) {
       final angle = aB - aA - _referenceAngle;
       var limitImpulse = 0.0;
 
-      if (_limitState == LimitState.EQUAL) {
+      if (_limitState == LimitState.equal) {
         // Prevent large angular corrections
         final c = (angle - _lowerAngle)
             .clamp(
@@ -342,7 +346,7 @@ class RevoluteJoint extends Joint {
             .toDouble();
         limitImpulse = -_motorMass * c;
         angularError = c.abs();
-      } else if (_limitState == LimitState.AT_LOWER) {
+      } else if (_limitState == LimitState.atLower) {
         var C = angle - _lowerAngle;
         angularError = -C;
 
@@ -351,7 +355,7 @@ class RevoluteJoint extends Joint {
             .clamp(-settings.maxAngularCorrection, 0.0)
             .toDouble();
         limitImpulse = -_motorMass * C;
-      } else if (_limitState == LimitState.AT_UPPER) {
+      } else if (_limitState == LimitState.atUpper) {
         var C = angle - _upperAngle;
         angularError = C;
 
@@ -391,8 +395,10 @@ class RevoluteJoint extends Joint {
         ..sub(rA);
       positionError = temp.length;
 
-      final double mA = _invMassA, mB = _invMassB;
-      final double iA = _invIA, iB = _invIB;
+      final mA = _invMassA;
+      final mB = _invMassB;
+      final iA = _invIA;
+      final iB = _invIB;
 
       final K = Matrix2.zero();
       final a11 = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;

@@ -35,18 +35,18 @@ class CanvasDraw extends DebugDraw {
     _setColor(color);
     // TODO(gregbglw): Do a single ctx transform rather than convert all of
     // these vectors.
-    vertices = vertices.map(getWorldToScreen).toList();
+    final screenVertices = vertices.map(getWorldToScreen).toList();
 
     ctx.beginPath();
-    ctx.moveTo(vertices[0].x, vertices[0].y);
+    ctx.moveTo(screenVertices[0].x, screenVertices[0].y);
 
     // Draw lines to all of the remaining points.
-    for (var i = 1; i < vertices.length; ++i) {
-      ctx.lineTo(vertices[i].x, vertices[i].y);
+    for (final vertex in screenVertices) {
+      ctx.lineTo(vertex.x, vertex.y);
     }
 
     // Draw a line back to the starting point.
-    ctx.lineTo(vertices[0].x, vertices[0].y);
+    ctx.lineTo(screenVertices[0].x, screenVertices[0].y);
 
     // Close the drawn polygon ready for fill/stroke
     ctx.closePath();
@@ -56,12 +56,12 @@ class CanvasDraw extends DebugDraw {
   @override
   void drawSegment(Vector2 p1, Vector2 p2, Color3i color) {
     _setColor(color);
-    p1 = getWorldToScreen(p1);
-    p2 = getWorldToScreen(p2);
+    final screenP1 = getWorldToScreen(p1);
+    final screenP2 = getWorldToScreen(p2);
 
     ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
+    ctx.moveTo(screenP1.x, screenP1.y);
+    ctx.lineTo(screenP2.x, screenP2.y);
     ctx.closePath();
     ctx.stroke();
   }
@@ -69,16 +69,16 @@ class CanvasDraw extends DebugDraw {
   /// Draw a circle.
   @override
   void drawCircle(Vector2 center, num radius, Color3i color) {
-    radius *= viewport.scale;
-    _pathCircle(center, radius, color);
+    final screenRadius = radius * viewport.scale;
+    _pathCircle(center, screenRadius, color);
     ctx.stroke();
   }
 
   /// Draw a solid circle.
   @override
   void drawSolidCircle(Vector2 center, num radius, Color3i color) {
-    radius *= viewport.scale;
-    drawPoint(center, radius, color);
+    final screenRadius = radius * viewport.scale;
+    drawPoint(center, screenRadius, color);
   }
 
   /// Draws the given point with the given *unscaled* radius, in the given [color].
@@ -101,8 +101,7 @@ class CanvasDraw extends DebugDraw {
     ctx.closePath();
   }
 
-  /// Draw a transform. Choose your own length scale. WARNING: This mutates
-  /// [xf.position].
+  /// Draw a transform. Choose your own length scale.
   @override
   void drawTransform(Transform xf, Color3i color) {
     drawCircle(xf.p, 0.1, color);

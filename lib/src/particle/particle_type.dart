@@ -1,5 +1,3 @@
-import '../../forge2d.dart';
-
 /// The particle type. Can be combined with | operator. Zero means liquid.
 class ParticleType {
   static const int waterParticle = 0;

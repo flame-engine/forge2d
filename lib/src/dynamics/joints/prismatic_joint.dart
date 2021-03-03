@@ -125,7 +125,7 @@ class PrismaticJoint extends Joint {
     _motorSpeed = def.motorSpeed;
     _enableLimit = def.enableLimit;
     _enableMotor = def.enableMotor;
-    _limitState = LimitState.INACTIVE;
+    _limitState = LimitState.inactive;
   }
 
   @override
@@ -148,9 +148,6 @@ class PrismaticJoint extends Joint {
 
   /// Get the current joint translation, usually in meters.
   double getJointSpeed() {
-    final bA = bodyA;
-    final bB = bodyB;
-
     final temp = Vector2.zero();
     final rA = Vector2.zero();
     final rB = Vector2.zero();
@@ -163,30 +160,30 @@ class PrismaticJoint extends Joint {
 
     temp
       ..setFrom(localAnchorA)
-      ..sub(bA.sweep.localCenter);
-    rA.setFrom(Rot.mulVec2(bA.transform.q, temp));
+      ..sub(bodyA.sweep.localCenter);
+    rA.setFrom(Rot.mulVec2(bodyA.transform.q, temp));
 
     temp
       ..setFrom(localAnchorB)
-      ..sub(bB.sweep.localCenter);
-    rB.setFrom(Rot.mulVec2(bB.transform.q, temp));
+      ..sub(bodyB.sweep.localCenter);
+    rB.setFrom(Rot.mulVec2(bodyB.transform.q, temp));
 
     p1
-      ..setFrom(bA.sweep.c)
+      ..setFrom(bodyA.sweep.c)
       ..add(rA);
     p2
-      ..setFrom(bB.sweep.c)
+      ..setFrom(bodyB.sweep.c)
       ..add(rB);
 
     d
       ..setFrom(p2)
       ..sub(p1);
-    axis.setFrom(Rot.mulVec2(bA.transform.q, localXAxisA));
+    axis.setFrom(Rot.mulVec2(bodyA.transform.q, localXAxisA));
 
-    final vA = bA.linearVelocity;
-    final vB = bB.linearVelocity;
-    final wA = bA.angularVelocity;
-    final wB = bB.angularVelocity;
+    final vA = bodyA.linearVelocity;
+    final vB = bodyB.linearVelocity;
+    final wA = bodyA.angularVelocity;
+    final wB = bodyB.angularVelocity;
 
     axis.scaleOrthogonalInto(wA, temp);
     rB.scaleOrthogonalInto(wB, temp2);
@@ -202,9 +199,9 @@ class PrismaticJoint extends Joint {
   }
 
   double getJointTranslation() {
-    final Vector2 pA = Vector2.zero(),
-        pB = Vector2.zero(),
-        axis = Vector2.zero();
+    final pA = Vector2.zero();
+    final pB = Vector2.zero();
+    final axis = Vector2.zero();
     pA.setFrom(bodyA.getWorldPoint(localAnchorA));
     pB.setFrom(bodyB.getWorldPoint(localAnchorB));
     axis.setFrom(bodyA.getWorldVector(localXAxisA));
@@ -368,8 +365,10 @@ class PrismaticJoint extends Joint {
       ..add(rB)
       ..sub(rA);
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     // Compute motor Jacobian and effective mass.
     {
@@ -415,23 +414,23 @@ class PrismaticJoint extends Joint {
       final jointTranslation = _axis.dot(d);
       if ((_upperTranslation - _lowerTranslation).abs() <
           2.0 * settings.linearSlop) {
-        _limitState = LimitState.EQUAL;
+        _limitState = LimitState.equal;
       } else if (jointTranslation <= _lowerTranslation) {
-        if (_limitState != LimitState.AT_LOWER) {
-          _limitState = LimitState.AT_LOWER;
+        if (_limitState != LimitState.atLower) {
+          _limitState = LimitState.atLower;
           _impulse.z = 0.0;
         }
       } else if (jointTranslation >= _upperTranslation) {
-        if (_limitState != LimitState.AT_UPPER) {
-          _limitState = LimitState.AT_UPPER;
+        if (_limitState != LimitState.atUpper) {
+          _limitState = LimitState.atUpper;
           _impulse.z = 0.0;
         }
       } else {
-        _limitState = LimitState.INACTIVE;
+        _limitState = LimitState.inactive;
         _impulse.z = 0.0;
       }
     } else {
-      _limitState = LimitState.INACTIVE;
+      _limitState = LimitState.inactive;
       _impulse.z = 0.0;
     }
 
@@ -483,13 +482,15 @@ class PrismaticJoint extends Joint {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final temp = Vector2.zero();
 
     // Solve linear motor constraint.
-    if (_enableMotor && _limitState != LimitState.EQUAL) {
+    if (_enableMotor && _limitState != LimitState.equal) {
       temp
         ..setFrom(vB)
         ..sub(vA);
@@ -524,7 +525,7 @@ class PrismaticJoint extends Joint {
     cDot1.x = _perp.dot(temp) + _s2 * wB - _s1 * wA;
     cDot1.y = wB - wA;
 
-    if (_enableLimit && _limitState != LimitState.INACTIVE) {
+    if (_enableLimit && _limitState != LimitState.inactive) {
       // Solve prismatic and limit constraint in block form.
       final cDot2 = _axis.dot(vB - vA) + _a2 * wB - _a1 * wA;
       final cDot = Vector3(cDot1.x, cDot1.y, cDot2);
@@ -537,9 +538,9 @@ class PrismaticJoint extends Joint {
       // Cdot.negateLocal(); not used anymore
       _impulse.add(df);
 
-      if (_limitState == LimitState.AT_LOWER) {
+      if (_limitState == LimitState.atLower) {
         _impulse.z = max(_impulse.z, 0.0);
-      } else if (_limitState == LimitState.AT_UPPER) {
+      } else if (_limitState == LimitState.atUpper) {
         _impulse.z = min(_impulse.z, 0.0);
       }
 
@@ -637,8 +638,10 @@ class PrismaticJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     // Compute fresh Jacobians
     temp

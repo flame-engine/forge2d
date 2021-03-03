@@ -1,12 +1,10 @@
 import 'dart:math' as math;
 
-import '../../forge2d.dart';
-
 class ProfileEntry {
-  static const int _LONG_AVG_NUMS = 20;
-  static const double _LONG_FRACTION = 1.0 / _LONG_AVG_NUMS;
-  static const int _SHORT_AVG_NUMS = 5;
-  static const double _SHORT_FRACTION = 1.0 / _SHORT_AVG_NUMS;
+  static const int _longAvgNums = 20;
+  static const double _longFraction = 1.0 / _longAvgNums;
+  static const int _shortAvgNums = 5;
+  static const double _shortFraction = 1.0 / _shortAvgNums;
 
   double longAvg = 0.0;
   double shortAvg = 0.0;
@@ -15,8 +13,8 @@ class ProfileEntry {
   double _accum = 0.0;
 
   void record(double value) {
-    longAvg = longAvg * (1 - _LONG_FRACTION) + value * _LONG_FRACTION;
-    shortAvg = shortAvg * (1 - _SHORT_FRACTION) + value * _SHORT_FRACTION;
+    longAvg = longAvg * (1 - _longFraction) + value * _longFraction;
+    shortAvg = shortAvg * (1 - _shortFraction) + value * _shortFraction;
     min = math.min(value, min);
     max = math.max(value, max);
   }

@@ -76,8 +76,8 @@ class GearJoint extends Joint {
         _bodyC = def.joint1.bodyA,
         _bodyD = def.joint2.bodyA,
         super(def) {
-    assert(_typeA == JointType.REVOLUTE || _typeA == JointType.PRISMATIC);
-    assert(_typeB == JointType.REVOLUTE || _typeB == JointType.PRISMATIC);
+    assert(_typeA == JointType.revolute || _typeA == JointType.prismatic);
+    assert(_typeB == JointType.revolute || _typeB == JointType.prismatic);
 
     double coordinateA, coordinateB;
 
@@ -90,7 +90,7 @@ class GearJoint extends Joint {
     final xfC = _bodyC.transform;
     final aC = _bodyC.sweep.a;
 
-    if (_typeA == JointType.REVOLUTE) {
+    if (_typeA == JointType.revolute) {
       final revolute = def.joint1 as RevoluteJoint;
       _localAnchorC.setFrom(revolute.localAnchorA);
       localAnchorA.setFrom(revolute.localAnchorB);
@@ -124,7 +124,7 @@ class GearJoint extends Joint {
     final xfD = _bodyD.transform;
     final aD = _bodyD.sweep.a;
 
-    if (_typeB == JointType.REVOLUTE) {
+    if (_typeB == JointType.revolute) {
       final revolute = def.joint2 as RevoluteJoint;
       _localAnchorD.setFrom(revolute.localAnchorA);
       localAnchorB.setFrom(revolute.localAnchorB);
@@ -226,7 +226,7 @@ class GearJoint extends Joint {
 
     final temp = Vector2.zero();
 
-    if (_typeA == JointType.REVOLUTE) {
+    if (_typeA == JointType.revolute) {
       _jvAC.setZero();
       _jwA = 1.0;
       _jwC = 1.0;
@@ -248,7 +248,7 @@ class GearJoint extends Joint {
       _mass += _mC + _mA + _iC * _jwC * _jwC + _iA * _jwA * _jwA;
     }
 
-    if (_typeB == JointType.REVOLUTE) {
+    if (_typeB == JointType.revolute) {
       _jvBD.setZero();
       _jwB = _ratio;
       _jwD = _ratio;
@@ -393,7 +393,7 @@ class GearJoint extends Joint {
     double jwA, jwB, jwC, jwD;
     var mass = 0.0;
 
-    if (_typeA == JointType.REVOLUTE) {
+    if (_typeA == JointType.revolute) {
       jvBC.setZero();
       jwA = 1.0;
       jwC = 1.0;
@@ -429,7 +429,7 @@ class GearJoint extends Joint {
       coordinateA = (pA..sub(pC)).dot(_localAxisC);
     }
 
-    if (_typeB == JointType.REVOLUTE) {
+    if (_typeB == JointType.revolute) {
       jvBD.setZero();
       jwB = _ratio;
       jwD = _ratio;

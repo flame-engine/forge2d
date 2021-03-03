@@ -55,8 +55,7 @@ class ViewportTransform {
     final translationCorrectedX = argScreen.x - translation.x;
     final translationCorrectedY = argScreen.y + translation.y;
     final gridCorrectedX = (translationCorrectedX - extents.x) / scale;
-    final gridCorrectedY =
-        ((translationCorrectedY - extents.y) * -1) / scale;
+    final gridCorrectedY = ((translationCorrectedY - extents.y) * -1) / scale;
     return Vector2(gridCorrectedX, gridCorrectedY);
   }
 }

@@ -8,14 +8,14 @@ class FrictionJointDef extends JointDef {
   /// The maximum friction torque in N-m.
   double maxTorque = 0.0;
 
-  FrictionJointDef() : super(JointType.FRICTION);
+  FrictionJointDef() : super(JointType.friction);
 
   /// Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
   /// axis.
-  void initialize(Body bA, Body bB, Vector2 anchor) {
-    bodyA = bA;
-    bodyB = bB;
-    localAnchorA.setFrom(bA.getLocalPoint(anchor));
-    localAnchorB.setFrom(bB.getLocalPoint(anchor));
+  void initialize(Body bodyA, Body bodyB, Vector2 anchor) {
+    this.bodyA = bodyA;
+    this.bodyB = bodyB;
+    localAnchorA.setFrom(bodyA.getLocalPoint(anchor));
+    localAnchorB.setFrom(bodyB.getLocalPoint(anchor));
   }
 }

@@ -31,7 +31,7 @@ class RopeJoint extends Joint {
   double _invIA = 0.0;
   double _invIB = 0.0;
   double _mass = 0.0;
-  LimitState _state = LimitState.INACTIVE;
+  LimitState _state = LimitState.inactive;
 
   RopeJoint(RopeJointDef def) : super(def) {
     localAnchorA.setFrom(def.localAnchorA);
@@ -88,9 +88,9 @@ class RopeJoint extends Joint {
 
     final c = _length - _maxLength;
     if (c > 0.0) {
-      _state = LimitState.AT_UPPER;
+      _state = LimitState.atUpper;
     } else {
-      _state = LimitState.INACTIVE;
+      _state = LimitState.inactive;
     }
 
     if (_length > settings.linearSlop) {

@@ -1,5 +1,3 @@
-import '../../forge2d.dart';
-
 /// This holds contact filtering data.
 class Filter {
   /// The collision category bits. Normally you would just set one bit.

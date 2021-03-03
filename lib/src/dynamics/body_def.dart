@@ -5,7 +5,7 @@ import '../../forge2d.dart';
 class BodyDef {
   /// The body type: static, kinematic, or dynamic. Note: if a dynamic body would have zero mass, the
   /// mass is set to one.
-  BodyType type = BodyType.STATIC;
+  BodyType type = BodyType.static;
 
   /// Use this to store application specific body data.
   Object userData;

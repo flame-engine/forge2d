@@ -7,7 +7,7 @@ import '../../settings.dart' as settings;
 /// when combined with prismatic joints. You should also cover the the anchor points with static
 /// shapes to prevent one side from going to zero length.
 class PulleyJoint extends Joint {
-  static const double MIN_PULLEY_LENGTH = 2.0;
+  static const double minPulleyLength = 2.0;
 
   final Vector2 _groundAnchorA = Vector2.zero();
   final Vector2 _groundAnchorB = Vector2.zero();

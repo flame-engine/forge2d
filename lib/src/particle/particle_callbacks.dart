@@ -43,14 +43,10 @@ class UpdateBodyContactsCallback implements QueryCallback {
     final childCount = shape.getChildCount();
     for (var childIndex = 0; childIndex < childCount; childIndex++) {
       final aabb = fixture.getAABB(childIndex);
-      final aabbLowerBoundX =
-          aabb.lowerBound.x - system.particleDiameter;
-      final aabbLowerBoundY =
-          aabb.lowerBound.y - system.particleDiameter;
-      final aabbUpperBoundX =
-          aabb.upperBound.x + system.particleDiameter;
-      final aabbUpperBoundY =
-          aabb.upperBound.y + system.particleDiameter;
+      final aabbLowerBoundX = aabb.lowerBound.x - system.particleDiameter;
+      final aabbLowerBoundY = aabb.lowerBound.y - system.particleDiameter;
+      final aabbUpperBoundX = aabb.upperBound.x + system.particleDiameter;
+      final aabbUpperBoundY = aabb.upperBound.y + system.particleDiameter;
       final firstProxy = ParticleSystem.lowerBound(
         system.proxyBuffer,
         ParticleSystem.computeTag(
@@ -81,10 +77,9 @@ class UpdateBodyContactsCallback implements QueryCallback {
           final n = _tempVec;
           d = fixture.computeDistance(ap, childIndex, n);
           if (d < system.particleDiameter) {
-            final invAm =
-                (particle.flags & ParticleType.wallParticle) != 0
-                    ? 0.0
-                    : system.getParticleInvMass();
+            final invAm = (particle.flags & ParticleType.wallParticle) != 0
+                ? 0.0
+                : system.particleInverseMass;
             final rpx = ap.x - bp.x;
             final rpy = ap.y - bp.y;
             final rpn = rpx * n.y - rpy * n.x;
@@ -162,7 +157,7 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
       final af = particleA.flags;
       final bf = particleB.flags;
       final cf = particleC.flags;
-      if ((af & bf & cf & ParticleSystem.k_triadFlags) != 0) {
+      if ((af & bf & cf & ParticleSystem.triadFlags) != 0) {
         final pa = particleA.position;
         final pb = particleB.position;
         final pc = particleC.position;
@@ -266,7 +261,7 @@ class SolveCollisionCallback implements QueryCallback {
             final vy = step.invDt * (p.y - ap.y);
             av.x = vx;
             av.y = vy;
-            final particleMass = system.getParticleMass();
+            final particleMass = system.particleMass;
             final ax = particleMass * (av.x - vx);
             final ay = particleMass * (av.y - vy);
             final b = output.normal;

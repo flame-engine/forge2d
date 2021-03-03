@@ -32,7 +32,7 @@ class PrismaticJointDef extends JointDef {
   /// The desired motor speed in radians per second.
   double motorSpeed = 0.0;
 
-  PrismaticJointDef() : super(JointType.PRISMATIC);
+  PrismaticJointDef() : super(JointType.prismatic);
 
   /// Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
   /// axis.

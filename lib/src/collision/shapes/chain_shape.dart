@@ -15,7 +15,7 @@ class ChainShape extends Shape {
   bool _hasPrevVertex = false;
   bool _hasNextVertex = false;
 
-  ChainShape() : super(ShapeType.CHAIN) {
+  ChainShape() : super(ShapeType.chain) {
     radius = settings.polygonRadius;
   }
 

@@ -1,5 +1,3 @@
-import '../../forge2d.dart';
-
 /// Callback for {@link DynamicTree}
 abstract class TreeCallback {
   /// Callback from a query request.

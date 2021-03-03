@@ -14,5 +14,5 @@ class GearJointDef extends JointDef {
   /// @see GearJoint
   double ratio = 0.0;
 
-  GearJointDef() : super(JointType.GEAR);
+  GearJointDef() : super(JointType.gear);
 }

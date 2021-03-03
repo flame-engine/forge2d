@@ -10,7 +10,7 @@ class ConstantVolumeJointDef extends JointDef {
   final List<Body> bodies = <Body>[];
   final List<DistanceJoint> joints = [];
 
-  ConstantVolumeJointDef() : super(JointType.CONSTANT_VOLUME) {
+  ConstantVolumeJointDef() : super(JointType.constantVolume) {
     collideConnected = false;
   }
 

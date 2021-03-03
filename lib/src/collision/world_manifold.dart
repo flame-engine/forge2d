@@ -29,7 +29,7 @@ class WorldManifold {
     }
 
     switch (manifold.type) {
-      case ManifoldType.CIRCLES:
+      case ManifoldType.circles:
         {
           final pointA = _pool3;
           final pointB = _pool4;
@@ -44,7 +44,7 @@ class WorldManifold {
           pointB.y = (xfB.q.s * mp0p.x + xfB.q.c * mp0p.y) + xfB.p.y;
 
           if (pointA.distanceToSquared(pointB) >
-              settings.EPSILON * settings.EPSILON) {
+              settings.epsilon * settings.epsilon) {
             normal.x = pointB.x - pointA.x;
             normal.y = pointB.y - pointA.y;
             normal.normalize();
@@ -61,7 +61,7 @@ class WorldManifold {
           separations[0] = (cBx - cAx) * normal.x + (cBy - cAy) * normal.y;
         }
         break;
-      case ManifoldType.FACE_A:
+      case ManifoldType.faceA:
         {
           final planePoint = _pool3;
 
@@ -90,7 +90,7 @@ class WorldManifold {
           }
         }
         break;
-      case ManifoldType.FACE_B:
+      case ManifoldType.faceB:
         final planePoint = _pool3;
         normal.setFrom(Rot.mulVec2(xfB.q, manifold.localNormal));
         planePoint.setFrom(Transform.mulVec2(xfB, manifold.localPoint));

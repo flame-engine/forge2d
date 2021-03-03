@@ -9,7 +9,7 @@ class Tire {
   Tire(World world, this._maxForwardSpeed, this._maxBackwardSpeed,
       this._maxDriveForce, this._maxLateralImpulse) {
     final def = BodyDef();
-    def.type = BodyType.DYNAMIC;
+    def.type = BodyType.dynamic;
     body = world.createBody(def);
     body.userData = 'Tire';
 
@@ -54,11 +54,11 @@ class Tire {
 
   void updateDrive(int controlState) {
     var desiredSpeed = 0.0;
-    switch (controlState & (ControlState.UP | ControlState.DOWN)) {
-      case ControlState.UP:
+    switch (controlState & (ControlState.up | ControlState.down)) {
+      case ControlState.up:
         desiredSpeed = _maxForwardSpeed;
         break;
-      case ControlState.DOWN:
+      case ControlState.down:
         desiredSpeed = _maxBackwardSpeed;
         break;
       default:
@@ -81,11 +81,11 @@ class Tire {
 
   void updateTurn(int controlState) {
     var desiredTorque = 0.0;
-    switch (controlState & (ControlState.LEFT | ControlState.RIGHT)) {
-      case ControlState.LEFT:
+    switch (controlState & (ControlState.left | ControlState.right)) {
+      case ControlState.left:
         desiredTorque = 15.0;
         break;
-      case ControlState.RIGHT:
+      case ControlState.right:
         desiredTorque = -15.0;
         break;
     }

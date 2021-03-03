@@ -4,7 +4,7 @@ import 'dart:typed_data';
 List<T> reallocateBufferWithAlloc<T>(
   List<T> oldBuffer,
   int newCapacity,
-  T alloc(),
+  T Function() alloc,
 ) {
   assert(newCapacity > oldBuffer.length);
   return oldBuffer +

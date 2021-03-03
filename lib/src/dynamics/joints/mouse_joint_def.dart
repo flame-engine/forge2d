@@ -15,5 +15,5 @@ class MouseJointDef extends JointDef {
   /// The damping ratio. 0 = no damping, 1 = critical damping.
   double dampingRatio = .7;
 
-  MouseJointDef() : super(JointType.MOUSE);
+  MouseJointDef() : super(JointType.mouse);
 }

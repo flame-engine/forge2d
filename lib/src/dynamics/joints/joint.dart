@@ -5,31 +5,31 @@ import '../../../forge2d.dart';
 abstract class Joint {
   static Joint create(World world, JointDef def) {
     switch (def.type) {
-      case JointType.MOUSE:
+      case JointType.mouse:
         return MouseJoint(def as MouseJointDef);
-      case JointType.DISTANCE:
+      case JointType.distance:
         return DistanceJoint(def as DistanceJointDef);
-      case JointType.PRISMATIC:
+      case JointType.prismatic:
         return PrismaticJoint(def as PrismaticJointDef);
-      case JointType.REVOLUTE:
+      case JointType.revolute:
         return RevoluteJoint(def as RevoluteJointDef);
-      case JointType.WELD:
+      case JointType.weld:
         return WeldJoint(def as WeldJointDef);
-      case JointType.FRICTION:
+      case JointType.friction:
         return FrictionJoint(def as FrictionJointDef);
-      case JointType.WHEEL:
+      case JointType.wheel:
         return WheelJoint(def as WheelJointDef);
-      case JointType.GEAR:
+      case JointType.gear:
         return GearJoint(def as GearJointDef);
-      case JointType.PULLEY:
+      case JointType.pulley:
         return PulleyJoint(def as PulleyJointDef);
-      case JointType.CONSTANT_VOLUME:
+      case JointType.constantVolume:
         return ConstantVolumeJoint(world, def as ConstantVolumeJointDef);
-      case JointType.ROPE:
+      case JointType.rope:
         return RopeJoint(def as RopeJointDef);
-      case JointType.MOTOR:
+      case JointType.motor:
         return MotorJoint(def as MotorJointDef);
-      case JointType.UNKNOWN:
+      case JointType.unknown:
       default:
         return null;
     }

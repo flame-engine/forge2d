@@ -22,7 +22,7 @@ class Car {
 
   Car(World world) {
     final def = BodyDef();
-    def.type = BodyType.DYNAMIC;
+    def.type = BodyType.dynamic;
     _body = world.createBody(def);
     _body.userData = 'Car';
     _body.angularDamping = 3.0;
@@ -90,11 +90,11 @@ class Car {
 
   void _updateSteering(num time, int controlState) {
     var desiredAngle = 0.0;
-    switch (controlState & (ControlState.LEFT | ControlState.RIGHT)) {
-      case ControlState.LEFT:
+    switch (controlState & (ControlState.left | ControlState.right)) {
+      case ControlState.left:
         desiredAngle = _lockAngle;
         break;
-      case ControlState.RIGHT:
+      case ControlState.right:
         desiredAngle = -_lockAngle;
         break;
     }

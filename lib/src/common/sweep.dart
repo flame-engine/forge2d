@@ -13,7 +13,8 @@ class Sweep {
   final Vector2 c0 = Vector2.zero(), c = Vector2.zero();
 
   /// World angles
-  double a0 = 0.0, a = 0.0;
+  double a0 = 0.0;
+  double a = 0.0;
 
   /// Fraction of the current time step in the range [0,1] c0 and a0 are the positions at alpha0.
   double alpha0 = 0.0;

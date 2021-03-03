@@ -1,7 +1,8 @@
 import 'dart:math';
-import 'demo.dart';
 
 import 'package:forge2d/forge2d.dart';
+
+import 'demo.dart';
 
 class BoxTest extends Demo {
   /// Constructs a new BoxTest.
@@ -58,7 +59,7 @@ class BoxTest extends Demo {
 
     // Define body
     final bodyDef = BodyDef();
-    bodyDef.type = BodyType.DYNAMIC;
+    bodyDef.type = BodyType.dynamic;
     bodyDef.position = Vector2(0.0, 30.0);
 
     // Create body and fixture from definitions

@@ -114,8 +114,10 @@ class WeldJoint extends Joint {
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final K = Matrix3.zero();
 
@@ -190,8 +192,10 @@ class WeldJoint extends Joint {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final cDot1 = Vector2.zero();
     final p = Vector2.zero();
@@ -269,8 +273,10 @@ class WeldJoint extends Joint {
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final temp = Vector2.copy(localAnchorA)..sub(_localCenterA);
     final rA = Vector2.copy(Rot.mulVec2(qA, temp));
@@ -374,19 +380,19 @@ class WeldJoint extends Joint {
 
   /// Returns the zero matrix if singular.
   Matrix3 _matrix3GetSymInverse33(Matrix3 m, Matrix3 m2) {
-    final bx =
-        m.entry(1, 1) * m.entry(2, 2) - m.entry(2, 1) * m.entry(1, 2);
-    final by =
-        m.entry(2, 1) * m.entry(0, 2) - m.entry(0, 1) * m.entry(2, 2);
-    final bz =
-        m.entry(0, 1) * m.entry(1, 2) - m.entry(1, 1) * m.entry(0, 2);
+    final bx = m.entry(1, 1) * m.entry(2, 2) - m.entry(2, 1) * m.entry(1, 2);
+    final by = m.entry(2, 1) * m.entry(0, 2) - m.entry(0, 1) * m.entry(2, 2);
+    final bz = m.entry(0, 1) * m.entry(1, 2) - m.entry(1, 1) * m.entry(0, 2);
     var det = m.entry(0, 0) * bx + m.entry(1, 0) * by + m.entry(2, 0) * bz;
     if (det != 0.0) {
       det = 1.0 / det;
     }
 
-    final double a11 = m.entry(0, 0), a12 = m.entry(0, 1), a13 = m.entry(0, 2);
-    final double a22 = m.entry(1, 1), a23 = m.entry(1, 2);
+    final a11 = m.entry(0, 0);
+    final a12 = m.entry(0, 1);
+    final a13 = m.entry(0, 2);
+    final a22 = m.entry(1, 1);
+    final a23 = m.entry(1, 2);
     final a33 = m.entry(2, 2);
 
     final exX = det * (a22 * a33 - a23 * a23);

@@ -1,7 +1,8 @@
 import 'dart:math';
 
-import 'demo.dart';
 import 'package:forge2d/forge2d_browser.dart';
+
+import 'demo.dart';
 
 class FrictionJointTest extends Demo {
   FrictionJointTest() : super('FrictionJoint test');
@@ -62,7 +63,7 @@ class FrictionJointTest extends Demo {
   void _createBox() {
     // Define body
     final bodyDef = BodyDef();
-    bodyDef.type = BodyType.DYNAMIC;
+    bodyDef.type = BodyType.dynamic;
     bodyDef.position = Vector2(-10.0, 30.0);
 
     // Create body and fixture from definitions
@@ -76,7 +77,7 @@ class FrictionJointTest extends Demo {
   void _createFrictionBox() {
     // Define body
     final bodyDef = BodyDef();
-    bodyDef.type = BodyType.DYNAMIC;
+    bodyDef.type = BodyType.dynamic;
     bodyDef.position = Vector2(10.0, 30.0);
 
     // Create body and fixture from definitions

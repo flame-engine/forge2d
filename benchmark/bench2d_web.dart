@@ -12,9 +12,9 @@ void main() {
 }
 
 class Bench2dWeb extends Bench2d {
-  static const int CANVAS_WIDTH = 900;
-  static const int CANVAS_HEIGHT = 600;
-  static const double _VIEWPORT_SCALE = 10.0;
+  static const int canvasWidth = 900;
+  static const int canvasHeight = 600;
+  static const double _viewportScale = 10.0;
 
   CanvasElement canvas;
   CanvasRenderingContext2D ctx;
@@ -26,16 +26,16 @@ class Bench2dWeb extends Bench2d {
   void initializeAnimation() {
     // Setup the canvas.
     canvas = CanvasElement()
-      ..width = CANVAS_WIDTH
-      ..height = CANVAS_HEIGHT;
+      ..width = canvasWidth
+      ..height = canvasHeight;
 
     ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     document.body.append(canvas);
 
     // Create the viewport transform with the center at extents.
-    final extents = Vector2(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+    final extents = Vector2(canvasWidth / 2, canvasHeight / 2);
     viewport = CanvasViewportTransform(extents, extents)
-      ..scale = _VIEWPORT_SCALE;
+      ..scale = _viewportScale;
 
     // Create our canvas drawing tool to give to the world.
     debugDraw = CanvasDraw(viewport, ctx);
@@ -49,7 +49,7 @@ class Bench2dWeb extends Bench2d {
   void render(num delta) {
     super.step();
 
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     world.drawDebugData();
     window.animationFrame.then(render);
   }

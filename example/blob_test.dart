@@ -50,7 +50,7 @@ class BlobTest extends Demo {
       final x = cx + rx * sin(angle);
       final y = cy + ry * cos(angle);
       bd.position.setFrom(Vector2(x, y));
-      bd.type = BodyType.DYNAMIC;
+      bd.type = BodyType.dynamic;
       final body = world.createBody(bd);
 
       final fd = FixtureDef();
@@ -69,7 +69,7 @@ class BlobTest extends Demo {
     world.createJoint(jointDef);
 
     final bd2 = BodyDef();
-    bd2.type = BodyType.DYNAMIC;
+    bd2.type = BodyType.dynamic;
     final psd = PolygonShape();
     psd.setAsBox(3.0, 1.5, Vector2(cx, cy + 15.0), 0.0);
     bd2.position = Vector2(cx, cy + 15.0);

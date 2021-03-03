@@ -10,17 +10,17 @@ import '../../callbacks/contact_listener.dart';
 abstract class Contact {
   // Flags stored in _flags
   // Used when crawling contact graph when forming islands.
-  static const int ISLAND_FLAG = 0x0001;
+  static const int islandFlag = 0x0001;
   // Set when the shapes are touching.
-  static const int TOUCHING_FLAG = 0x0002;
+  static const int touchingFlag = 0x0002;
   // This contact can be disabled (by user)
-  static const int ENABLED_FLAG = 0x0004;
+  static const int enabledFlag = 0x0004;
   // This contact needs filtering because a fixture filter was changed.
-  static const int FILTER_FLAG = 0x0008;
+  static const int filterFlag = 0x0008;
   // This bullet contact had a TOI event
-  static const int BULLET_HIT_FLAG = 0x0010;
+  static const int bulletHitFlag = 0x0010;
 
-  static const int TOI_FLAG = 0x0020;
+  static const int toiFlag = 0x0020;
 
   int flags = 0;
 
@@ -51,7 +51,7 @@ abstract class Contact {
   double tangentSpeed = 0.0;
 
   Contact(this.fixtureA, this.indexA, this.fixtureB, this.indexB) {
-    flags = ENABLED_FLAG;
+    flags = enabledFlag;
     manifold.pointCount = 0;
     _friction = Contact.mixFriction(
       fixtureA.friction,
@@ -63,38 +63,65 @@ abstract class Contact {
     );
   }
 
-  static Contact init(Fixture fA, int indexA, Fixture fB, int indexB) {
+  static Contact init(
+    Fixture fixtureA,
+    int indexA,
+    Fixture fixtureB,
+    int indexB,
+  ) {
     // Remember that we use the order in the enum here to determine in which
     // order the arguments should come in the different contact classes.
     // { CIRCLE, EDGE, POLYGON, CHAIN }
     /// TODO.spydon: Clean this mess up.
-    final typeA =
-        fA.getType().index < fB.getType().index ? fA.getType() : fB.getType();
-    final typeB = fA.getType() == typeA ? fB.getType() : fA.getType();
+    final typeA = fixtureA.getType().index < fixtureB.getType().index
+        ? fixtureA.getType()
+        : fixtureB.getType();
+    final typeB =
+        fixtureA.getType() == typeA ? fixtureB.getType() : fixtureA.getType();
     final indexTemp = indexA;
-    indexA = fA.getType() == typeA ? indexA : indexB;
-    indexB = fB.getType() == typeB ? indexB : indexTemp;
-    final temp = fA;
-    fA = fA.getType() == typeA ? fA : fB;
-    fB = fB.getType() == typeB ? fB : temp;
+    final firstIndex = fixtureA.getType() == typeA ? indexA : indexB;
+    final secondIndex = fixtureB.getType() == typeB ? indexB : indexTemp;
+    final temp = fixtureA;
+    final firstFixture = fixtureA.getType() == typeA ? fixtureA : fixtureB;
+    final secondFixture = fixtureB.getType() == typeB ? fixtureB : temp;
 
-    if (typeA == ShapeType.CIRCLE && typeB == ShapeType.CIRCLE) {
-      return CircleContact(fA, fB);
-    } else if (typeA == ShapeType.POLYGON && typeB == ShapeType.POLYGON) {
-      return PolygonContact(fA, fB);
-    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.POLYGON) {
-      return PolygonAndCircleContact(fB, fA);
-    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.EDGE) {
-      return EdgeAndCircleContact(fB, indexB, fA, indexA);
-    } else if (typeA == ShapeType.EDGE && typeB == ShapeType.POLYGON) {
-      return EdgeAndPolygonContact(fA, indexA, fB, indexB);
-    } else if (typeA == ShapeType.CIRCLE && typeB == ShapeType.CHAIN) {
-      return ChainAndCircleContact(fB, indexB, fA, indexA);
-    } else if (typeA == ShapeType.POLYGON && typeB == ShapeType.CHAIN) {
-      return ChainAndPolygonContact(fB, indexB, fA, indexA);
+    if (typeA == ShapeType.circle && typeB == ShapeType.circle) {
+      return CircleContact(firstFixture, secondFixture);
+    } else if (typeA == ShapeType.polygon && typeB == ShapeType.polygon) {
+      return PolygonContact(firstFixture, secondFixture);
+    } else if (typeA == ShapeType.circle && typeB == ShapeType.polygon) {
+      return PolygonAndCircleContact(secondFixture, firstFixture);
+    } else if (typeA == ShapeType.circle && typeB == ShapeType.edge) {
+      return EdgeAndCircleContact(
+        secondFixture,
+        secondIndex,
+        firstFixture,
+        firstIndex,
+      );
+    } else if (typeA == ShapeType.edge && typeB == ShapeType.polygon) {
+      return EdgeAndPolygonContact(
+        firstFixture,
+        firstIndex,
+        secondFixture,
+        secondIndex,
+      );
+    } else if (typeA == ShapeType.circle && typeB == ShapeType.chain) {
+      return ChainAndCircleContact(
+        secondFixture,
+        secondIndex,
+        firstFixture,
+        firstIndex,
+      );
+    } else if (typeA == ShapeType.polygon && typeB == ShapeType.chain) {
+      return ChainAndPolygonContact(
+        secondFixture,
+        secondIndex,
+        firstFixture,
+        firstIndex,
+      );
     } else {
       assert(false, 'Not compatible contact type');
-      return CircleContact(fA, fB);
+      return CircleContact(firstFixture, secondFixture);
     }
   }
 
@@ -119,7 +146,7 @@ abstract class Contact {
   }
 
   /// Is this contact touching
-  bool isTouching() => (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+  bool isTouching() => (flags & touchingFlag) == touchingFlag;
 
   bool representsArguments(
     Fixture fixtureA,
@@ -141,14 +168,14 @@ abstract class Contact {
   /// contact is only disabled for the current time step (or sub-step in continuous collisions).
   void setEnabled(bool enable) {
     if (enable) {
-      flags |= ENABLED_FLAG;
+      flags |= enabledFlag;
     } else {
-      flags &= ~ENABLED_FLAG;
+      flags &= ~enabledFlag;
     }
   }
 
   /// Has this contact been disabled?
-  bool isEnabled() => (flags & ENABLED_FLAG) == ENABLED_FLAG;
+  bool isEnabled() => (flags & enabledFlag) == enabledFlag;
 
   void resetFriction() {
     _friction = Contact.mixFriction(fixtureA.friction, fixtureB.friction);
@@ -163,7 +190,7 @@ abstract class Contact {
 
   /// Flag this contact for filtering. Filtering will occur the next time step.
   void flagForFiltering() {
-    flags |= FILTER_FLAG;
+    flags |= filterFlag;
   }
 
   // djm pooling
@@ -173,10 +200,10 @@ abstract class Contact {
     _oldManifold.set(manifold);
 
     // Re-enable this contact.
-    flags |= ENABLED_FLAG;
+    flags |= enabledFlag;
 
     var touching = false;
-    final wasTouching = (flags & TOUCHING_FLAG) == TOUCHING_FLAG;
+    final wasTouching = (flags & touchingFlag) == touchingFlag;
 
     final sensorA = fixtureA.isSensor;
     final sensorB = fixtureB.isSensor;
@@ -190,8 +217,14 @@ abstract class Contact {
     if (sensor) {
       final shapeA = fixtureA.shape;
       final shapeB = fixtureB.shape;
-      touching =
-          World.collision.testOverlap(shapeA, indexA, shapeB, indexB, xfA, xfB);
+      touching = World.collision.testOverlap(
+        shapeA,
+        indexA,
+        shapeB,
+        indexB,
+        xfA,
+        xfB,
+      );
 
       // Sensors don't generate manifolds.
       manifold.pointCount = 0;
@@ -225,9 +258,9 @@ abstract class Contact {
     }
 
     if (touching) {
-      flags |= TOUCHING_FLAG;
+      flags |= touchingFlag;
     } else {
-      flags &= ~TOUCHING_FLAG;
+      flags &= ~touchingFlag;
     }
 
     if (listener == null) {

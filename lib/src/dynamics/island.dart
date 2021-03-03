@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import '../../forge2d.dart';
-import '../callbacks/contact_listener.dart';
 import '../callbacks/contact_impulse.dart';
+import '../callbacks/contact_listener.dart';
 import '../settings.dart' as settings;
 
 /*
@@ -174,7 +174,7 @@ class Island {
     final dt = step.dt;
 
     // Integrate velocities and apply damping. Initialize the body state.
-    for (var bodyMeta in bodies) {
+    for (final bodyMeta in bodies) {
       final b = bodyMeta.body;
       final bmSweep = b.sweep;
       final c = bmSweep.c;
@@ -186,7 +186,7 @@ class Island {
       bmSweep.c0.setFrom(bmSweep.c);
       bmSweep.a0 = bmSweep.a;
 
-      if (b.bodyType == BodyType.DYNAMIC) {
+      if (b.bodyType == BodyType.dynamic) {
         // Integrate velocities.
         v.x += dt * (b.gravityScale * gravity.x + b.inverseMass * b.force.x);
         v.y += dt * (b.gravityScale * gravity.y + b.inverseMass * b.force.y);
@@ -231,12 +231,12 @@ class Island {
       _contactSolver.warmStart();
     }
 
-    for (var joint in _joints) {
+    for (final joint in _joints) {
       joint.initVelocityConstraints(_solverData);
     }
 
     for (var i = 0; i < step.velocityIterations; ++i) {
-      for (var joint in _joints) {
+      for (final joint in _joints) {
         joint.solveVelocityConstraints(_solverData);
       }
 
@@ -247,7 +247,7 @@ class Island {
     _contactSolver.storeImpulses();
 
     // Integrate positions
-    for (var bodyMeta in bodies) {
+    for (final bodyMeta in bodies) {
       final c = bodyMeta.position.c;
       var a = bodyMeta.position.a;
       final v = bodyMeta.velocity.v;
@@ -286,7 +286,7 @@ class Island {
       final contactsOkay = _contactSolver.solvePositionConstraints();
 
       var jointsOkay = true;
-      for (var joint in _joints) {
+      for (final joint in _joints) {
         final jointOkay = joint.solvePositionConstraints(_solverData);
         jointsOkay = jointsOkay && jointOkay;
       }
@@ -299,7 +299,7 @@ class Island {
     }
 
     // Copy state buffers back to the bodies
-    for (var bodyMeta in bodies) {
+    for (final bodyMeta in bodies) {
       final body = bodyMeta.body;
       body.sweep.c.x = bodyMeta.position.c.x;
       body.sweep.c.y = bodyMeta.position.c.y;
@@ -320,9 +320,9 @@ class Island {
       const angTolSqr =
           settings.angularSleepTolerance * settings.angularSleepTolerance;
 
-      for (var bodyMeta in bodies) {
+      for (final bodyMeta in bodies) {
         final b = bodyMeta.body;
-        if (b.bodyType == BodyType.STATIC) {
+        if (b.bodyType == BodyType.static) {
           continue;
         }
 
@@ -351,7 +351,7 @@ class Island {
     assert(toiIndexB < bodies.length);
 
     // Initialize the body state.
-    for (var bodyMeta in bodies) {
+    for (final bodyMeta in bodies) {
       final body = bodyMeta.body;
       bodyMeta.position.c.x = body.sweep.c.x;
       bodyMeta.position.c.y = body.sweep.c.y;
@@ -399,7 +399,7 @@ class Island {
     final dt = subStep.dt;
 
     // Integrate positions
-    for (var bodyMeta in bodies) {
+    for (final bodyMeta in bodies) {
       final position = bodyMeta.position;
       final velocity = bodyMeta.velocity;
       final c = position.c;
@@ -469,7 +469,7 @@ class Island {
       return;
     }
 
-    for (var contact in _contacts) {
+    for (final contact in _contacts) {
       final vc = contact.velocityConstraint;
       _impulse.count = vc.pointCount;
       for (var j = 0; j < vc.pointCount; ++j) {

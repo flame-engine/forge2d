@@ -101,7 +101,7 @@ class Collision {
 
     World.distance.compute(_output, _cache, _input);
     // djm note: anything significant about 10.0f?
-    return _output.distance < 10.0 * settings.EPSILON;
+    return _output.distance < 10.0 * settings.epsilon;
   }
 
   /// Compute the point states given two manifolds. The states pertain to the transition from
@@ -185,8 +185,8 @@ class Collision {
       // VertexA is hitting edgeB.
       vOutNO.id.indexA = vertexIndexA & 0xFF;
       vOutNO.id.indexB = vIn0.id.indexB;
-      vOutNO.id.typeA = ContactIDType.VERTEX.index & 0xFF;
-      vOutNO.id.typeB = ContactIDType.FACE.index & 0xFF;
+      vOutNO.id.typeA = ContactIDType.vertex.index & 0xFF;
+      vOutNO.id.typeB = ContactIDType.face.index & 0xFF;
       ++numOut;
     }
 
@@ -220,7 +220,7 @@ class Collision {
       return;
     }
 
-    manifold.type = ManifoldType.CIRCLES;
+    manifold.type = ManifoldType.circles;
     manifold.localPoint.setFrom(circle1p);
     manifold.localNormal.setZero();
     manifold.pointCount = 1;
@@ -292,9 +292,9 @@ class Collision {
     final v2 = vertices[vertIndex2];
 
     // If the center is inside the polygon ...
-    if (separation < settings.EPSILON) {
+    if (separation < settings.epsilon) {
       manifold.pointCount = 1;
-      manifold.type = ManifoldType.FACE_A;
+      manifold.type = ManifoldType.faceA;
 
       final normal = normals[normalIndex];
       manifold.localNormal.x = normal.x;
@@ -331,7 +331,7 @@ class Collision {
       }
 
       manifold.pointCount = 1;
-      manifold.type = ManifoldType.FACE_A;
+      manifold.type = ManifoldType.faceA;
       manifold.localNormal.x = cLocalX - v1.x;
       manifold.localNormal.y = cLocalY - v1.y;
       manifold.localNormal.normalize();
@@ -346,7 +346,7 @@ class Collision {
       }
 
       manifold.pointCount = 1;
-      manifold.type = ManifoldType.FACE_A;
+      manifold.type = ManifoldType.faceA;
       manifold.localNormal.x = cLocalX - v2.x;
       manifold.localNormal.y = cLocalY - v2.y;
       manifold.localNormal.normalize();
@@ -366,7 +366,7 @@ class Collision {
       }
 
       manifold.pointCount = 1;
-      manifold.type = ManifoldType.FACE_A;
+      manifold.type = ManifoldType.faceA;
       manifold.localNormal.setFrom(normals[vertIndex1]);
       manifold.localPoint.x = fcx; // (faceCenter)
       manifold.localPoint.y = fcy;
@@ -470,8 +470,8 @@ class Collision {
     out.y = (xf2q.s * v1.x + xf2q.c * v1.y) + xf2.p.y;
     c0.id.indexA = edge1 & 0xFF;
     c0.id.indexB = i1 & 0xFF;
-    c0.id.typeA = ContactIDType.FACE.index & 0xFF;
-    c0.id.typeB = ContactIDType.VERTEX.index & 0xFF;
+    c0.id.typeA = ContactIDType.face.index & 0xFF;
+    c0.id.typeB = ContactIDType.vertex.index & 0xFF;
 
     final v2 = vertices2[i2];
     final out1 = c1.v;
@@ -479,8 +479,8 @@ class Collision {
     out1.y = (xf2q.s * v2.x + xf2q.c * v2.y) + xf2.p.y;
     c1.id.indexA = edge1 & 0xFF;
     c1.id.indexB = i2 & 0xFF;
-    c1.id.typeA = ContactIDType.FACE.index & 0xFF;
-    c1.id.typeB = ContactIDType.VERTEX.index & 0xFF;
+    c1.id.typeA = ContactIDType.face.index & 0xFF;
+    c1.id.typeB = ContactIDType.vertex.index & 0xFF;
   }
 
   final _EdgeResults _results1 = _EdgeResults();
@@ -532,7 +532,7 @@ class Collision {
       xf1 = xfB;
       xf2 = xfA;
       edge1 = results2.edgeIndex;
-      manifold.type = ManifoldType.FACE_B;
+      manifold.type = ManifoldType.faceB;
       flip = true;
     } else {
       poly1 = polyA;
@@ -540,7 +540,7 @@ class Collision {
       xf1 = xfA;
       xf2 = xfB;
       edge1 = _results1.edgeIndex;
-      manifold.type = ManifoldType.FACE_A;
+      manifold.type = ManifoldType.faceA;
       flip = false;
     }
     final xf1q = xf1.q;
@@ -581,24 +581,24 @@ class Collision {
         -(_tangent.x * _v11.x + _tangent.y * _v11.y) + totalRadius;
     final sideOffset2 = _tangent.x * _v12.x + _tangent.y * _v12.y + totalRadius;
 
-    // Clip incident edge against extruded edge1 side edges.
-    int np;
-
+    _tangent.negate();
     // Clip to box side 1
-    _tangent.negate();
-    np = clipSegmentToLine(
-        _clipPoints1, _incidentEdge, _tangent, sideOffset1, iv1);
-    _tangent.negate();
-
-    if (np < 2) {
+    if (clipSegmentToLine(
+            _clipPoints1, _incidentEdge, _tangent, sideOffset1, iv1) <
+        2) {
       return;
     }
 
+    _tangent.negate();
     // Clip to negative box side 1
-    np = clipSegmentToLine(
-        _clipPoints2, _clipPoints1, _tangent, sideOffset2, iv2);
-
-    if (np < 2) {
+    if (clipSegmentToLine(
+          _clipPoints2,
+          _clipPoints1,
+          _tangent,
+          sideOffset2,
+          iv2,
+        ) <
+        2) {
       return;
     }
 
@@ -665,7 +665,7 @@ class Collision {
     final radius = edgeA.radius + circleB.radius;
 
     _cf.indexB = 0;
-    _cf.typeB = ContactIDType.VERTEX.index & 0xFF;
+    _cf.typeB = ContactIDType.vertex.index & 0xFF;
 
     // Region A
     if (v <= 0.0) {
@@ -696,9 +696,9 @@ class Collision {
       }
 
       _cf.indexA = 0;
-      _cf.typeA = ContactIDType.VERTEX.index & 0xFF;
+      _cf.typeA = ContactIDType.vertex.index & 0xFF;
       manifold.pointCount = 1;
-      manifold.type = ManifoldType.CIRCLES;
+      manifold.type = ManifoldType.circles;
       manifold.localNormal.setZero();
       manifold.localPoint.setFrom(P);
       // manifold.points[0].id.key = 0;
@@ -737,9 +737,9 @@ class Collision {
       }
 
       _cf.indexA = 1;
-      _cf.typeA = ContactIDType.VERTEX.index & 0xFF;
+      _cf.typeA = ContactIDType.vertex.index & 0xFF;
       manifold.pointCount = 1;
-      manifold.type = ManifoldType.CIRCLES;
+      manifold.type = ManifoldType.circles;
       manifold.localNormal.setZero();
       manifold.localPoint.setFrom(p);
       manifold.points[0].id.set(_cf);
@@ -778,9 +778,9 @@ class Collision {
     _n.normalize();
 
     _cf.indexA = 0;
-    _cf.typeA = ContactIDType.FACE.index & 0xFF;
+    _cf.typeA = ContactIDType.face.index & 0xFF;
     manifold.pointCount = 1;
-    manifold.type = ManifoldType.FACE_A;
+    manifold.type = ManifoldType.faceA;
     manifold.localNormal.setFrom(_n);
     manifold.localPoint.setFrom(a);
     // manifold.points[0].id.key = 0;
@@ -1091,7 +1091,7 @@ class EdgePolygonCollider {
     final ie1 = _incidentEdge[1];
 
     if (primaryAxis.type == EPAxisType.edgeA) {
-      manifold.type = ManifoldType.FACE_A;
+      manifold.type = ManifoldType.faceA;
 
       // Search for the polygon normal that is most anti-parallel to the edge normal.
       var bestIndex = 0;
@@ -1110,14 +1110,14 @@ class EdgePolygonCollider {
       ie0.v.setFrom(polygonB.vertices[i1]);
       ie0.id.indexA = 0;
       ie0.id.indexB = i1 & 0xFF;
-      ie0.id.typeA = ContactIDType.FACE.index & 0xFF;
-      ie0.id.typeB = ContactIDType.VERTEX.index & 0xFF;
+      ie0.id.typeA = ContactIDType.face.index & 0xFF;
+      ie0.id.typeB = ContactIDType.vertex.index & 0xFF;
 
       ie1.v.setFrom(polygonB.vertices[i2]);
       ie1.id.indexA = 0;
       ie1.id.indexB = i2 & 0xFF;
-      ie1.id.typeA = ContactIDType.FACE.index & 0xFF;
-      ie1.id.typeB = ContactIDType.VERTEX.index & 0xFF;
+      ie1.id.typeA = ContactIDType.face.index & 0xFF;
+      ie1.id.typeB = ContactIDType.vertex.index & 0xFF;
 
       if (front) {
         _rf.i1 = 0;
@@ -1135,19 +1135,19 @@ class EdgePolygonCollider {
           ..negate();
       }
     } else {
-      manifold.type = ManifoldType.FACE_B;
+      manifold.type = ManifoldType.faceB;
 
       ie0.v.setFrom(v1);
       ie0.id.indexA = 0;
       ie0.id.indexB = primaryAxis.index & 0xFF;
-      ie0.id.typeA = ContactIDType.VERTEX.index & 0xFF;
-      ie0.id.typeB = ContactIDType.FACE.index & 0xFF;
+      ie0.id.typeA = ContactIDType.vertex.index & 0xFF;
+      ie0.id.typeB = ContactIDType.face.index & 0xFF;
 
       ie1.v.setFrom(v2);
       ie1.id.indexA = 0;
       ie1.id.indexB = primaryAxis.index & 0xFF;
-      ie1.id.typeA = ContactIDType.VERTEX.index & 0xFF;
-      ie1.id.typeB = ContactIDType.FACE.index & 0xFF;
+      ie1.id.typeA = ContactIDType.vertex.index & 0xFF;
+      ie1.id.typeB = ContactIDType.face.index & 0xFF;
 
       _rf.i1 = primaryAxis.index;
       _rf.i2 = _rf.i1 + 1 < polygonB.count ? _rf.i1 + 1 : 0;
@@ -1163,22 +1163,27 @@ class EdgePolygonCollider {
     _rf.sideOffset1 = _rf.sideNormal1.dot(_rf.v1);
     _rf.sideOffset2 = _rf.sideNormal2.dot(_rf.v2);
 
-    // Clip incident edge against extruded edge1 side edges.
-    int np;
-
     // Clip to box side 1
-    np = Collision.clipSegmentToLine(
-        _clipPoints1, _incidentEdge, _rf.sideNormal1, _rf.sideOffset1, _rf.i1);
-
-    if (np < settings.maxManifoldPoints) {
+    if (Collision.clipSegmentToLine(
+          _clipPoints1,
+          _incidentEdge,
+          _rf.sideNormal1,
+          _rf.sideOffset1,
+          _rf.i1,
+        ) <
+        settings.maxManifoldPoints) {
       return;
     }
 
     // Clip to negative box side 1
-    np = Collision.clipSegmentToLine(
-        _clipPoints2, _clipPoints1, _rf.sideNormal2, _rf.sideOffset2, _rf.i2);
-
-    if (np < settings.maxManifoldPoints) {
+    if (Collision.clipSegmentToLine(
+          _clipPoints2,
+          _clipPoints1,
+          _rf.sideNormal2,
+          _rf.sideOffset2,
+          _rf.i2,
+        ) <
+        settings.maxManifoldPoints) {
       return;
     }
 

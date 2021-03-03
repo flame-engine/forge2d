@@ -81,14 +81,14 @@ class Particles extends Demo {
     final activeBodyDef = BodyDef();
     activeBodyDef.linearVelocity = Vector2(0.0, -20.0);
     activeBodyDef.position = Vector2(0.0, -15.0);
-    activeBodyDef.type = BodyType.DYNAMIC;
+    activeBodyDef.type = BodyType.dynamic;
     final activeBody = world.createBody(activeBodyDef);
     bodies.add(activeBody);
     activeBody.createFixture(activeFixtureDef);
 
     // Create particles
-    world.particleSystem.setParticleRadius(0.35);
-    world.particleSystem.setParticleDamping(0.2);
+    world.particleSystem.particleRadius = 0.35;
+    world.particleSystem.dampingStrength = 0.2;
 
     final shape = CircleShape()..radius = 5;
     final particleGroup = ParticleGroupDef()

@@ -22,7 +22,7 @@ import '../settings.dart' as settings;
 /// critical for continuous physics. All contact scenarios must be expressed in one of these types.
 /// This structure is stored across time steps, so we keep it small.
 
-enum ManifoldType { CIRCLES, FACE_A, FACE_B }
+enum ManifoldType { circles, faceA, faceB }
 
 class Manifold {
   /// The points of contact.
@@ -37,7 +37,7 @@ class Manifold {
   /// usage depends on manifold type
   final Vector2 localPoint = Vector2.zero();
 
-  ManifoldType type = ManifoldType.CIRCLES;
+  ManifoldType type = ManifoldType.circles;
 
   /// The number of manifold points.
   int pointCount = 0;
