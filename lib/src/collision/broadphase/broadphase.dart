@@ -5,6 +5,7 @@ import '../../../src/callbacks/tree_callback.dart';
 import '../../../src/callbacks/tree_raycast_callback.dart';
 
 abstract class BroadPhase {
+  // TODO: remove the use of this
   static const int nullProxy = -1;
 
   /// Create a proxy with an initial AABB. Pairs are not reported until updatePairs is called.

@@ -1,6 +1,8 @@
 class Pair implements Comparable<Pair> {
-  int proxyIdA = 0;
-  int proxyIdB = 0;
+  final int proxyIdA;
+  final int proxyIdB;
+
+  const Pair(this.proxyIdA, this.proxyIdB);
 
   @override
   int compareTo(Pair pair2) {
