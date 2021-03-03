@@ -342,7 +342,9 @@ class RevoluteJoint extends Joint {
         // Prevent large angular corrections
         final c = (angle - _lowerAngle)
             .clamp(
-                -settings.maxAngularCorrection, settings.maxAngularCorrection)
+              -settings.maxAngularCorrection,
+              settings.maxAngularCorrection,
+            )
             .toDouble();
         limitImpulse = -_motorMass * c;
         angularError = c.abs();

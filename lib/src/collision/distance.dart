@@ -564,8 +564,11 @@ class Distance {
   /// Compute the closest points between two shapes. Supports any combination of: CircleShape and
   /// PolygonShape. The simplex cache is input/output. On the first call set SimplexCache.count to
   /// zero.
-  void compute(final DistanceOutput output, final SimplexCache cache,
-      final DistanceInput input) {
+  void compute(
+    final DistanceOutput output,
+    final SimplexCache cache,
+    final DistanceInput input,
+  ) {
     gjkCalls++;
 
     final proxyA = input.proxyA;
@@ -654,12 +657,14 @@ class Distance {
       _temp.setFrom(Rot.mulTransVec2(transformA.q, _d..negate()));
       vertex.indexA = proxyA.getSupport(_temp);
       vertex.wA.setFrom(
-          Transform.mulVec2(transformA, proxyA.getVertex(vertex.indexA)));
+        Transform.mulVec2(transformA, proxyA.getVertex(vertex.indexA)),
+      );
       // Vec2 wBLocal;
       _temp.setFrom(Rot.mulTransVec2(transformB.q, _d..negate()));
       vertex.indexB = proxyB.getSupport(_temp);
       vertex.wB.setFrom(
-          Transform.mulVec2(transformB, proxyB.getVertex(vertex.indexB)));
+        Transform.mulVec2(transformB, proxyB.getVertex(vertex.indexB)),
+      );
       (vertex.w..setFrom(vertex.wB)).sub(vertex.wA);
 
       // Iteration count is equated to the number of support point calls.

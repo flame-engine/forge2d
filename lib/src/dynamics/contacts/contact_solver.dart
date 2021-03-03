@@ -901,7 +901,11 @@ class PositionSolverManifold {
   double separation = 0.0;
 
   void initialize(
-      ContactPositionConstraint pc, Transform xfA, Transform xfB, int index) {
+    ContactPositionConstraint pc,
+    Transform xfA,
+    Transform xfB,
+    int index,
+  ) {
     assert(pc.pointCount > 0);
 
     final xfAq = xfA.q;

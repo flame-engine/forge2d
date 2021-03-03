@@ -50,7 +50,11 @@ class CircleShape extends Shape {
 
   @override
   double computeDistanceToOut(
-      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
+    Transform xf,
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  ) {
     final xfq = xf.q;
     final centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
     final centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
@@ -67,8 +71,12 @@ class CircleShape extends Shape {
   // x = s + a * r
   // norm(x) = radius
   @override
-  bool raycast(RayCastOutput output, RayCastInput input, Transform transform,
-      int childIndex) {
+  bool raycast(
+    RayCastOutput output,
+    RayCastInput input,
+    Transform transform,
+    int childIndex,
+  ) {
     final inputP1 = input.p1;
     final inputP2 = input.p2;
     final tq = transform.q;

@@ -2,8 +2,11 @@ import '../../../forge2d.dart';
 
 class EdgeAndCircleContact extends Contact {
   EdgeAndCircleContact(
-      Fixture fixtureA, int indexA, Fixture fixtureB, int indexB)
-      : assert(fixtureA.getType() == ShapeType.edge),
+    Fixture fixtureA,
+    int indexA,
+    Fixture fixtureB,
+    int indexB,
+  )   : assert(fixtureA.getType() == ShapeType.edge),
         assert(fixtureB.getType() == ShapeType.circle),
         super(fixtureA, indexA, fixtureB, indexB);
 

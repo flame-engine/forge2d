@@ -112,12 +112,18 @@ class DominoTower extends Demo {
               (1.5 * dominoHeight * (baseCount - j) / 2);
           dominoDensity *= 2.5;
           if (i == 0) {
-            makeDomino(currX - (1.25 * dominoHeight) + .5 * dominoWidth,
-                currY - dominoWidth, false);
+            makeDomino(
+              currX - (1.25 * dominoHeight) + .5 * dominoWidth,
+              currY - dominoWidth,
+              false,
+            );
           }
           if (i == baseCount - j - 1) {
-            makeDomino(currX + (1.25 * dominoHeight) - .5 * dominoWidth,
-                currY - dominoWidth, false);
+            makeDomino(
+              currX + (1.25 * dominoHeight) - .5 * dominoWidth,
+              currY - dominoWidth,
+              false,
+            );
           }
 
           dominoDensity /= 2.5;

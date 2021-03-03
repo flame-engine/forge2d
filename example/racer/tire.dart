@@ -6,8 +6,13 @@ import 'control_state.dart';
 import 'ground_area.dart';
 
 class Tire {
-  Tire(World world, this._maxForwardSpeed, this._maxBackwardSpeed,
-      this._maxDriveForce, this._maxLateralImpulse) {
+  Tire(
+    World world,
+    this._maxForwardSpeed,
+    this._maxBackwardSpeed,
+    this._maxDriveForce,
+    this._maxLateralImpulse,
+  ) {
     final def = BodyDef();
     def.type = BodyType.dynamic;
     body = world.createBody(def);
@@ -41,7 +46,8 @@ class Tire {
     }
     body.applyLinearImpulse(impulse..scale(_currentTraction));
     body.applyAngularImpulse(
-        0.1 * _currentTraction * body.getInertia() * (-body.angularVelocity));
+      0.1 * _currentTraction * body.getInertia() * (-body.angularVelocity),
+    );
 
     final currentForwardNormal = _forwardVelocity;
     final currentForwardSpeed = currentForwardNormal.length;

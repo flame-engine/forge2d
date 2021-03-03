@@ -166,8 +166,12 @@ class PolygonShape extends Shape {
   /// @param hy the half-height.
   /// @param center the center of the box in local coordinates.
   /// @param angle the rotation of the box in local coordinates.
-  void setAsBox(final double hx, final double hy, final Vector2 center,
-      final double angle) {
+  void setAsBox(
+    final double hx,
+    final double hy,
+    final Vector2 center,
+    final double angle,
+  ) {
     setAsBoxXY(hx, hy);
     centroid.setFrom(center);
 
@@ -266,7 +270,11 @@ class PolygonShape extends Shape {
 
   @override
   double computeDistanceToOut(
-      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
+    Transform xf,
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  ) {
     final xfqc = xf.q.c;
     final xfqs = xf.q.s;
     var tx = p.x - xf.p.x;
@@ -323,7 +331,11 @@ class PolygonShape extends Shape {
 
   @override
   bool raycast(
-      RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
+    RayCastOutput output,
+    RayCastInput input,
+    Transform xf,
+    int childIndex,
+  ) {
     final xfqc = xf.q.c;
     final xfqs = xf.q.s;
     final xfp = xf.p;

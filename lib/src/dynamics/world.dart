@@ -418,8 +418,11 @@ class World {
   /// @param callback a user implemented callback class.
   /// @param particleCallback callback for particles.
   /// @param aabb the query box.
-  void queryAABBTwoCallbacks(QueryCallback callback,
-      ParticleQueryCallback particleCallback, AABB aabb) {
+  void queryAABBTwoCallbacks(
+    QueryCallback callback,
+    ParticleQueryCallback particleCallback,
+    AABB aabb,
+  ) {
     wqwrapper.broadPhase = contactManager.broadPhase;
     wqwrapper.callback = callback;
     contactManager.broadPhase.query(wqwrapper, aabb);
@@ -462,10 +465,11 @@ class World {
   /// @param point1 the ray starting point
   /// @param point2 the ray ending point
   void raycastTwoCallBacks(
-      RayCastCallback callback,
-      ParticleRaycastCallback particleCallback,
-      Vector2 point1,
-      Vector2 point2) {
+    RayCastCallback callback,
+    ParticleRaycastCallback particleCallback,
+    Vector2 point1,
+    Vector2 point2,
+  ) {
     raycastWrapper.broadPhase = contactManager.broadPhase;
     raycastWrapper.callback = callback;
     input.maxFraction = 1.0;
@@ -481,8 +485,11 @@ class World {
   /// @param particleCallback the particle callback class.
   /// @param point1 the ray starting point
   /// @param point2 the ray ending point
-  void raycastParticle(ParticleRaycastCallback particleCallback, Vector2 point1,
-      Vector2 point2) {
+  void raycastParticle(
+    ParticleRaycastCallback particleCallback,
+    Vector2 point1,
+    Vector2 point2,
+  ) {
     particleSystem.raycast(particleCallback, point1, point2);
   }
 

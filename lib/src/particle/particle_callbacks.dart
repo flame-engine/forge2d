@@ -10,8 +10,12 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   bool callDestructionListener;
   int destroyed = 0;
 
-  DestroyParticlesInShapeCallback(this.system, this.shape, this.xf,
-      {this.callDestructionListener = false});
+  DestroyParticlesInShapeCallback(
+    this.system,
+    this.shape,
+    this.xf, {
+    this.callDestructionListener = false,
+  });
 
   @override
   bool reportParticle(Particle particle) {

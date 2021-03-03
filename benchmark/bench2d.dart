@@ -13,9 +13,9 @@ void log(String msg) {
   }
 }
 
-const bool debug = bool.fromEnvironment('debug');
+const bool debug = false;
 
-const bool checksum = bool.fromEnvironment('checksum');
+const bool checksum = false;
 
 const int frames = 256;
 const int pyramidSize = 40;
@@ -88,8 +88,11 @@ class Bench2d {
     final mean = meanF(times);
     final fifth = percentile(times, 5.0);
     final ninetyFifth = percentile(times, 95.0);
-    print('Benchmark complete.\n'
-        'ms/frame: $mean 5th %ile: ${percentile(times, 5.0)} 95th %ile: ${percentile(times, 95.0)}');
+    print(
+      'Benchmark complete.\n'
+      'ms/frame: $mean 5th %ile: ${percentile(times, 5.0)} '
+      '95th %ile: ${percentile(times, 95.0)}',
+    );
     if (checksum) {
       printChecksum(world);
     }
@@ -119,6 +122,7 @@ class Bench2d {
     print(world.bodies.first);
     world.bodies.forEach(checksum);
     print(
-        'pos: $positionSum linVel $linearVelocitySum angVel $angularVelocitySum');
+      'pos: $positionSum linVel $linearVelocitySum angVel $angularVelocitySum',
+    );
   }
 }

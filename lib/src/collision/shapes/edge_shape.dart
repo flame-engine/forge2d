@@ -42,7 +42,11 @@ class EdgeShape extends Shape {
 
   @override
   double computeDistanceToOut(
-      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
+    Transform xf,
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  ) {
     final xfqc = xf.q.c;
     final xfqs = xf.q.s;
     final xfpx = xf.p.x;
@@ -81,7 +85,11 @@ class EdgeShape extends Shape {
 
   @override
   bool raycast(
-      RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
+    RayCastOutput output,
+    RayCastInput input,
+    Transform xf,
+    int childIndex,
+  ) {
     final v1 = vertex1;
     final v2 = vertex2;
     final xfq = xf.q;

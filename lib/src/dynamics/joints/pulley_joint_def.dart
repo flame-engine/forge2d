@@ -24,8 +24,15 @@ class PulleyJointDef extends JointDef {
   }
 
   /// Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
-  void initialize(Body b1, Body b2, Vector2 ga1, Vector2 ga2, Vector2 anchor1,
-      Vector2 anchor2, double r) {
+  void initialize(
+    Body b1,
+    Body b2,
+    Vector2 ga1,
+    Vector2 ga2,
+    Vector2 anchor1,
+    Vector2 anchor2,
+    double r,
+  ) {
     bodyA = b1;
     bodyB = b2;
     groundAnchorA = ga1;

@@ -2,8 +2,11 @@ import '../../../forge2d.dart';
 
 class ChainAndPolygonContact extends Contact {
   ChainAndPolygonContact(
-      Fixture fixtureA, int indexA, Fixture fixtureB, int indexB)
-      : assert(fixtureA.getType() == ShapeType.chain),
+    Fixture fixtureA,
+    int indexA,
+    Fixture fixtureB,
+    int indexB,
+  )   : assert(fixtureA.getType() == ShapeType.chain),
         assert(fixtureB.getType() == ShapeType.polygon),
         super(fixtureA, indexA, fixtureB, indexB);
 

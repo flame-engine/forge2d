@@ -11,5 +11,5 @@ enum JointType {
   friction,
   rope,
   constantVolume,
-  motor
+  motor,
 }

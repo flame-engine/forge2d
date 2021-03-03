@@ -96,20 +96,28 @@ class Racer extends Demo implements ContactListener {
     const boundaryY = 100.0;
 
     shape.setAsEdge(
-        Vector2(-boundaryX, -boundaryY), Vector2(boundaryX, -boundaryY));
+      Vector2(-boundaryX, -boundaryY),
+      Vector2(boundaryX, -boundaryY),
+    );
 
     boundaryBody.createFixture(fixtureDef);
 
     shape.setAsEdge(
-        Vector2(boundaryX, -boundaryY), Vector2(boundaryX, boundaryY));
+      Vector2(boundaryX, -boundaryY),
+      Vector2(boundaryX, boundaryY),
+    );
     boundaryBody.createFixture(fixtureDef);
 
     shape.setAsEdge(
-        Vector2(boundaryX, boundaryY), Vector2(-boundaryX, boundaryY));
+      Vector2(boundaryX, boundaryY),
+      Vector2(-boundaryX, boundaryY),
+    );
     boundaryBody.createFixture(fixtureDef);
 
     shape.setAsEdge(
-        Vector2(-boundaryX, boundaryY), Vector2(-boundaryX, -boundaryY));
+      Vector2(-boundaryX, boundaryY),
+      Vector2(-boundaryX, -boundaryY),
+    );
     boundaryBody.createFixture(fixtureDef);
   }
 

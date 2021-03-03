@@ -73,7 +73,7 @@ abstract class Joint {
   /// Get the other body than the argument in the joint
   Body getOtherBody(Body body) {
     assert(containsBody(body), 'Body is not in the joint');
-    return body == bodyA ? bodyB : bodyB;
+    return body == bodyA ? bodyB : bodyA;
   }
 
   /// Get the anchor point on bodyA in world coordinates.

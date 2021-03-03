@@ -129,8 +129,10 @@ class ConstantVolumeJoint extends Joint {
     var done = true;
     for (var i = 0; i < _bodies.length; ++i) {
       final next = (i == _bodies.length - 1) ? 0 : i + 1;
-      delta.setValues(toExtrude * (_normals[i].x + _normals[next].x),
-          toExtrude * (_normals[i].y + _normals[next].y));
+      delta.setValues(
+        toExtrude * (_normals[i].x + _normals[next].x),
+        toExtrude * (_normals[i].y + _normals[next].y),
+      );
       final normSqrd = delta.length2;
       if (normSqrd >
           settings.maxLinearCorrection * settings.maxLinearCorrection) {

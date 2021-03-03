@@ -38,7 +38,7 @@ enum PointState {
   persistState,
 
   /// point was removed in the update
-  removeState
+  removeState,
 }
 
 /// This structure is used to keep track of the best separating axis.
@@ -89,8 +89,14 @@ class Collision {
   final DistanceOutput _output = DistanceOutput();
 
   /// Determine if two generic shapes overlap.
-  bool testOverlap(Shape shapeA, int indexA, Shape shapeB, int indexB,
-      Transform xfA, Transform xfB) {
+  bool testOverlap(
+    Shape shapeA,
+    int indexA,
+    Shape shapeB,
+    int indexB,
+    Transform xfA,
+    Transform xfB,
+  ) {
     _input.proxyA.set(shapeA, indexA);
     _input.proxyB.set(shapeB, indexB);
     _input.transformA.set(xfA);
@@ -108,10 +114,11 @@ class Collision {
   /// manifold1 to manifold2. So state1 is either persist or remove while state2 is either add or
   /// persist.
   static void getPointStates(
-      final List<PointState> state1,
-      final List<PointState> state2,
-      final Manifold manifold1,
-      final Manifold manifold2) {
+    final List<PointState> state1,
+    final List<PointState> state2,
+    final Manifold manifold1,
+    final Manifold manifold2,
+  ) {
     for (var i = 0; i < settings.maxManifoldPoints; i++) {
       state1[i] = PointState.nullState;
       state2[i] = PointState.nullState;
@@ -148,11 +155,12 @@ class Collision {
 
   /// Clipping for contact manifolds. Sutherland-Hodgman clipping.
   static int clipSegmentToLine(
-      final List<ClipVertex> vOut,
-      final List<ClipVertex> vIn,
-      final Vector2 normal,
-      double offset,
-      int vertexIndexA) {
+    final List<ClipVertex> vOut,
+    final List<ClipVertex> vIn,
+    final Vector2 normal,
+    double offset,
+    int vertexIndexA,
+  ) {
     // Start with no _output points
     var numOut = 0;
     final vIn0 = vIn[0];
@@ -199,8 +207,13 @@ class Collision {
   final Vector2 _d = Vector2.zero();
 
   /// Compute the collision manifold between two circles.
-  void collideCircles(Manifold manifold, final CircleShape circle1,
-      final Transform xfA, final CircleShape circle2, final Transform xfB) {
+  void collideCircles(
+    Manifold manifold,
+    final CircleShape circle1,
+    final Transform xfA,
+    final CircleShape circle2,
+    final Transform xfB,
+  ) {
     manifold.pointCount = 0;
 
     // after inline:
@@ -232,8 +245,13 @@ class Collision {
   // djm pooling, and from above
 
   /// Compute the collision manifold between a polygon and a circle.
-  void collidePolygonAndCircle(Manifold manifold, final PolygonShape polygon,
-      final Transform xfA, final CircleShape circle, final Transform xfB) {
+  void collidePolygonAndCircle(
+    Manifold manifold,
+    final PolygonShape polygon,
+    final Transform xfA,
+    final CircleShape circle,
+    final Transform xfB,
+  ) {
     manifold.pointCount = 0;
     // Vec2 v = circle.p;
 
@@ -382,8 +400,13 @@ class Collision {
   final Vector2 _v1 = Vector2.zero();
 
   /// Find the max separation between poly1 and poly2 using edge normals from poly1.
-  void findMaxSeparation(_EdgeResults results, final PolygonShape poly1,
-      final Transform xf1, final PolygonShape poly2, final Transform xf2) {
+  void findMaxSeparation(
+    _EdgeResults results,
+    final PolygonShape poly1,
+    final Transform xf1,
+    final PolygonShape poly2,
+    final Transform xf2,
+  ) {
     final count1 = poly1.vertices.length;
     final count2 = poly2.vertices.length;
     final n1s = poly1.normals;
@@ -421,12 +444,13 @@ class Collision {
   }
 
   void findIncidentEdge(
-      final List<ClipVertex> c,
-      final PolygonShape poly1,
-      final Transform xf1,
-      int edge1,
-      final PolygonShape poly2,
-      final Transform xf2) {
+    final List<ClipVertex> c,
+    final PolygonShape poly1,
+    final Transform xf1,
+    int edge1,
+    final PolygonShape poly2,
+    final Transform xf2,
+  ) {
     final count1 = poly1.vertices.length;
     final normals1 = poly1.normals;
 
@@ -496,8 +520,13 @@ class Collision {
   final List<ClipVertex> _clipPoints2 = [ClipVertex(), ClipVertex()];
 
   /// Compute the collision manifold between two polygons.
-  void collidePolygons(Manifold manifold, final PolygonShape polyA,
-      final Transform xfA, final PolygonShape polyB, final Transform xfB) {
+  void collidePolygons(
+    Manifold manifold,
+    final PolygonShape polyA,
+    final Transform xfA,
+    final PolygonShape polyB,
+    final Transform xfB,
+  ) {
     // Find edge normal of max separation on A - return if separating axis is found
     // Find edge normal of max separation on B - return if separation axis is found
     // Choose reference edge as min(minA, minB)
@@ -584,7 +613,12 @@ class Collision {
     _tangent.negate();
     // Clip to box side 1
     if (clipSegmentToLine(
-            _clipPoints1, _incidentEdge, _tangent, sideOffset1, iv1) <
+          _clipPoints1,
+          _incidentEdge,
+          _tangent,
+          sideOffset1,
+          iv1,
+        ) <
         2) {
       return;
     }
@@ -639,8 +673,13 @@ class Collision {
 
   // Compute contact points for edge versus circle.
   // This accounts for edge connectivity.
-  void collideEdgeAndCircle(Manifold manifold, final EdgeShape edgeA,
-      final Transform xfA, final CircleShape circleB, final Transform xfB) {
+  void collideEdgeAndCircle(
+    Manifold manifold,
+    final EdgeShape edgeA,
+    final Transform xfA,
+    final CircleShape circleB,
+    final Transform xfB,
+  ) {
     manifold.pointCount = 0;
 
     // Compute circle in frame of edge
@@ -790,8 +829,13 @@ class Collision {
 
   final EdgePolygonCollider _collider = EdgePolygonCollider();
 
-  void collideEdgeAndPolygon(Manifold manifold, final EdgeShape edgeA,
-      final Transform xfA, final PolygonShape polygonB, final Transform xfB) {
+  void collideEdgeAndPolygon(
+    Manifold manifold,
+    final EdgeShape edgeA,
+    final Transform xfA,
+    final PolygonShape polygonB,
+    final Transform xfB,
+  ) {
     _collider.collide(manifold, edgeA, xfA, polygonB, xfB);
   }
 }
@@ -831,8 +875,13 @@ class EdgePolygonCollider {
   final EPAxis _edgeAxis = EPAxis();
   final EPAxis _polygonAxis = EPAxis();
 
-  void collide(Manifold manifold, final EdgeShape edgeA, final Transform xfA,
-      final PolygonShape polygonB2, final Transform xfB) {
+  void collide(
+    Manifold manifold,
+    final EdgeShape edgeA,
+    final Transform xfA,
+    final PolygonShape polygonB2,
+    final Transform xfB,
+  ) {
     xf.set(Transform.mulTrans(xfA, xfB));
     centroidB.setFrom(Transform.mulVec2(xf, polygonB2.centroid));
 
@@ -1074,14 +1123,14 @@ class EdgePolygonCollider {
     }
 
     // Use hysteresis for jitter reduction.
-    const kRelativeTol = 0.98;
+    const relativeTol = 0.98;
     const kAbsoluteTol = 0.001;
 
     EPAxis primaryAxis;
     if (_polygonAxis.type == EPAxisType.unknown) {
       primaryAxis = _edgeAxis;
     } else if (_polygonAxis.separation >
-        kRelativeTol * _edgeAxis.separation + kAbsoluteTol) {
+        relativeTol * _edgeAxis.separation + kAbsoluteTol) {
       primaryAxis = _polygonAxis;
     } else {
       primaryAxis = _edgeAxis;

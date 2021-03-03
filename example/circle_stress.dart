@@ -83,7 +83,9 @@ class CircleStress extends Demo {
     {
       final shape = ChainShape();
       final vertices = List<Vector2>.generate(
-          20, (i) => Vector2(i.toDouble(), i.toDouble() * i / 20));
+        20,
+        (i) => Vector2(i.toDouble(), i.toDouble() * i / 20),
+      );
       shape.createChain(vertices);
 
       final fixtureDef = FixtureDef()

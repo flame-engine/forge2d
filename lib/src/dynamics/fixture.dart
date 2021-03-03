@@ -210,8 +210,11 @@ class Fixture {
   /// @param broadPhase
   /// @param xf1
   /// @param xf2
-  void synchronize(BroadPhase broadPhase, final Transform transform1,
-      final Transform transform2) {
+  void synchronize(
+    BroadPhase broadPhase,
+    final Transform transform1,
+    final Transform transform2,
+  ) {
     if (_proxyCount == 0) {
       return;
     }

@@ -44,8 +44,10 @@ class Transform {
   }
 
   static Vector2 mulVec2(final Transform t, final Vector2 v) {
-    return Vector2((t.q.c * v.x - t.q.s * v.y) + t.p.x,
-        (t.q.s * v.x + t.q.c * v.y) + t.p.y);
+    return Vector2(
+      (t.q.c * v.x - t.q.s * v.y) + t.p.x,
+      (t.q.s * v.x + t.q.c * v.y) + t.p.y,
+    );
   }
 
   static Vector2 mulTransVec2(final Transform t, final Vector2 v) {

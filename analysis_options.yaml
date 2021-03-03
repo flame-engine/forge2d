@@ -2,6 +2,7 @@
 # http://dart-lang.github.io/linter/lints/options/options.html
 
 analyzer:
+  exclude: [.dart_tool/**]
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
@@ -16,7 +17,6 @@ linter:
     - always_require_non_null_named_parameters
     - annotate_overrides
     - avoid_double_and_int_checks
-    - avoid_dynamic_calls
     - avoid_empty_else
     - avoid_equals_and_hash_code_on_mutable_classes
     - avoid_escaping_inner_quotes
@@ -30,14 +30,12 @@ linter:
     - avoid_return_types_on_setters
     - avoid_shadowing_type_parameters
     - avoid_slow_async_io
-    - avoid_type_to_string
     - avoid_types_as_parameter_names
     - avoid_unused_constructor_parameters
     - await_only_futures
     - camel_case_extensions
     - camel_case_types
     - cancel_subscriptions
-    - cast_nullable_to_non_nullable
     - close_sinks
     - comment_references
     - constant_identifier_names
@@ -137,14 +135,12 @@ dart_code_metrics:
     - prefer-trailing-comma
     - prefer-trailing-comma-for-collection
     - no-equal-then-else
-    - no-object-declaration
     - potential-null-dereference
   metrics-exclude:
     - test/**
   metrics:
     number-of-arguments: 8
-    number-of-methods: 32
-    lines-of-executable-code: 200
-    cyclomatic-complexity: 36
-
-
+    number-of-methods: 100
+    lines-of-executable-code: 500
+    cyclomatic-complexity: 100
+    maximum-nesting: 6
