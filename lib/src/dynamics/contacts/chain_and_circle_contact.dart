@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 class ChainAndCircleContact extends Contact {
   ChainAndCircleContact(
@@ -6,14 +6,14 @@ class ChainAndCircleContact extends Contact {
     int indexA,
     Fixture fixtureB,
     int indexB,
-  )   : assert(fixtureA.getType() == ShapeType.CHAIN),
-        assert(fixtureB.getType() == ShapeType.CIRCLE),
+  )   : assert(fixtureA.getType() == ShapeType.chain),
+        assert(fixtureB.getType() == ShapeType.circle),
         super(fixtureA, indexA, fixtureB, indexB);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    final ChainShape chain = fixtureA.shape as ChainShape;
-    final EdgeShape edge = chain.getChildEdge(indexA);
+    final chain = fixtureA.shape as ChainShape;
+    final edge = chain.getChildEdge(indexA);
     World.collision.collideEdgeAndCircle(
       manifold,
       edge,

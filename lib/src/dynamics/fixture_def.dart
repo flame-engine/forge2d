@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// A fixture definition is used to create a fixture. This class defines an abstract fixture
 /// definition. You can reuse fixture definitions safely.

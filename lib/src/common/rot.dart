@@ -1,4 +1,6 @@
-part of forge2d.common;
+import 'dart:math';
+
+import '../../forge2d.dart';
 
 class Rot {
   double s = 0.0, c = 1.0; // sin and cos
@@ -6,12 +8,12 @@ class Rot {
   Rot();
 
   Rot.withAngle(double angle)
-      : s = math.sin(angle),
-        c = math.cos(angle);
+      : s = sin(angle),
+        c = cos(angle);
 
   void setAngle(double angle) {
-    s = math.sin(angle);
-    c = math.cos(angle);
+    s = sin(angle);
+    c = cos(angle);
   }
 
   void setFrom(Rot other) {
@@ -27,11 +29,11 @@ class Rot {
   double getSin() => s;
 
   @override
-  String toString() => "Rot(s:$s, c:$c)";
+  String toString() => 'Rot(s:$s, c:$c)';
 
   double getCos() => c;
 
-  double getAngle() => math.atan2(s, c);
+  double getAngle() => atan2(s, c);
 
   Vector2 getXAxis(Vector2 xAxis) => Vector2(c, s);
 

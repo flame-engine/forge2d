@@ -1,4 +1,5 @@
-part of forge2d;
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// A manifold for two touching convex shapes. Forge2D supports multiple types of contact:
 /// <ul>
@@ -21,42 +22,37 @@ part of forge2d;
 /// critical for continuous physics. All contact scenarios must be expressed in one of these types.
 /// This structure is stored across time steps, so we keep it small.
 
-enum ManifoldType { CIRCLES, FACE_A, FACE_B }
+enum ManifoldType { circles, faceA, faceB }
 
 class Manifold {
   /// The points of contact.
-  final List<ManifoldPoint> points;
+  final List<ManifoldPoint> points = List<ManifoldPoint>.generate(
+    settings.maxManifoldPoints,
+    (_) => ManifoldPoint(),
+  );
 
   /// not use for Type::e_points
-  final Vector2 localNormal;
+  final Vector2 localNormal = Vector2.zero();
 
   /// usage depends on manifold type
-  final Vector2 localPoint;
+  final Vector2 localPoint = Vector2.zero();
 
-  ManifoldType type = ManifoldType.CIRCLES;
+  ManifoldType type = ManifoldType.circles;
 
   /// The number of manifold points.
   int pointCount = 0;
 
-  /// creates a manifold with 0 points, with it's points array full of instantiated ManifoldPoints.
-  Manifold()
-      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
-        localNormal = Vector2.zero(),
-        localPoint = Vector2.zero() {
-    for (int i = 0; i < settings.maxManifoldPoints; i++) {
-      points[i] = ManifoldPoint();
-    }
-  }
+  /// Initially a manifold with 0 points, with it's points array full of instantiated ManifoldPoints.
+  Manifold();
 
   /// Creates this manifold as a copy of the other
-  Manifold.copy(Manifold other)
-      : points = List<ManifoldPoint>(settings.maxManifoldPoints),
-        localNormal = other.localNormal.clone(),
-        localPoint = other.localPoint.clone(),
-        pointCount = other.pointCount {
+  Manifold.copy(Manifold other) {
+    localNormal.setFrom(other.localNormal);
+    localPoint.setFrom(other.localPoint);
     type = other.type;
+    pointCount = other.pointCount;
     // djm: this is correct now
-    for (int i = 0; i < settings.maxManifoldPoints; i++) {
+    for (var i = 0; i < settings.maxManifoldPoints; i++) {
       points[i] = ManifoldPoint.copy(other.points[i]);
     }
   }
@@ -65,7 +61,7 @@ class Manifold {
   ///
   /// @param cp manifold to copy from
   void set(Manifold cp) {
-    for (int i = 0; i < cp.pointCount; i++) {
+    for (var i = 0; i < cp.pointCount; i++) {
       points[i].set(cp.points[i]);
     }
 

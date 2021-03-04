@@ -1,4 +1,7 @@
-part of forge2d;
+import '../../forge2d.dart';
+import '../callbacks/contact_filter.dart';
+import '../callbacks/contact_listener.dart';
+import '../callbacks/pair_callback.dart';
 
 /// Delegate of World.
 class ContactManager implements PairCallback {
@@ -14,17 +17,17 @@ class ContactManager implements PairCallback {
   /// Broad-phase callback.
   @override
   void addPair(FixtureProxy proxyUserDataA, FixtureProxy proxyUserDataB) {
-    final FixtureProxy proxyA = proxyUserDataA;
-    final FixtureProxy proxyB = proxyUserDataB;
+    final proxyA = proxyUserDataA;
+    final proxyB = proxyUserDataB;
 
-    final Fixture fixtureA = proxyA.fixture;
-    final Fixture fixtureB = proxyB.fixture;
+    final fixtureA = proxyA.fixture;
+    final fixtureB = proxyB.fixture;
 
-    final int indexA = proxyA.childIndex;
-    final int indexB = proxyB.childIndex;
+    final indexA = proxyA.childIndex;
+    final indexB = proxyB.childIndex;
 
-    final Body bodyA = fixtureA.body;
-    final Body bodyB = fixtureB.body;
+    final bodyA = fixtureA.body;
+    final bodyB = fixtureB.body;
 
     // Are the fixtures on the same body?
     if (bodyA == bodyB) {
@@ -32,7 +35,7 @@ class ContactManager implements PairCallback {
     }
 
     // Check whether a contact already exists
-    for (Contact contact in bodyB.contacts) {
+    for (final contact in bodyB.contacts) {
       if (contact.containsBody(bodyA)) {
         if (contact.representsArguments(fixtureA, indexA, fixtureB, indexB)) {
           // A contact already exists.
@@ -52,7 +55,7 @@ class ContactManager implements PairCallback {
       return;
     }
 
-    final Contact contact = Contact.init(fixtureA, indexA, fixtureB, indexB);
+    final contact = Contact.init(fixtureA, indexA, fixtureB, indexB);
 
     // Insert into the world.
     contacts.add(contact);
@@ -64,7 +67,7 @@ class ContactManager implements PairCallback {
     bodyB.contacts.add(contact);
 
     // Wake up the bodies
-    if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
+    if (!fixtureA.isSensor && !fixtureB.isSensor) {
       bodyA.setAwake(true);
       bodyB.setAwake(true);
     }
@@ -75,8 +78,8 @@ class ContactManager implements PairCallback {
   }
 
   void destroy(Contact c) {
-    final Fixture fixtureA = c.fixtureA;
-    final Fixture fixtureB = c.fixtureB;
+    final fixtureA = c.fixtureA;
+    final fixtureB = c.fixtureB;
 
     if (c.isTouching()) {
       contactListener?.endContact(c);
@@ -86,9 +89,7 @@ class ContactManager implements PairCallback {
     c.bodyA.contacts.remove(c);
     c.bodyB.contacts.remove(c);
 
-    if (c._manifold.pointCount > 0 &&
-        !fixtureA.isSensor() &&
-        !fixtureB.isSensor()) {
+    if (c.manifold.pointCount > 0 && !fixtureA.isSensor && !fixtureB.isSensor) {
       fixtureA.body.setAwake(true);
       fixtureB.body.setAwake(true);
     }
@@ -97,18 +98,18 @@ class ContactManager implements PairCallback {
   /// This is the top level collision call for the time step. Here all the narrow phase collision is
   /// processed for the world contact list.
   void collide() {
-    final List<Contact> contactRemovals = [];
+    final contactRemovals = <Contact>[];
     // Update awake contacts.
-    for (Contact c in contacts) {
-      final Fixture fixtureA = c.fixtureA;
-      final Fixture fixtureB = c.fixtureB;
-      final int indexA = c.indexA;
-      final int indexB = c.indexB;
-      final Body bodyA = fixtureA.body;
-      final Body bodyB = fixtureB.body;
+    for (final c in contacts) {
+      final fixtureA = c.fixtureA;
+      final fixtureB = c.fixtureB;
+      final indexA = c.indexA;
+      final indexB = c.indexB;
+      final bodyA = fixtureA.body;
+      final bodyB = fixtureB.body;
 
       // is this contact flagged for filtering?
-      if ((c.flags & Contact.FILTER_FLAG) == Contact.FILTER_FLAG) {
+      if ((c.flags & Contact.filterFlag) == Contact.filterFlag) {
         // Should these bodies collide?
         if (!bodyB.shouldCollide(bodyA)) {
           contactRemovals.add(c);
@@ -123,21 +124,19 @@ class ContactManager implements PairCallback {
         }
 
         // Clear the filtering flag.
-        c.flags &= ~Contact.FILTER_FLAG;
+        c.flags &= ~Contact.filterFlag;
       }
 
-      final bool activeA =
-          bodyA.isAwake() && bodyA._bodyType != BodyType.STATIC;
-      final bool activeB =
-          bodyB.isAwake() && bodyB._bodyType != BodyType.STATIC;
+      final activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.static;
+      final activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.static;
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {
         continue;
       }
 
-      final int proxyIdA = fixtureA._proxies[indexA].proxyId;
-      final int proxyIdB = fixtureB._proxies[indexB].proxyId;
+      final proxyIdA = fixtureA.proxies[indexA].proxyId;
+      final proxyIdB = fixtureB.proxies[indexB].proxyId;
 
       // Here we destroy contacts that cease to overlap in the broad-phase.
       if (!broadPhase.testOverlap(proxyIdA, proxyIdB)) {

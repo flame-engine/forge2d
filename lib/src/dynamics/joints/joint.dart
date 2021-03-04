@@ -1,35 +1,35 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
 /// joints also feature limits and motors.
 abstract class Joint {
   static Joint create(World world, JointDef def) {
     switch (def.type) {
-      case JointType.MOUSE:
+      case JointType.mouse:
         return MouseJoint(def as MouseJointDef);
-      case JointType.DISTANCE:
+      case JointType.distance:
         return DistanceJoint(def as DistanceJointDef);
-      case JointType.PRISMATIC:
+      case JointType.prismatic:
         return PrismaticJoint(def as PrismaticJointDef);
-      case JointType.REVOLUTE:
+      case JointType.revolute:
         return RevoluteJoint(def as RevoluteJointDef);
-      case JointType.WELD:
+      case JointType.weld:
         return WeldJoint(def as WeldJointDef);
-      case JointType.FRICTION:
+      case JointType.friction:
         return FrictionJoint(def as FrictionJointDef);
-      case JointType.WHEEL:
+      case JointType.wheel:
         return WheelJoint(def as WheelJointDef);
-      case JointType.GEAR:
+      case JointType.gear:
         return GearJoint(def as GearJointDef);
-      case JointType.PULLEY:
+      case JointType.pulley:
         return PulleyJoint(def as PulleyJointDef);
-      case JointType.CONSTANT_VOLUME:
+      case JointType.constantVolume:
         return ConstantVolumeJoint(world, def as ConstantVolumeJointDef);
-      case JointType.ROPE:
+      case JointType.rope:
         return RopeJoint(def as RopeJointDef);
-      case JointType.MOTOR:
+      case JointType.motor:
         return MotorJoint(def as MotorJointDef);
-      case JointType.UNKNOWN:
+      case JointType.unknown:
       default:
         return null;
     }
@@ -43,7 +43,7 @@ abstract class Joint {
   Body bodyA;
   Body bodyB;
 
-  bool _islandFlag = false;
+  bool islandFlag = false;
   bool _collideConnected = false;
 
   final Vector2 localAnchorA;
@@ -57,7 +57,7 @@ abstract class Joint {
     bodyA = def.bodyA;
     bodyB = def.bodyB;
     _collideConnected = def.collideConnected;
-    _islandFlag = false;
+    islandFlag = false;
   }
 
   /// get the type of the concrete joint.
@@ -72,8 +72,8 @@ abstract class Joint {
 
   /// Get the other body than the argument in the joint
   Body getOtherBody(Body body) {
-    assert(containsBody(body), "Body is not in the joint");
-    return body == bodyA ? bodyB : bodyB;
+    assert(containsBody(body), 'Body is not in the joint');
+    return body == bodyA ? bodyB : bodyA;
   }
 
   /// Get the anchor point on bodyA in world coordinates.

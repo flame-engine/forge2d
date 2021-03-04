@@ -1,17 +1,15 @@
-part of forge2d;
-
 enum JointType {
-  UNKNOWN,
-  REVOLUTE,
-  PRISMATIC,
-  DISTANCE,
-  PULLEY,
-  MOUSE,
-  GEAR,
-  WHEEL,
-  WELD,
-  FRICTION,
-  ROPE,
-  CONSTANT_VOLUME,
-  MOTOR
+  unknown,
+  revolute,
+  prismatic,
+  distance,
+  pulley,
+  mouse,
+  gear,
+  wheel,
+  weld,
+  friction,
+  rope,
+  constantVolume,
+  motor,
 }

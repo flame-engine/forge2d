@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Prismatic joint definition. This requires defining a line of motion using an axis and an anchor
 /// point. The definition uses local anchor points and a local axis so that the initial configuration
@@ -32,7 +32,7 @@ class PrismaticJointDef extends JointDef {
   /// The desired motor speed in radians per second.
   double motorSpeed = 0.0;
 
-  PrismaticJointDef() : super(JointType.PRISMATIC);
+  PrismaticJointDef() : super(JointType.prismatic);
 
   /// Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
   /// axis.

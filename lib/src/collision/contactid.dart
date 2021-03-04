@@ -1,6 +1,6 @@
-part of forge2d;
+import 'dart:typed_data';
 
-enum ContactIDType { VERTEX, FACE }
+enum ContactIDType { vertex, face }
 
 class ContactID implements Comparable<ContactID> {
   final Int8List _data = Int8List(4);
@@ -48,7 +48,7 @@ class ContactID implements Comparable<ContactID> {
   }
 
   void flip() {
-    int tempA = indexA;
+    var tempA = indexA;
     indexA = indexB;
     indexB = tempA;
     tempA = typeA;

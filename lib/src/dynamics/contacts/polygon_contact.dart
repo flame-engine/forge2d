@@ -1,9 +1,9 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 class PolygonContact extends Contact {
   PolygonContact(Fixture fixtureA, Fixture fixtureB)
-      : assert(fixtureA.getType() == ShapeType.POLYGON),
-        assert(fixtureB.getType() == ShapeType.POLYGON),
+      : assert(fixtureA.getType() == ShapeType.polygon),
+        assert(fixtureB.getType() == ShapeType.polygon),
         super(fixtureA, 0, fixtureB, 0);
 
   @override

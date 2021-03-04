@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// Input parameters for TOI
 class TOIInput {
@@ -11,25 +14,25 @@ class TOIInput {
   double tMax = 0.0;
 }
 
-enum TOIOutputState { UNKNOWN, FAILED, OVERLAPPED, TOUCHING, SEPARATED }
+enum TOIOutputState { unknown, failed, overlapped, touching, separated }
 
 /// Output parameters for TimeOfImpact
 class TOIOutput {
-  TOIOutputState state = TOIOutputState.UNKNOWN;
+  TOIOutputState state = TOIOutputState.unknown;
   double t = 0.0;
 }
 
 /// Class used for computing the time of impact. This class should not be constructed usually, just
 /// retrieve from the {@link SingletonPool#getTOI()}.
 class TimeOfImpact {
-  static const int MAX_ITERATIONS = 20;
-  static const int MAX_ROOT_ITERATIONS = 50;
+  static const int maxIterations = 20;
+  static const int maxRootIterations = 50;
 
   static int toiCalls = 0;
-  static int toiIters = 0;
-  static int toiMaxIters = 0;
-  static int toiRootIters = 0;
-  static int toiMaxRootIters = 0;
+  static int toiIterations = 0;
+  static int toiMaxIterations = 0;
+  static int toiRootIterations = 0;
+  static int toiMaxRootIterations = 0;
 
   // djm pooling
   final SimplexCache _cache = SimplexCache();
@@ -54,11 +57,11 @@ class TimeOfImpact {
 
     ++toiCalls;
 
-    output.state = TOIOutputState.UNKNOWN;
+    output.state = TOIOutputState.unknown;
     output.t = input.tMax;
 
-    final DistanceProxy proxyA = input.proxyA;
-    final DistanceProxy proxyB = input.proxyB;
+    final proxyA = input.proxyA;
+    final proxyB = input.proxyB;
 
     _sweepA.set(input.sweepA);
     _sweepB.set(input.sweepB);
@@ -68,18 +71,18 @@ class TimeOfImpact {
     _sweepA.normalize();
     _sweepB.normalize();
 
-    final double tMax = input.tMax;
+    final tMax = input.tMax;
 
-    final double totalRadius = proxyA.radius + proxyB.radius;
+    final totalRadius = proxyA.radius + proxyB.radius;
     // djm: whats with all these constants?
-    final double target =
-        math.max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
-    final double tolerance = 0.25 * settings.linearSlop;
+    final target =
+        max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
+    final tolerance = 0.25 * settings.linearSlop;
 
     assert(target > tolerance);
 
-    double t1 = 0.0;
-    int iter = 0;
+    var t1 = 0.0;
+    var iteration = 0;
 
     _cache.count = 0;
     _distanceInput.proxyA = input.proxyA;
@@ -100,14 +103,14 @@ class TimeOfImpact {
       // If the shapes are overlapped, we give up on continuous collision.
       if (_distanceOutput.distance <= 0.0) {
         // Failure!
-        output.state = TOIOutputState.OVERLAPPED;
+        output.state = TOIOutputState.overlapped;
         output.t = 0.0;
         break;
       }
 
       if (_distanceOutput.distance < target + tolerance) {
         // Victory!
-        output.state = TOIOutputState.TOUCHING;
+        output.state = TOIOutputState.touching;
         output.t = t1;
         break;
       }
@@ -118,16 +121,16 @@ class TimeOfImpact {
       // Compute the TOI on the separating axis. We do this by successively
       // resolving the deepest point. This loop is bounded by the number of
       // vertices.
-      bool done = false;
-      double t2 = tMax;
-      int pushBackIter = 0;
+      var done = false;
+      var t2 = tMax;
+      var pushBackIteration = 0;
       for (;;) {
         // Find the deepest point at t2. Store the witness point indices.
-        double s2 = _fcn.findMinSeparation(_indexes, t2);
+        var s2 = _fcn.findMinSeparation(_indexes, t2);
         // Is the final configuration separated?
         if (s2 > target + tolerance) {
           // Victory!
-          output.state = TOIOutputState.SEPARATED;
+          output.state = TOIOutputState.separated;
           output.t = tMax;
           done = true;
           break;
@@ -141,11 +144,11 @@ class TimeOfImpact {
         }
 
         // Compute the initial separation of the witness points.
-        double s1 = _fcn.evaluate(_indexes[0], _indexes[1], t1);
+        var s1 = _fcn.evaluate(_indexes[0], _indexes[1], t1);
         // Check for initial overlap. This might happen if the root finder
         // runs out of iterations.
         if (s1 < target - tolerance) {
-          output.state = TOIOutputState.FAILED;
+          output.state = TOIOutputState.failed;
           output.t = t1;
           done = true;
           break;
@@ -154,19 +157,20 @@ class TimeOfImpact {
         // Check for touching
         if (s1 <= target + tolerance) {
           // Victory! t1 should hold the TOI (could be 0.0).
-          output.state = TOIOutputState.TOUCHING;
+          output.state = TOIOutputState.touching;
           output.t = t1;
           done = true;
           break;
         }
 
         // Compute 1D root of: f(x) - target = 0
-        int rootIterCount = 0;
-        double a1 = t1, a2 = t2;
+        var rootIterationCount = 0;
+        var a1 = t1;
+        var a2 = t2;
         for (;;) {
           // Use a mix of the secant rule and bisection.
           double t;
-          if ((rootIterCount & 1) == 1) {
+          if ((rootIterationCount & 1) == 1) {
             // Secant rule to improve convergence.
             t = a1 + (target - s1) * (a2 - a1) / (s2 - s1);
           } else {
@@ -174,10 +178,10 @@ class TimeOfImpact {
             t = 0.5 * (a1 + a2);
           }
 
-          ++rootIterCount;
-          ++toiRootIters;
+          ++rootIterationCount;
+          ++toiRootIterations;
 
-          final double s = _fcn.evaluate(_indexes[0], _indexes[1], t);
+          final s = _fcn.evaluate(_indexes[0], _indexes[1], t);
 
           if ((s - target).abs() < tolerance) {
             // t2 holds a tentative value for t1
@@ -194,41 +198,41 @@ class TimeOfImpact {
             s2 = s;
           }
 
-          if (rootIterCount == MAX_ROOT_ITERATIONS) {
+          if (rootIterationCount == maxRootIterations) {
             break;
           }
         }
 
-        toiMaxRootIters = math.max(toiMaxRootIters, rootIterCount);
+        toiMaxRootIterations = max(toiMaxRootIterations, rootIterationCount);
 
-        ++pushBackIter;
+        ++pushBackIteration;
 
-        if (pushBackIter == settings.maxPolygonVertices ||
-            rootIterCount == MAX_ROOT_ITERATIONS) {
+        if (pushBackIteration == settings.maxPolygonVertices ||
+            rootIterationCount == maxRootIterations) {
           break;
         }
       }
 
-      ++iter;
-      ++toiIters;
+      ++iteration;
+      ++toiIterations;
 
       if (done) {
         break;
       }
 
-      if (iter == MAX_ITERATIONS) {
+      if (iteration == maxIterations) {
         // Root finder got stuck. Semi-victory.
-        output.state = TOIOutputState.FAILED;
+        output.state = TOIOutputState.failed;
         output.t = t1;
         break;
       }
     }
 
-    toiMaxIters = math.max(toiMaxIters, iter);
+    toiMaxIterations = max(toiMaxIterations, iteration);
   }
 } // Class TimeOfImpact.
 
-enum SeparationFunctionType { POINTS, FACE_A, FACE_B }
+enum SeparationFunctionType { points, faceA, faceB }
 
 class SeparationFunction {
   DistanceProxy proxyA;
@@ -256,15 +260,16 @@ class SeparationFunction {
   // TODO_ERIN might not need to return the separation
 
   double initialize(
-      final SimplexCache cache,
-      final DistanceProxy proxyA,
-      final Sweep sweepA,
-      final DistanceProxy proxyB,
-      final Sweep sweepB,
-      double t1) {
+    final SimplexCache cache,
+    final DistanceProxy proxyA,
+    final Sweep sweepA,
+    final DistanceProxy proxyB,
+    final Sweep sweepB,
+    double t1,
+  ) {
     this.proxyA = proxyA;
     this.proxyB = proxyB;
-    final int count = cache.count;
+    final count = cache.count;
     assert(0 < count && count < 3);
 
     this.sweepA = sweepA;
@@ -274,7 +279,7 @@ class SeparationFunction {
     sweepB.getTransform(_xfb, t1);
 
     if (count == 1) {
-      type = SeparationFunctionType.POINTS;
+      type = SeparationFunctionType.points;
       _localPointA.setFrom(proxyA.getVertex(cache.indexA[0]));
       _localPointB.setFrom(proxyB.getVertex(cache.indexB[0]));
       _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
@@ -285,7 +290,7 @@ class SeparationFunction {
       return axis.normalize();
     } else if (cache.indexA[0] == cache.indexA[1]) {
       // Two points on B and one on A.
-      type = SeparationFunctionType.FACE_B;
+      type = SeparationFunctionType.faceB;
 
       _localPointB1.setFrom(proxyB.getVertex(cache.indexB[0]));
       _localPointB2.setFrom(proxyB.getVertex(cache.indexB[1]));
@@ -310,7 +315,7 @@ class SeparationFunction {
       _temp
         ..setFrom(_pointA)
         ..sub(_pointB);
-      double s = _temp.dot(_normal);
+      var s = _temp.dot(_normal);
       if (s < 0.0) {
         axis.negate();
         s = -s;
@@ -318,7 +323,7 @@ class SeparationFunction {
       return s;
     } else {
       // Two points on A and one or two points on B.
-      type = SeparationFunctionType.FACE_A;
+      type = SeparationFunctionType.faceA;
 
       _localPointA1.setFrom(proxyA.getVertex(cache.indexA[0]));
       _localPointA2.setFrom(proxyA.getVertex(cache.indexA[1]));
@@ -343,7 +348,7 @@ class SeparationFunction {
       _temp
         ..setFrom(_pointB)
         ..sub(_pointA);
-      double s = _temp.dot(_normal);
+      var s = _temp.dot(_normal);
       if (s < 0.0) {
         axis.negate();
         s = -s;
@@ -361,7 +366,7 @@ class SeparationFunction {
     sweepB.getTransform(_xfb, t);
 
     switch (type) {
-      case SeparationFunctionType.POINTS:
+      case SeparationFunctionType.points:
         _axisA.setFrom(Rot.mulTransVec2(_xfa.q, axis));
         _axisB.setFrom(Rot.mulTransVec2(_xfb.q, axis..negate()));
         axis.negate();
@@ -376,7 +381,7 @@ class SeparationFunction {
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
         return (_pointB..sub(_pointA)).dot(axis);
-      case SeparationFunctionType.FACE_A:
+      case SeparationFunctionType.faceA:
         _normal.setFrom(Rot.mulVec2(_xfa.q, axis));
         _pointA.setFrom(Transform.mulVec2(_xfa, localPoint));
 
@@ -390,7 +395,7 @@ class SeparationFunction {
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
         return (_pointB..sub(_pointA)).dot(_normal);
-      case SeparationFunctionType.FACE_B:
+      case SeparationFunctionType.faceB:
         _normal.setFrom(Rot.mulVec2(_xfb.q, axis));
         _pointB.setFrom(Transform.mulVec2(_xfb, localPoint));
 
@@ -417,7 +422,7 @@ class SeparationFunction {
     sweepB.getTransform(_xfb, t);
 
     switch (type) {
-      case SeparationFunctionType.POINTS:
+      case SeparationFunctionType.points:
         _localPointA.setFrom(proxyA.getVertex(indexA));
         _localPointB.setFrom(proxyB.getVertex(indexB));
 
@@ -425,14 +430,14 @@ class SeparationFunction {
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
 
         return (_pointB..sub(_pointA)).dot(axis);
-      case SeparationFunctionType.FACE_A:
+      case SeparationFunctionType.faceA:
         _normal.setFrom(Rot.mulVec2(_xfa.q, axis));
         _pointA.setFrom(Transform.mulVec2(_xfa, localPoint));
 
         _localPointB.setFrom(proxyB.getVertex(indexB));
         _pointB.setFrom(Transform.mulVec2(_xfb, _localPointB));
         return (_pointB..sub(_pointA)).dot(_normal);
-      case SeparationFunctionType.FACE_B:
+      case SeparationFunctionType.faceB:
         _normal.setFrom(Rot.mulVec2(_xfb.q, axis));
         _pointB.setFrom(Transform.mulVec2(_xfb, localPoint));
 

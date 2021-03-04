@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// This holds the mass data computed for a shape.
 class MassData {

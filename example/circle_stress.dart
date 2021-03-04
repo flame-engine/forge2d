@@ -1,22 +1,18 @@
-library circle_stress;
-
-import 'dart:math' as math;
-import 'demo.dart';
+import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
 
-/// Scale of the viewport for this Demo.
-const double _MY_VIEWPORT_SCALE = 4.0;
+import 'demo.dart';
 
 class CircleStress extends Demo {
   /// The number of columns of balls in the pen.
-  static const int COLUMNS = 8;
+  static const int columns = 8;
 
   /// This number of balls will be created on each layer.
-  static const int LOAD_SIZE = 20;
+  static const int loadSize = 20;
 
   /// Construct a new Circle Stress Demo.
-  CircleStress() : super("Circle stress");
+  CircleStress() : super('Circle stress');
 
   /// Creates all bodies.
   @override
@@ -26,7 +22,7 @@ class CircleStress extends Demo {
       final ground = world.createBody(bd);
       bodies.add(ground);
 
-      final PolygonShape shape = PolygonShape();
+      final shape = PolygonShape();
       shape.setAsEdge(Vector2(-40.0, 0.0), Vector2(40.0, 0.0));
       ground.createFixtureFromShape(shape);
     }
@@ -36,7 +32,7 @@ class CircleStress extends Demo {
       final sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
       final bd = BodyDef();
-      bd.type = BodyType.STATIC;
+      bd.type = BodyType.static;
       bd.position = Vector2(0.0, -10.0);
       final b = world.createBody(bd);
       bodies.add(b);
@@ -49,23 +45,23 @@ class CircleStress extends Demo {
       sd.setAsBoxXY(3.0, 50.0);
       final wallDef = BodyDef();
       wallDef.position = Vector2(45.0, 25.0);
-      final Body rightWall = world.createBody(wallDef);
+      final rightWall = world.createBody(wallDef);
       bodies.add(rightWall);
       rightWall.createFixtureFromShape(sd);
       wallDef.position = Vector2(-45.0, 25.0);
-      final Body leftWall = world.createBody(wallDef);
+      final leftWall = world.createBody(wallDef);
       bodies.add(leftWall);
       leftWall.createFixtureFromShape(sd);
 
       // Corners
       final cornerDef = BodyDef();
       sd.setAsBoxXY(20.0, 3.0);
-      cornerDef.angle = -math.pi / 4.0;
+      cornerDef.angle = -pi / 4.0;
       cornerDef.position = Vector2(-35.0, 8.0);
-      Body myBod = world.createBody(cornerDef);
+      var myBod = world.createBody(cornerDef);
       bodies.add(myBod);
       myBod.createFixtureFromShape(sd);
-      cornerDef.angle = math.pi / 4.0;
+      cornerDef.angle = pi / 4.0;
       cornerDef.position = Vector2(35.0, 8.0);
       myBod = world.createBody(cornerDef);
       bodies.add(myBod);
@@ -73,8 +69,8 @@ class CircleStress extends Demo {
 
       // top
       sd.setAsBoxXY(50.0, 10.0);
-      final BodyDef topDef = BodyDef()
-        ..type = BodyType.STATIC
+      final topDef = BodyDef()
+        ..type = BodyType.static
         ..angle = 0.0
         ..position = Vector2(0.0, 75.0);
       final topBody = world.createBody(topDef);
@@ -85,9 +81,11 @@ class CircleStress extends Demo {
     }
 
     {
-      final ChainShape shape = ChainShape();
-      final List<Vector2> vertices = List.generate(
-          20, (i) => Vector2(i.toDouble(), i.toDouble() * i / 20));
+      final shape = ChainShape();
+      final vertices = List<Vector2>.generate(
+        20,
+        (i) => Vector2(i.toDouble(), i.toDouble() * i / 20),
+      );
       shape.createChain(vertices);
 
       final fixtureDef = FixtureDef()
@@ -97,32 +95,30 @@ class CircleStress extends Demo {
 
       final bodyDef = BodyDef()
         ..position = Vector2.zero()
-        ..type = BodyType.STATIC;
+        ..type = BodyType.static;
 
       final body = world.createBody(bodyDef)..createFixture(fixtureDef);
       bodies.add(body);
     }
 
     {
-      final BodyDef bd = BodyDef()
-        ..type = BodyType.DYNAMIC
+      final bd = BodyDef()
+        ..type = BodyType.dynamic
         ..position = Vector2(0.0, 10.0);
-      const int numPieces = 5;
-      const double radius = 6.0;
-      final Body body = world.createBody(bd);
+      const numPieces = 5;
+      const radius = 6.0;
+      final body = world.createBody(bd);
       bodies.add(body);
 
-      for (int i = 0; i < numPieces; i++) {
-        final double xPos =
-            radius * math.cos(2 * math.pi * (i / numPieces.toDouble()));
-        final double yPos =
-            radius * math.sin(2 * math.pi * (i / numPieces.toDouble()));
+      for (var i = 0; i < numPieces; i++) {
+        final xPos = radius * cos(2 * pi * (i / numPieces.toDouble()));
+        final yPos = radius * sin(2 * pi * (i / numPieces.toDouble()));
 
-        final CircleShape cd = CircleShape()
+        final cd = CircleShape()
           ..radius = 1.2
           ..position.setValues(xPos, yPos);
 
-        final FixtureDef fd = FixtureDef()
+        final fd = FixtureDef()
           ..shape = cd
           ..density = 25.0
           ..friction = .1
@@ -134,32 +130,32 @@ class CircleStress extends Demo {
       body.setBullet(false);
 
       // Create an empty ground body.
-      final BodyDef bodyDef = BodyDef();
-      final Body groundBody = world.createBody(bodyDef);
+      final bodyDef = BodyDef();
+      final groundBody = world.createBody(bodyDef);
 
-      final RevoluteJointDef rjd = RevoluteJointDef()
+      final rjd = RevoluteJointDef()
         ..initialize(body, groundBody, body.position)
-        ..motorSpeed = -math.pi
+        ..motorSpeed = -pi
         ..maxMotorTorque = 1000000.0
         ..enableMotor = true;
 
       world.createJoint(rjd);
 
-      for (int j = 0; j < COLUMNS; j++) {
-        for (int i = 0; i < LOAD_SIZE; i++) {
-          final CircleShape circleShape = CircleShape()
-            ..radius = 1.0 + (i % 2 == 0 ? 1.0 : -1.0) * .5 * .75;
-          final FixtureDef fd2 = FixtureDef()
+      for (var j = 0; j < columns; j++) {
+        for (var i = 0; i < loadSize; i++) {
+          final circleShape = CircleShape()
+            ..radius = 1.0 + (i.isEven ? 1.0 : -1.0) * .5 * .75;
+          final fd2 = FixtureDef()
             ..shape = circleShape
             ..density = circleShape.radius * 1.5
             ..friction = 0.5
             ..restitution = 0.7;
-          final double xPos = -39.0 + 2 * i;
-          final double yPos = 50.0 + j;
-          final BodyDef bodyDef = BodyDef()
-            ..type = BodyType.DYNAMIC
+          final xPos = -39.0 + 2 * i;
+          final yPos = 50.0 + j;
+          final bodyDef = BodyDef()
+            ..type = BodyType.dynamic
             ..position = Vector2(xPos, yPos);
-          final Body body = world.createBody(bodyDef);
+          final body = world.createBody(bodyDef);
           bodies.add(body);
           body.createFixture(fd2);
         }
@@ -172,6 +168,6 @@ void main() {
   CircleStress()
     ..initialize()
     ..initializeAnimation()
-    ..viewport.scale = _MY_VIEWPORT_SCALE
+    ..viewport.scale = 4.0
     ..runAnimation();
 }

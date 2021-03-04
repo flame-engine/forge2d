@@ -1,28 +1,42 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../callbacks/contact_filter.dart';
+import '../callbacks/contact_listener.dart';
+import '../callbacks/debug_draw.dart';
+import '../callbacks/destruction_listener.dart';
+import '../callbacks/particle_destruction_listener.dart';
+import '../callbacks/particle_query_callback.dart';
+import '../callbacks/particle_raycast_callback.dart';
+import '../callbacks/query_callback.dart';
+import '../callbacks/raycast_callback.dart';
+import '../callbacks/tree_callback.dart';
+import '../callbacks/tree_raycast_callback.dart';
+import '../settings.dart' as settings;
 
 /// The world class manages all physics entities, dynamic simulation, and asynchronous queries. The
 /// world also contains efficient memory management facilities.
 class World {
-  static const int NEW_FIXTURE = 0x0001;
-  static const int LOCKED = 0x0002;
-  static const int CLEAR_FORCES = 0x0004;
+  static const int newFixture = 0x0001;
+  static const int locked = 0x0002;
+  static const int clearForcesBit = 0x0004;
 
   // TODO.spydon: Don't have these fields as static
   static final Distance distance = Distance();
   static final Collision collision = Collision();
   static final TimeOfImpact toi = TimeOfImpact();
 
-  int _flags = 0;
+  int flags = 0;
 
-  ContactManager _contactManager;
+  ContactManager contactManager;
   final List<Body> bodies = <Body>[];
   final List<Joint> joints = <Joint>[];
 
   final Vector2 _gravity;
   bool _allowSleep = false;
 
-  DestructionListener _destructionListener;
-  ParticleDestructionListener _particleDestructionListener;
+  DestructionListener destructionListener;
+  ParticleDestructionListener particleDestructionListener;
   DebugDraw debugDraw;
 
   /// This is used to compute the time step ratio to support a variable time step.
@@ -37,7 +51,7 @@ class World {
 
   Profile _profile;
 
-  ParticleSystem _particleSystem;
+  ParticleSystem particleSystem;
 
   /// Construct a world object.
   ///
@@ -54,14 +68,14 @@ class World {
 
     _allowSleep = true;
 
-    _flags = CLEAR_FORCES;
+    flags = clearForcesBit;
 
     _invDt0 = 0.0;
 
-    _contactManager = ContactManager(broadPhase);
+    contactManager = ContactManager(broadPhase);
     _profile = Profile();
 
-    _particleSystem = ParticleSystem(this);
+    particleSystem = ParticleSystem(this);
   }
 
   void setAllowSleep(bool flag) {
@@ -71,7 +85,7 @@ class World {
 
     _allowSleep = flag;
     if (_allowSleep == false) {
-      for (Body b in bodies) {
+      for (final b in bodies) {
         b.setAwake(true);
       }
     }
@@ -89,46 +103,19 @@ class World {
     return _allowSleep;
   }
 
-  DestructionListener getDestructionListener() {
-    return _destructionListener;
-  }
-
-  ParticleDestructionListener getParticleDestructionListener() {
-    return _particleDestructionListener;
-  }
-
-  void setParticleDestructionListener(ParticleDestructionListener listener) {
-    _particleDestructionListener = listener;
-  }
-
-  /// Register a destruction listener. The listener is owned by you and must remain in scope.
-  ///
-  /// @param listener
-  void setDestructionListener(DestructionListener listener) {
-    _destructionListener = listener;
-  }
-
   /// Register a contact filter to provide specific control over collision. Otherwise the default
   /// filter is used (_defaultFilter). The listener is owned by you and must remain in scope.
   ///
   /// @param filter
   void setContactFilter(ContactFilter filter) {
-    _contactManager.contactFilter = filter;
+    contactManager.contactFilter = filter;
   }
 
   /// Register a contact event listener. The listener is owned by you and must remain in scope.
   ///
   /// @param listener
   void setContactListener(ContactListener listener) {
-    _contactManager.contactListener = listener;
-  }
-
-  /// Register a routine for debug drawing. The debug draw functions are called inside with
-  /// World.DrawDebugData method. The debug draw object is owned by you and must remain in scope.
-  ///
-  /// @param debugDraw
-  void setDebugDraw(DebugDraw debugDraw) {
-    debugDraw = debugDraw;
+    contactManager.contactListener = listener;
   }
 
   /// create a rigid body given a definition. No reference to the definition is retained.
@@ -138,7 +125,7 @@ class World {
   /// @return
   Body createBody(BodyDef def) {
     assert(isLocked() == false);
-    final Body body = Body(def, this);
+    final body = Body(def, this);
     bodies.add(body);
     return body;
   }
@@ -153,24 +140,20 @@ class World {
     assert(isLocked() == false);
 
     // Delete the attached joints.
-    for (Joint joint in body.joints) {
-      if (_destructionListener != null) {
-        _destructionListener.sayGoodbyeJoint(joint);
-      }
+    for (final joint in body.joints) {
+      destructionListener?.sayGoodbyeJoint(joint);
       destroyJoint(joint);
     }
 
     // Delete the attached contacts.
     while (body.contacts.isNotEmpty) {
-      _contactManager.destroy(body.contacts.first);
+      contactManager.destroy(body.contacts.first);
     }
     body.contacts.clear();
 
-    for (Fixture f in body.fixtures) {
-      if (_destructionListener != null) {
-        _destructionListener.sayGoodbyeFixture(f);
-      }
-      f.destroyProxies(_contactManager.broadPhase);
+    for (final f in body.fixtures) {
+      destructionListener?.sayGoodbyeFixture(f);
+      f.destroyProxies(contactManager.broadPhase);
     }
     bodies.remove(body);
   }
@@ -182,18 +165,18 @@ class World {
   Joint createJoint(JointDef def) {
     assert(isLocked() == false);
 
-    final Joint joint = Joint.create(this, def);
+    final joint = Joint.create(this, def);
     joints.add(joint);
 
     joint.bodyA.joints.add(joint);
     joint.bodyB.joints.add(joint);
 
-    final Body bodyA = def.bodyA;
-    final Body bodyB = def.bodyB;
+    final bodyA = def.bodyA;
+    final bodyB = def.bodyB;
 
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (def.collideConnected == false) {
-      for (Contact contact in bodyB.contacts) {
+      for (final contact in bodyB.contacts) {
         if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
           // body is awake).
@@ -214,12 +197,12 @@ class World {
   void destroyJoint(Joint joint) {
     assert(isLocked() == false);
 
-    final bool collideConnected = joint.getCollideConnected();
+    final collideConnected = joint.getCollideConnected();
     joints.remove(joint);
 
     // Disconnect from island graph.
-    final Body bodyA = joint.bodyA;
-    final Body bodyB = joint.bodyB;
+    final bodyA = joint.bodyA;
+    final bodyB = joint.bodyB;
 
     // Wake up connected bodies.
     bodyA.setAwake(true);
@@ -232,7 +215,7 @@ class World {
 
     // If the joint prevents collisions, then flag any contacts for filtering.
     if (collideConnected == false) {
-      for (Contact contact in bodyB.contacts) {
+      for (final contact in bodyB.contacts) {
         if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
           // body is awake).
@@ -257,12 +240,12 @@ class World {
     stepTimer.reset();
     tempTimer.reset();
     // If new fixtures were added, we need to find the new contacts.
-    if ((_flags & NEW_FIXTURE) == NEW_FIXTURE) {
-      _contactManager.findNewContacts();
-      _flags &= ~NEW_FIXTURE;
+    if ((flags & newFixture) == newFixture) {
+      contactManager.findNewContacts();
+      flags &= ~newFixture;
     }
 
-    _flags |= LOCKED;
+    flags |= locked;
 
     step.dt = dt;
     step.velocityIterations = velocityIterations;
@@ -280,13 +263,13 @@ class World {
 
     // Update contacts. This is where some contacts are destroyed.
     tempTimer.reset();
-    _contactManager.collide();
+    contactManager.collide();
     _profile.collide.record(tempTimer.getMilliseconds());
 
     // Integrate velocities, solve velocity constraints, and integrate positions.
     if (_stepComplete && step.dt > 0.0) {
       tempTimer.reset();
-      _particleSystem.solve(step); // Particle Simulation
+      particleSystem.solve(step); // Particle Simulation
       _profile.solveParticleSystem.record(tempTimer.getMilliseconds());
       tempTimer.reset();
       solve(step);
@@ -304,11 +287,11 @@ class World {
       _invDt0 = step.invDt;
     }
 
-    if ((_flags & CLEAR_FORCES) == CLEAR_FORCES) {
+    if ((flags & clearForcesBit) == clearForcesBit) {
       clearForces();
     }
 
-    _flags &= ~LOCKED;
+    flags &= ~locked;
 
     _profile.step.record(stepTimer.getMilliseconds());
   }
@@ -319,10 +302,7 @@ class World {
   ///
   /// @see setAutoClearForces
   void clearForces() {
-    for (Body body in bodies) {
-      body._force.setZero();
-      body._torque = 0.0;
-    }
+    bodies.forEach((b) => b.clearForces());
   }
 
   final Color3i color = Color3i.zero();
@@ -336,20 +316,20 @@ class World {
       return;
     }
 
-    final int flags = debugDraw.drawFlags;
-    final bool wireframe = (flags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
+    final flags = debugDraw.drawFlags;
+    final wireframe = (flags & DebugDraw.wireFrameDrawingBit) != 0;
 
-    if ((flags & DebugDraw.SHAPE_BIT) != 0) {
-      for (Body b in bodies) {
-        xf.set(b._transform);
-        for (Fixture f in b.fixtures) {
+    if ((flags & DebugDraw.shapeBit) != 0) {
+      for (final b in bodies) {
+        xf.set(b.transform);
+        for (final f in b.fixtures) {
           if (b.isActive() == false) {
             color.setFromRGBd(0.5, 0.5, 0.3);
             drawShape(f, xf, color, wireframe);
-          } else if (b.getType() == BodyType.STATIC) {
+          } else if (b.bodyType == BodyType.static) {
             color.setFromRGBd(0.5, 0.9, 0.3);
             drawShape(f, xf, color, wireframe);
-          } else if (b.getType() == BodyType.KINEMATIC) {
+          } else if (b.bodyType == BodyType.kinematic) {
             color.setFromRGBd(0.5, 0.5, 0.9);
             drawShape(f, xf, color, wireframe);
           } else if (b.isAwake() == false) {
@@ -361,61 +341,61 @@ class World {
           }
         }
       }
-      drawParticleSystem(_particleSystem);
+      drawParticleSystem(particleSystem);
     }
 
-    if ((flags & DebugDraw.JOINT_BIT) != 0) {
+    if ((flags & DebugDraw.jointBit) != 0) {
       joints.forEach(drawJoint);
     }
 
-    if ((flags & DebugDraw.PAIR_BIT) != 0) {
+    if ((flags & DebugDraw.pairBit) != 0) {
       color.setFromRGBd(0.3, 0.9, 0.9);
-      for (Contact c in _contactManager.contacts) {
-        final Fixture fixtureA = c.fixtureA;
-        final Fixture fixtureB = c.fixtureB;
+      for (final c in contactManager.contacts) {
+        final fixtureA = c.fixtureA;
+        final fixtureB = c.fixtureB;
         cA.setFrom(fixtureA.getAABB(c.indexA).getCenter());
         cB.setFrom(fixtureB.getAABB(c.indexB).getCenter());
         debugDraw.drawSegment(cA, cB, color);
       }
     }
 
-    if ((flags & DebugDraw.AABB_BIT) != 0) {
+    if ((flags & DebugDraw.aabbBit) != 0) {
       color.setFromRGBd(0.9, 0.3, 0.9);
 
-      for (Body b in bodies) {
+      for (final b in bodies) {
         if (b.isActive() == false) {
           continue;
         }
 
-        for (Fixture f in b.fixtures) {
-          for (int i = 0; i < f._proxyCount; ++i) {
-            final FixtureProxy proxy = f._proxies[i];
-            final AABB aabb =
-                _contactManager.broadPhase.getFatAABB(proxy.proxyId);
+        for (final f in b.fixtures) {
+          for (var i = 0; i < f.proxyCount; ++i) {
+            final proxy = f.proxies[i];
+            final aabb = contactManager.broadPhase.getFatAABB(proxy.proxyId);
             if (aabb != null) {
-              final List<Vector2> vs = List<Vector2>(4);
-              vs[0].setValues(aabb.lowerBound.x, aabb.lowerBound.y);
-              vs[1].setValues(aabb.upperBound.x, aabb.lowerBound.y);
-              vs[2].setValues(aabb.upperBound.x, aabb.upperBound.y);
-              vs[3].setValues(aabb.lowerBound.x, aabb.upperBound.y);
-              debugDraw.drawPolygon(vs, 4, color);
+              final vs = <Vector2>[
+                Vector2(aabb.lowerBound.x, aabb.lowerBound.y),
+                Vector2(aabb.upperBound.x, aabb.lowerBound.y),
+                Vector2(aabb.upperBound.x, aabb.upperBound.y),
+                Vector2(aabb.lowerBound.x, aabb.upperBound.y),
+              ];
+              debugDraw.drawPolygon(vs, color);
             }
           }
         }
       }
     }
 
-    if ((flags & DebugDraw.CENTER_OF_MASS_BIT) != 0) {
-      final Color3i xfColor = Color3i(255, 0, 0);
-      for (Body b in bodies) {
-        xf.set(b._transform);
+    if ((flags & DebugDraw.centerOfMassBit) != 0) {
+      final xfColor = Color3i(255, 0, 0);
+      for (final b in bodies) {
+        xf.set(b.transform);
         xf.p.setFrom(b.worldCenter);
         debugDraw.drawTransform(xf, xfColor);
       }
     }
 
-    if ((flags & DebugDraw.DYNAMIC_TREE_BIT) != 0) {
-      _contactManager.broadPhase.drawTree(debugDraw);
+    if ((flags & DebugDraw.dynamicTreeBit) != 0) {
+      contactManager.broadPhase.drawTree(debugDraw);
     }
 
     debugDraw.flush();
@@ -428,9 +408,9 @@ class World {
   /// @param callback a user implemented callback class.
   /// @param aabb the query box.
   void queryAABB(QueryCallback callback, AABB aabb) {
-    wqwrapper.broadPhase = _contactManager.broadPhase;
+    wqwrapper.broadPhase = contactManager.broadPhase;
     wqwrapper.callback = callback;
-    _contactManager.broadPhase.query(wqwrapper, aabb);
+    contactManager.broadPhase.query(wqwrapper, aabb);
   }
 
   /// Query the world for all fixtures and particles that potentially overlap the provided AABB.
@@ -438,12 +418,15 @@ class World {
   /// @param callback a user implemented callback class.
   /// @param particleCallback callback for particles.
   /// @param aabb the query box.
-  void queryAABBTwoCallbacks(QueryCallback callback,
-      ParticleQueryCallback particleCallback, AABB aabb) {
-    wqwrapper.broadPhase = _contactManager.broadPhase;
+  void queryAABBTwoCallbacks(
+    QueryCallback callback,
+    ParticleQueryCallback particleCallback,
+    AABB aabb,
+  ) {
+    wqwrapper.broadPhase = contactManager.broadPhase;
     wqwrapper.callback = callback;
-    _contactManager.broadPhase.query(wqwrapper, aabb);
-    _particleSystem.queryAABB(particleCallback, aabb);
+    contactManager.broadPhase.query(wqwrapper, aabb);
+    particleSystem.queryAABB(particleCallback, aabb);
   }
 
   /// Query the world for all particles that potentially overlap the provided AABB.
@@ -451,10 +434,10 @@ class World {
   /// @param particleCallback callback for particles.
   /// @param aabb the query box.
   void queryAABBParticle(ParticleQueryCallback particleCallback, AABB aabb) {
-    _particleSystem.queryAABB(particleCallback, aabb);
+    particleSystem.queryAABB(particleCallback, aabb);
   }
 
-  final WorldRayCastWrapper wrcwrapper = WorldRayCastWrapper();
+  final WorldRayCastWrapper raycastWrapper = WorldRayCastWrapper();
   final RayCastInput input = RayCastInput();
 
   /// Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
@@ -465,12 +448,12 @@ class World {
   /// @param point1 the ray starting point
   /// @param point2 the ray ending point
   void raycast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
-    wrcwrapper.broadPhase = _contactManager.broadPhase;
-    wrcwrapper.callback = callback;
+    raycastWrapper.broadPhase = contactManager.broadPhase;
+    raycastWrapper.callback = callback;
     input.maxFraction = 1.0;
     input.p1.setFrom(point1);
     input.p2.setFrom(point2);
-    _contactManager.broadPhase.raycast(wrcwrapper, input);
+    contactManager.broadPhase.raycast(raycastWrapper, input);
   }
 
   /// Ray-cast the world for all fixtures and particles in the path of the ray. Your callback
@@ -482,17 +465,18 @@ class World {
   /// @param point1 the ray starting point
   /// @param point2 the ray ending point
   void raycastTwoCallBacks(
-      RayCastCallback callback,
-      ParticleRaycastCallback particleCallback,
-      Vector2 point1,
-      Vector2 point2) {
-    wrcwrapper.broadPhase = _contactManager.broadPhase;
-    wrcwrapper.callback = callback;
+    RayCastCallback callback,
+    ParticleRaycastCallback particleCallback,
+    Vector2 point1,
+    Vector2 point2,
+  ) {
+    raycastWrapper.broadPhase = contactManager.broadPhase;
+    raycastWrapper.callback = callback;
     input.maxFraction = 1.0;
     input.p1.setFrom(point1);
     input.p2.setFrom(point2);
-    _contactManager.broadPhase.raycast(wrcwrapper, input);
-    _particleSystem.raycast(particleCallback, point1, point2);
+    contactManager.broadPhase.raycast(raycastWrapper, input);
+    particleSystem.raycast(particleCallback, point1, point2);
   }
 
   /// Ray-cast the world for all particles in the path of the ray. Your callback controls whether you
@@ -501,29 +485,32 @@ class World {
   /// @param particleCallback the particle callback class.
   /// @param point1 the ray starting point
   /// @param point2 the ray ending point
-  void raycastParticle(ParticleRaycastCallback particleCallback, Vector2 point1,
-      Vector2 point2) {
-    _particleSystem.raycast(particleCallback, point1, point2);
+  void raycastParticle(
+    ParticleRaycastCallback particleCallback,
+    Vector2 point1,
+    Vector2 point2,
+  ) {
+    particleSystem.raycast(particleCallback, point1, point2);
   }
 
   /// Get the number of broad-phase proxies.
   int getProxyCount() {
-    return _contactManager.broadPhase.getProxyCount();
+    return contactManager.broadPhase.getProxyCount();
   }
 
   /// Gets the height of the dynamic tree
   int getTreeHeight() {
-    return _contactManager.broadPhase.getTreeHeight();
+    return contactManager.broadPhase.getTreeHeight();
   }
 
   /// Gets the balance of the dynamic tree
   int getTreeBalance() {
-    return _contactManager.broadPhase.getTreeBalance();
+    return contactManager.broadPhase.getTreeBalance();
   }
 
   /// Gets the quality of the dynamic tree
   double getTreeQuality() {
-    return _contactManager.broadPhase.getTreeQuality();
+    return contactManager.broadPhase.getTreeQuality();
   }
 
   /// Change the global gravity vector.
@@ -538,26 +525,25 @@ class World {
 
   /// Is the world locked (in the middle of a time step).
   bool isLocked() {
-    return (_flags & LOCKED) == LOCKED;
+    return (flags & locked) == locked;
   }
 
   /// Set flag to control automatic clearing of forces after each time step.
-  void setAutoClearForces(bool flag) {
-    if (flag) {
-      _flags |= CLEAR_FORCES;
+  void setAutoClearForces(bool shouldAutoClear) {
+    if (shouldAutoClear) {
+      flags |= clearForcesBit;
     } else {
-      _flags &= ~CLEAR_FORCES;
+      flags &= ~clearForcesBit;
     }
   }
 
   /// Get the flag that controls automatic clearing of forces after each time step.
   bool getAutoClearForces() {
-    return (_flags & CLEAR_FORCES) == CLEAR_FORCES;
+    return (flags & clearForcesBit) == clearForcesBit;
   }
 
   final Island island = Island();
-  // TODO djm find a good initial stack number;
-  List<Body> stack = List<Body>(10);
+  final List<Body> stack = [];
   final Timer broadphaseTimer = Timer();
 
   void solve(TimeStep step) {
@@ -566,31 +552,26 @@ class World {
     _profile.solvePosition.startAccum();
 
     // update previous transforms
-    for (Body b in bodies) {
-      b._xf0.set(b._transform);
+    for (final b in bodies) {
+      b.previousTransform.set(b.transform);
     }
 
     // Size the island for the worst case.
-    island.init(_contactManager.contactListener);
+    island.init(contactManager.contactListener);
 
     // Clear all the island flags.
-    for (Body b in bodies) {
-      b._flags &= ~Body.ISLAND_FLAG;
+    for (final b in bodies) {
+      b.flags &= ~Body.islandFlag;
     }
-    for (Contact c in _contactManager.contacts) {
-      c.flags &= ~Contact.ISLAND_FLAG;
+    for (final c in contactManager.contacts) {
+      c.flags &= ~Contact.islandFlag;
     }
-    for (Joint j in joints) {
-      j._islandFlag = false;
+    for (final j in joints) {
+      j.islandFlag = false;
     }
 
-    // Build and simulate all awake islands.
-    final int stackSize = bodies.length;
-    if (stack.length < stackSize) {
-      stack = List<Body>(stackSize);
-    }
-    for (Body seed in bodies) {
-      if ((seed._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
+    for (final seed in bodies) {
+      if ((seed.flags & Body.islandFlag) == Body.islandFlag) {
         continue;
       }
 
@@ -599,36 +580,36 @@ class World {
       }
 
       // The seed can be dynamic or kinematic.
-      if (seed.getType() == BodyType.STATIC) {
+      if (seed.bodyType == BodyType.static) {
         continue;
       }
 
       // Reset island and stack.
       island.clear();
-      int stackCount = 0;
-      stack[stackCount++] = seed;
-      seed._flags |= Body.ISLAND_FLAG;
+      stack.clear();
+      stack.add(seed);
+      seed.flags |= Body.islandFlag;
 
       // Perform a depth first search (DFS) on the constraint graph.
-      while (stackCount > 0) {
+      while (stack.isNotEmpty) {
         // Grab the next body off the stack and add it to the island.
-        final Body b = stack[--stackCount];
-        assert(b.isActive() == true);
-        island.addBody(b);
+        final body = stack.removeLast();
+        assert(body.isActive() == true);
+        island.addBody(body);
 
         // Make sure the body is awake.
-        b.setAwake(true);
+        body.setAwake(true);
 
         // To keep islands as small as possible, we don't
         // propagate islands across static bodies.
-        if (b.getType() == BodyType.STATIC) {
+        if (body.bodyType == BodyType.static) {
           continue;
         }
 
         // Search all contacts connected to this body.
-        for (Contact contact in b.contacts) {
+        for (final contact in body.contacts) {
           // Has this contact already been added to an island?
-          if ((contact.flags & Contact.ISLAND_FLAG) == Contact.ISLAND_FLAG) {
+          if ((contact.flags & Contact.islandFlag) == Contact.islandFlag) {
             continue;
           }
 
@@ -638,34 +619,33 @@ class World {
           }
 
           // Skip sensors.
-          final bool sensorA = contact.fixtureA._isSensor;
-          final bool sensorB = contact.fixtureB._isSensor;
+          final sensorA = contact.fixtureA.isSensor;
+          final sensorB = contact.fixtureB.isSensor;
           if (sensorA || sensorB) {
             continue;
           }
 
           island.addContact(contact);
-          contact.flags |= Contact.ISLAND_FLAG;
+          contact.flags |= Contact.islandFlag;
 
-          final Body other = contact.getOtherBody(b);
+          final other = contact.getOtherBody(body);
 
           // Was the other body already added to this island?
-          if ((other._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
+          if ((other.flags & Body.islandFlag) == Body.islandFlag) {
             continue;
           }
 
-          assert(stackCount < stackSize);
-          stack[stackCount++] = other;
-          other._flags |= Body.ISLAND_FLAG;
+          stack.add(other);
+          other.flags |= Body.islandFlag;
         }
 
         // Search all joints connect to this body.
-        for (Joint joint in b.joints) {
-          if (joint._islandFlag == true) {
+        for (final joint in body.joints) {
+          if (joint.islandFlag == true) {
             continue;
           }
 
-          final Body other = joint.getOtherBody(b);
+          final other = joint.getOtherBody(body);
 
           // Don't simulate joints connected to inactive bodies.
           if (other.isActive() == false) {
@@ -673,25 +653,24 @@ class World {
           }
 
           island.addJoint(joint);
-          joint._islandFlag = true;
+          joint.islandFlag = true;
 
-          if ((other._flags & Body.ISLAND_FLAG) == Body.ISLAND_FLAG) {
+          if ((other.flags & Body.islandFlag) == Body.islandFlag) {
             continue;
           }
 
-          assert(stackCount < stackSize);
-          stack[stackCount++] = other;
-          other._flags |= Body.ISLAND_FLAG;
+          stack.add(other);
+          other.flags |= Body.islandFlag;
         }
       }
       island.solve(_profile, step, _gravity, _allowSleep);
 
       // Post solve cleanup.
-      for (BodyMeta bodyMeta in island._bodies) {
+      for (final bodyMeta in island.bodies) {
         // Allow static bodies to participate in other islands.
-        final Body b = bodyMeta.body;
-        if (b.getType() == BodyType.STATIC) {
-          b._flags &= ~Body.ISLAND_FLAG;
+        final b = bodyMeta.body;
+        if (b.bodyType == BodyType.static) {
+          b.flags &= ~Body.islandFlag;
         }
       }
     }
@@ -701,13 +680,13 @@ class World {
 
     broadphaseTimer.reset();
     // Synchronize fixtures, check for out of range bodies.
-    for (Body b in bodies) {
+    for (final b in bodies) {
       // If a body was not in an island then it did not move.
-      if ((b._flags & Body.ISLAND_FLAG) == 0) {
+      if ((b.flags & Body.islandFlag) == 0) {
         continue;
       }
 
-      if (b.getType() == BodyType.STATIC) {
+      if (b.bodyType == BodyType.static) {
         continue;
       }
 
@@ -716,7 +695,7 @@ class World {
     }
 
     // Look for new contacts.
-    _contactManager.findNewContacts();
+    contactManager.findNewContacts();
     _profile.broadphase.record(broadphaseTimer.getMilliseconds());
   }
 
@@ -724,73 +703,72 @@ class World {
   final TOIInput toiInput = TOIInput();
   final TOIOutput toiOutput = TOIOutput();
   final TimeStep subStep = TimeStep();
-  final List<Body> tempBodies = List<Body>(2);
   final Sweep backup1 = Sweep();
   final Sweep backup2 = Sweep();
 
   void solveTOI(final TimeStep step) {
-    final Island island = toiIsland..init(_contactManager.contactListener);
+    final island = toiIsland..init(contactManager.contactListener);
     if (_stepComplete) {
-      for (Body b in bodies) {
-        b._flags &= ~Body.ISLAND_FLAG;
-        b._sweep.alpha0 = 0.0;
+      for (final b in bodies) {
+        b.flags &= ~Body.islandFlag;
+        b.sweep.alpha0 = 0.0;
       }
 
-      for (Contact c in _contactManager.contacts) {
+      for (final c in contactManager.contacts) {
         // Invalidate TOI
-        c.flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
+        c.flags &= ~(Contact.toiFlag | Contact.islandFlag);
         c.toiCount = 0;
         c.toi = 1.0;
       }
     }
 
     // Find TOI events and solve them.
-    while (true) {
+    for (;;) {
       // Find the first TOI.
       Contact minContact;
-      double minAlpha = 1.0;
+      var minAlpha = 1.0;
 
-      for (Contact c in _contactManager.contacts) {
+      for (final contact in contactManager.contacts) {
         // Is this contact disabled?
-        if (c.isEnabled() == false) {
+        if (contact.isEnabled() == false) {
           continue;
         }
 
         // Prevent excessive sub-stepping.
-        if (c.toiCount > settings.maxSubSteps) {
+        if (contact.toiCount > settings.maxSubSteps) {
           continue;
         }
 
-        double alpha = 1.0;
-        if ((c.flags & Contact.TOI_FLAG) != 0) {
+        var alpha = 1.0;
+        if ((contact.flags & Contact.toiFlag) != 0) {
           // This contact has a valid cached TOI.
-          alpha = c.toi;
+          alpha = contact.toi;
         } else {
-          final Fixture fA = c.fixtureA;
-          final Fixture fB = c.fixtureB;
+          final fixtureA = contact.fixtureA;
+          final fixtureB = contact.fixtureB;
 
           // Is there a sensor?
-          if (fA.isSensor() || fB.isSensor()) {
+          if (fixtureA.isSensor || fixtureB.isSensor) {
             continue;
           }
 
-          final Body bA = fA.body;
-          final Body bB = fB.body;
+          final bodyA = fixtureA.body;
+          final bodyB = fixtureB.body;
 
-          final BodyType typeA = bA._bodyType;
-          final BodyType typeB = bB._bodyType;
-          assert(typeA == BodyType.DYNAMIC || typeB == BodyType.DYNAMIC);
+          final typeA = bodyA.bodyType;
+          final typeB = bodyB.bodyType;
+          assert(typeA == BodyType.dynamic || typeB == BodyType.dynamic);
 
-          final bool activeA = bA.isAwake() && typeA != BodyType.STATIC;
-          final bool activeB = bB.isAwake() && typeB != BodyType.STATIC;
+          final activeA = bodyA.isAwake() && typeA != BodyType.static;
+          final activeB = bodyB.isAwake() && typeB != BodyType.static;
 
           // Is at least one body active (awake and dynamic or kinematic)?
           if (activeA == false && activeB == false) {
             continue;
           }
 
-          final bool collideA = bA.isBullet() || typeA != BodyType.DYNAMIC;
-          final bool collideB = bB.isBullet() || typeB != BodyType.DYNAMIC;
+          final collideA = bodyA.isBullet() || typeA != BodyType.dynamic;
+          final collideB = bodyB.isBullet() || typeB != BodyType.dynamic;
 
           // Are these two non-bullet dynamic bodies?
           if (collideA == false && collideB == false) {
@@ -799,160 +777,155 @@ class World {
 
           // Compute the TOI for this contact.
           // Put the sweeps onto the same time interval.
-          double alpha0 = bA._sweep.alpha0;
+          var alpha0 = bodyA.sweep.alpha0;
 
-          if (bA._sweep.alpha0 < bB._sweep.alpha0) {
-            alpha0 = bB._sweep.alpha0;
-            bA._sweep.advance(alpha0);
-          } else if (bB._sweep.alpha0 < bA._sweep.alpha0) {
-            alpha0 = bA._sweep.alpha0;
-            bB._sweep.advance(alpha0);
+          if (bodyA.sweep.alpha0 < bodyB.sweep.alpha0) {
+            alpha0 = bodyB.sweep.alpha0;
+            bodyA.sweep.advance(alpha0);
+          } else if (bodyB.sweep.alpha0 < bodyA.sweep.alpha0) {
+            alpha0 = bodyA.sweep.alpha0;
+            bodyB.sweep.advance(alpha0);
           }
 
           assert(alpha0 < 1.0);
 
-          final int indexA = c.indexA;
-          final int indexB = c.indexB;
+          final indexA = contact.indexA;
+          final indexB = contact.indexB;
 
           // Compute the time of impact in interval [0, minTOI]
-          final TOIInput input = toiInput;
-          input.proxyA.set(fA.shape, indexA);
-          input.proxyB.set(fB.shape, indexB);
-          input.sweepA.set(bA._sweep);
-          input.sweepB.set(bB._sweep);
+          final input = toiInput;
+          input.proxyA.set(fixtureA.shape, indexA);
+          input.proxyB.set(fixtureB.shape, indexB);
+          input.sweepA.set(bodyA.sweep);
+          input.sweepB.set(bodyB.sweep);
           input.tMax = 1.0;
 
           toi.timeOfImpact(toiOutput, input);
 
           // Beta is the fraction of the remaining portion of the .
-          final double beta = toiOutput.t;
-          if (toiOutput.state == TOIOutputState.TOUCHING) {
-            alpha = math.min(alpha0 + (1.0 - alpha0) * beta, 1.0);
+          final beta = toiOutput.t;
+          if (toiOutput.state == TOIOutputState.touching) {
+            alpha = min(alpha0 + (1.0 - alpha0) * beta, 1.0);
           } else {
             alpha = 1.0;
           }
 
-          c.toi = alpha;
-          c.flags |= Contact.TOI_FLAG;
+          contact.toi = alpha;
+          contact.flags |= Contact.toiFlag;
         }
 
         if (alpha < minAlpha) {
           // This is the minimum TOI found so far.
-          minContact = c;
+          minContact = contact;
           minAlpha = alpha;
         }
       }
 
-      if (minContact == null || 1.0 - 10.0 * settings.EPSILON < minAlpha) {
+      if (minContact == null || 1.0 - 10.0 * settings.epsilon < minAlpha) {
         // No more TOI events. Done!
         _stepComplete = true;
         break;
       }
 
+      final bodyA = minContact.fixtureA.body;
+      final bodyB = minContact.fixtureB.body;
+
+      backup1.set(bodyA.sweep);
+      backup2.set(bodyB.sweep);
+
       // Advance the bodies to the TOI.
-      final Fixture fA = minContact.fixtureA;
-      final Fixture fB = minContact.fixtureB;
-      final Body bA = fA.body;
-      final Body bB = fB.body;
-
-      backup1.set(bA._sweep);
-      backup2.set(bB._sweep);
-
-      bA.advance(minAlpha);
-      bB.advance(minAlpha);
+      bodyA.advance(minAlpha);
+      bodyB.advance(minAlpha);
 
       // The TOI contact likely has some new contact points.
-      minContact.update(_contactManager.contactListener);
-      minContact.flags &= ~Contact.TOI_FLAG;
+      minContact.update(contactManager.contactListener);
+      minContact.flags &= ~Contact.toiFlag;
       ++minContact.toiCount;
 
       // Is the contact solid?
       if (minContact.isEnabled() == false || minContact.isTouching() == false) {
         // Restore the sweeps.
         minContact.setEnabled(false);
-        bA._sweep.set(backup1);
-        bB._sweep.set(backup2);
-        bA.synchronizeTransform();
-        bB.synchronizeTransform();
+        bodyA.sweep.set(backup1);
+        bodyB.sweep.set(backup2);
+        bodyA.synchronizeTransform();
+        bodyB.synchronizeTransform();
         continue;
       }
 
-      bA.setAwake(true);
-      bB.setAwake(true);
+      bodyA.setAwake(true);
+      bodyB.setAwake(true);
 
       // Build the island
       island.clear();
-      island.addBody(bA);
-      island.addBody(bB);
+      island.addBody(bodyA);
+      island.addBody(bodyB);
       island.addContact(minContact);
 
-      bA._flags |= Body.ISLAND_FLAG;
-      bB._flags |= Body.ISLAND_FLAG;
-      minContact.flags |= Contact.ISLAND_FLAG;
+      bodyA.flags |= Body.islandFlag;
+      bodyB.flags |= Body.islandFlag;
+      minContact.flags |= Contact.islandFlag;
 
       // Get contacts on bodyA and bodyB.
-      tempBodies[0] = bA;
-      tempBodies[1] = bB;
-      for (int i = 0; i < 2; ++i) {
-        final Body body = tempBodies[i];
-        if (body._bodyType == BodyType.DYNAMIC) {
-          for (Contact contact in body.contacts) {
+      for (final body in [bodyA, bodyB]) {
+        if (body.bodyType == BodyType.dynamic) {
+          for (final contact in body.contacts) {
             // Has this contact already been added to the island?
-            if ((contact.flags & Contact.ISLAND_FLAG) != 0) {
+            if ((contact.flags & Contact.islandFlag) != 0) {
               continue;
             }
 
             // Only add static, kinematic, or bullet bodies.
-            final Body other = contact.getOtherBody(body);
-            if (other._bodyType == BodyType.DYNAMIC &&
+            final other = contact.getOtherBody(body);
+            if (other.bodyType == BodyType.dynamic &&
                 body.isBullet() == false &&
                 other.isBullet() == false) {
               continue;
             }
 
             // Skip sensors.
-            final bool sensorA = contact.fixtureA._isSensor;
-            final bool sensorB = contact.fixtureB._isSensor;
+            final sensorA = contact.fixtureA.isSensor;
+            final sensorB = contact.fixtureB.isSensor;
             if (sensorA || sensorB) {
               continue;
             }
 
             // Tentatively advance the body to the TOI.
-            backup1.set(other._sweep);
-            if ((other._flags & Body.ISLAND_FLAG) == 0) {
+            backup1.set(other.sweep);
+            if ((other.flags & Body.islandFlag) == 0) {
               other.advance(minAlpha);
             }
 
             // Update the contact points
-            contact.update(_contactManager.contactListener);
+            contact.update(contactManager.contactListener);
 
             // Was the contact disabled by the user?
             if (contact.isEnabled() == false) {
-              other._sweep.set(backup1);
+              other.sweep.set(backup1);
               other.synchronizeTransform();
               continue;
             }
 
             // Are there contact points?
             if (contact.isTouching() == false) {
-              other._sweep.set(backup1);
+              other.sweep.set(backup1);
               other.synchronizeTransform();
               continue;
             }
 
             // Add the contact to the island
-            contact.flags |= Contact.ISLAND_FLAG;
+            contact.flags |= Contact.islandFlag;
             island.addContact(contact);
 
             // Has the other body already been added to the island?
-            if ((other._flags & Body.ISLAND_FLAG) != 0) {
+            if ((other.flags & Body.islandFlag) != 0) {
               continue;
             }
 
             // Add the other body to the island.
-            other._flags |= Body.ISLAND_FLAG;
+            other.flags |= Body.islandFlag;
 
-            if (other._bodyType != BodyType.STATIC) {
+            if (other.bodyType != BodyType.static) {
               other.setAwake(true);
             }
 
@@ -967,28 +940,28 @@ class World {
       subStep.positionIterations = 20;
       subStep.velocityIterations = step.velocityIterations;
       subStep.warmStarting = false;
-      island.solveTOI(subStep, bA.islandIndex, bB.islandIndex);
+      island.solveTOI(subStep, bodyA.islandIndex, bodyB.islandIndex);
 
       // Reset island flags and synchronize broad-phase proxies.
-      for (BodyMeta bodyMeta in island._bodies) {
-        final Body body = bodyMeta.body;
-        body._flags &= ~Body.ISLAND_FLAG;
+      for (final bodyMeta in island.bodies) {
+        final body = bodyMeta.body;
+        body.flags &= ~Body.islandFlag;
 
-        if (body._bodyType != BodyType.DYNAMIC) {
+        if (body.bodyType != BodyType.dynamic) {
           continue;
         }
 
         body.synchronizeFixtures();
 
         // Invalidate all contact TOIs on this displaced body.
-        for (Contact contact in body.contacts) {
-          contact.flags &= ~(Contact.TOI_FLAG | Contact.ISLAND_FLAG);
+        for (final contact in body.contacts) {
+          contact.flags &= ~(Contact.toiFlag | Contact.islandFlag);
         }
       }
 
       // Commit fixture proxy movements to the broad-phase so that new contacts are created.
       // Also, some contacts can be destroyed.
-      _contactManager.findNewContacts();
+      contactManager.findNewContacts();
 
       if (_subStepping) {
         _stepComplete = false;
@@ -998,40 +971,40 @@ class World {
   }
 
   void drawJoint(Joint joint) {
-    final Body bodyA = joint.bodyA;
-    final Body bodyB = joint.bodyB;
-    final Transform xf1 = bodyA._transform;
-    final Transform xf2 = bodyB._transform;
-    final Vector2 x1 = xf1.p;
-    final Vector2 x2 = xf2.p;
-    final Vector2 p1 = Vector2.copy(joint.getAnchorA());
-    final Vector2 p2 = Vector2.copy(joint.getAnchorB());
+    final bodyA = joint.bodyA;
+    final bodyB = joint.bodyB;
+    final xf1 = bodyA.transform;
+    final xf2 = bodyB.transform;
+    final x1 = xf1.p;
+    final x2 = xf2.p;
+    final p1 = Vector2.copy(joint.getAnchorA());
+    final p2 = Vector2.copy(joint.getAnchorB());
 
     color.setFromRGBd(0.5, 0.8, 0.8);
 
     switch (joint.getType()) {
       // TODO djm write after writing joints
-      case JointType.DISTANCE:
+      case JointType.distance:
         debugDraw.drawSegment(p1, p2, color);
         break;
 
-      case JointType.PULLEY:
+      case JointType.pulley:
         {
           final pulley = joint as PulleyJoint;
-          final Vector2 s1 = pulley.getGroundAnchorA();
-          final Vector2 s2 = pulley.getGroundAnchorB();
+          final s1 = pulley.getGroundAnchorA();
+          final s2 = pulley.getGroundAnchorB();
           debugDraw.drawSegment(s1, p1, color);
           debugDraw.drawSegment(s2, p2, color);
           debugDraw.drawSegment(s1, s2, color);
         }
         break;
 
-      case JointType.FRICTION:
+      case JointType.friction:
         debugDraw.drawSegment(x1, x2, color);
         break;
 
-      case JointType.CONSTANT_VOLUME:
-      case JointType.MOUSE:
+      case JointType.constantVolume:
+      case JointType.mouse:
         // don't draw this
         break;
       default:
@@ -1043,12 +1016,12 @@ class World {
 
   // NOTE this corresponds to the liquid test, so the debugdraw can draw
   // the liquid particles correctly. They should be the same.
-  static const int LIQUID_INT = 1234598372;
+  static const int liquidFlag = 1234598372;
   double liquidLength = .12;
   double averageLinearVel = -1.0;
   final Vector2 liquidOffset = Vector2.zero();
-  final Vector2 circCenterMoved = Vector2.zero();
-  final Color3i liquidColor = Color3i.fromRGBd(.4, .4, 1.0);
+  final Vector2 circleCenterMoved = Vector2.zero();
+  final Color3i liquidColor = Color3i.fromRGBd(0.4, .4, 1.0);
 
   final Vector2 center = Vector2.zero();
   final Vector2 axis = Vector2.zero();
@@ -1057,57 +1030,56 @@ class World {
 
   void drawShape(Fixture fixture, Transform xf, Color3i color, bool wireframe) {
     switch (fixture.getType()) {
-      case ShapeType.CIRCLE:
+      case ShapeType.circle:
         {
           final circle = fixture.shape as CircleShape;
 
           center.setFrom(Transform.mulVec2(xf, circle.position));
-          final double radius = circle.radius;
+          final radius = circle.radius;
           xf.q.getXAxis(axis);
 
-          if (fixture.userData != null && fixture.userData == LIQUID_INT) {
-            final Body b = fixture.body;
+          if (fixture.userData != null && fixture.userData == liquidFlag) {
+            final b = fixture.body;
             liquidOffset.setFrom(b.linearVelocity);
-            final double linVelLength = b.linearVelocity.length;
+            final linVelLength = b.linearVelocity.length;
             if (averageLinearVel == -1) {
               averageLinearVel = linVelLength;
             } else {
               averageLinearVel = .98 * averageLinearVel + .02 * linVelLength;
             }
             liquidOffset.scale(liquidLength / averageLinearVel / 2);
-            circCenterMoved
+            circleCenterMoved
               ..setFrom(center)
               ..add(liquidOffset);
             center.sub(liquidOffset);
-            debugDraw.drawSegment(center, circCenterMoved, liquidColor);
+            debugDraw.drawSegment(center, circleCenterMoved, liquidColor);
             return;
           }
           if (wireframe) {
             debugDraw.drawCircleAxis(center, radius, axis, color);
           } else {
-            debugDraw.drawSolidCircle(center, radius, axis, color);
+            debugDraw.drawSolidCircle(center, radius, color);
           }
         }
         break;
-      case ShapeType.POLYGON:
+      case ShapeType.polygon:
         {
           final poly = fixture.shape as PolygonShape;
-          final int vertexCount = poly.count;
-          assert(vertexCount <= settings.maxPolygonVertices);
-          final List<Vector2> vertices =
-              List<Vector2>(settings.maxPolygonVertices);
+          assert(poly.vertices.length <= settings.maxPolygonVertices);
+          final vertices = poly.vertices
+              .map(
+                (vertex) => Transform.mulVec2(xf, vertex),
+              )
+              .toList();
 
-          for (int i = 0; i < vertexCount; ++i) {
-            vertices[i] = Transform.mulVec2(xf, poly.vertices[i]);
-          }
           if (wireframe) {
-            debugDraw.drawPolygon(vertices, vertexCount, color);
+            debugDraw.drawPolygon(vertices, color);
           } else {
-            debugDraw.drawSolidPolygon(vertices, vertexCount, color);
+            debugDraw.drawSolidPolygon(vertices, color);
           }
         }
         break;
-      case ShapeType.EDGE:
+      case ShapeType.edge:
         {
           final edge = fixture.shape as EdgeShape;
           v1.setFrom(Transform.mulVec2(xf, edge.vertex1));
@@ -1115,14 +1087,14 @@ class World {
           debugDraw.drawSegment(v1, v2, color);
         }
         break;
-      case ShapeType.CHAIN:
+      case ShapeType.chain:
         {
           final chain = fixture.shape as ChainShape;
-          final int count = chain.vertexCount;
-          final List<Vector2> vertices = chain._vertices;
+          final count = chain.vertexCount;
+          final vertices = chain.vertices;
 
           v1.setFrom(Transform.mulVec2(xf, vertices[0]));
-          for (int i = 1; i < count; ++i) {
+          for (var i = 1; i < count; ++i) {
             v2.setFrom(Transform.mulVec2(xf, vertices[i]));
             debugDraw.drawSegment(v1, v2, color);
             debugDraw.drawCircle(v1, 0.05, color);
@@ -1136,294 +1108,16 @@ class World {
   }
 
   void drawParticleSystem(ParticleSystem system) {
-    final bool wireframe =
-        (debugDraw.drawFlags & DebugDraw.WIREFRAME_DRAWING_BIT) != 0;
-    final int particleCount = system.getParticleCount();
-    if (particleCount != 0) {
-      final double particleRadius = system.getParticleRadius();
-      final List<Vector2> positionBuffer = system.getParticlePositionBuffer();
-      List<ParticleColor> colorBuffer;
-      if (system.colorBuffer.data != null) {
-        colorBuffer = system.getParticleColorBuffer();
-      }
+    final wireframe =
+        (debugDraw.drawFlags & DebugDraw.wireFrameDrawingBit) != 0;
+    if (system.particles.isNotEmpty) {
+      final particleRadius = system.particleRadius;
       if (wireframe) {
-        debugDraw.drawParticlesWireframe(
-            positionBuffer, particleRadius, colorBuffer, particleCount);
+        debugDraw.drawParticlesWireframe(system.particles, particleRadius);
       } else {
-        debugDraw.drawParticles(
-            positionBuffer, particleRadius, colorBuffer, particleCount);
+        debugDraw.drawParticles(system.particles, particleRadius);
       }
     }
-  }
-
-  /// Create a particle whose properties have been defined. No reference to the definition is
-  /// retained. A simulation step must occur before it's possible to interact with a newly created
-  /// particle. For example, DestroyParticleInShape() will not destroy a particle until Step() has
-  /// been called.
-  ///
-  /// @warning This function is locked during callbacks.
-  /// @return the index of the particle.
-  int createParticle(ParticleDef def) {
-    assert(isLocked() == false);
-    return _particleSystem.createParticle(def);
-  }
-
-  /// Destroy a particle. The particle is removed after the next step.
-  ///
-  /// @param index
-  void destroyParticle(int index) {
-    destroyParticleFlag(index, false);
-  }
-
-  /// Destroy a particle. The particle is removed after the next step.
-  ///
-  /// @param Index of the particle to destroy.
-  /// @param Whether to call the destruction listener just before the particle is destroyed.
-  void destroyParticleFlag(int index, bool callDestructionListener) {
-    _particleSystem.destroyParticle(index, callDestructionListener);
-  }
-
-  /// Destroy particles inside a shape without enabling the destruction callback for destroyed
-  /// particles. This function is locked during callbacks. For more information see
-  /// DestroyParticleInShape(Shape&, Transform&,bool).
-  ///
-  /// @param Shape which encloses particles that should be destroyed.
-  /// @param Transform applied to the shape.
-  /// @warning This function is locked during callbacks.
-  /// @return Number of particles destroyed.
-  int destroyParticlesInShape(Shape shape, Transform xf) {
-    return destroyParticlesInShapeFlag(shape, xf, false);
-  }
-
-  /// Destroy particles inside a shape. This function is locked during callbacks. In addition, this
-  /// function immediately destroys particles in the shape in contrast to DestroyParticle() which
-  /// defers the destruction until the next simulation step.
-  ///
-  /// @param Shape which encloses particles that should be destroyed.
-  /// @param Transform applied to the shape.
-  /// @param Whether to call the world b2DestructionListener for each particle destroyed.
-  /// @warning This function is locked during callbacks.
-  /// @return Number of particles destroyed.
-  int destroyParticlesInShapeFlag(
-      Shape shape, Transform xf, bool callDestructionListener) {
-    assert(isLocked() == false);
-    return _particleSystem.destroyParticlesInShape(
-        shape, xf, callDestructionListener);
-  }
-
-  /// Create a particle group whose properties have been defined. No reference to the definition is
-  /// retained.
-  ///
-  /// @warning This function is locked during callbacks.
-  ParticleGroup createParticleGroup(ParticleGroupDef def) {
-    assert(isLocked() == false);
-    return _particleSystem.createParticleGroup(def);
-  }
-
-  /// Join two particle groups.
-  ///
-  /// @param the first group. Expands to encompass the second group.
-  /// @param the second group. It is destroyed.
-  /// @warning This function is locked during callbacks.
-  void joinParticleGroups(ParticleGroup groupA, ParticleGroup groupB) {
-    assert(isLocked() == false);
-    _particleSystem.joinParticleGroups(groupA, groupB);
-  }
-
-  /// Destroy particles in a group. This function is locked during callbacks.
-  ///
-  /// @param The particle group to destroy.
-  /// @param Whether to call the world b2DestructionListener for each particle is destroyed.
-  /// @warning This function is locked during callbacks.
-  void destroyParticlesInGroupFlag(
-      ParticleGroup group, bool callDestructionListener) {
-    assert(isLocked() == false);
-    _particleSystem.destroyParticlesInGroup(group, callDestructionListener);
-  }
-
-  /// Destroy particles in a group without enabling the destruction callback for destroyed particles.
-  /// This function is locked during callbacks.
-  ///
-  /// @param The particle group to destroy.
-  /// @warning This function is locked during callbacks.
-  void destroyParticlesInGroup(ParticleGroup group) {
-    destroyParticlesInGroupFlag(group, false);
-  }
-
-  /// Get the world particle group list. With the returned group, use ParticleGroup::GetNext to get
-  /// the next group in the world list. A NULL group indicates the end of the list.
-  ///
-  /// @return the head of the world particle group list.
-  List<ParticleGroup> getParticleGroupList() {
-    return _particleSystem.getParticleGroupList();
-  }
-
-  /// Get the number of particle groups.
-  ///
-  /// @return
-  int getParticleGroupCount() {
-    return _particleSystem.getParticleGroupCount();
-  }
-
-  /// Get the number of particles.
-  ///
-  /// @return
-  int getParticleCount() {
-    return _particleSystem.getParticleCount();
-  }
-
-  /// Get the maximum number of particles.
-  ///
-  /// @return
-  int getParticleMaxCount() {
-    return _particleSystem.getParticleMaxCount();
-  }
-
-  /// Set the maximum number of particles.
-  ///
-  /// @param count
-  void setParticleMaxCount(int count) {
-    _particleSystem.setParticleMaxCount(count);
-  }
-
-  /// Change the particle density.
-  ///
-  /// @param density
-  void setParticleDensity(double density) {
-    _particleSystem.setParticleDensity(density);
-  }
-
-  /// Get the particle density.
-  ///
-  /// @return
-  double getParticleDensity() {
-    return _particleSystem.getParticleDensity();
-  }
-
-  /// Change the particle gravity scale. Adjusts the effect of the global gravity vector on
-  /// particles. Default value is 1.0.
-  ///
-  /// @param gravityScale
-  void setParticleGravityScale(double gravityScale) {
-    _particleSystem.setParticleGravityScale(gravityScale);
-  }
-
-  /// Get the particle gravity scale.
-  ///
-  /// @return
-  double getParticleGravityScale() {
-    return _particleSystem.getParticleGravityScale();
-  }
-
-  /// Damping is used to reduce the velocity of particles. The damping parameter can be larger than
-  /// 1.0 but the damping effect becomes sensitive to the time step when the damping parameter is
-  /// large.
-  ///
-  /// @param damping
-  void setParticleDamping(double damping) {
-    _particleSystem.setParticleDamping(damping);
-  }
-
-  /// Get damping for particles
-  ///
-  /// @return
-  double getParticleDamping() {
-    return _particleSystem.getParticleDamping();
-  }
-
-  /// Change the particle radius. You should set this only once, on world start. If you change the
-  /// radius during execution, existing particles may explode, shrink, or behave unexpectedly.
-  ///
-  /// @param radius
-  void setParticleRadius(double radius) {
-    _particleSystem.setParticleRadius(radius);
-  }
-
-  /// Get the particle radius.
-  ///
-  /// @return
-  double getParticleRadius() {
-    return _particleSystem.getParticleRadius();
-  }
-
-  /// Get the particle data. @return the pointer to the head of the particle data.
-  ///
-  /// @return
-  List<int> getParticleFlagsBuffer() {
-    return _particleSystem.getParticleFlagsBuffer();
-  }
-
-  List<Vector2> getParticlePositionBuffer() {
-    return _particleSystem.getParticlePositionBuffer();
-  }
-
-  List<Vector2> getParticleVelocityBuffer() {
-    return _particleSystem.getParticleVelocityBuffer();
-  }
-
-  List<ParticleColor> getParticleColorBuffer() {
-    return _particleSystem.getParticleColorBuffer();
-  }
-
-  List<ParticleGroup> getParticleGroupBuffer() {
-    return _particleSystem.getParticleGroupBuffer();
-  }
-
-  List<Object> getParticleUserDataBuffer() {
-    return _particleSystem.getParticleUserDataBuffer();
-  }
-
-  /// Set a buffer for particle data.
-  ///
-  /// @param buffer is a pointer to a block of memory.
-  /// @param size is the number of values in the block.
-  void setParticleFlagsBuffer(List<int> buffer, int capacity) {
-    _particleSystem.setParticleFlagsBuffer(buffer, capacity);
-  }
-
-  void setParticlePositionBuffer(List<Vector2> buffer, int capacity) {
-    _particleSystem.setParticlePositionBuffer(buffer, capacity);
-  }
-
-  void setParticleVelocityBuffer(List<Vector2> buffer, int capacity) {
-    _particleSystem.setParticleVelocityBuffer(buffer, capacity);
-  }
-
-  void setParticleColorBuffer(List<ParticleColor> buffer, int capacity) {
-    _particleSystem.setParticleColorBuffer(buffer, capacity);
-  }
-
-  void setParticleUserDataBuffer(List<Object> buffer, int capacity) {
-    _particleSystem.setParticleUserDataBuffer(buffer, capacity);
-  }
-
-  /// Get contacts between particles
-  ///
-  /// @return
-  List<ParticleContact> getParticleContacts() {
-    return _particleSystem.contactBuffer;
-  }
-
-  int getParticleContactCount() {
-    return _particleSystem.contactCount;
-  }
-
-  /// Get contacts between particles and bodies
-  ///
-  /// @return
-  List<ParticleBodyContact> getParticleBodyContacts() {
-    return _particleSystem.bodyContactBuffer;
-  }
-
-  int getParticleBodyContactCount() {
-    return _particleSystem.bodyContactCount;
-  }
-
-  /// Compute the kinetic energy that can be lost by damping force
-  ///
-  /// @return
-  double computeParticleCollisionEnergy() {
-    return _particleSystem.computeParticleCollisionEnergy();
   }
 }
 
@@ -1447,13 +1141,13 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
   @override
   double raycastCallback(RayCastInput input, int nodeId) {
     final userData = broadPhase.getUserData(nodeId) as FixtureProxy;
-    final FixtureProxy proxy = userData;
-    final Fixture fixture = proxy.fixture;
-    final int index = proxy.childIndex;
-    final bool hit = fixture.raycast(_output, input, index);
+    final proxy = userData;
+    final fixture = proxy.fixture;
+    final index = proxy.childIndex;
+    final hit = fixture.raycast(_output, input, index);
 
     if (hit) {
-      final double fraction = _output.fraction;
+      final fraction = _output.fraction;
       // Vec2 point = (1.0 - fraction) * input.p1 + fraction * input.p2;
       _temp
         ..setFrom(input.p2)

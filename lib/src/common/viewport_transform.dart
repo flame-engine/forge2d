@@ -1,4 +1,4 @@
-part of forge2d.common;
+import '../../forge2d.dart';
 
 class ViewportTransform {
   ViewportTransform(Vector2 e, Vector2 c, this.scale)
@@ -42,8 +42,8 @@ class ViewportTransform {
   Vector2 getWorldToScreen(Vector2 argWorld) {
     // Correct for canvas considering the upper-left corner, rather than the
     // center, to be the origin.
-    final double gridCorrectedX = (argWorld.x * scale) + extents.x;
-    final double gridCorrectedY = extents.y - (argWorld.y * scale);
+    final gridCorrectedX = (argWorld.x * scale) + extents.x;
+    final gridCorrectedY = extents.y - (argWorld.y * scale);
     return Vector2(
       gridCorrectedX + translation.x,
       gridCorrectedY + -translation.y,
@@ -52,11 +52,10 @@ class ViewportTransform {
 
   /// Takes the screen coordinates and return the corresponding world coordinates
   Vector2 getScreenToWorld(Vector2 argScreen) {
-    final double translationCorrectedX = argScreen.x - translation.x;
-    final double translationCorrectedY = argScreen.y + translation.y;
-    final double gridCorrectedX = (translationCorrectedX - extents.x) / scale;
-    final double gridCorrectedY =
-        ((translationCorrectedY - extents.y) * -1) / scale;
+    final translationCorrectedX = argScreen.x - translation.x;
+    final translationCorrectedY = argScreen.y + translation.y;
+    final gridCorrectedX = (translationCorrectedX - extents.x) / scale;
+    final gridCorrectedY = ((translationCorrectedY - extents.y) * -1) / scale;
     return Vector2(gridCorrectedX, gridCorrectedY);
   }
 }

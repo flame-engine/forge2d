@@ -1,4 +1,8 @@
-part of forge2d;
+import 'dart:math';
+import 'dart:typed_data';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 class ConstantVolumeJoint extends Joint {
   final List<Body> _bodies;
@@ -10,7 +14,7 @@ class ConstantVolumeJoint extends Joint {
 
   World _world;
 
-  List<DistanceJoint> _distanceJoints;
+  final List<DistanceJoint> _distanceJoints = [];
 
   List<Body> getBodies() {
     return _bodies;
@@ -29,86 +33,87 @@ class ConstantVolumeJoint extends Joint {
         super(def) {
     _world = argWorld;
     if (def.bodies.length <= 2) {
-      throw "You cannot create a constant volume joint with less than three _bodies.";
+      throw 'You cannot create a constant volume joint with less than three _bodies.';
     }
 
     _targetLengths = Float64List(_bodies.length);
-    for (int i = 0; i < _targetLengths.length; ++i) {
-      final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
-      final double dist =
-          (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
+    for (var i = 0; i < _targetLengths.length; ++i) {
+      final next = (i == _targetLengths.length - 1) ? 0 : i + 1;
+      final dist = (_bodies[i].worldCenter - _bodies[next].worldCenter).length;
       _targetLengths[i] = dist;
     }
     _targetVolume = getBodyArea();
 
-    if (def.joints != null && def.joints.length != def.bodies.length) {
+    if (def.joints.isNotEmpty && def.joints.length != def.bodies.length) {
       print(def.joints.length);
       print(def.bodies.length);
-      throw "Incorrect joint definition. Joints have to correspond to the _bodies";
+      throw 'Incorrect joint definition. Joints have to correspond to the _bodies';
     }
-    if (def.joints == null) {
-      final DistanceJointDef djd = DistanceJointDef();
-      _distanceJoints = List<DistanceJoint>(_bodies.length);
-      for (int i = 0; i < _targetLengths.length; ++i) {
-        final int next = (i == _targetLengths.length - 1) ? 0 : i + 1;
-        djd.frequencyHz = def.frequencyHz; // 20.0;
-        djd.dampingRatio = def.dampingRatio; // 50.0;
-        djd.collideConnected = def.collideConnected;
-        djd.initialize(_bodies[i], _bodies[next], _bodies[i].worldCenter,
-            _bodies[next].worldCenter);
-        _distanceJoints[i] = _world.createJoint(djd) as DistanceJoint;
-      }
+    if (def.joints.isEmpty) {
+      final distanceJointDef = DistanceJointDef();
+      _distanceJoints.addAll(List<DistanceJoint>.generate(
+        _bodies.length,
+        (i) {
+          final next = (i == _bodies.length - 1) ? 0 : i + 1;
+          distanceJointDef.frequencyHz = def.frequencyHz; // 20.0;
+          distanceJointDef.dampingRatio = def.dampingRatio; // 50.0;
+          distanceJointDef.collideConnected = def.collideConnected;
+          distanceJointDef.initialize(
+            _bodies[i],
+            _bodies[next],
+            _bodies[i].worldCenter,
+            _bodies[next].worldCenter,
+          );
+          return _world.createJoint(distanceJointDef) as DistanceJoint;
+        },
+      ));
     } else {
-      _distanceJoints = def.joints.toList();
+      _distanceJoints.clear();
+      _distanceJoints.addAll(def.joints);
     }
 
-    _normals = List<Vector2>(_bodies.length);
-    for (int i = 0; i < _normals.length; ++i) {
-      _normals[i] = Vector2.zero();
-    }
+    _normals = List<Vector2>.generate(_bodies.length, (_) => Vector2.zero());
   }
 
   @override
   void destructor() {
-    for (int i = 0; i < _distanceJoints.length; ++i) {
+    for (var i = 0; i < _distanceJoints.length; ++i) {
       _world.destroyJoint(_distanceJoints[i]);
     }
   }
 
   double getBodyArea() {
-    double area = 0.0;
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
+    var area = 0.0;
+    for (var i = 0; i < _bodies.length; ++i) {
+      final next = (i == _bodies.length - 1) ? 0 : i + 1;
       area += _bodies[i].worldCenter.x * _bodies[next].worldCenter.y -
           _bodies[next].worldCenter.x * _bodies[i].worldCenter.y;
     }
-    area *= .5;
-    return area;
+    return area *= .5;
   }
 
   double getSolverArea(List<Position> positions) {
-    double area = 0.0;
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
+    var area = 0.0;
+    for (var i = 0; i < _bodies.length; ++i) {
+      final next = (i == _bodies.length - 1) ? 0 : i + 1;
       area += positions[_bodies[i].islandIndex].c.x *
               positions[_bodies[next].islandIndex].c.y -
           positions[_bodies[next].islandIndex].c.x *
               positions[_bodies[i].islandIndex].c.y;
     }
-    area *= .5;
-    return area;
+    return area *= .5;
   }
 
   bool _constrainEdges(List<Position> positions) {
-    double perimeter = 0.0;
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      final double dx = positions[_bodies[next].islandIndex].c.x -
+    var perimeter = 0.0;
+    for (var i = 0; i < _bodies.length; ++i) {
+      final next = (i == _bodies.length - 1) ? 0 : i + 1;
+      final dx = positions[_bodies[next].islandIndex].c.x -
           positions[_bodies[i].islandIndex].c.x;
-      final double dy = positions[_bodies[next].islandIndex].c.y -
+      final dy = positions[_bodies[next].islandIndex].c.y -
           positions[_bodies[i].islandIndex].c.y;
-      double dist = math.sqrt(dx * dx + dy * dy);
-      if (dist < settings.EPSILON) {
+      var dist = sqrt(dx * dx + dy * dy);
+      if (dist < settings.epsilon) {
         dist = 1.0;
       }
       _normals[i].x = dy / dist;
@@ -116,20 +121,22 @@ class ConstantVolumeJoint extends Joint {
       perimeter += dist;
     }
 
-    final Vector2 delta = Vector2.zero();
+    final delta = Vector2.zero();
 
-    final double deltaArea = _targetVolume - getSolverArea(positions);
-    final double toExtrude = 0.5 * deltaArea / perimeter; // *relaxationFactor
+    final deltaArea = _targetVolume - getSolverArea(positions);
+    final toExtrude = 0.5 * deltaArea / perimeter; // *relaxationFactor
     // double sumdeltax = 0.0f;
-    bool done = true;
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      delta.setValues(toExtrude * (_normals[i].x + _normals[next].x),
-          toExtrude * (_normals[i].y + _normals[next].y));
-      final double normSqrd = delta.length2;
+    var done = true;
+    for (var i = 0; i < _bodies.length; ++i) {
+      final next = (i == _bodies.length - 1) ? 0 : i + 1;
+      delta.setValues(
+        toExtrude * (_normals[i].x + _normals[next].x),
+        toExtrude * (_normals[i].y + _normals[next].y),
+      );
+      final normSqrd = delta.length2;
       if (normSqrd >
           settings.maxLinearCorrection * settings.maxLinearCorrection) {
-        delta.scale(settings.maxLinearCorrection / math.sqrt(normSqrd));
+        delta.scale(settings.maxLinearCorrection / sqrt(normSqrd));
       }
       if (normSqrd > settings.linearSlop * settings.linearSlop) {
         done = false;
@@ -143,24 +150,25 @@ class ConstantVolumeJoint extends Joint {
 
   @override
   void initVelocityConstraints(final SolverData step) {
-    final List<Velocity> velocities = step.velocities;
-    final List<Position> positions = step.positions;
-    final List<Vector2> d = List<Vector2>(_bodies.length);
-
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i] = Vector2.copy(positions[_bodies[next].islandIndex].c);
-      d[i].sub(positions[_bodies[prev].islandIndex].c);
-    }
+    final velocities = step.velocities;
+    final positions = step.positions;
+    final d = List<Vector2>.generate(
+      _bodies.length,
+      (i) {
+        final prev = (i == 0) ? _bodies.length - 1 : i - 1;
+        final next = (i == _bodies.length - 1) ? 0 : i + 1;
+        return positions[_bodies[next].islandIndex].c -
+            positions[_bodies[prev].islandIndex].c;
+      },
+    );
 
     if (step.step.warmStarting) {
       _impulse *= step.step.dtRatio;
-      for (int i = 0; i < _bodies.length; ++i) {
+      for (var i = 0; i < _bodies.length; ++i) {
         velocities[_bodies[i].islandIndex].v.x +=
-            _bodies[i]._invMass * d[i].y * .5 * _impulse;
+            _bodies[i].inverseMass * d[i].y * .5 * _impulse;
         velocities[_bodies[i].islandIndex].v.y +=
-            _bodies[i]._invMass * -d[i].x * .5 * _impulse;
+            _bodies[i].inverseMass * -d[i].x * .5 * _impulse;
       }
     } else {
       _impulse = 0.0;
@@ -174,28 +182,30 @@ class ConstantVolumeJoint extends Joint {
 
   @override
   void solveVelocityConstraints(final SolverData step) {
-    double crossMassSum = 0.0;
-    double dotMassSum = 0.0;
+    var crossMassSum = 0.0;
+    var dotMassSum = 0.0;
 
-    final List<Velocity> velocities = step.velocities;
-    final List<Position> positions = step.positions;
-    final List<Vector2> d = List<Vector2>(_bodies.length);
-
-    for (int i = 0; i < _bodies.length; ++i) {
-      final int prev = (i == 0) ? _bodies.length - 1 : i - 1;
-      final int next = (i == _bodies.length - 1) ? 0 : i + 1;
-      d[i] = Vector2.copy(positions[_bodies[next].islandIndex].c);
-      d[i].sub(positions[_bodies[prev].islandIndex].c);
-      dotMassSum += (d[i].length2) / _bodies[i].mass;
-      crossMassSum += velocities[_bodies[i].islandIndex].v.cross(d[i]);
-    }
-    final double lambda = -2.0 * crossMassSum / dotMassSum;
+    final velocities = step.velocities;
+    final positions = step.positions;
+    final d = List<Vector2>.generate(
+      _bodies.length,
+      (i) {
+        final prev = (i == 0) ? _bodies.length - 1 : i - 1;
+        final next = (i == _bodies.length - 1) ? 0 : i + 1;
+        final v = positions[_bodies[next].islandIndex].c -
+            positions[_bodies[prev].islandIndex].c;
+        dotMassSum += (v.length2) / _bodies[i].mass;
+        crossMassSum += velocities[_bodies[i].islandIndex].v.cross(v);
+        return v;
+      },
+    );
+    final lambda = -2.0 * crossMassSum / dotMassSum;
     _impulse += lambda;
-    for (int i = 0; i < _bodies.length; ++i) {
+    for (var i = 0; i < _bodies.length; ++i) {
       velocities[_bodies[i].islandIndex].v.x +=
-          _bodies[i]._invMass * d[i].y * .5 * lambda;
+          _bodies[i].inverseMass * d[i].y * .5 * lambda;
       velocities[_bodies[i].islandIndex].v.y +=
-          _bodies[i]._invMass * -d[i].x * .5 * lambda;
+          _bodies[i].inverseMass * -d[i].x * .5 * lambda;
     }
   }
 

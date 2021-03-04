@@ -1,5 +1,3 @@
-library forge2d.common.canvas_viewport_transform;
-
 import 'dart:html';
 
 import '../../forge2d.dart';
@@ -7,11 +5,11 @@ import '../../forge2d.dart';
 /// Transform for drawing using a canvas context. Y-flip is permanently set
 /// to true.
 class CanvasViewportTransform extends ViewportTransform {
-  static const double DEFAULT_DRAWING_SCALE = 20.0;
+  static const double defaultDrawingScale = 20.0;
 
   /// Constructs a new viewport transform with the default scale.
   CanvasViewportTransform(Vector2 _extents, Vector2 _center)
-      : super(_extents, _center, DEFAULT_DRAWING_SCALE) {
+      : super(_extents, _center, defaultDrawingScale) {
     yFlip = true;
   }
 

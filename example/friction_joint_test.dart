@@ -1,19 +1,18 @@
-library friction_joint_test;
+import 'dart:math';
 
-import 'dart:math' as math;
+import 'package:forge2d/forge2d_browser.dart';
 
 import 'demo.dart';
-import 'package:forge2d/forge2d.dart';
 
 class FrictionJointTest extends Demo {
-  FrictionJointTest() : super("FrictionJoint test");
+  FrictionJointTest() : super('FrictionJoint test');
 
   /// Entrypoint.
   static void main() {
     final test = FrictionJointTest();
     test.initialize();
     test.initializeAnimation();
-    test.debugDraw.appendFlags(DebugDraw.JOINT_BIT);
+    test.debugDraw.appendFlags(DebugDraw.jointBit);
     test.runAnimation();
   }
 
@@ -29,10 +28,10 @@ class FrictionJointTest extends Demo {
 
   void _createGround() {
     // Create shape
-    final PolygonShape shape = PolygonShape();
+    final shape = PolygonShape();
 
     // Define body
-    final BodyDef bodyDef = BodyDef();
+    final bodyDef = BodyDef();
     bodyDef.position.setValues(0.0, 0.0);
 
     // Create body
@@ -51,8 +50,8 @@ class FrictionJointTest extends Demo {
   }
 
   void _createBoxShapeAndFixture() {
-    final PolygonShape boxShape = PolygonShape();
-    boxShape.setAsBox(3.0, 1.5, Vector2.zero(), math.pi / 2);
+    final boxShape = PolygonShape();
+    boxShape.setAsBox(3.0, 1.5, Vector2.zero(), pi / 2);
 
     // Define fixture (links body and shape)
     _boxFixture = FixtureDef();
@@ -63,12 +62,12 @@ class FrictionJointTest extends Demo {
 
   void _createBox() {
     // Define body
-    final BodyDef bodyDef = BodyDef();
-    bodyDef.type = BodyType.DYNAMIC;
+    final bodyDef = BodyDef();
+    bodyDef.type = BodyType.dynamic;
     bodyDef.position = Vector2(-10.0, 30.0);
 
     // Create body and fixture from definitions
-    final Body fallingBox = world.createBody(bodyDef);
+    final fallingBox = world.createBody(bodyDef);
     fallingBox.createFixture(_boxFixture);
 
     // Add to list
@@ -77,15 +76,15 @@ class FrictionJointTest extends Demo {
 
   void _createFrictionBox() {
     // Define body
-    final BodyDef bodyDef = BodyDef();
-    bodyDef.type = BodyType.DYNAMIC;
+    final bodyDef = BodyDef();
+    bodyDef.type = BodyType.dynamic;
     bodyDef.position = Vector2(10.0, 30.0);
 
     // Create body and fixture from definitions
-    final Body fallingBox = world.createBody(bodyDef);
+    final fallingBox = world.createBody(bodyDef);
     fallingBox.createFixture(_boxFixture);
 
-    final FrictionJointDef frictionJointDef = FrictionJointDef();
+    final frictionJointDef = FrictionJointDef();
     frictionJointDef.bodyA = fallingBox;
     frictionJointDef.bodyB = _ground;
     frictionJointDef.maxForce = 3.0;

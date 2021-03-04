@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// An axis-aligned bounding box.
 class AABB {
@@ -29,21 +32,21 @@ class AABB {
   /// Sets this object from the given object
   /// @param aabb the object to copy from
   void set(final AABB aabb) {
-    final Vector2 v = aabb.lowerBound;
+    final v = aabb.lowerBound;
     lowerBound.x = v.x;
     lowerBound.y = v.y;
-    final Vector2 v1 = aabb.upperBound;
+    final v1 = aabb.upperBound;
     upperBound.x = v1.x;
     upperBound.y = v1.y;
   }
 
   /// Verify that the bounds are sorted
   bool isValid() {
-    final double dx = upperBound.x - lowerBound.x;
+    final dx = upperBound.x - lowerBound.x;
     if (dx < 0.0) {
       return false;
     }
-    final double dy = upperBound.y - lowerBound.y;
+    final dy = upperBound.y - lowerBound.y;
     if (dy < 0) {
       return false;
     }
@@ -58,10 +61,9 @@ class AABB {
 
   /// Get the extents of the AABB (half-widths).
   Vector2 getExtents() {
-    final Vector2 center = Vector2.copy(upperBound);
-    center.sub(lowerBound);
-    center.scale(.5);
-    return center;
+    return Vector2.copy(upperBound)
+      ..sub(lowerBound)
+      ..scale(.5);
   }
 
   void getExtentsToOut(final Vector2 out) {
@@ -131,13 +133,13 @@ class AABB {
     final RayCastOutput output,
     final RayCastInput input,
   ) {
-    double tmin = -double.maxFinite;
-    double tmax = double.maxFinite;
+    var tMix = -double.maxFinite;
+    var tMax = double.maxFinite;
 
-    final Vector2 p = Vector2.zero();
-    final Vector2 d = Vector2.zero();
-    final Vector2 absD = Vector2.zero();
-    final Vector2 normal = Vector2.zero();
+    final p = Vector2.zero();
+    final d = Vector2.zero();
+    final absD = Vector2.zero();
+    final normal = Vector2.zero();
 
     p.setFrom(input.p1);
     d
@@ -148,84 +150,84 @@ class AABB {
       ..absolute();
 
     // x then y
-    if (absD.x < settings.EPSILON) {
+    if (absD.x < settings.epsilon) {
       // Parallel.
       if (p.x < lowerBound.x || upperBound.x < p.x) {
         return false;
       }
     } else {
-      final double invD = 1.0 / d.x;
-      double t1 = (lowerBound.x - p.x) * invD;
-      double t2 = (upperBound.x - p.x) * invD;
+      final invD = 1.0 / d.x;
+      var t1 = (lowerBound.x - p.x) * invD;
+      var t2 = (upperBound.x - p.x) * invD;
 
       // Sign of the normal vector.
-      double s = -1.0;
+      var s = -1.0;
 
       if (t1 > t2) {
-        final double temp = t1;
+        final temp = t1;
         t1 = t2;
         t2 = temp;
         s = 1.0;
       }
 
       // Push the min up
-      if (t1 > tmin) {
+      if (t1 > tMix) {
         normal.setZero();
         normal.x = s;
-        tmin = t1;
+        tMix = t1;
       }
 
       // Pull the max down
-      tmax = math.min(tmax, t2);
+      tMax = min(tMax, t2);
 
-      if (tmin > tmax) {
+      if (tMix > tMax) {
         return false;
       }
     }
 
-    if (absD.y < settings.EPSILON) {
+    if (absD.y < settings.epsilon) {
       // Parallel.
       if (p.y < lowerBound.y || upperBound.y < p.y) {
         return false;
       }
     } else {
-      final double invD = 1.0 / d.y;
-      double t1 = (lowerBound.y - p.y) * invD;
-      double t2 = (upperBound.y - p.y) * invD;
+      final invD = 1.0 / d.y;
+      var t1 = (lowerBound.y - p.y) * invD;
+      var t2 = (upperBound.y - p.y) * invD;
 
       // Sign of the normal vector.
-      double s = -1.0;
+      var s = -1.0;
 
       if (t1 > t2) {
-        final double temp = t1;
+        final temp = t1;
         t1 = t2;
         t2 = temp;
         s = 1.0;
       }
 
       // Push the min up
-      if (t1 > tmin) {
+      if (t1 > tMix) {
         normal.setZero();
         normal.y = s;
-        tmin = t1;
+        tMix = t1;
       }
 
       // Pull the max down
-      tmax = math.min(tmax, t2);
+      tMax = min(tMax, t2);
 
-      if (tmin > tmax) {
+      if (tMix > tMax) {
         return false;
       }
     }
 
     // Does the ray start inside the box?
     // Does the ray intersect beyond the max fraction?
-    if (tmin < 0.0 || input.maxFraction < tmin) {
+    if (tMix < 0.0 || input.maxFraction < tMix) {
       return false;
     }
 
     // Intersection.
-    output.fraction = tmin;
+    output.fraction = tMix;
     output.normal.x = normal.x;
     output.normal.y = normal.y;
     return true;
@@ -247,6 +249,6 @@ class AABB {
 
   @override
   String toString() {
-    return "AABB[$lowerBound . $upperBound]";
+    return 'AABB[$lowerBound . $upperBound]';
   }
 }

@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A mouse joint is used to make a point on a body track a specified world point. This a soft
 /// constraint with a maximum force. This allows the constraint to stretch and without applying huge
@@ -31,7 +34,7 @@ class MouseJoint extends Joint {
         assert(def.dampingRatio >= 0),
         super(def) {
     _targetA.setFrom(def.target);
-    localAnchorB.setFrom(Transform.mulTransVec2(bodyB._transform, _targetA));
+    localAnchorB.setFrom(Transform.mulTransVec2(bodyB.transform, _targetA));
 
     _maxForce = def.maxForce;
     _impulse.setZero();
@@ -69,34 +72,34 @@ class MouseJoint extends Joint {
   @override
   void initVelocityConstraints(final SolverData data) {
     _indexB = bodyB.islandIndex;
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassB = bodyB._invMass;
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassB = bodyB.inverseMass;
     _invIB = bodyB.inverseInertia;
 
-    final Vector2 cB = data.positions[_indexB].c;
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final cB = data.positions[_indexB].c;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Rot qB = Rot();
+    final qB = Rot();
 
     qB.setAngle(aB);
 
-    final double mass = bodyB.mass;
+    final mass = bodyB.mass;
 
     // Frequency
-    final double omega = 2.0 * math.pi * _frequencyHz;
+    final omega = 2.0 * pi * _frequencyHz;
 
     // Damping coefficient
-    final double d = 2.0 * mass * _dampingRatio * omega;
+    final d = 2.0 * mass * _dampingRatio * omega;
 
-    final double springStiffness = mass * (omega * omega);
+    final springStiffness = mass * (omega * omega);
 
     // magic formulas
     // gamma has units of inverse mass.
     // beta has units of inverse time.
-    final double dt = data.step.dt;
-    assert(d + dt * springStiffness > settings.EPSILON);
+    final dt = data.step.dt;
+    assert(d + dt * springStiffness > settings.epsilon);
     _gamma = dt * (d + dt * springStiffness);
     if (_gamma != 0.0) {
       _gamma = 1.0 / _gamma;
@@ -104,19 +107,18 @@ class MouseJoint extends Joint {
     _beta = dt * springStiffness * _gamma;
 
     // Compute the effective mass matrix.
-    final Vector2 effectiveMassMatrix = Vector2.copy(localAnchorB)
-      ..sub(_localCenterB);
+    final effectiveMassMatrix = Vector2.copy(localAnchorB)..sub(_localCenterB);
 
     _rB.setFrom(Rot.mulVec2(qB, effectiveMassMatrix));
 
     // K = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
     // = [1/m1+1/m2 0 ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]
     // [ 0 1/m1+1/m2] [-r1.x*r1.y r1.x*r1.x] [-r1.x*r1.y r1.x*r1.x]
-    final Matrix2 k = Matrix2.zero();
-    final double a11 = _invMassB + _invIB * _rB.y * _rB.y + _gamma;
-    final double a21 = -_invIB * _rB.x * _rB.y;
-    final double a12 = a21;
-    final double a22 = _invMassB + _invIB * _rB.x * _rB.x + _gamma;
+    final k = Matrix2.zero();
+    final a11 = _invMassB + _invIB * _rB.y * _rB.y + _gamma;
+    final a21 = -_invIB * _rB.x * _rB.y;
+    final a12 = a21;
+    final a22 = _invMassB + _invIB * _rB.x * _rB.x + _gamma;
 
     k.setValues(a11, a21, a12, a22);
     _mass.setFrom(k);
@@ -150,16 +152,16 @@ class MouseJoint extends Joint {
 
   @override
   void solveVelocityConstraints(final SolverData data) {
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
     // Cdot = v + cross(w, r)
-    final Vector2 cDot = Vector2.zero();
+    final cDot = Vector2.zero();
     _rB.scaleOrthogonalInto(wB, cDot);
     cDot.add(vB);
 
-    final Vector2 impulse = Vector2.zero();
-    final Vector2 temp = Vector2.zero();
+    final impulse = Vector2.zero();
+    final temp = Vector2.zero();
 
     temp
       ..setFrom(_impulse)
@@ -169,10 +171,10 @@ class MouseJoint extends Joint {
       ..negate();
     _mass.transformed(temp, impulse);
 
-    final Vector2 oldImpulse = temp;
+    final oldImpulse = temp;
     oldImpulse.setFrom(_impulse);
     _impulse.add(impulse);
-    final double maxImpulse = data.step.dt * _maxForce;
+    final maxImpulse = data.step.dt * _maxForce;
     if (_impulse.length2 > maxImpulse * maxImpulse) {
       _impulse.scale(maxImpulse / _impulse.length);
     }

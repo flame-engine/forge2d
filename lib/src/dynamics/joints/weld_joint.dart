@@ -1,4 +1,7 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 //Point-to-point constraint
 //C = p2 - p1
@@ -71,25 +74,25 @@ class WeldJoint extends Joint {
   void initVelocityConstraints(final SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
-    _localCenterA.setFrom(bodyA._sweep.localCenter);
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassA = bodyA._invMass;
-    _invMassB = bodyB._invMass;
+    _localCenterA.setFrom(bodyA.sweep.localCenter);
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassA = bodyA.inverseMass;
+    _invMassB = bodyB.inverseMass;
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
     // Vec2 cA = data.positions[_indexA].c;
-    final double aA = data.positions[_indexA].a;
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
+    final aA = data.positions[_indexA].a;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
 
     // Vec2 cB = data.positions[_indexB].c;
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
+    final qA = Rot();
+    final qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -111,42 +114,44 @@ class WeldJoint extends Joint {
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
-    final Matrix3 K = Matrix3.zero();
+    final K = Matrix3.zero();
 
-    final double exX = mA + mB + _rA.y * _rA.y * iA + _rB.y * _rB.y * iB;
-    final double eyX = -_rA.y * _rA.x * iA - _rB.y * _rB.x * iB;
-    final double ezX = -_rA.y * iA - _rB.y * iB;
-    final double exY = K.entry(0, 1);
-    final double eyY = mA + mB + _rA.x * _rA.x * iA + _rB.x * _rB.x * iB;
-    final double ezY = _rA.x * iA + _rB.x * iB;
-    final double exZ = K.entry(0, 2);
-    final double eyZ = K.entry(1, 2);
-    final double ezZ = iA + iB;
+    final exX = mA + mB + _rA.y * _rA.y * iA + _rB.y * _rB.y * iB;
+    final eyX = -_rA.y * _rA.x * iA - _rB.y * _rB.x * iB;
+    final ezX = -_rA.y * iA - _rB.y * iB;
+    final exY = K.entry(0, 1);
+    final eyY = mA + mB + _rA.x * _rA.x * iA + _rB.x * _rB.x * iB;
+    final ezY = _rA.x * iA + _rB.x * iB;
+    final exZ = K.entry(0, 2);
+    final eyZ = K.entry(1, 2);
+    final ezZ = iA + iB;
 
     K.setValues(exX, exY, exZ, eyX, eyY, eyZ, ezX, ezY, ezZ);
 
     if (_frequencyHz > 0.0) {
       _mass.setFrom(_matrix3GetInverse22(K));
 
-      double invM = iA + iB;
-      final double m = invM > 0.0 ? 1.0 / invM : 0.0;
+      var invM = iA + iB;
+      final m = invM > 0.0 ? 1.0 / invM : 0.0;
 
-      final double c = aB - aA - _referenceAngle;
+      final c = aB - aA - _referenceAngle;
 
       // Frequency
-      final double omega = 2.0 * math.pi * _frequencyHz;
+      final omega = 2.0 * pi * _frequencyHz;
 
       // Damping coefficient
-      final double d = 2.0 * m * _dampingRatio * omega;
+      final d = 2.0 * m * _dampingRatio * omega;
 
       // Spring stiffness
-      final double k = m * omega * omega;
+      final k = m * omega * omega;
 
       // magic formulas
-      final double dt = data.step.dt;
+      final dt = data.step.dt;
       _gamma = dt * (d + dt * k);
       _gamma = _gamma != 0.0 ? 1.0 / _gamma : 0.0;
       _bias = c * dt * k * _gamma;
@@ -163,7 +168,7 @@ class WeldJoint extends Joint {
       // Scale impulses to support a variable time step.
       _impulse.scale(data.step.dtRatio);
 
-      final Vector2 P = Vector2(_impulse.x, _impulse.y);
+      final P = Vector2(_impulse.x, _impulse.y);
 
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
@@ -182,21 +187,23 @@ class WeldJoint extends Joint {
 
   @override
   void solveVelocityConstraints(final SolverData data) {
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
-    final Vector2 cDot1 = Vector2.zero();
-    final Vector2 p = Vector2.zero();
-    final Vector2 temp = Vector2.zero();
+    final cDot1 = Vector2.zero();
+    final p = Vector2.zero();
+    final temp = Vector2.zero();
     if (_frequencyHz > 0.0) {
-      final double cDot2 = wB - wA;
+      final cDot2 = wB - wA;
 
-      final double impulse2 =
+      final impulse2 =
           -_mass.entry(2, 2) * (cDot2 + _bias + _gamma * _impulse.z);
       _impulse.z += impulse2;
 
@@ -210,7 +217,7 @@ class WeldJoint extends Joint {
         ..sub(vA)
         ..sub(temp);
 
-      final Vector2 impulse1 = Vector2(
+      final impulse1 = Vector2(
         _mass.entry(1, 0) * cDot1.x + _mass.entry(1, 1) * cDot1.y,
         _mass.entry(0, 0) * cDot1.x + _mass.entry(0, 1) * cDot1.y,
       )..negate();
@@ -232,9 +239,9 @@ class WeldJoint extends Joint {
         ..add(vB)
         ..sub(vA)
         ..sub(temp);
-      final double cDot2 = wB - wA;
+      final cDot2 = wB - wA;
 
-      final Vector3 impulse = Vector3(cDot1.x, cDot1.y, cDot2)
+      final impulse = Vector3(cDot1.x, cDot1.y, cDot2)
         ..applyMatrix3(_mass)
         ..negate();
       _impulse.add(impulse);
@@ -256,40 +263,42 @@ class WeldJoint extends Joint {
 
   @override
   bool solvePositionConstraints(final SolverData data) {
-    final Vector2 cA = data.positions[_indexA].c;
-    double aA = data.positions[_indexA].a;
-    final Vector2 cB = data.positions[_indexB].c;
-    double aB = data.positions[_indexB].a;
-    final Rot qA = Rot();
-    final Rot qB = Rot();
+    final cA = data.positions[_indexA].c;
+    var aA = data.positions[_indexA].a;
+    final cB = data.positions[_indexB].c;
+    var aB = data.positions[_indexB].a;
+    final qA = Rot();
+    final qB = Rot();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
-    final Vector2 temp = Vector2.copy(localAnchorA)..sub(_localCenterA);
-    final Vector2 rA = Vector2.copy(Rot.mulVec2(qA, temp));
+    final temp = Vector2.copy(localAnchorA)..sub(_localCenterA);
+    final rA = Vector2.copy(Rot.mulVec2(qA, temp));
     temp
       ..setFrom(localAnchorB)
       ..sub(_localCenterB);
-    final Vector2 rB = Vector2.copy(Rot.mulVec2(qB, temp));
+    final rB = Vector2.copy(Rot.mulVec2(qB, temp));
     double positionError, angularError;
 
-    final Matrix3 k = Matrix3.zero();
-    final Vector2 c1 = Vector2.zero();
-    final Vector2 p = Vector2.zero();
+    final k = Matrix3.zero();
+    final c1 = Vector2.zero();
+    final p = Vector2.zero();
 
-    final double exX = mA + mB + rA.y * rA.y * iA + rB.y * rB.y * iB;
-    final double eyX = -rA.y * rA.x * iA - rB.y * rB.x * iB;
-    final double ezX = -rA.y * iA - rB.y * iB;
-    final double exY = k.entry(0, 1);
-    final double eyY = mA + mB + rA.x * rA.x * iA + rB.x * rB.x * iB;
-    final double ezY = rA.x * iA + rB.x * iB;
-    final double exZ = k.entry(0, 2);
-    final double eyZ = k.entry(1, 2);
-    final double ezZ = iA + iB;
+    final exX = mA + mB + rA.y * rA.y * iA + rB.y * rB.y * iB;
+    final eyX = -rA.y * rA.x * iA - rB.y * rB.x * iB;
+    final ezX = -rA.y * iA - rB.y * iB;
+    final exY = k.entry(0, 1);
+    final eyY = mA + mB + rA.x * rA.x * iA + rB.x * rB.x * iB;
+    final ezY = rA.x * iA + rB.x * iB;
+    final exZ = k.entry(0, 2);
+    final eyZ = k.entry(1, 2);
+    final ezZ = iA + iB;
 
     k.setValues(exX, exY, exZ, eyX, eyY, eyZ, ezX, ezY, ezZ);
 
@@ -319,13 +328,13 @@ class WeldJoint extends Joint {
         ..add(rB)
         ..sub(cA)
         ..sub(rA);
-      final double c2 = aB - aA - _referenceAngle;
+      final c2 = aB - aA - _referenceAngle;
 
       positionError = c1.length;
       angularError = c2.abs();
 
-      final Vector3 C = Vector3(c1.x, c1.y, c2);
-      final Vector3 impulse = Vector3.zero();
+      final C = Vector3(c1.x, c1.y, c2);
+      final impulse = Vector3.zero();
 
       Matrix3.solve(k, impulse, C);
       impulse.negate();
@@ -348,55 +357,55 @@ class WeldJoint extends Joint {
   }
 
   Matrix3 _matrix3GetInverse22(Matrix3 m) {
-    final double a = m.entry(1, 0);
-    final double b = m.entry(0, 1);
-    final double c = m.entry(1, 0);
-    final double d = m.entry(1, 1);
-    double det = a * d - b * c;
+    final a = m.entry(1, 0);
+    final b = m.entry(0, 1);
+    final c = m.entry(1, 0);
+    final d = m.entry(1, 1);
+    var det = a * d - b * c;
     if (det != 0.0) {
       det = 1.0 / det;
     }
 
-    final double exX = det * d;
-    final double eyX = -det * b;
-    const double ezX = 0.0;
-    final double exY = -det * c;
-    final double eyY = det * a;
-    const double ezY = 0.0;
-    const double exZ = 0.0;
-    const double eyZ = 0.0;
-    const double ezZ = 0.0;
+    final exX = det * d;
+    final eyX = -det * b;
+    const ezX = 0.0;
+    final exY = -det * c;
+    final eyY = det * a;
+    const ezY = 0.0;
+    const exZ = 0.0;
+    const eyZ = 0.0;
+    const ezZ = 0.0;
     return Matrix3(exX, exY, exZ, eyX, eyY, eyZ, ezX, ezY, ezZ);
   }
 
   /// Returns the zero matrix if singular.
   Matrix3 _matrix3GetSymInverse33(Matrix3 m, Matrix3 m2) {
-    final double bx =
-        m.entry(1, 1) * m.entry(2, 2) - m.entry(2, 1) * m.entry(1, 2);
-    final double by =
-        m.entry(2, 1) * m.entry(0, 2) - m.entry(0, 1) * m.entry(2, 2);
-    final double bz =
-        m.entry(0, 1) * m.entry(1, 2) - m.entry(1, 1) * m.entry(0, 2);
-    double det = m.entry(0, 0) * bx + m.entry(1, 0) * by + m.entry(2, 0) * bz;
+    final bx = m.entry(1, 1) * m.entry(2, 2) - m.entry(2, 1) * m.entry(1, 2);
+    final by = m.entry(2, 1) * m.entry(0, 2) - m.entry(0, 1) * m.entry(2, 2);
+    final bz = m.entry(0, 1) * m.entry(1, 2) - m.entry(1, 1) * m.entry(0, 2);
+    var det = m.entry(0, 0) * bx + m.entry(1, 0) * by + m.entry(2, 0) * bz;
     if (det != 0.0) {
       det = 1.0 / det;
     }
 
-    final double a11 = m.entry(0, 0), a12 = m.entry(0, 1), a13 = m.entry(0, 2);
-    final double a22 = m.entry(1, 1), a23 = m.entry(1, 2);
-    final double a33 = m.entry(2, 2);
+    final a11 = m.entry(0, 0);
+    final a12 = m.entry(0, 1);
+    final a13 = m.entry(0, 2);
+    final a22 = m.entry(1, 1);
+    final a23 = m.entry(1, 2);
+    final a33 = m.entry(2, 2);
 
-    final double exX = det * (a22 * a33 - a23 * a23);
-    final double exY = det * (a13 * a23 - a12 * a33);
-    final double exZ = det * (a12 * a23 - a13 * a22);
+    final exX = det * (a22 * a33 - a23 * a23);
+    final exY = det * (a13 * a23 - a12 * a33);
+    final exZ = det * (a12 * a23 - a13 * a22);
 
-    final double eyX = m2.entry(1, 0);
-    final double eyY = det * (a11 * a33 - a13 * a13);
-    final double eyZ = det * (a13 * a12 - a11 * a23);
+    final eyX = m2.entry(1, 0);
+    final eyY = det * (a11 * a33 - a13 * a13);
+    final eyZ = det * (a13 * a12 - a11 * a23);
 
-    final double ezX = m2.entry(2, 0);
-    final double ezY = m2.entry(2, 1);
-    final double ezZ = det * (a11 * a22 - a12 * a12);
+    final ezX = m2.entry(2, 0);
+    final ezY = m2.entry(2, 1);
+    final ezZ = det * (a11 * a22 - a12 * a12);
     return Matrix3(exX, exY, exZ, eyX, eyY, eyZ, ezX, ezY, ezZ);
   }
 }

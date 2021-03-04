@@ -1,5 +1,3 @@
-part of forge2d;
-
 /// Callback for {@link DynamicTree}
 abstract class TreeCallback {
   /// Callback from a query request.

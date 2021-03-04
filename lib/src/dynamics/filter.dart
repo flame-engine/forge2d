@@ -1,5 +1,3 @@
-part of forge2d;
-
 /// This holds contact filtering data.
 class Filter {
   /// The collision category bits. Normally you would just set one bit.

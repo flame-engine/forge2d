@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Distance joint definition. This requires defining an anchor point on both bodies and the non-zero
 /// length of the distance joint. The definition uses local anchor points so that the initial
@@ -16,7 +16,7 @@ class DistanceJointDef extends JointDef {
   /// The damping ratio. 0 = no damping, 1 = critical damping.
   double dampingRatio = 0.0;
 
-  DistanceJointDef() : super(JointType.DISTANCE);
+  DistanceJointDef() : super(JointType.distance);
 
   /// Initialize the bodies, anchors, and length using the world anchors.
   ///
@@ -24,13 +24,17 @@ class DistanceJointDef extends JointDef {
   /// @param b2 Second body
   /// @param anchor1 World anchor on first body
   /// @param anchor2 World anchor on second body
-  void initialize(final Body b1, final Body b2, final Vector2 anchor1,
-      final Vector2 anchor2) {
+  void initialize(
+    final Body b1,
+    final Body b2,
+    final Vector2 anchor1,
+    final Vector2 anchor2,
+  ) {
     bodyA = b1;
     bodyB = b2;
     localAnchorA.setFrom(bodyA.getLocalPoint(anchor1));
     localAnchorB.setFrom(bodyB.getLocalPoint(anchor2));
-    final Vector2 d = anchor2 - anchor1;
+    final d = anchor2 - anchor1;
     length = d.length;
   }
 }

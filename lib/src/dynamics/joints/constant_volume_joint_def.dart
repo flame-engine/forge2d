@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Definition for a {@link ConstantVolumeJoint}, which connects a group a bodies together so they
 /// maintain a constant volume within them.
@@ -7,10 +7,10 @@ class ConstantVolumeJointDef extends JointDef {
   double frequencyHz = 0.0;
   double dampingRatio = 0.0;
 
-  List<Body> bodies = <Body>[];
-  List<DistanceJoint> joints;
+  final List<Body> bodies = <Body>[];
+  final List<DistanceJoint> joints = [];
 
-  ConstantVolumeJointDef() : super(JointType.CONSTANT_VOLUME) {
+  ConstantVolumeJointDef() : super(JointType.constantVolume) {
     collideConnected = false;
   }
 

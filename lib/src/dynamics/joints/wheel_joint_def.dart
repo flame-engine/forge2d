@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Wheel joint definition. This requires defining a line of motion using an axis and an anchor
 /// point. The definition uses local anchor points and a local axis so that the initial configuration
@@ -24,7 +24,7 @@ class WheelJointDef extends JointDef {
   /// Suspension damping ratio, one indicates critical damping
   double dampingRatio = 0.0;
 
-  WheelJointDef() : super(JointType.WHEEL) {
+  WheelJointDef() : super(JointType.wheel) {
     localAxisA.setValues(1.0, 0.0);
   }
 

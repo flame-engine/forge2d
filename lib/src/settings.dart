@@ -1,11 +1,9 @@
-library forge2d.settings;
+import 'dart:math';
 
-import 'dart:math' as math;
-
-const int INTEGER_MAX_VALUE = 0x3FFFFFFF;
+const int intMaxValue = 0x3FFFFFFF;
 
 /// A "close to zero" float epsilon value for use
-const double EPSILON = 1.1920928955078125E-7;
+const double epsilon = 1.1920928955078125E-7;
 
 /// The maximum number of contact points between two convex shapes.
 const int maxManifoldPoints = 2;
@@ -27,7 +25,7 @@ const double linearSlop = 0.005;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is chosen to be
 /// numerically significant, but visually insignificant.
-const double angularSlop = 2.0 / 180.0 * math.pi;
+const double angularSlop = 2.0 / 180.0 * pi;
 
 /// The radius of the polygon/edge shape skin. This should not be modified. Making this smaller
 /// means polygons will have and insufficient for continuous collision. Making it larger may create
@@ -52,7 +50,7 @@ const double maxLinearCorrection = 0.2;
 
 /// The maximum angular position correction used when solving constraints. This helps to prevent
 /// overshoot.
-const double maxAngularCorrection = 8.0 / 180.0 * math.pi;
+const double maxAngularCorrection = 8.0 / 180.0 * pi;
 
 /// The maximum linear velocity of a body. This limit is very large and is used to prevent
 /// numerical problems. You shouldn't need to adjust this.
@@ -61,7 +59,7 @@ const double maxTranslationSquared = maxTranslation * maxTranslation;
 
 /// The maximum angular velocity of a body. This limit is very large and is used to prevent
 /// numerical problems. You shouldn't need to adjust this.
-const double maxRotation = 0.5 * math.pi;
+const double maxRotation = 0.5 * pi;
 const double maxRotationSquared = maxRotation * maxRotation;
 
 /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so that
@@ -77,7 +75,7 @@ const double timeToSleep = 0.5;
 const double linearSleepTolerance = 0.01;
 
 /// A body cannot sleep if its angular velocity is above this tolerance.
-const double angularSleepTolerance = 2.0 / 180.0 * math.pi;
+const double angularSleepTolerance = 2.0 / 180.0 * pi;
 
 // Particle
 

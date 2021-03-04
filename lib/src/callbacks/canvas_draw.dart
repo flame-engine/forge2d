@@ -1,9 +1,10 @@
-library forge2d.callbacks.canvas_draw;
-
 import 'dart:html';
 import 'dart:math';
 
 import '../../forge2d.dart';
+import '../../forge2d_browser.dart';
+import '../particle/particle.dart';
+import 'debug_draw.dart';
 
 class CanvasDraw extends DebugDraw {
   /// The canvas rendering context with which to draw.
@@ -16,39 +17,36 @@ class CanvasDraw extends DebugDraw {
   /// Draw a closed polygon provided in CCW order. WARNING: This mutates
   /// [vertices].
   @override
-  void drawPolygon(List<Vector2> vertices, int vertexCount, Color3i color) {
-    _pathPolygon(vertices, vertexCount, color);
+  void drawPolygon(List<Vector2> vertices, Color3i color) {
+    _pathPolygon(vertices, color);
     ctx.stroke();
   }
 
   /// Draw a solid closed polygon provided in CCW order. WARNING: This mutates
   /// [vertices].
   @override
-  void drawSolidPolygon(
-      List<Vector2> vertices, int vertexCount, Color3i color) {
-    _pathPolygon(vertices, vertexCount, color);
+  void drawSolidPolygon(List<Vector2> vertices, Color3i color) {
+    _pathPolygon(vertices, color);
     ctx.fill();
   }
 
-  void _pathPolygon(List<Vector2> vertices, int vertexCount, Color3i color) {
+  void _pathPolygon(List<Vector2> vertices, Color3i color) {
     // Set the color and convert to screen coordinates.
     _setColor(color);
     // TODO(gregbglw): Do a single ctx transform rather than convert all of
     // these vectors.
-    for (int i = 0; i < vertexCount; ++i) {
-      vertices[i] = getWorldToScreen(vertices[i]);
-    }
+    final screenVertices = vertices.map(getWorldToScreen).toList();
 
     ctx.beginPath();
-    ctx.moveTo(vertices[0].x, vertices[0].y);
+    ctx.moveTo(screenVertices[0].x, screenVertices[0].y);
 
     // Draw lines to all of the remaining points.
-    for (int i = 1; i < vertexCount; ++i) {
-      ctx.lineTo(vertices[i].x, vertices[i].y);
+    for (final vertex in screenVertices) {
+      ctx.lineTo(vertex.x, vertex.y);
     }
 
     // Draw a line back to the starting point.
-    ctx.lineTo(vertices[0].x, vertices[0].y);
+    ctx.lineTo(screenVertices[0].x, screenVertices[0].y);
 
     // Close the drawn polygon ready for fill/stroke
     ctx.closePath();
@@ -58,51 +56,52 @@ class CanvasDraw extends DebugDraw {
   @override
   void drawSegment(Vector2 p1, Vector2 p2, Color3i color) {
     _setColor(color);
-    p1 = getWorldToScreen(p1);
-    p2 = getWorldToScreen(p2);
+    final screenP1 = getWorldToScreen(p1);
+    final screenP2 = getWorldToScreen(p2);
 
     ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
+    ctx.moveTo(screenP1.x, screenP1.y);
+    ctx.lineTo(screenP2.x, screenP2.y);
     ctx.closePath();
     ctx.stroke();
   }
 
-  /// Draw a circle. WARNING: This mutates [center].
+  /// Draw a circle.
   @override
-  void drawCircle(Vector2 center, num radius, Color3i color, [Vector2 axis]) {
-    radius *= viewportTransform.scale;
-    _pathCircle(center, radius, color);
+  void drawCircle(Vector2 center, num radius, Color3i color) {
+    final screenRadius = radius * viewport.scale;
+    _pathCircle(center, screenRadius, color);
     ctx.stroke();
   }
 
-  /// Draw a solid circle. WARNING: This mutates [center].
+  /// Draw a solid circle.
   @override
-  void drawSolidCircle(
-      Vector2 center, num radius, Vector2 axis, Color3i color) {
-    radius *= viewportTransform.scale;
-    drawPoint(center, radius, color);
+  void drawSolidCircle(Vector2 center, num radius, Color3i color) {
+    final screenRadius = radius * viewport.scale;
+    drawPoint(center, screenRadius, color);
   }
 
   /// Draws the given point with the given *unscaled* radius, in the given [color].
-  /// WARNING: This mutates [point].
   @override
-  void drawPoint(Vector2 point, num radiusOnScreen, Color3i color) {
+  void drawPoint(
+    Vector2 point,
+    num radiusOnScreen,
+    Color3i color,
+  ) {
     _pathCircle(point, radiusOnScreen, color);
     ctx.fill();
   }
 
   void _pathCircle(Vector2 center, num radius, Color3i color) {
     _setColor(color);
-    center = getWorldToScreen(center);
+    final screenCenter = getWorldToScreen(center);
 
     ctx.beginPath();
-    ctx.arc(center.x, center.y, radius, 0, pi * 2, true);
+    ctx.arc(screenCenter.x, screenCenter.y, radius, 0, pi * 2, true);
     ctx.closePath();
   }
 
-  /// Draw a transform. Choose your own length scale. WARNING: This mutates
-  /// [xf.position].
+  /// Draw a transform. Choose your own length scale.
   @override
   void drawTransform(Transform xf, Color3i color) {
     drawCircle(xf.p, 0.1, color);
@@ -118,19 +117,19 @@ class CanvasDraw extends DebugDraw {
 
   /// Sets the rendering context stroke and fill color to [color].
   void _setColor(Color3i color) {
-    ctx.setStrokeColorRgb(color.x, color.y, color.z, 0.9);
-    ctx.setFillColorRgb(color.x, color.y, color.z, 0.8);
+    ctx.setStrokeColorRgb(color.r, color.g, color.b, color.a);
+    ctx.setFillColorRgb(color.r, color.g, color.b, color.a);
   }
 
   @override
-  void drawParticles(List<Vector2> centers, double radius,
-      List<ParticleColor> colors, int count) {
-    throw "Unimplemented";
+  void drawParticles(List<Particle> particles, double radius) {
+    particles.forEach((p) {
+      drawSolidCircle(p.position, radius, p.color);
+    });
   }
 
   @override
-  void drawParticlesWireframe(List<Vector2> centers, double radius,
-      List<ParticleColor> colors, int count) {
-    throw "Unimplemented";
+  void drawParticlesWireframe(List<Particle> particles, double radius) {
+    throw 'Unimplemented';
   }
 }

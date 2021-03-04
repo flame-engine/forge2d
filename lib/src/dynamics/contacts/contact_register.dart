@@ -1,4 +1,6 @@
-part of forge2d;
+import 'dart:collection';
+
+import '../../../forge2d.dart';
 
 class ContactRegister {
   ListQueue<Contact> creator;

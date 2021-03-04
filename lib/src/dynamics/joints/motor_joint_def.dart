@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Motor joint definition.
 class MotorJointDef extends JointDef {
@@ -17,16 +17,16 @@ class MotorJointDef extends JointDef {
   /// Position correction factor in the range [0,1].
   double correctionFactor = 0.3;
 
-  MotorJointDef() : super(JointType.MOTOR);
+  MotorJointDef() : super(JointType.motor);
 
-  void initialize(Body bA, Body bB) {
-    bodyA = bA;
-    bodyB = bB;
-    final Vector2 xB = bodyB.position;
+  void initialize(Body bodyA, Body bodyB) {
+    this.bodyA = bodyA;
+    this.bodyB = bodyB;
+    final xB = bodyB.position;
     linearOffset.setFrom(bodyA.getLocalPoint(xB));
 
-    final double angleA = bodyA.getAngle();
-    final double angleB = bodyB.getAngle();
+    final angleA = bodyA.getAngle();
+    final angleB = bodyB.getAngle();
     angularOffset = angleB - angleA;
   }
 }

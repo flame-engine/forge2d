@@ -1,9 +1,9 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 class PolygonAndCircleContact extends Contact {
   PolygonAndCircleContact(Fixture fixtureA, Fixture fixtureB)
-      : assert(fixtureA.getType() == ShapeType.POLYGON),
-        assert(fixtureB.getType() == ShapeType.CIRCLE),
+      : assert(fixtureA.getType() == ShapeType.polygon),
+        assert(fixtureB.getType() == ShapeType.circle),
         super(fixtureA, 0, fixtureB, 0);
 
   @override

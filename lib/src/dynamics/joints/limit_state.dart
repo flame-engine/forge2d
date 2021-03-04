@@ -1,3 +1,1 @@
-part of forge2d;
-
-enum LimitState { INACTIVE, AT_LOWER, AT_UPPER, EQUAL }
+enum LimitState { inactive, atLower, atUpper, equal }

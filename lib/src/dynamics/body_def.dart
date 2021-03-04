@@ -1,11 +1,11 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// A body definition holds all the data needed to construct a rigid body. You can safely re-use body
 /// definitions. Shapes are added to a body after construction.
 class BodyDef {
   /// The body type: static, kinematic, or dynamic. Note: if a dynamic body would have zero mass, the
   /// mass is set to one.
-  BodyType type = BodyType.STATIC;
+  BodyType type = BodyType.static;
 
   /// Use this to store application specific body data.
   Object userData;

@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 //Point-to-point constraint
 //Cdot = v2 - v1
@@ -134,27 +134,27 @@ class MotorJoint extends Joint {
   void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
-    _localCenterA.setFrom(bodyA._sweep.localCenter);
-    _localCenterB.setFrom(bodyB._sweep.localCenter);
-    _invMassA = bodyA._invMass;
-    _invMassB = bodyB._invMass;
+    _localCenterA.setFrom(bodyA.sweep.localCenter);
+    _localCenterB.setFrom(bodyB.sweep.localCenter);
+    _invMassA = bodyA.inverseMass;
+    _invMassB = bodyB.inverseMass;
     _invIA = bodyA.inverseInertia;
     _invIB = bodyB.inverseInertia;
 
-    final Vector2 cA = data.positions[_indexA].c;
-    final double aA = data.positions[_indexA].a;
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
+    final cA = data.positions[_indexA].c;
+    final aA = data.positions[_indexA].a;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
 
-    final Vector2 cB = data.positions[_indexB].c;
-    final double aB = data.positions[_indexB].a;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final cB = data.positions[_indexB].c;
+    final aB = data.positions[_indexB].a;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final Rot qA = Rot();
-    final Rot qB = Rot();
-    final Vector2 temp = Vector2.zero();
-    final Matrix2 k = Matrix2.zero();
+    final qA = Rot();
+    final qB = Rot();
+    final temp = Vector2.zero();
+    final k = Matrix2.zero();
 
     qA.setAngle(aA);
     qB.setAngle(aB);
@@ -175,13 +175,13 @@ class MotorJoint extends Joint {
     // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA, mB = _invMassB;
+    final iA = _invIA, iB = _invIB;
 
-    final double a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
-    final double a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
-    final double a12 = a21;
-    final double a22 = mA + mB + iA * _rA.x * _rA.x + iB * _rB.x * _rB.x;
+    final a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
+    final a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
+    final a12 = a21;
+    final a22 = mA + mB + iA * _rA.x * _rA.x + iB * _rB.x * _rB.x;
 
     k.setValues(a11, a21, a12, a22);
     _linearMass.setFrom(k);
@@ -203,7 +203,7 @@ class MotorJoint extends Joint {
       _linearImpulse.y *= data.step.dtRatio;
       _angularImpulse *= data.step.dtRatio;
 
-      final Vector2 P = _linearImpulse;
+      final P = _linearImpulse;
       vA.x -= mA * P.x;
       vA.y -= mA * P.y;
       wA -= iA * (_rA.x * P.y - _rA.y * P.x + _angularImpulse);
@@ -221,26 +221,26 @@ class MotorJoint extends Joint {
 
   @override
   void solveVelocityConstraints(SolverData data) {
-    final Vector2 vA = data.velocities[_indexA].v;
-    double wA = data.velocities[_indexA].w;
-    final Vector2 vB = data.velocities[_indexB].v;
-    double wB = data.velocities[_indexB].w;
+    final vA = data.velocities[_indexA].v;
+    var wA = data.velocities[_indexA].w;
+    final vB = data.velocities[_indexB].v;
+    var wB = data.velocities[_indexB].w;
 
-    final double mA = _invMassA, mB = _invMassB;
-    final double iA = _invIA, iB = _invIB;
+    final mA = _invMassA, mB = _invMassB;
+    final iA = _invIA, iB = _invIB;
 
-    final double dt = data.step.dt;
-    final double invDt = data.step.invDt;
+    final dt = data.step.dt;
+    final invDt = data.step.invDt;
 
-    final Vector2 temp = Vector2.zero();
+    final temp = Vector2.zero();
 
     // Solve angular friction
     {
-      final double cDot = wB - wA + invDt * _correctionFactor * _angularError;
-      double impulse = -_angularMass * cDot;
+      final cDot = wB - wA + invDt * _correctionFactor * _angularError;
+      var impulse = -_angularMass * cDot;
 
-      final double oldImpulse = _angularImpulse;
-      final double maxImpulse = dt * _maxTorque;
+      final oldImpulse = _angularImpulse;
+      final maxImpulse = dt * _maxTorque;
       _angularImpulse =
           (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
       impulse = _angularImpulse - oldImpulse;
@@ -249,7 +249,7 @@ class MotorJoint extends Joint {
       wB += iB * impulse;
     }
 
-    final Vector2 cDot = Vector2.zero();
+    final cDot = Vector2.zero();
 
     // Solve linear friction
     {
@@ -266,14 +266,14 @@ class MotorJoint extends Joint {
           wA * _rA.x +
           invDt * _correctionFactor * _linearError.y;
 
-      final Vector2 impulse = temp;
+      final impulse = temp;
       _linearMass.transformed(cDot, impulse);
       impulse.negate();
-      final Vector2 oldImpulse = Vector2.zero();
+      final oldImpulse = Vector2.zero();
       oldImpulse.setFrom(_linearImpulse);
       _linearImpulse.add(impulse);
 
-      final double maxImpulse = dt * _maxForce;
+      final maxImpulse = dt * _maxForce;
 
       if (_linearImpulse.length2 > maxImpulse * maxImpulse) {
         _linearImpulse.normalize();

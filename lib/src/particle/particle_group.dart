@@ -1,141 +1,90 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 class ParticleGroup {
-  ParticleSystem _system;
-  int _firstIndex = 0;
-  int _lastIndex = 0;
-  int _groupFlags = 0;
-  double _strength = 0.0;
-  ParticleGroup _prev;
-  ParticleGroup _next;
+  final ParticleSystem _system;
+  final List<Particle> particles = [];
+  int groupFlags = 0;
+  double strength = 1.0;
 
-  int _timestamp = 0;
+  int _timestamp = -1;
   double _mass = 0.0;
   double _inertia = 0.0;
   final Vector2 _center = Vector2.zero();
-  final Vector2 linearVelocity = Vector2.zero();
+  final Vector2 _linearVelocity = Vector2.zero();
   double _angularVelocity = 0.0;
-  final Transform _transform = Transform.zero();
+  final Transform transform = Transform.zero()..setIdentity();
 
-  bool _destroyAutomatically = false;
-  bool _toBeDestroyed = false;
-  bool _toBeSplit = false;
+  bool destroyAutomatically = true;
+  bool toBeDestroyed = false;
+  bool toBeSplit = false;
 
-  Object _userData;
+  Object userData;
 
-  ParticleGroup() {
-    // _system = null;
-    _firstIndex = 0;
-    _lastIndex = 0;
-    _groupFlags = 0;
-    _strength = 1.0;
+  ParticleGroup(this._system);
 
-    _timestamp = -1;
-    _mass = 0.0;
-    _inertia = 0.0;
-    _angularVelocity = 0.0;
-    _transform.setIdentity();
-
-    _destroyAutomatically = true;
-    _toBeDestroyed = false;
-    _toBeSplit = false;
+  void add(Particle particle) {
+    particles.add(particle);
   }
 
-  ParticleGroup getNext() {
-    return _next;
-  }
+  bool contains(Particle particle) => particles.contains(particle);
 
-  int getParticleCount() {
-    return _lastIndex - _firstIndex;
-  }
-
-  int getBufferIndex() {
-    return _firstIndex;
-  }
-
-  int getGroupFlags() {
-    return _groupFlags;
-  }
-
-  void setGroupFlags(int flags) {
-    _groupFlags = flags;
-  }
-
-  double getMass() {
+  set mass(double mass) => _mass = mass;
+  double get mass {
     updateStatistics();
     return _mass;
   }
 
-  double getInertia() {
+  set inertia(double inertia) => _inertia = inertia;
+  double get inertia {
     updateStatistics();
     return _inertia;
   }
 
-  Vector2 getCenter() {
+  set center(Vector2 center) => _center.setFrom(center);
+  Vector2 get center {
     updateStatistics();
     return _center;
   }
 
-  Vector2 getLinearVelocity() {
+  Vector2 get linearVelocity {
     updateStatistics();
-    return linearVelocity;
+    return _linearVelocity;
   }
 
-  double getAngularVelocity() {
+  double get angularVelocity {
     updateStatistics();
     return _angularVelocity;
   }
 
-  Transform getTransform() {
-    return _transform;
-  }
+  Vector2 get position => transform.p;
 
-  Vector2 getPosition() {
-    return _transform.p;
-  }
-
-  double getAngle() {
-    return _transform.q.getAngle();
-  }
-
-  Object getUserData() {
-    return _userData;
-  }
-
-  void setUserData(Object data) {
-    _userData = data;
-  }
+  double get angle => transform.q.getAngle();
 
   void updateStatistics() {
     if (_timestamp != _system.timestamp) {
-      final double m = _system.getParticleMass();
-      _mass = 0.0;
+      final m = _system.particleMass;
+      final _mass = m * particles.length;
       _center.setZero();
-      linearVelocity.setZero();
-      for (int i = _firstIndex; i < _lastIndex; i++) {
-        _mass += m;
-        final Vector2 pos = _system.positionBuffer.data[i];
-        _center.x += m * pos.x;
-        _center.y += m * pos.y;
-        final Vector2 vel = _system.velocityBuffer.data[i];
-        linearVelocity.x += m * vel.x;
-        linearVelocity.y += m * vel.y;
+      _linearVelocity.setZero();
+      for (final particle in particles) {
+        _center.setFrom(_center + (particle.position * m));
+        _linearVelocity.setFrom(_linearVelocity + (particle.velocity * m));
       }
       if (_mass > 0) {
         _center.x *= 1 / _mass;
         _center.y *= 1 / _mass;
-        linearVelocity.x *= 1 / _mass;
-        linearVelocity.y *= 1 / _mass;
+        _linearVelocity.x *= 1 / _mass;
+        _linearVelocity.y *= 1 / _mass;
       }
       _inertia = 0.0;
       _angularVelocity = 0.0;
-      for (int i = _firstIndex; i < _lastIndex; i++) {
-        final Vector2 pos = _system.positionBuffer.data[i];
-        final Vector2 vel = _system.velocityBuffer.data[i];
-        final double px = pos.x - _center.x;
-        final double py = pos.y - _center.y;
-        final double vx = vel.x - linearVelocity.x;
-        final double vy = vel.y - linearVelocity.y;
+      for (final particle in particles) {
+        final position = particle.position;
+        final velocity = particle.velocity;
+        final px = position.x - _center.x;
+        final py = position.y - _center.y;
+        final vx = velocity.x - _linearVelocity.x;
+        final vy = velocity.y - _linearVelocity.y;
         _inertia += m * (px * px + py * py);
         _angularVelocity += m * (px * vy - py * vx);
       }

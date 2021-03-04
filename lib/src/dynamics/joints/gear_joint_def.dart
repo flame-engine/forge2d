@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../../forge2d.dart';
 
 /// Gear joint definition. This definition requires two existing revolute or prismatic joints (any
 /// combination will work). The provided joints must attach a dynamic body to a static body.
@@ -14,5 +14,5 @@ class GearJointDef extends JointDef {
   /// @see GearJoint
   double ratio = 0.0;
 
-  GearJointDef() : super(JointType.GEAR);
+  GearJointDef() : super(JointType.gear);
 }

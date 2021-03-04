@@ -1,13 +1,7 @@
-library forge2d.common;
-
-import 'dart:math' as math;
-import 'dart:math';
-import 'vector_math.dart';
-
-part 'common/color3i.dart';
-part 'common/raycast_result.dart';
-part 'common/rot.dart';
-part 'common/sweep.dart';
-part 'common/timer.dart';
-part 'common/transform.dart';
-part 'common/viewport_transform.dart';
+export 'common/color3i.dart';
+export 'common/raycast_result.dart';
+export 'common/rot.dart';
+export 'common/sweep.dart';
+export 'common/timer.dart';
+export 'common/transform.dart';
+export 'common/viewport_transform.dart';

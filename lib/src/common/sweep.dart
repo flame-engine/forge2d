@@ -1,4 +1,6 @@
-part of forge2d.common;
+import 'dart:math';
+
+import '../../forge2d.dart';
 
 /// This describes the motion of a body/shape for TOI computation. Shapes are defined with respect to
 /// the body origin, which may not coincide with the center of mass. However, to support dynamics we
@@ -11,22 +13,23 @@ class Sweep {
   final Vector2 c0 = Vector2.zero(), c = Vector2.zero();
 
   /// World angles
-  double a0 = 0.0, a = 0.0;
+  double a0 = 0.0;
+  double a = 0.0;
 
   /// Fraction of the current time step in the range [0,1] c0 and a0 are the positions at alpha0.
   double alpha0 = 0.0;
 
   @override
   String toString() {
-    String s = "Sweep:\nlocalCenter: $localCenter\n";
-    s += "c0: $c0, c: $c\n";
-    s += "a0: $a0, a: $a\n";
-    s += "alpha0: $alpha0";
+    var s = 'Sweep:\nlocalCenter: $localCenter\n';
+    s += 'c0: $c0, c: $c\n';
+    s += 'a0: $a0, a: $a\n';
+    s += 'alpha0: $alpha0';
     return s;
   }
 
   void normalize() {
-    final double d = pi * 2 * (a0 / pi * 2).floor();
+    final d = pi * 2 * (a0 / pi * 2).floor();
     a0 -= d;
     a -= d;
   }
@@ -52,12 +55,12 @@ class Sweep {
     // xf->q.Set(angle);
     xf.p.x = (1.0 - beta) * c0.x + beta * c.x;
     xf.p.y = (1.0 - beta) * c0.y + beta * c.y;
-    final double angle = (1.0 - beta) * a0 + beta * a;
+    final angle = (1.0 - beta) * a0 + beta * a;
     xf.q.setAngle(angle);
 
     // Shift to origin
     // xf->p -= b2Mul(xf->q, localCenter);
-    final Rot q = xf.q;
+    final q = xf.q;
     xf.p.x -= q.c * localCenter.x - q.s * localCenter.y;
     xf.p.y -= q.s * localCenter.x + q.c * localCenter.y;
   }
@@ -71,7 +74,7 @@ class Sweep {
     // c0 += beta * (c - c0);
     // a0 += beta * (a - a0);
     // alpha0 = alpha;
-    final double beta = (alpha - alpha0) / (1.0 - alpha0);
+    final beta = (alpha - alpha0) / (1.0 - alpha0);
     c0.x += beta * (c.x - c0.x);
     c0.y += beta * (c.y - c0.y);
     a0 += beta * (a - a0);

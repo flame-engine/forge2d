@@ -2,7 +2,7 @@ import 'package:forge2d/forge2d.dart';
 
 import 'demo.dart';
 
-class BallCage extends Demo {
+class Particles extends Demo {
   /// Starting position of ball cage in the world.
   static const double startX = -20.0;
   static const double startY = -20.0;
@@ -13,15 +13,14 @@ class BallCage extends Demo {
   /// Radius of the active ball.
   static const double activeBallRadius = 1.0;
 
-  /// Constructs a new BallCage.
-  BallCage() : super('Ball cage');
+  /// Constructs a new Particles example.
+  Particles() : super('Particles');
 
-  /// Entrypoint.
   static void main() {
-    final cage = BallCage();
-    cage.initialize();
-    cage.initializeAnimation();
-    cage.runAnimation();
+    Particles()
+      ..initialize()
+      ..initializeAnimation()
+      ..runAnimation();
   }
 
   @override
@@ -81,15 +80,27 @@ class BallCage extends Demo {
     // Create the active ball body.
     final activeBodyDef = BodyDef();
     activeBodyDef.linearVelocity = Vector2(0.0, -20.0);
-    activeBodyDef.position = Vector2(15.0, 15.0);
+    activeBodyDef.position = Vector2(0.0, -15.0);
     activeBodyDef.type = BodyType.dynamic;
-    activeBodyDef.bullet = true;
     final activeBody = world.createBody(activeBodyDef);
     bodies.add(activeBody);
     activeBody.createFixture(activeFixtureDef);
+
+    // Create particles
+    world.particleSystem.particleRadius = 0.35;
+    world.particleSystem.dampingStrength = 0.2;
+
+    final shape = CircleShape()..radius = 5;
+    final particleGroup = ParticleGroupDef()
+      ..position.setFrom(world.center)
+      ..destroyAutomatically = true
+      ..color = Color3i.blue
+      ..flags = ParticleType.waterParticle
+      ..shape = shape;
+    world.particleSystem.createParticleGroup(particleGroup);
   }
 }
 
 void main() {
-  BallCage.main();
+  Particles.main();
 }

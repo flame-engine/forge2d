@@ -1,16 +1,19 @@
-part of forge2d;
+import 'dart:math';
+
+import '../../../forge2d.dart';
+import '../../settings.dart' as settings;
 
 /// A circle shape.
 class CircleShape extends Shape {
   final Vector2 position = Vector2.zero();
 
-  CircleShape() : super(ShapeType.CIRCLE) {
+  CircleShape() : super(ShapeType.circle) {
     radius = 0.0;
   }
 
   @override
   Shape clone() {
-    final CircleShape shape = CircleShape();
+    final shape = CircleShape();
     shape.position.x = position.x;
     shape.position.y = position.y;
     shape.radius = radius;
@@ -37,25 +40,27 @@ class CircleShape extends Shape {
 
   @override
   bool testPoint(final Transform transform, final Vector2 point) {
-    final Rot q = transform.q;
-    final Vector2 tp = transform.p;
-    final double centerX =
-        -(q.c * position.x - q.s * position.y + tp.x - point.x);
-    final double centerY =
-        -(q.s * position.x + q.c * position.y + tp.y - point.y);
+    final q = transform.q;
+    final tp = transform.p;
+    final centerX = -(q.c * position.x - q.s * position.y + tp.x - point.x);
+    final centerY = -(q.s * position.x + q.c * position.y + tp.y - point.y);
 
     return centerX * centerX + centerY * centerY <= radius * radius;
   }
 
   @override
   double computeDistanceToOut(
-      Transform xf, Vector2 p, int childIndex, Vector2 normalOut) {
-    final Rot xfq = xf.q;
-    final double centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
-    final double centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
-    final double dx = p.x - centerX;
-    final double dy = p.y - centerY;
-    final double d1 = math.sqrt(dx * dx + dy * dy);
+    Transform xf,
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  ) {
+    final xfq = xf.q;
+    final centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
+    final centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
+    final dx = p.x - centerX;
+    final dy = p.y - centerY;
+    final d1 = sqrt(dx * dx + dy * dy);
     normalOut.x = dx * 1 / d1;
     normalOut.y = dy * 1 / d1;
     return d1 - radius;
@@ -66,34 +71,38 @@ class CircleShape extends Shape {
   // x = s + a * r
   // norm(x) = radius
   @override
-  bool raycast(RayCastOutput output, RayCastInput input, Transform transform,
-      int childIndex) {
-    final Vector2 inputP1 = input.p1;
-    final Vector2 inputP2 = input.p2;
-    final Rot tq = transform.q;
-    final Vector2 tp = transform.p;
+  bool raycast(
+    RayCastOutput output,
+    RayCastInput input,
+    Transform transform,
+    int childIndex,
+  ) {
+    final inputP1 = input.p1;
+    final inputP2 = input.p2;
+    final tq = transform.q;
+    final tp = transform.p;
 
-    final double positionX = tq.c * position.x - tq.s * position.y + tp.x;
-    final double positionY = tq.s * position.x + tq.c * position.y + tp.y;
+    final positionX = tq.c * position.x - tq.s * position.y + tp.x;
+    final positionY = tq.s * position.x + tq.c * position.y + tp.y;
 
-    final double sx = inputP1.x - positionX;
-    final double sy = inputP1.y - positionY;
-    final double b = sx * sx + sy * sy - radius * radius;
+    final sx = inputP1.x - positionX;
+    final sy = inputP1.y - positionY;
+    final b = sx * sx + sy * sy - radius * radius;
 
     // Solve quadratic equation.
-    final double rx = inputP2.x - inputP1.x;
-    final double ry = inputP2.y - inputP1.y;
-    final double c = sx * rx + sy * ry;
-    final double rr = rx * rx + ry * ry;
-    final double sigma = c * c - rr * b;
+    final rx = inputP2.x - inputP1.x;
+    final ry = inputP2.y - inputP1.y;
+    final c = sx * rx + sy * ry;
+    final rr = rx * rx + ry * ry;
+    final sigma = c * c - rr * b;
 
     // Check for negative discriminant and short segment.
-    if (sigma < 0.0 || rr < settings.EPSILON) {
+    if (sigma < 0.0 || rr < settings.epsilon) {
       return false;
     }
 
     // Find the point of intersection of the line with the circle.
-    double a = -(c + math.sqrt(sigma));
+    var a = -(c + sqrt(sigma));
 
     // Is the intersection point on the segment?
     if (0.0 <= a && a <= input.maxFraction * rr) {
@@ -110,10 +119,10 @@ class CircleShape extends Shape {
 
   @override
   void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
-    final Rot tq = transform.q;
-    final Vector2 tp = transform.p;
-    final double px = tq.c * position.x - tq.s * position.y + tp.x;
-    final double py = tq.s * position.x + tq.c * position.y + tp.y;
+    final tq = transform.q;
+    final tp = transform.p;
+    final px = tq.c * position.x - tq.s * position.y + tp.x;
+    final py = tq.s * position.x + tq.c * position.y + tp.y;
 
     aabb.lowerBound.x = px - radius;
     aabb.lowerBound.y = py - radius;
@@ -123,7 +132,7 @@ class CircleShape extends Shape {
 
   @override
   void computeMass(final MassData massData, final double density) {
-    massData.mass = density * math.pi * radius * radius;
+    massData.mass = density * pi * radius * radius;
     massData.center.x = position.x;
     massData.center.y = position.y;
 

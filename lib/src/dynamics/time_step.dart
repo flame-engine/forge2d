@@ -1,5 +1,3 @@
-part of forge2d;
-
 /// This is an internal structure.
 class TimeStep {
   /// time step

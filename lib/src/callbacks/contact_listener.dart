@@ -1,4 +1,5 @@
-part of forge2d;
+import '../../forge2d.dart';
+import 'contact_impulse.dart';
 
 /// Implement this class to get contact information. You can use these results for
 /// things like sounds and game logic. You can also get contact results by

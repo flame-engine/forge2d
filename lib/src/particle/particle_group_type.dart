@@ -1,5 +1,3 @@
-part of forge2d;
-
 class ParticleGroupType {
   /// resists penetration
   static const int solidParticleGroup = 1 << 0;

@@ -1,4 +1,7 @@
-part of forge2d;
+import '../../../forge2d.dart';
+import '../../../src/callbacks/debug_draw.dart';
+import '../../../src/callbacks/tree_callback.dart';
+import '../../../src/callbacks/tree_raycast_callback.dart';
 
 abstract class BroadPhaseStrategy {
   /// Create a proxy. Provide a tight fitting AABB and a userData pointer.
@@ -18,9 +21,6 @@ abstract class BroadPhaseStrategy {
 
   /// Query an AABB for overlapping proxies. The callback class is called for each proxy that
   /// overlaps the supplied AABB.
-  ///
-  /// @param callback
-  /// @param araabbgAABB
   void query(TreeCallback callback, AABB aabb);
 
   /// Ray-cast against the proxies in the tree. This relies on the callback to perform a exact

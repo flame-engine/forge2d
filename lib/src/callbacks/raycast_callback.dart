@@ -1,4 +1,4 @@
-part of forge2d;
+import '../../forge2d.dart';
 
 /// Callback class for ray casts.
 /// See {@link World#raycast(RayCastCallback, Vec2, Vec2)}
@@ -15,5 +15,9 @@ abstract class RayCastCallback {
   /// @param fraction
   /// @return -1 to filter, 0 to terminate, fraction to clip the ray for closest hit, 1 to continue
   double reportFixture(
-      Fixture fixture, Vector2 point, Vector2 normal, double fraction);
+    Fixture fixture,
+    Vector2 point,
+    Vector2 normal,
+    double fraction,
+  );
 }
