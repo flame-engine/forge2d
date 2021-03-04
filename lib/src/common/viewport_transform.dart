@@ -31,7 +31,7 @@ class ViewportTransform {
   /// actual center of the canvas and the currently specified center. For
   /// example, if the actual canvas center is (5, 5) but the current center is
   /// (6, 6), the translation is (1, 1).
-  Vector2 get translation => (extents - center)..y *= (yFlip ? -1 : 1);
+  Vector2 get translation => extents - center;
 
   set translation(Vector2 translation) {
     center.setFrom(extents);
@@ -39,23 +39,24 @@ class ViewportTransform {
   }
 
   /// Takes the world coordinates and return the corresponding screen coordinates
-  Vector2 getWorldToScreen(Vector2 argWorld) {
+  Vector2 worldToScreen(Vector2 argWorld) {
     // Correct for canvas considering the upper-left corner, rather than the
     // center, to be the origin.
     final gridCorrectedX = (argWorld.x * scale) + extents.x;
     final gridCorrectedY = extents.y - (argWorld.y * scale);
     return Vector2(
       gridCorrectedX + translation.x,
-      gridCorrectedY + -translation.y,
+      gridCorrectedY + translation.y * (yFlip ? 1 : -1),
     );
   }
 
   /// Takes the screen coordinates and return the corresponding world coordinates
-  Vector2 getScreenToWorld(Vector2 argScreen) {
+  Vector2 screenToWorld(Vector2 argScreen) {
     final translationCorrectedX = argScreen.x - translation.x;
     final translationCorrectedY = argScreen.y + translation.y;
     final gridCorrectedX = (translationCorrectedX - extents.x) / scale;
-    final gridCorrectedY = ((translationCorrectedY - extents.y) * -1) / scale;
+    final gridCorrectedY =
+        ((translationCorrectedY - extents.y) * (yFlip ? 1 : -1)) / scale;
     return Vector2(gridCorrectedX, gridCorrectedY);
   }
 }
