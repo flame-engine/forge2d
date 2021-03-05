@@ -42,21 +42,17 @@ class ViewportTransform {
   Vector2 worldToScreen(Vector2 argWorld) {
     // Correct for canvas considering the upper-left corner, rather than the
     // center, to be the origin.
-    final gridCorrectedX = (argWorld.x * scale) + extents.x;
-    final gridCorrectedY = extents.y - (argWorld.y * scale);
-    return Vector2(
-      gridCorrectedX + translation.x,
-      gridCorrectedY + translation.y * (yFlip ? 1 : -1),
+    final gridCorrected = Vector2(
+      (argWorld.x * scale) + extents.x,
+      extents.y - (argWorld.y * scale),
     );
+    return gridCorrected + (translation..y *= (yFlip ? 1 : -1));
   }
 
   /// Takes the screen coordinates and return the corresponding world coordinates
   Vector2 screenToWorld(Vector2 argScreen) {
-    final translationCorrectedX = argScreen.x - translation.x;
-    final translationCorrectedY = argScreen.y + translation.y;
-    final gridCorrectedX = (translationCorrectedX - extents.x) / scale;
-    final gridCorrectedY =
-        ((translationCorrectedY - extents.y) * (yFlip ? 1 : -1)) / scale;
-    return Vector2(gridCorrectedX, gridCorrectedY);
+    final translatedCorrected =
+        argScreen - (translation..y *= (yFlip ? 1 : -1));
+    return ((translatedCorrected - extents)..y *= -1) / scale;
   }
 }
