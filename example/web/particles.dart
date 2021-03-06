@@ -84,7 +84,7 @@ class Particles extends Demo {
     activeBodyDef.type = BodyType.dynamic;
     final activeBody = world.createBody(activeBodyDef);
     bodies.add(activeBody);
-    activeBody.createFixture(activeFixtureDef);
+    final fixture = activeBody.createFixture(activeFixtureDef);
 
     // Create particles
     world.particleSystem.particleRadius = 0.35;
@@ -92,7 +92,7 @@ class Particles extends Demo {
 
     final shape = CircleShape()..radius = 5;
     final particleGroup = ParticleGroupDef()
-      ..position.setFrom(world.center)
+      ..position.setFrom(fixture.renderCenter)
       ..destroyAutomatically = true
       ..color = Color3i.blue
       ..flags = ParticleType.waterParticle
