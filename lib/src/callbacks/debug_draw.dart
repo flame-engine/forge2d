@@ -26,11 +26,9 @@ abstract class DebugDraw {
   static const int wireFrameDrawingBit = 1 << 7;
 
   int drawFlags = shapeBit;
-  ViewportTransform viewport;
+  final ViewportTransform viewport;
 
   DebugDraw(this.viewport);
-
-  DebugDraw.zero();
 
   void appendFlags(int flags) {
     drawFlags |= flags;

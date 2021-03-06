@@ -1,9 +1,9 @@
 import '../../forge2d.dart';
 
-abstract class ParticleDestructionListener {
+abstract class ParticleDestroyListener {
   /// Called when any particle group is about to be destroyed.
-  void sayGoodbyeParticleGroup(ParticleGroup group);
+  void onDestroyParticleGroup(ParticleGroup group);
 
   /// Called when a particle is about to be destroyed.
-  void sayGoodbyeParticle(Particle particle);
+  void onDestroyParticle(Particle particle);
 }

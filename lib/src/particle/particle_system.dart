@@ -150,7 +150,7 @@ class ParticleSystem {
   void destroyParticle(Particle particle, bool callDestructionListener) {
     var flags = ParticleType.zombieParticle;
     if (callDestructionListener) {
-      flags |= ParticleType.destructionListener;
+      flags |= ParticleType.destroyListener;
     }
     particle.flags |= flags;
   }
@@ -323,7 +323,7 @@ class ParticleSystem {
     final groupFlags = groupA.groupFlags | groupB.groupFlags;
     groupA.groupFlags = groupFlags;
     // Remove group b, since all its particles are in group a now
-    world.particleDestructionListener?.sayGoodbyeParticleGroup(groupB);
+    world.particleDestroyListener?.onDestroyParticleGroup(groupB);
     groupBuffer.remove(groupB);
 
     if ((groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
@@ -996,8 +996,8 @@ class ParticleSystem {
 
     _particles.removeWhere((p) {
       if (isZombie(p)) {
-        if ((p.flags & ParticleType.destructionListener) != 0) {
-          world.particleDestructionListener?.sayGoodbyeParticle(p);
+        if ((p.flags & ParticleType.destroyListener) != 0) {
+          world.particleDestroyListener?.onDestroyParticle(p);
         }
         return true;
       }
@@ -1016,7 +1016,7 @@ class ParticleSystem {
       g.particles.removeWhere(isZombie);
       final toBeRemoved = g.destroyAutomatically && g.particles.isEmpty;
       if (toBeRemoved) {
-        world.particleDestructionListener?.sayGoodbyeParticleGroup(g);
+        world.particleDestroyListener?.onDestroyParticleGroup(g);
       }
       return toBeRemoved;
     });

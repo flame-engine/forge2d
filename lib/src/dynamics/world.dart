@@ -4,8 +4,8 @@ import '../../forge2d.dart';
 import '../callbacks/contact_filter.dart';
 import '../callbacks/contact_listener.dart';
 import '../callbacks/debug_draw.dart';
-import '../callbacks/destruction_listener.dart';
-import '../callbacks/particle_destruction_listener.dart';
+import '../callbacks/destroy_listener.dart';
+import '../callbacks/particle_destroy_listener.dart';
 import '../callbacks/particle_query_callback.dart';
 import '../callbacks/particle_raycast_callback.dart';
 import '../callbacks/query_callback.dart';
@@ -35,8 +35,8 @@ class World {
   final Vector2 _gravity;
   bool _allowSleep = false;
 
-  DestructionListener destructionListener;
-  ParticleDestructionListener particleDestructionListener;
+  DestroyListener destroyListener;
+  ParticleDestroyListener particleDestroyListener;
   DebugDraw debugDraw;
 
   /// This is used to compute the time step ratio to support a variable time step.
@@ -141,7 +141,7 @@ class World {
 
     // Delete the attached joints.
     for (final joint in body.joints) {
-      destructionListener?.sayGoodbyeJoint(joint);
+      destroyListener?.onDestroyJoint(joint);
       destroyJoint(joint);
     }
 
@@ -152,7 +152,7 @@ class World {
     body.contacts.clear();
 
     for (final f in body.fixtures) {
-      destructionListener?.sayGoodbyeFixture(f);
+      destroyListener?.onDestroyFixture(f);
       f.destroyProxies(contactManager.broadPhase);
     }
     bodies.remove(body);
@@ -225,11 +225,9 @@ class World {
     }
   }
 
-  // djm pooling
-  // TODO(srdjan): Make fields private.
-  final TimeStep step = TimeStep();
-  final Timer stepTimer = Timer();
-  final Timer tempTimer = Timer();
+  final TimeStep _step = TimeStep();
+  final Timer _stepTimer = Timer();
+  final Timer _tempTimer = Timer();
 
   /// Take a time step. This performs collision detection, integration, and constraint solution.
   ///
@@ -237,8 +235,8 @@ class World {
   /// @param velocityIterations for the velocity constraint solver.
   /// @param positionIterations for the position constraint solver.
   void stepDt(double dt, int velocityIterations, int positionIterations) {
-    stepTimer.reset();
-    tempTimer.reset();
+    _stepTimer.reset();
+    _tempTimer.reset();
     // If new fixtures were added, we need to find the new contacts.
     if ((flags & newFixture) == newFixture) {
       contactManager.findNewContacts();
@@ -247,44 +245,44 @@ class World {
 
     flags |= locked;
 
-    step.dt = dt;
-    step.velocityIterations = velocityIterations;
-    step.positionIterations = positionIterations;
+    _step.dt = dt;
+    _step.velocityIterations = velocityIterations;
+    _step.positionIterations = positionIterations;
     if (dt > 0.0) {
-      step.invDt = 1.0 / dt;
+      _step.invDt = 1.0 / dt;
     } else {
-      step.invDt = 0.0;
+      _step.invDt = 0.0;
     }
 
-    step.dtRatio = _invDt0 * dt;
+    _step.dtRatio = _invDt0 * dt;
 
-    step.warmStarting = _warmStarting;
-    _profile.stepInit.record(tempTimer.getMilliseconds());
+    _step.warmStarting = _warmStarting;
+    _profile.stepInit.record(_tempTimer.getMilliseconds());
 
     // Update contacts. This is where some contacts are destroyed.
-    tempTimer.reset();
+    _tempTimer.reset();
     contactManager.collide();
-    _profile.collide.record(tempTimer.getMilliseconds());
+    _profile.collide.record(_tempTimer.getMilliseconds());
 
     // Integrate velocities, solve velocity constraints, and integrate positions.
-    if (_stepComplete && step.dt > 0.0) {
-      tempTimer.reset();
-      particleSystem.solve(step); // Particle Simulation
-      _profile.solveParticleSystem.record(tempTimer.getMilliseconds());
-      tempTimer.reset();
-      solve(step);
-      _profile.solve.record(tempTimer.getMilliseconds());
+    if (_stepComplete && _step.dt > 0.0) {
+      _tempTimer.reset();
+      particleSystem.solve(_step); // Particle Simulation
+      _profile.solveParticleSystem.record(_tempTimer.getMilliseconds());
+      _tempTimer.reset();
+      solve(_step);
+      _profile.solve.record(_tempTimer.getMilliseconds());
     }
 
     // Handle TOI events.
-    if (_continuousPhysics && step.dt > 0.0) {
-      tempTimer.reset();
-      solveTOI(step);
-      _profile.solveTOI.record(tempTimer.getMilliseconds());
+    if (_continuousPhysics && _step.dt > 0.0) {
+      _tempTimer.reset();
+      solveTOI(_step);
+      _profile.solveTOI.record(_tempTimer.getMilliseconds());
     }
 
-    if (step.dt > 0.0) {
-      _invDt0 = step.invDt;
+    if (_step.dt > 0.0) {
+      _invDt0 = _step.invDt;
     }
 
     if ((flags & clearForcesBit) == clearForcesBit) {
@@ -293,7 +291,7 @@ class World {
 
     flags &= ~locked;
 
-    _profile.step.record(stepTimer.getMilliseconds());
+    _profile.step.record(_stepTimer.getMilliseconds());
   }
 
   /// Call this after you are done with time steps to clear the forces. You normally call this after
@@ -401,16 +399,16 @@ class World {
     debugDraw.flush();
   }
 
-  final WorldQueryWrapper wqwrapper = WorldQueryWrapper();
+  final WorldQueryWrapper _worldQueryWrapper = WorldQueryWrapper();
 
   /// Query the world for all fixtures that potentially overlap the provided AABB.
   ///
   /// @param callback a user implemented callback class.
   /// @param aabb the query box.
   void queryAABB(QueryCallback callback, AABB aabb) {
-    wqwrapper.broadPhase = contactManager.broadPhase;
-    wqwrapper.callback = callback;
-    contactManager.broadPhase.query(wqwrapper, aabb);
+    _worldQueryWrapper.broadPhase = contactManager.broadPhase;
+    _worldQueryWrapper.callback = callback;
+    contactManager.broadPhase.query(_worldQueryWrapper, aabb);
   }
 
   /// Query the world for all fixtures and particles that potentially overlap the provided AABB.
@@ -423,9 +421,9 @@ class World {
     ParticleQueryCallback particleCallback,
     AABB aabb,
   ) {
-    wqwrapper.broadPhase = contactManager.broadPhase;
-    wqwrapper.callback = callback;
-    contactManager.broadPhase.query(wqwrapper, aabb);
+    _worldQueryWrapper.broadPhase = contactManager.broadPhase;
+    _worldQueryWrapper.callback = callback;
+    contactManager.broadPhase.query(_worldQueryWrapper, aabb);
     particleSystem.queryAABB(particleCallback, aabb);
   }
 
@@ -437,8 +435,8 @@ class World {
     particleSystem.queryAABB(particleCallback, aabb);
   }
 
-  final WorldRayCastWrapper raycastWrapper = WorldRayCastWrapper();
-  final RayCastInput input = RayCastInput();
+  final WorldRayCastWrapper _raycastWrapper = WorldRayCastWrapper();
+  final RayCastInput _input = RayCastInput();
 
   /// Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
   /// get the closest point, any point, or n-points. The ray-cast ignores shapes that contain the
@@ -448,12 +446,12 @@ class World {
   /// @param point1 the ray starting point
   /// @param point2 the ray ending point
   void raycast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
-    raycastWrapper.broadPhase = contactManager.broadPhase;
-    raycastWrapper.callback = callback;
-    input.maxFraction = 1.0;
-    input.p1.setFrom(point1);
-    input.p2.setFrom(point2);
-    contactManager.broadPhase.raycast(raycastWrapper, input);
+    _raycastWrapper.broadPhase = contactManager.broadPhase;
+    _raycastWrapper.callback = callback;
+    _input.maxFraction = 1.0;
+    _input.p1.setFrom(point1);
+    _input.p2.setFrom(point2);
+    contactManager.broadPhase.raycast(_raycastWrapper, _input);
   }
 
   /// Ray-cast the world for all fixtures and particles in the path of the ray. Your callback
@@ -470,12 +468,12 @@ class World {
     Vector2 point1,
     Vector2 point2,
   ) {
-    raycastWrapper.broadPhase = contactManager.broadPhase;
-    raycastWrapper.callback = callback;
-    input.maxFraction = 1.0;
-    input.p1.setFrom(point1);
-    input.p2.setFrom(point2);
-    contactManager.broadPhase.raycast(raycastWrapper, input);
+    _raycastWrapper.broadPhase = contactManager.broadPhase;
+    _raycastWrapper.callback = callback;
+    _input.maxFraction = 1.0;
+    _input.p1.setFrom(point1);
+    _input.p2.setFrom(point2);
+    contactManager.broadPhase.raycast(_raycastWrapper, _input);
     particleSystem.raycast(particleCallback, point1, point2);
   }
 
@@ -699,15 +697,15 @@ class World {
     _profile.broadphase.record(broadphaseTimer.getMilliseconds());
   }
 
-  final Island toiIsland = Island();
-  final TOIInput toiInput = TOIInput();
-  final TOIOutput toiOutput = TOIOutput();
-  final TimeStep subStep = TimeStep();
-  final Sweep backup1 = Sweep();
-  final Sweep backup2 = Sweep();
+  final Island _toiIsland = Island();
+  final TOIInput _toiInput = TOIInput();
+  final TOIOutput _toiOutput = TOIOutput();
+  final TimeStep _subStep = TimeStep();
+  final Sweep _backup1 = Sweep();
+  final Sweep _backup2 = Sweep();
 
   void solveTOI(final TimeStep step) {
-    final island = toiIsland..init(contactManager.contactListener);
+    final island = _toiIsland..init(contactManager.contactListener);
     if (_stepComplete) {
       for (final b in bodies) {
         b.flags &= ~Body.islandFlag;
@@ -793,18 +791,18 @@ class World {
           final indexB = contact.indexB;
 
           // Compute the time of impact in interval [0, minTOI]
-          final input = toiInput;
+          final input = _toiInput;
           input.proxyA.set(fixtureA.shape, indexA);
           input.proxyB.set(fixtureB.shape, indexB);
           input.sweepA.set(bodyA.sweep);
           input.sweepB.set(bodyB.sweep);
           input.tMax = 1.0;
 
-          toi.timeOfImpact(toiOutput, input);
+          toi.timeOfImpact(_toiOutput, input);
 
           // Beta is the fraction of the remaining portion of the .
-          final beta = toiOutput.t;
-          if (toiOutput.state == TOIOutputState.touching) {
+          final beta = _toiOutput.t;
+          if (_toiOutput.state == TOIOutputState.touching) {
             alpha = min(alpha0 + (1.0 - alpha0) * beta, 1.0);
           } else {
             alpha = 1.0;
@@ -830,8 +828,8 @@ class World {
       final bodyA = minContact.fixtureA.body;
       final bodyB = minContact.fixtureB.body;
 
-      backup1.set(bodyA.sweep);
-      backup2.set(bodyB.sweep);
+      _backup1.set(bodyA.sweep);
+      _backup2.set(bodyB.sweep);
 
       // Advance the bodies to the TOI.
       bodyA.advance(minAlpha);
@@ -846,8 +844,8 @@ class World {
       if (minContact.isEnabled() == false || minContact.isTouching() == false) {
         // Restore the sweeps.
         minContact.setEnabled(false);
-        bodyA.sweep.set(backup1);
-        bodyB.sweep.set(backup2);
+        bodyA.sweep.set(_backup1);
+        bodyB.sweep.set(_backup2);
         bodyA.synchronizeTransform();
         bodyB.synchronizeTransform();
         continue;
@@ -891,7 +889,7 @@ class World {
             }
 
             // Tentatively advance the body to the TOI.
-            backup1.set(other.sweep);
+            _backup1.set(other.sweep);
             if ((other.flags & Body.islandFlag) == 0) {
               other.advance(minAlpha);
             }
@@ -901,14 +899,14 @@ class World {
 
             // Was the contact disabled by the user?
             if (contact.isEnabled() == false) {
-              other.sweep.set(backup1);
+              other.sweep.set(_backup1);
               other.synchronizeTransform();
               continue;
             }
 
             // Are there contact points?
             if (contact.isTouching() == false) {
-              other.sweep.set(backup1);
+              other.sweep.set(_backup1);
               other.synchronizeTransform();
               continue;
             }
@@ -934,13 +932,13 @@ class World {
         }
       }
 
-      subStep.dt = (1.0 - minAlpha) * step.dt;
-      subStep.invDt = 1.0 / subStep.dt;
-      subStep.dtRatio = 1.0;
-      subStep.positionIterations = 20;
-      subStep.velocityIterations = step.velocityIterations;
-      subStep.warmStarting = false;
-      island.solveTOI(subStep, bodyA.islandIndex, bodyB.islandIndex);
+      _subStep.dt = (1.0 - minAlpha) * step.dt;
+      _subStep.invDt = 1.0 / _subStep.dt;
+      _subStep.dtRatio = 1.0;
+      _subStep.positionIterations = 20;
+      _subStep.velocityIterations = step.velocityIterations;
+      _subStep.warmStarting = false;
+      island.solveTOI(_subStep, bodyA.islandIndex, bodyB.islandIndex);
 
       // Reset island flags and synchronize broad-phase proxies.
       for (final bodyMeta in island.bodies) {
@@ -983,7 +981,6 @@ class World {
     color.setFromRGBd(0.5, 0.8, 0.8);
 
     switch (joint.getType()) {
-      // TODO djm write after writing joints
       case JointType.distance:
         debugDraw.drawSegment(p1, p2, color);
         break;
