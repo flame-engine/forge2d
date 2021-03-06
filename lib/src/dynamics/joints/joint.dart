@@ -1,3 +1,5 @@
+import 'package:forge2d/forge2d_browser.dart';
+
 import '../../../forge2d.dart';
 
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
@@ -122,4 +124,47 @@ abstract class Joint {
 
   /// Override to handle destruction of joint
   void destructor() {}
+
+  final Color3i _color = Color3i.zero();
+
+  void render(DebugDraw debugDraw) {
+    final xf1 = bodyA.transform;
+    final xf2 = bodyB.transform;
+    final x1 = xf1.p;
+    final x2 = xf2.p;
+    final p1 = getAnchorA();
+    final p2 = getAnchorB();
+
+    _color.setFromRGBd(0.5, 0.8, 0.8);
+
+    switch (getType()) {
+      case JointType.distance:
+        debugDraw.drawSegment(p1, p2, _color);
+        break;
+
+      case JointType.pulley:
+        {
+          final pulley = this as PulleyJoint;
+          final s1 = pulley.getGroundAnchorA();
+          final s2 = pulley.getGroundAnchorB();
+          debugDraw.drawSegment(s1, p1, _color);
+          debugDraw.drawSegment(s2, p2, _color);
+          debugDraw.drawSegment(s1, s2, _color);
+        }
+        break;
+
+      case JointType.friction:
+        debugDraw.drawSegment(x1, x2, _color);
+        break;
+
+      case JointType.constantVolume:
+      case JointType.mouse:
+        // don't draw this
+        break;
+      default:
+        debugDraw.drawSegment(x1, p1, _color);
+        debugDraw.drawSegment(p1, p2, _color);
+        debugDraw.drawSegment(x2, p2, _color);
+    }
+  }
 }

@@ -318,32 +318,32 @@ class World {
     final wireframe = (flags & DebugDraw.wireFrameDrawingBit) != 0;
 
     if ((flags & DebugDraw.shapeBit) != 0) {
-      for (final b in bodies) {
-        xf.set(b.transform);
-        for (final f in b.fixtures) {
-          if (b.isActive() == false) {
+      for (final body in bodies) {
+        xf.set(body.transform);
+        for (final fixture in body.fixtures) {
+          if (body.isActive() == false) {
             color.setFromRGBd(0.5, 0.5, 0.3);
-            drawShape(f, xf, color, wireframe);
-          } else if (b.bodyType == BodyType.static) {
+            fixture.render(debugDraw, xf, color, wireframe);
+          } else if (body.bodyType == BodyType.static) {
             color.setFromRGBd(0.5, 0.9, 0.3);
-            drawShape(f, xf, color, wireframe);
-          } else if (b.bodyType == BodyType.kinematic) {
+            fixture.render(debugDraw, xf, color, wireframe);
+          } else if (body.bodyType == BodyType.kinematic) {
             color.setFromRGBd(0.5, 0.5, 0.9);
-            drawShape(f, xf, color, wireframe);
-          } else if (b.isAwake() == false) {
+            fixture.render(debugDraw, xf, color, wireframe);
+          } else if (body.isAwake() == false) {
             color.setFromRGBd(0.5, 0.5, 0.5);
-            drawShape(f, xf, color, wireframe);
+            fixture.render(debugDraw, xf, color, wireframe);
           } else {
             color.setFromRGBd(0.9, 0.7, 0.7);
-            drawShape(f, xf, color, wireframe);
+            fixture.render(debugDraw, xf, color, wireframe);
           }
         }
       }
-      drawParticleSystem(particleSystem);
+      particleSystem.render(debugDraw);
     }
 
     if ((flags & DebugDraw.jointBit) != 0) {
-      joints.forEach(drawJoint);
+      joints.forEach((j) => j.render(debugDraw));
     }
 
     if ((flags & DebugDraw.pairBit) != 0) {
@@ -964,155 +964,6 @@ class World {
       if (_subStepping) {
         _stepComplete = false;
         break;
-      }
-    }
-  }
-
-  void drawJoint(Joint joint) {
-    final bodyA = joint.bodyA;
-    final bodyB = joint.bodyB;
-    final xf1 = bodyA.transform;
-    final xf2 = bodyB.transform;
-    final x1 = xf1.p;
-    final x2 = xf2.p;
-    final p1 = Vector2.copy(joint.getAnchorA());
-    final p2 = Vector2.copy(joint.getAnchorB());
-
-    color.setFromRGBd(0.5, 0.8, 0.8);
-
-    switch (joint.getType()) {
-      case JointType.distance:
-        debugDraw.drawSegment(p1, p2, color);
-        break;
-
-      case JointType.pulley:
-        {
-          final pulley = joint as PulleyJoint;
-          final s1 = pulley.getGroundAnchorA();
-          final s2 = pulley.getGroundAnchorB();
-          debugDraw.drawSegment(s1, p1, color);
-          debugDraw.drawSegment(s2, p2, color);
-          debugDraw.drawSegment(s1, s2, color);
-        }
-        break;
-
-      case JointType.friction:
-        debugDraw.drawSegment(x1, x2, color);
-        break;
-
-      case JointType.constantVolume:
-      case JointType.mouse:
-        // don't draw this
-        break;
-      default:
-        debugDraw.drawSegment(x1, p1, color);
-        debugDraw.drawSegment(p1, p2, color);
-        debugDraw.drawSegment(x2, p2, color);
-    }
-  }
-
-  // NOTE this corresponds to the liquid test, so the debugdraw can draw
-  // the liquid particles correctly. They should be the same.
-  static const int liquidFlag = 1234598372;
-  double liquidLength = .12;
-  double averageLinearVel = -1.0;
-  final Vector2 liquidOffset = Vector2.zero();
-  final Vector2 circleCenterMoved = Vector2.zero();
-  final Color3i liquidColor = Color3i.fromRGBd(0.4, .4, 1.0);
-
-  final Vector2 center = Vector2.zero();
-  final Vector2 axis = Vector2.zero();
-  final Vector2 v1 = Vector2.zero();
-  final Vector2 v2 = Vector2.zero();
-
-  void drawShape(Fixture fixture, Transform xf, Color3i color, bool wireframe) {
-    switch (fixture.getType()) {
-      case ShapeType.circle:
-        {
-          final circle = fixture.shape as CircleShape;
-
-          center.setFrom(Transform.mulVec2(xf, circle.position));
-          final radius = circle.radius;
-          xf.q.getXAxis(axis);
-
-          if (fixture.userData != null && fixture.userData == liquidFlag) {
-            final b = fixture.body;
-            liquidOffset.setFrom(b.linearVelocity);
-            final linVelLength = b.linearVelocity.length;
-            if (averageLinearVel == -1) {
-              averageLinearVel = linVelLength;
-            } else {
-              averageLinearVel = .98 * averageLinearVel + .02 * linVelLength;
-            }
-            liquidOffset.scale(liquidLength / averageLinearVel / 2);
-            circleCenterMoved
-              ..setFrom(center)
-              ..add(liquidOffset);
-            center.sub(liquidOffset);
-            debugDraw.drawSegment(center, circleCenterMoved, liquidColor);
-            return;
-          }
-          if (wireframe) {
-            debugDraw.drawCircleAxis(center, radius, axis, color);
-          } else {
-            debugDraw.drawSolidCircle(center, radius, color);
-          }
-        }
-        break;
-      case ShapeType.polygon:
-        {
-          final poly = fixture.shape as PolygonShape;
-          assert(poly.vertices.length <= settings.maxPolygonVertices);
-          final vertices = poly.vertices
-              .map(
-                (vertex) => Transform.mulVec2(xf, vertex),
-              )
-              .toList();
-
-          if (wireframe) {
-            debugDraw.drawPolygon(vertices, color);
-          } else {
-            debugDraw.drawSolidPolygon(vertices, color);
-          }
-        }
-        break;
-      case ShapeType.edge:
-        {
-          final edge = fixture.shape as EdgeShape;
-          v1.setFrom(Transform.mulVec2(xf, edge.vertex1));
-          v2.setFrom(Transform.mulVec2(xf, edge.vertex2));
-          debugDraw.drawSegment(v1, v2, color);
-        }
-        break;
-      case ShapeType.chain:
-        {
-          final chain = fixture.shape as ChainShape;
-          final count = chain.vertexCount;
-          final vertices = chain.vertices;
-
-          v1.setFrom(Transform.mulVec2(xf, vertices[0]));
-          for (var i = 1; i < count; ++i) {
-            v2.setFrom(Transform.mulVec2(xf, vertices[i]));
-            debugDraw.drawSegment(v1, v2, color);
-            debugDraw.drawCircle(v1, 0.05, color);
-            v1.setFrom(v2);
-          }
-        }
-        break;
-      default:
-        break;
-    }
-  }
-
-  void drawParticleSystem(ParticleSystem system) {
-    final wireframe =
-        (debugDraw.drawFlags & DebugDraw.wireFrameDrawingBit) != 0;
-    if (system.particles.isNotEmpty) {
-      final particleRadius = system.particleRadius;
-      if (wireframe) {
-        debugDraw.drawParticlesWireframe(system.particles, particleRadius);
-      } else {
-        debugDraw.drawParticles(system.particles, particleRadius);
       }
     }
   }

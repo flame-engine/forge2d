@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:forge2d/forge2d_browser.dart';
+
 import '../../forge2d.dart';
 import '../callbacks/particle_query_callback.dart';
 import '../callbacks/particle_raycast_callback.dart';
@@ -1206,5 +1208,17 @@ class ParticleSystem {
       }
     }
     return 0.5 * particleMass * sumV2;
+  }
+
+  void render(DebugDraw debugDraw) {
+    final wireframe =
+        (debugDraw.drawFlags & DebugDraw.wireFrameDrawingBit) != 0;
+    if (particles.isNotEmpty) {
+      if (wireframe) {
+        debugDraw.drawParticlesWireframe(particles, particleRadius);
+      } else {
+        debugDraw.drawParticles(particles, particleRadius);
+      }
+    }
   }
 }
