@@ -843,7 +843,7 @@ class DynamicTree implements BroadPhaseStrategy {
     );
     argDraw.drawPolygon(drawVecs, _color);
 
-    final textVec = argDraw.viewport.getWorldToScreen(node.aabb.upperBound);
+    final textVec = argDraw.viewport.worldToScreen(node.aabb.upperBound);
     argDraw.drawStringXY(
       textVec.x,
       textVec.y,
