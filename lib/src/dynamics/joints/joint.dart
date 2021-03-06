@@ -1,5 +1,3 @@
-import 'package:forge2d/forge2d_browser.dart';
-
 import '../../../forge2d.dart';
 
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some

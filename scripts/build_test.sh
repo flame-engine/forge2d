@@ -3,4 +3,4 @@
 set -e
 
 # Run the benchmark script as a simple sanity check
-dart benchmark/bench2d.dart
+dart benchmark/web/bench2d.dart

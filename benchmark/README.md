@@ -1,15 +1,9 @@
 # Benchmark for Dart Forge2D
 
-Run:
+To run in a browser:
 ```sh
-pub global run webdev build --output=benchmark:build
+pub global run webdev serve --release
 ```
-
-Either from the command line or from your IDE.
-
-Then run:
-```sh
-pub global run webdev daemon example:53322 --launch-app=benchmark/index.html
-```
+And then go to http://127.0.0.1:8080
 
 

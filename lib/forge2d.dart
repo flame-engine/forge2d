@@ -20,7 +20,7 @@ export 'src/collision/broadphase/dynamic_tree.dart';
 export 'src/collision/broadphase/dynamic_tree_node.dart';
 export 'src/collision/broadphase/pair.dart';
 export 'src/collision/collision.dart';
-export 'src/collision/contactid.dart';
+export 'src/collision/contact_id.dart';
 export 'src/collision/distance.dart';
 export 'src/collision/distance_input.dart';
 export 'src/collision/distance_output.dart';

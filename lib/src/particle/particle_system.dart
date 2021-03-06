@@ -1,8 +1,6 @@
 import 'dart:collection';
 import 'dart:math';
 
-import 'package:forge2d/forge2d_browser.dart';
-
 import '../../forge2d.dart';
 import '../callbacks/particle_query_callback.dart';
 import '../callbacks/particle_raycast_callback.dart';

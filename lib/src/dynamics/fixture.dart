@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import '../../forge2d.dart';
-import '../../forge2d_browser.dart';
 import '../settings.dart' as settings;
 
 /// A fixture is used to attach a shape to a body for collision detection. A fixture inherits its
