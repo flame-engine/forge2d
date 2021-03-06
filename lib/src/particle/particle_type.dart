@@ -26,6 +26,6 @@ class ParticleType {
   /// mixing color between contacting particles
   static const int colorMixingParticle = 1 << 8;
 
-  /// call b2DestructionListener on destruction
-  static const int destructionListener = 1 << 9;
+  /// call the destroy listener on destruction
+  static const int destroyListener = 1 << 9;
 }

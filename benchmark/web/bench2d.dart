@@ -90,8 +90,9 @@ class Bench2d {
     final ninetyFifth = percentile(times, 95.0);
     print(
       'Benchmark complete.\n'
-      'ms/frame: $mean 5th %ile: ${percentile(times, 5.0)} '
-      '95th %ile: ${percentile(times, 95.0)}',
+      'ms/frame: $mean\n'
+      '5th percentile: ${percentile(times, 5.0)}\n'
+      '95th percentile: ${percentile(times, 95.0)}',
     );
     if (checksum) {
       printChecksum(world);

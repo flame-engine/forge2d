@@ -8,26 +8,13 @@ pub global activate webdev
 
 And then you can run:
 ```sh
-pub global run webdev serve example:53322
+pub global run webdev serve
 ```
 
-And open http://127.0.0.1:53322 in your browser.
+And open http://127.0.0.1:8080 in your browser.
 
 Since this is not running in release mode it will run a lot slower.
 If you want to run it in release mode you can run the following:
 ```sh
-pub global run webdev build -r --output=example:build
+pub global run webdev serve --release
 ```
-
-and then open the `index.html` file in `forge2d/build/index.html`.
-
-## Old way
-
-Run:
-```sh
-./compile.sh
-```
-
-and then open index.html in a browser.
-
-

@@ -5,6 +5,8 @@
  - Cleaned up the code and remove buffer_utils
  - Fixed y-flip to only be used on getScreenToWorld and getWorldToScreen
  - Removed the get prefix from getScreenToWorld and getWorldToScreen
+ - Move debug draw methods to respective classes
+ - Move web dependencies to example
 
 ## 0.6.5
  - Consider y-flip for all translation in the viewport

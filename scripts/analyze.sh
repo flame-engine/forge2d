@@ -6,13 +6,14 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 
-pub get
-result=$(pub run dart_code_metrics:metrics .)
-if [ "$result" != "" ]; then
-  echo "Dart code metrics issues:"
-  echo "$result"
-  # TODO: fail here once current issues are fixes
-fi
+# Currently disabled due to dart_code_metrics not being null-safe
+#pub get
+#result=$(pub run dart_code_metrics:metrics .)
+#if [ "$result" != "" ]; then
+#  echo "Dart code metrics issues:"
+#  echo "$result"
+#  # TODO: fail here once current issues are fixes
+#fi
 
 dart analyze .
 if [ $? -ne 0 ]; then

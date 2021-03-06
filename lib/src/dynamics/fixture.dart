@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../../forge2d.dart';
+import '../settings.dart' as settings;
 
 /// A fixture is used to attach a shape to a body for collision detection. A fixture inherits its
 /// transform from its parent. Fixtures hold additional non-geometric data such as friction,
@@ -244,6 +245,104 @@ class Fixture {
       _displacement.y = transform2.p.y - transform1.p.y;
 
       broadPhase.moveProxy(proxy.proxyId, proxy.aabb, _displacement);
+    }
+  }
+
+  // NOTE this corresponds to the liquid test, so the debugdraw can draw
+  // the liquid particles correctly. They should be the same.
+  static const int liquidFlag = 1234598372;
+  final double _liquidLength = .12;
+  double _averageLinearVel = -1.0;
+  final Vector2 _liquidOffset = Vector2.zero();
+  final Vector2 _circleCenterMoved = Vector2.zero();
+  final Color3i _liquidColor = Color3i.fromRGBd(0.4, .4, 1.0);
+
+  final Vector2 renderCenter = Vector2.zero();
+  final Vector2 renderAxis = Vector2.zero();
+  final Vector2 _v1 = Vector2.zero();
+  final Vector2 _v2 = Vector2.zero();
+
+  void render(
+    DebugDraw debugDraw,
+    Transform xf,
+    Color3i color,
+    bool wireframe,
+  ) {
+    switch (getType()) {
+      case ShapeType.circle:
+        {
+          final circle = shape as CircleShape;
+
+          renderCenter.setFrom(Transform.mulVec2(xf, circle.position));
+          final radius = circle.radius;
+          xf.q.getXAxis(renderAxis);
+
+          if (userData != null && userData == liquidFlag) {
+            _liquidOffset.setFrom(body.linearVelocity);
+            final linVelLength = body.linearVelocity.length;
+            if (_averageLinearVel == -1) {
+              _averageLinearVel = linVelLength;
+            } else {
+              _averageLinearVel = .98 * _averageLinearVel + .02 * linVelLength;
+            }
+            _liquidOffset.scale(_liquidLength / _averageLinearVel / 2);
+            _circleCenterMoved
+              ..setFrom(renderCenter)
+              ..add(_liquidOffset);
+            renderCenter.sub(_liquidOffset);
+            debugDraw.drawSegment(
+                renderCenter, _circleCenterMoved, _liquidColor);
+            return;
+          }
+          if (wireframe) {
+            debugDraw.drawCircleAxis(renderCenter, radius, renderAxis, color);
+          } else {
+            debugDraw.drawSolidCircle(renderCenter, radius, color);
+          }
+        }
+        break;
+      case ShapeType.polygon:
+        {
+          final poly = shape as PolygonShape;
+          assert(poly.vertices.length <= settings.maxPolygonVertices);
+          final vertices = poly.vertices
+              .map(
+                (vertex) => Transform.mulVec2(xf, vertex),
+              )
+              .toList();
+
+          if (wireframe) {
+            debugDraw.drawPolygon(vertices, color);
+          } else {
+            debugDraw.drawSolidPolygon(vertices, color);
+          }
+        }
+        break;
+      case ShapeType.edge:
+        {
+          final edge = shape as EdgeShape;
+          _v1.setFrom(Transform.mulVec2(xf, edge.vertex1));
+          _v2.setFrom(Transform.mulVec2(xf, edge.vertex2));
+          debugDraw.drawSegment(_v1, _v2, color);
+        }
+        break;
+      case ShapeType.chain:
+        {
+          final chain = shape as ChainShape;
+          final count = chain.vertexCount;
+          final vertices = chain.vertices;
+
+          _v1.setFrom(Transform.mulVec2(xf, vertices[0]));
+          for (var i = 1; i < count; ++i) {
+            _v2.setFrom(Transform.mulVec2(xf, vertices[i]));
+            debugDraw.drawSegment(_v1, _v2, color);
+            debugDraw.drawCircle(_v1, 0.05, color);
+            _v1.setFrom(_v2);
+          }
+        }
+        break;
+      default:
+        break;
     }
   }
 }
