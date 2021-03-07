@@ -76,8 +76,7 @@ abstract class Contact {
     final typeA = fixtureA.type.index < fixtureB.type.index
         ? fixtureA.type
         : fixtureB.type;
-    final typeB =
-        fixtureA.type == typeA ? fixtureB.type : fixtureA.type;
+    final typeB = fixtureA.type == typeA ? fixtureB.type : fixtureA.type;
     final indexTemp = indexA;
     final firstIndex = fixtureA.type == typeA ? indexA : indexB;
     final secondIndex = fixtureB.type == typeB ? indexB : indexTemp;

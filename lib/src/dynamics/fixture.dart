@@ -11,7 +11,8 @@ import '../settings.dart' as settings;
 class Fixture {
   double _density = 0.0;
 
-  Body body; // TODO.0llie null-safety breaking change: Fixture should need a body?
+  // TODO.0llie null-safety breaking change: Fixture should need a body?
+  Body body;
 
   late Shape shape;
 
@@ -123,8 +124,8 @@ class Fixture {
   ///
   /// @param p a point in world coordinates.
   /// @return distance
-  double computeDistance(Vector2 p, int childIndex, Vector2 normalOut)
-    => shape.computeDistanceToOut(body.transform, p, childIndex, normalOut);
+  double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) =>
+      shape.computeDistanceToOut(body.transform, p, childIndex, normalOut);
 
   // We need separation create/destroy functions from the constructor/destructor because
   // the destructor cannot access the allocator (no destructor arguments allowed by C++).

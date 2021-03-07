@@ -42,7 +42,8 @@ class Body {
   double _torque = 0.0;
   double get torque => _torque;
 
-  final World world; // TODO.0llie null-safety breaking change: Body should need a world?
+  // TODO.0llie null-safety breaking change: Body should need a world?
+  final World world;
 
   final List<Fixture> fixtures = [];
   final List<Joint> joints = [];

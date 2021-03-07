@@ -275,7 +275,7 @@ class DynamicTree implements BroadPhaseStrategy {
   }
 
   @override
-  int computeHeight() {    
+  int computeHeight() {
     assert(_root != null);
     return _computeHeight(_root!);
   }
@@ -310,8 +310,7 @@ class DynamicTree implements BroadPhaseStrategy {
   }
 
   @override
-  int getHeight() =>
-    _root?.height ?? 0;
+  int getHeight() => _root?.height ?? 0;
 
   @override
   int getMaxBalance() {
