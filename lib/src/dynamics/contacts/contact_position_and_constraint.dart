@@ -14,7 +14,7 @@ class ContactPositionConstraint {
   final Vector2 localCenterA = Vector2.zero();
   final Vector2 localCenterB = Vector2.zero();
   double invIA = 0.0, invIB = 0.0;
-  ManifoldType type;
+  late ManifoldType type;
   double radiusA = 0.0, radiusB = 0.0;
   int pointCount = 0;
 

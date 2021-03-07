@@ -18,7 +18,7 @@ class ParticleGroup {
   bool toBeDestroyed = false;
   bool toBeSplit = false;
 
-  Object userData;
+  Object? userData;
 
   ParticleGroup(this._system);
 

@@ -7,8 +7,8 @@ import '../callbacks/pair_callback.dart';
 class ContactManager implements PairCallback {
   BroadPhase broadPhase;
   final List<Contact> contacts = [];
-  ContactFilter contactFilter;
-  ContactListener contactListener;
+  ContactFilter? contactFilter;
+  ContactListener? contactListener;
 
   ContactManager(this.broadPhase) {
     contactFilter = ContactFilter();
@@ -50,8 +50,7 @@ class ContactManager implements PairCallback {
     }
 
     // Check user filtering.
-    if (contactFilter != null &&
-        contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
+    if (contactFilter?.shouldCollide(fixtureA, fixtureB) == false) {
       return;
     }
 
@@ -117,8 +116,7 @@ class ContactManager implements PairCallback {
         }
 
         // Check user filtering.
-        if (contactFilter != null &&
-            !contactFilter.shouldCollide(fixtureA, fixtureB)) {
+        if (contactFilter?.shouldCollide(fixtureA, fixtureB) == false) {
           contactRemovals.add(c);
           continue;
         }

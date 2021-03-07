@@ -6,8 +6,8 @@ class EdgeAndCircleContact extends Contact {
     int indexA,
     Fixture fixtureB,
     int indexB,
-  )   : assert(fixtureA.getType() == ShapeType.edge),
-        assert(fixtureB.getType() == ShapeType.circle),
+  )   : assert(fixtureA.type == ShapeType.edge),
+        assert(fixtureB.type == ShapeType.circle),
         super(fixtureA, indexA, fixtureB, indexB);
 
   @override

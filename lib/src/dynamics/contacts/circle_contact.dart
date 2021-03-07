@@ -2,8 +2,8 @@ import '../../../forge2d.dart';
 
 class CircleContact extends Contact {
   CircleContact(Fixture fixtureA, Fixture fixtureB)
-      : assert(fixtureA.getType() == ShapeType.circle),
-        assert(fixtureB.getType() == ShapeType.circle),
+      : assert(fixtureA.type == ShapeType.circle),
+        assert(fixtureB.type == ShapeType.circle),
         super(fixtureA, 0, fixtureB, 0);
 
   @override

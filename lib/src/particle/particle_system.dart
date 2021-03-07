@@ -114,16 +114,16 @@ class ParticleSystem {
   final List<PsPair> pairBuffer = [];
   final List<PsTriad> triadBuffer = [];
 
-  double pressureStrength;
-  double dampingStrength;
-  double elasticStrength;
-  double springStrength;
-  double viscousStrength;
-  double surfaceTensionStrengthA;
-  double surfaceTensionStrengthB;
-  double powderStrength;
-  double ejectionStrength;
-  double colorMixingStrength;
+  late double pressureStrength;
+  late double dampingStrength;
+  late double elasticStrength;
+  late double springStrength;
+  late double viscousStrength;
+  late double surfaceTensionStrengthA;
+  late double surfaceTensionStrengthB;
+  late double powderStrength;
+  late double ejectionStrength;
+  late double colorMixingStrength;
 
   final World world;
 
@@ -203,14 +203,14 @@ class ParticleSystem {
       ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
-      final seedParticle = Particle(this, group: group)
+      final seedParticle = Particle(this, group)
         ..flags = groupDef.flags
         ..color = groupDef.color
         ..userData = groupDef.userData;
       final shape = groupDef.shape;
       transform.setVec2Angle(groupDef.position, groupDef.angle);
       final aabb = _temp;
-      final childCount = shape.getChildCount();
+      final childCount = shape!.getChildCount();
       for (var childIndex = 0; childIndex < childCount; childIndex++) {
         if (childIndex == 0) {
           shape.computeAABB(aabb, identity, childIndex);

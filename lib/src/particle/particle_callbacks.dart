@@ -28,7 +28,7 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
 }
 
 class UpdateBodyContactsCallback implements QueryCallback {
-  ParticleSystem system;
+  late ParticleSystem system;
 
   final Vector2 _tempVec = Vector2.zero();
 
@@ -104,8 +104,8 @@ class UpdateBodyContactsCallback implements QueryCallback {
 
 // Callback used with VoronoiDiagram.
 class CreateParticleGroupCallback implements VoronoiDiagramCallback {
-  ParticleSystem system;
-  ParticleGroupDef def;
+  late ParticleSystem system;
+  late ParticleGroupDef def;
 
   @override
   void call(Particle particleA, Particle particleB, Particle particleC) {
@@ -145,9 +145,9 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
 
 // Callback used with VoronoiDiagram.
 class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
-  ParticleSystem system;
-  ParticleGroup groupA;
-  ParticleGroup groupB;
+  late ParticleSystem system;
+  late ParticleGroup groupA;
+  late ParticleGroup groupB;
 
   @override
   void call(Particle particleA, Particle particleB, Particle particleC) {
@@ -199,8 +199,8 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
 }
 
 class SolveCollisionCallback implements QueryCallback {
-  ParticleSystem system;
-  TimeStep step;
+  late ParticleSystem system;
+  late TimeStep step;
 
   final RayCastInput input = RayCastInput();
   final RayCastOutput output = RayCastOutput();

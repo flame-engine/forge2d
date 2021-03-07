@@ -3,6 +3,6 @@ import 'dart:collection';
 import '../../../forge2d.dart';
 
 class ContactRegister {
-  ListQueue<Contact> creator;
+  late ListQueue<Contact> creator;
   bool primary = false;
 }

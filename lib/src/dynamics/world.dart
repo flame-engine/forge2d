@@ -28,16 +28,16 @@ class World {
 
   int flags = 0;
 
-  ContactManager contactManager;
+  late ContactManager contactManager;
   final List<Body> bodies = <Body>[];
   final List<Joint> joints = <Joint>[];
 
   final Vector2 _gravity;
   bool _allowSleep = false;
 
-  DestroyListener destroyListener;
-  ParticleDestroyListener particleDestroyListener;
-  DebugDraw debugDraw;
+  DestroyListener? destroyListener;
+  ParticleDestroyListener? particleDestroyListener;
+  DebugDraw? debugDraw;
 
   /// This is used to compute the time step ratio to support a variable time step.
   double _invDt0 = 0.0;
@@ -49,15 +49,15 @@ class World {
 
   bool _stepComplete = false;
 
-  Profile _profile;
+  late Profile _profile;
 
-  ParticleSystem particleSystem;
+  late ParticleSystem particleSystem;
 
   /// Construct a world object.
   ///
   /// @param gravity the world gravity vector.
   /// @param broadPhase what type of broad phase strategy that should be used.
-  World([Vector2 gravity, BroadPhase broadPhase])
+  World([Vector2? gravity, BroadPhase? broadPhase])
       : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
     broadPhase ??= DefaultBroadPhaseBuffer(DynamicTree());
 
@@ -314,7 +314,7 @@ class World {
       return;
     }
 
-    final flags = debugDraw.drawFlags;
+    final flags = debugDraw!.drawFlags;
     final wireframe = (flags & DebugDraw.wireFrameDrawingBit) != 0;
 
     if ((flags & DebugDraw.shapeBit) != 0) {
@@ -323,27 +323,27 @@ class World {
         for (final fixture in body.fixtures) {
           if (body.isActive() == false) {
             color.setFromRGBd(0.5, 0.5, 0.3);
-            fixture.render(debugDraw, xf, color, wireframe);
+            fixture.render(debugDraw!, xf, color, wireframe);
           } else if (body.bodyType == BodyType.static) {
             color.setFromRGBd(0.5, 0.9, 0.3);
-            fixture.render(debugDraw, xf, color, wireframe);
+            fixture.render(debugDraw!, xf, color, wireframe);
           } else if (body.bodyType == BodyType.kinematic) {
             color.setFromRGBd(0.5, 0.5, 0.9);
-            fixture.render(debugDraw, xf, color, wireframe);
+            fixture.render(debugDraw!, xf, color, wireframe);
           } else if (body.isAwake() == false) {
             color.setFromRGBd(0.5, 0.5, 0.5);
-            fixture.render(debugDraw, xf, color, wireframe);
+            fixture.render(debugDraw!, xf, color, wireframe);
           } else {
             color.setFromRGBd(0.9, 0.7, 0.7);
-            fixture.render(debugDraw, xf, color, wireframe);
+            fixture.render(debugDraw!, xf, color, wireframe);
           }
         }
       }
-      particleSystem.render(debugDraw);
+      particleSystem.render(debugDraw!);
     }
 
     if ((flags & DebugDraw.jointBit) != 0) {
-      joints.forEach((j) => j.render(debugDraw));
+      joints.forEach((j) => j.render(debugDraw!));
     }
 
     if ((flags & DebugDraw.pairBit) != 0) {
@@ -353,7 +353,7 @@ class World {
         final fixtureB = c.fixtureB;
         cA.setFrom(fixtureA.getAABB(c.indexA).getCenter());
         cB.setFrom(fixtureB.getAABB(c.indexB).getCenter());
-        debugDraw.drawSegment(cA, cB, color);
+        debugDraw!.drawSegment(cA, cB, color);
       }
     }
 
@@ -376,7 +376,7 @@ class World {
                 Vector2(aabb.upperBound.x, aabb.upperBound.y),
                 Vector2(aabb.lowerBound.x, aabb.upperBound.y),
               ];
-              debugDraw.drawPolygon(vs, color);
+              debugDraw!.drawPolygon(vs, color);
             }
           }
         }
@@ -388,15 +388,15 @@ class World {
       for (final b in bodies) {
         xf.set(b.transform);
         xf.p.setFrom(b.worldCenter);
-        debugDraw.drawTransform(xf, xfColor);
+        debugDraw!.drawTransform(xf, xfColor);
       }
     }
 
     if ((flags & DebugDraw.dynamicTreeBit) != 0) {
-      contactManager.broadPhase.drawTree(debugDraw);
+      contactManager.broadPhase.drawTree(debugDraw!);
     }
 
-    debugDraw.flush();
+    debugDraw!.flush();
   }
 
   final WorldQueryWrapper _worldQueryWrapper = WorldQueryWrapper();
@@ -723,7 +723,7 @@ class World {
     // Find TOI events and solve them.
     for (;;) {
       // Find the first TOI.
-      Contact minContact;
+      Contact? minContact;
       var minAlpha = 1.0;
 
       for (final contact in contactManager.contacts) {
@@ -972,12 +972,12 @@ class World {
 class WorldQueryWrapper implements TreeCallback {
   @override
   bool treeCallback(int nodeId) {
-    final proxy = broadPhase.getUserData(nodeId) as FixtureProxy;
-    return callback.reportFixture(proxy.fixture);
+    final proxy = broadPhase!.getUserData(nodeId) as FixtureProxy;
+    return callback?.reportFixture(proxy.fixture) ?? false; // TODO.0llie null-safety: Recheck class w/ spydon
   }
 
-  BroadPhase broadPhase;
-  QueryCallback callback;
+  BroadPhase? broadPhase;
+  QueryCallback? callback;
 }
 
 class WorldRayCastWrapper implements TreeRayCastCallback {
@@ -988,7 +988,7 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
 
   @override
   double raycastCallback(RayCastInput input, int nodeId) {
-    final userData = broadPhase.getUserData(nodeId) as FixtureProxy;
+    final userData = broadPhase?.getUserData(nodeId) as FixtureProxy;
     final proxy = userData;
     final fixture = proxy.fixture;
     final index = proxy.childIndex;
@@ -1004,12 +1004,12 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
         ..setFrom(input.p1)
         ..scale(1 - fraction)
         ..add(_temp);
-      return callback.reportFixture(fixture, _point, _output.normal, fraction);
+      return callback?.reportFixture(fixture, _point, _output.normal, fraction) ?? 0; // TODO.0llie null-safety: Recheck class w/ spydon
     }
 
     return input.maxFraction;
   }
 
-  BroadPhase broadPhase;
-  RayCastCallback callback;
+  BroadPhase? broadPhase;
+  RayCastCallback? callback;
 }

@@ -6,8 +6,8 @@ class ChainAndPolygonContact extends Contact {
     int indexA,
     Fixture fixtureB,
     int indexB,
-  )   : assert(fixtureA.getType() == ShapeType.chain),
-        assert(fixtureB.getType() == ShapeType.polygon),
+  )   : assert(fixtureA.type == ShapeType.chain),
+        assert(fixtureB.type == ShapeType.polygon),
         super(fixtureA, indexA, fixtureB, indexB);
 
   @override

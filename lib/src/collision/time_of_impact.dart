@@ -235,13 +235,13 @@ class TimeOfImpact {
 enum SeparationFunctionType { points, faceA, faceB }
 
 class SeparationFunction {
-  DistanceProxy proxyA;
-  DistanceProxy proxyB;
-  SeparationFunctionType type;
+  late DistanceProxy proxyA;
+  late DistanceProxy proxyB;
+  late SeparationFunctionType type;
   final Vector2 localPoint = Vector2.zero();
   final Vector2 axis = Vector2.zero();
-  Sweep sweepA;
-  Sweep sweepB;
+  late Sweep sweepA;
+  late Sweep sweepB;
 
   // djm pooling
   final Vector2 _localPointA = Vector2.zero();
