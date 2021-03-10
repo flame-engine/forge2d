@@ -203,7 +203,7 @@ class ParticleSystem {
       ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
-      final seedParticle = Particle(this, group)
+      final seedParticle = Particle(this, group: group)
         ..flags = groupDef.flags
         ..color = groupDef.color
         ..userData = groupDef.userData;

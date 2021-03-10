@@ -32,12 +32,12 @@ class Particle {
   /// Use this to store application-specific body data.
   Object? userData;
 
-  Particle(this.system, [ParticleGroup? group]) {
+  Particle(this.system, {ParticleGroup? group}) {
     group ??= ParticleGroup(system);
   }
 
   Particle clone() {
-    return Particle(system, group)
+    return Particle(system, group: group)
       ..flags = flags
       ..position.setFrom(position)
       ..velocity.setFrom(velocity)
