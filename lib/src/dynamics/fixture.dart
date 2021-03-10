@@ -123,8 +123,13 @@ class Fixture {
   ///
   /// @param p a point in world coordinates.
   /// @return distance
-  double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) =>
-      shape.computeDistanceToOut(body.transform, p, childIndex, normalOut);
+  double computeDistance(
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  ) {
+    return shape.computeDistanceToOut(body.transform, p, childIndex, normalOut);
+  }
 
   // We need separation create/destroy functions from the constructor/destructor because
   // the destructor cannot access the allocator (no destructor arguments allowed by C++).
