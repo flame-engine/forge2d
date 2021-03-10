@@ -973,7 +973,6 @@ class WorldQueryWrapper implements TreeCallback {
   @override
   bool treeCallback(int nodeId) {
     final proxy = broadPhase!.getUserData(nodeId) as FixtureProxy;
-    // TODO.0llie null-safety: Recheck class w/ spydon
     return callback?.reportFixture(proxy.fixture) ?? false;
   }
 
@@ -1005,9 +1004,12 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
         ..setFrom(input.p1)
         ..scale(1 - fraction)
         ..add(_temp);
-      // TODO.0llie null-safety: Recheck class w/ spydon
       return callback?.reportFixture(
-              fixture, _point, _output.normal, fraction) ??
+            fixture,
+            _point,
+            _output.normal,
+            fraction,
+          ) ??
           0;
     }
 

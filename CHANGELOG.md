@@ -7,7 +7,7 @@
  - Removed the get prefix from getScreenToWorld and getWorldToScreen
  - Move debug draw methods to respective classes
  - Move web dependencies to example
- - Null-safety
+ - Stable null-safety release
 
 ## 0.6.5
  - Consider y-flip for all translation in the viewport

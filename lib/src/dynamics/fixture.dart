@@ -11,8 +11,7 @@ import '../settings.dart' as settings;
 class Fixture {
   double _density = 0.0;
 
-  // TODO.0llie null-safety breaking change: Fixture should need a body?
-  Body body;
+  final Body body;
 
   late Shape shape;
 

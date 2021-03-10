@@ -42,7 +42,6 @@ class Body {
   double _torque = 0.0;
   double get torque => _torque;
 
-  // TODO.0llie null-safety breaking change: Body should need a world?
   final World world;
 
   final List<Fixture> fixtures = [];
@@ -143,7 +142,6 @@ class Body {
       fixture.createProxies(broadPhase, transform);
     }
 
-    fixture.body = this;
     fixtures.add(fixture);
 
     // Adjust mass properties if needed.
@@ -166,7 +164,7 @@ class Body {
   /// @param density the shape density (set to zero for static bodies).
   /// @warning This function is locked during callbacks.
   Fixture createFixtureFromShape(Shape shape, [double density = 0.0]) {
-    return createFixture(FixtureDef(shape: shape, density: density));
+    return createFixture(FixtureDef(shape: shape)..density = density);
   }
 
   /// Destroy a fixture. This removes the fixture from the broad-phase and destroys all contacts

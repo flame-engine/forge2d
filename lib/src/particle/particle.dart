@@ -32,7 +32,7 @@ class Particle {
   /// Use this to store application-specific body data.
   Object? userData;
 
-  Particle(this.system, ParticleGroup? group) {
+  Particle(this.system, [ParticleGroup? group]) {
     group ??= ParticleGroup(system);
   }
 

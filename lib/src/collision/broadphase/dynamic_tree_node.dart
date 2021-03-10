@@ -1,8 +1,8 @@
 import '../../../forge2d.dart';
 
 class DynamicTreeNode {
-  DynamicTreeNode(this.id);
   final int id;
+  DynamicTreeNode(this.id);
 
   /// Enlarged AABB
   final AABB aabb = AABB();
