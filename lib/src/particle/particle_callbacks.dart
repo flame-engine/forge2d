@@ -29,7 +29,8 @@ class UpdateBodyContactsCallback implements QueryCallback {
   final ParticleSystem system;
   const UpdateBodyContactsCallback(this.system);
 
-  static final Vector2 _zeroVec = Vector2.zero();
+  // Optimization: gets reused and manipulated in `reportFixture`
+  static final Vector2 _tempNormal = Vector2.zero();
 
   @override
   bool reportFixture(Fixture fixture) {
@@ -65,10 +66,6 @@ class UpdateBodyContactsCallback implements QueryCallback {
         ),
       );
 
-      //print("first: $firstProxy");
-      //print("last: $lastProxy");
-      //print("size of proxies: ${system.proxyBuffer.length}");
-      //print("size of particles: ${system.particles.length}");
       for (var i = firstProxy; i < lastProxy; ++i) {
         final particle = system.proxyBuffer[i].particle;
         final ap = particle.position;
@@ -76,20 +73,19 @@ class UpdateBodyContactsCallback implements QueryCallback {
             ap.x <= aabbUpperBoundX &&
             aabbLowerBoundY <= ap.y &&
             ap.y <= aabbUpperBoundY) {
-          double d;
-          final n = _zeroVec;
-          d = fixture.computeDistance(ap, childIndex, n);
-          if (d < system.particleDiameter) {
+          // _tempNormal gets manipulated here
+          final distance = fixture.computeDistance(ap, childIndex, _tempNormal);
+          if (distance < system.particleDiameter) {
             final invAm = (particle.flags & ParticleType.wallParticle) != 0
                 ? 0.0
                 : system.particleInverseMass;
             final rpx = ap.x - bp.x;
             final rpy = ap.y - bp.y;
-            final rpn = rpx * n.y - rpy * n.x;
+            final rpn = rpx * _tempNormal.y - rpy * _tempNormal.x;
             final contact = ParticleBodyContact(particle, b)
-              ..weight = 1 - d * system.inverseDiameter
-              ..normal.x = -n.x
-              ..normal.y = -n.y
+              ..weight = 1 - distance * system.inverseDiameter
+              ..normal.x = -_tempNormal.x
+              ..normal.y = -_tempNormal.y
               ..mass = 1 / (invAm + invBm + invBI * rpn * rpn);
             system.bodyContactBuffer.add(contact);
           }
