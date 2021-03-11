@@ -18,7 +18,7 @@ The Box2D physics engine is a fairly famous open source physics engine and this 
 
 You can use it independently in Dart or in your [Flame](https://github.com/flame-engine/flame) project with the help of [flame_forge2d](https://github.com/flame-engine/flame_forge2d).
 
-Some documentation of how to use it together with flame can be found [here](https://github.com/flame-engine/flame/blob/master/doc/forge2d.md).
+Some documentation of how to use it together with flame can be found [here](https://flame-engine.org/docs/#/forge2d).
 
 ## Timeline
 Box2D was first written in C++ and released by [Erin Catto](https://github.com/erincatto) in 2007, but it is still maintained.

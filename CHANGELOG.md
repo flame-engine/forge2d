@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [Next]
+## 0.7.0
  - Refactored the particle system
  - Cleaned up the code and remove buffer_utils
  - Fixed y-flip to only be used on getScreenToWorld and getWorldToScreen
