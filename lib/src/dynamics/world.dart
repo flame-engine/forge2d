@@ -369,15 +369,13 @@ class World {
           for (var i = 0; i < f.proxyCount; ++i) {
             final proxy = f.proxies[i];
             final aabb = contactManager.broadPhase.getFatAABB(proxy.proxyId);
-            if (aabb != null) {
-              final vs = <Vector2>[
-                Vector2(aabb.lowerBound.x, aabb.lowerBound.y),
-                Vector2(aabb.upperBound.x, aabb.lowerBound.y),
-                Vector2(aabb.upperBound.x, aabb.upperBound.y),
-                Vector2(aabb.lowerBound.x, aabb.upperBound.y),
-              ];
-              debugDraw!.drawPolygon(vs, color);
-            }
+            final vs = <Vector2>[
+              Vector2(aabb.lowerBound.x, aabb.lowerBound.y),
+              Vector2(aabb.upperBound.x, aabb.lowerBound.y),
+              Vector2(aabb.upperBound.x, aabb.upperBound.y),
+              Vector2(aabb.lowerBound.x, aabb.upperBound.y),
+            ];
+            debugDraw!.drawPolygon(vs, color);
           }
         }
       }

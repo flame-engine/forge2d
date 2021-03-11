@@ -14,8 +14,9 @@ class Racer extends Demo implements ContactListener {
     final racer = Racer();
     racer.initialize();
     racer.initializeAnimation();
-    document.body.nodes
-        .add(Element.html('<p>Use the arrow keys to drive the car.</p>'));
+    final paragraph = ParagraphElement()
+      ..innerText = 'Use the arrow keys to drive the car';
+    document.body.nodes.add(paragraph);
     racer.runAnimation();
   }
 
