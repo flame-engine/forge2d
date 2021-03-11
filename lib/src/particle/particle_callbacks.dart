@@ -7,10 +7,9 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   final ParticleSystem system;
   final Shape shape;
   final Transform xf;
-  bool callDestructionListener;
-  int destroyed = 0;
+  final bool callDestructionListener;
 
-  DestroyParticlesInShapeCallback(
+  const DestroyParticlesInShapeCallback(
     this.system,
     this.shape,
     this.xf, {
@@ -21,16 +20,17 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   bool reportParticle(Particle particle) {
     if (shape.testPoint(xf, particle.position)) {
       system.destroyParticle(particle, callDestructionListener);
-      destroyed++;
     }
     return true;
   }
 }
 
 class UpdateBodyContactsCallback implements QueryCallback {
-  ParticleSystem system;
+  final ParticleSystem system;
+  const UpdateBodyContactsCallback(this.system);
 
-  final Vector2 _tempVec = Vector2.zero();
+  // Optimization: gets reused and manipulated in `reportFixture`
+  static final Vector2 _tempNormal = Vector2.zero();
 
   @override
   bool reportFixture(Fixture fixture) {
@@ -66,10 +66,6 @@ class UpdateBodyContactsCallback implements QueryCallback {
         ),
       );
 
-      //print("first: $firstProxy");
-      //print("last: $lastProxy");
-      //print("size of proxies: ${system.proxyBuffer.length}");
-      //print("size of particles: ${system.particles.length}");
       for (var i = firstProxy; i < lastProxy; ++i) {
         final particle = system.proxyBuffer[i].particle;
         final ap = particle.position;
@@ -77,21 +73,19 @@ class UpdateBodyContactsCallback implements QueryCallback {
             ap.x <= aabbUpperBoundX &&
             aabbLowerBoundY <= ap.y &&
             ap.y <= aabbUpperBoundY) {
-          double d;
-          final n = _tempVec;
-          d = fixture.computeDistance(ap, childIndex, n);
-          if (d < system.particleDiameter) {
+          // _tempNormal gets manipulated here
+          final distance = fixture.computeDistance(ap, childIndex, _tempNormal);
+          if (distance < system.particleDiameter) {
             final invAm = (particle.flags & ParticleType.wallParticle) != 0
                 ? 0.0
                 : system.particleInverseMass;
             final rpx = ap.x - bp.x;
             final rpy = ap.y - bp.y;
-            final rpn = rpx * n.y - rpy * n.x;
-            final contact = ParticleBodyContact(particle)
-              ..body = b
-              ..weight = 1 - d * system.inverseDiameter
-              ..normal.x = -n.x
-              ..normal.y = -n.y
+            final rpn = rpx * _tempNormal.y - rpy * _tempNormal.x;
+            final contact = ParticleBodyContact(particle, b)
+              ..weight = 1 - distance * system.inverseDiameter
+              ..normal.x = -_tempNormal.x
+              ..normal.y = -_tempNormal.y
               ..mass = 1 / (invAm + invBm + invBI * rpn * rpn);
             system.bodyContactBuffer.add(contact);
           }
@@ -104,8 +98,10 @@ class UpdateBodyContactsCallback implements QueryCallback {
 
 // Callback used with VoronoiDiagram.
 class CreateParticleGroupCallback implements VoronoiDiagramCallback {
-  ParticleSystem system;
-  ParticleGroupDef def;
+  final ParticleSystem system;
+  final ParticleGroupDef def;
+
+  const CreateParticleGroupCallback(this.system, this.def);
 
   @override
   void call(Particle particleA, Particle particleB, Particle particleC) {
@@ -145,9 +141,11 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
 
 // Callback used with VoronoiDiagram.
 class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
-  ParticleSystem system;
-  ParticleGroup groupA;
-  ParticleGroup groupB;
+  final ParticleSystem system;
+  final ParticleGroup groupA;
+  final ParticleGroup groupB;
+
+  const JoinParticleGroupsCallback(this.system, this.groupA, this.groupB);
 
   @override
   void call(Particle particleA, Particle particleB, Particle particleC) {
@@ -199,8 +197,8 @@ class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
 }
 
 class SolveCollisionCallback implements QueryCallback {
-  ParticleSystem system;
-  TimeStep step;
+  late ParticleSystem system;
+  late TimeStep step;
 
   final RayCastInput input = RayCastInput();
   final RayCastOutput output = RayCastOutput();

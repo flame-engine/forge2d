@@ -4,10 +4,10 @@ import '../../../forge2d.dart';
 /// combination will work). The provided joints must attach a dynamic body to a static body.
 class GearJointDef extends JointDef {
   /// The first revolute/prismatic joint attached to the gear joint.
-  Joint joint1;
+  late Joint joint1;
 
   /// The second revolute/prismatic joint attached to the gear joint.
-  Joint joint2;
+  late Joint joint2;
 
   /// Gear ratio.
   ///

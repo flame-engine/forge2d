@@ -49,7 +49,6 @@ class Sweep {
   /// @param xf the result is placed here - must not be null
   /// @param t the normalized time in [0,1].
   void getTransform(final Transform xf, final double beta) {
-    assert(xf != null);
     // xf->p = (1.0f - beta) * c0 + beta * c;
     // float32 angle = (1.0f - beta) * a0 + beta * a;
     // xf->q.Set(angle);

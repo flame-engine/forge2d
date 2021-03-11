@@ -165,9 +165,11 @@ class ChainShape extends Shape {
   ///
   /// @param vertices an array of vertices, these are copied
   void createLoop(final List<Vector2> vertices) {
-    assert(this.vertices != null && vertexCount == 0);
-    assert(vertices.length >= 3,
-        "A loop can't be created with less than 3 vectors");
+    assert(vertexCount == 0);
+    assert(
+      vertices.length >= 3,
+      "A loop can't be created with less than 3 vertices",
+    );
     this.vertices.addAll(vertices.map((Vector2 v) => v.clone()));
     _validateDistances(this.vertices);
     this.vertices.add(this.vertices[0].clone());
@@ -181,7 +183,7 @@ class ChainShape extends Shape {
   ///
   /// @param vertices an array of vertices, these are copied
   void createChain(final List<Vector2> vertices) {
-    assert(vertices != null && vertexCount == 0);
+    assert(vertexCount == 0);
     assert(vertices.length >= 2);
     this.vertices.addAll(vertices.map((Vector2 v) => v.clone()));
     _validateDistances(this.vertices);

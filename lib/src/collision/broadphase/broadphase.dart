@@ -20,7 +20,7 @@ abstract class BroadPhase {
 
   void touchProxy(int proxyId);
 
-  Object getUserData(int proxyId);
+  Object? getUserData(int proxyId);
 
   AABB getFatAABB(int proxyId);
 

@@ -19,14 +19,14 @@ class Color3i {
         b = (blue * 255).floor().toInt(),
         a = alpha;
 
-  void setRGB(int red, int green, int blue, {double alpha}) {
+  void setRGB(int red, int green, int blue, {double? alpha}) {
     r = red;
     g = green;
     b = blue;
     a = alpha ?? a;
   }
 
-  void setFromRGBd(double red, double green, double blue, {double alpha}) {
+  void setFromRGBd(double red, double green, double blue, {double? alpha}) {
     r = (red * 255).floor().toInt();
     g = (green * 255).floor().toInt();
     b = (blue * 255).floor().toInt();

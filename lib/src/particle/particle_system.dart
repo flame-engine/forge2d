@@ -127,18 +127,19 @@ class ParticleSystem {
 
   final World world;
 
-  ParticleSystem(this.world) {
-    pressureStrength = 0.05;
-    dampingStrength = 1.0;
-    elasticStrength = 0.25;
-    springStrength = 0.25;
-    viscousStrength = 0.25;
-    surfaceTensionStrengthA = 0.1;
-    surfaceTensionStrengthB = 0.2;
-    powderStrength = 0.5;
-    ejectionStrength = 0.5;
-    colorMixingStrength = 0.5;
-  }
+  ParticleSystem(
+    this.world, {
+    this.pressureStrength = 0.05,
+    this.dampingStrength = 1.0,
+    this.elasticStrength = 0.25,
+    this.springStrength = 0.25,
+    this.viscousStrength = 0.25,
+    this.surfaceTensionStrengthA = 0.1,
+    this.surfaceTensionStrengthB = 0.2,
+    this.powderStrength = 0.5,
+    this.ejectionStrength = 0.5,
+    this.colorMixingStrength = 0.5,
+  });
 
   void createParticle(Particle particle) {
     particle.group.add(particle);
@@ -160,7 +161,7 @@ class ParticleSystem {
   /// Destroy particles inside a shape. In addition, this function immediately
   /// destroys particles in the shape in contrast to DestroyParticle() which
   /// defers the destruction until the next simulation step.
-  int destroyParticlesInShape(
+  void destroyParticlesInShape(
     Shape shape,
     Transform xf, {
     bool callDestructionListener = false,
@@ -173,7 +174,6 @@ class ParticleSystem {
     );
     shape.computeAABB(_temp, xf, 0);
     world.queryAABBParticle(callback, _temp);
-    return callback.destroyed;
   }
 
   void destroyParticlesInGroup(
@@ -187,8 +187,6 @@ class ParticleSystem {
   final Vector2 _tempVec = Vector2.zero();
   final Transform _tempTransform = Transform.zero();
   final Transform _tempTransform2 = Transform.zero();
-  final CreateParticleGroupCallback _createParticleGroupCallback =
-      CreateParticleGroupCallback();
 
   ParticleGroup createParticleGroup(ParticleGroupDef groupDef) {
     final stride = particleStride;
@@ -210,7 +208,7 @@ class ParticleSystem {
       final shape = groupDef.shape;
       transform.setVec2Angle(groupDef.position, groupDef.angle);
       final aabb = _temp;
-      final childCount = shape.getChildCount();
+      final childCount = shape!.getChildCount();
       for (var childIndex = 0; childIndex < childCount; childIndex++) {
         if (childIndex == 0) {
           shape.computeAABB(aabb, identity, childIndex);
@@ -268,8 +266,8 @@ class ParticleSystem {
         diagram.addGenerator(particle.position, particle);
       }
       diagram.generate(stride / 2);
-      _createParticleGroupCallback.system = this;
-      _createParticleGroupCallback.def = groupDef;
+      final _createParticleGroupCallback =
+          CreateParticleGroupCallback(this, groupDef);
       diagram.getNodes(_createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
@@ -309,10 +307,7 @@ class ParticleSystem {
         }
       }
       diagram.generate(particleStride / 2);
-      final callback = JoinParticleGroupsCallback();
-      callback.system = this;
-      callback.groupA = groupA;
-      callback.groupB = groupB;
+      final callback = JoinParticleGroupsCallback(this, groupA, groupB);
       diagram.getNodes(callback);
     }
 
@@ -448,8 +443,6 @@ class ParticleSystem {
     }
   }
 
-  final UpdateBodyContactsCallback _ubccallback = UpdateBodyContactsCallback();
-
   void updateBodyContacts() {
     final aabb = _temp;
     aabb.lowerBound.x = double.maxFinite;
@@ -466,8 +459,8 @@ class ParticleSystem {
     aabb.upperBound.x += particleDiameter;
     aabb.upperBound.y += particleDiameter;
 
-    _ubccallback.system = this;
-    world.queryAABB(_ubccallback, aabb);
+    final callback = UpdateBodyContactsCallback(this);
+    world.queryAABB(callback, aabb);
   }
 
   final SolveCollisionCallback _solveCollisionCallback =

@@ -31,7 +31,7 @@ abstract class Joint {
         return MotorJoint(def as MotorJointDef);
       case JointType.unknown:
       default:
-        return null;
+        throw 'Exception unknown joint type';
     }
   }
 
@@ -40,8 +40,8 @@ abstract class Joint {
   }
 
   final JointType _type;
-  Body bodyA;
-  Body bodyB;
+  late Body bodyA;
+  late Body bodyB;
 
   bool islandFlag = false;
   bool _collideConnected = false;

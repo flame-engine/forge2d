@@ -62,7 +62,7 @@ class Body {
   double sleepTime = 0.0;
 
   /// Use this to store your application specific data.
-  Object userData;
+  Object? userData;
 
   Body(final BodyDef bd, this.world)
       : assert(!bd.position.isInfinite && !bd.position.isNaN),
@@ -135,15 +135,13 @@ class Body {
   Fixture createFixture(FixtureDef def) {
     assert(world.isLocked() == false);
 
-    final fixture = Fixture();
-    fixture.create(this, def);
+    final fixture = Fixture(this, def);
 
     if ((flags & activeFlag) == activeFlag) {
       final broadPhase = world.contactManager.broadPhase;
       fixture.createProxies(broadPhase, transform);
     }
 
-    fixture.body = this;
     fixtures.add(fixture);
 
     // Adjust mass properties if needed.
@@ -158,8 +156,6 @@ class Body {
     return fixture;
   }
 
-  final FixtureDef _fixDef = FixtureDef();
-
   /// Creates a fixture from a shape and attach it to this body. This is a convenience function. Use
   /// FixtureDef if you need to set parameters like friction, restitution, user data, or filtering.
   /// If the density is non-zero, this function automatically updates the mass of the body.
@@ -168,10 +164,7 @@ class Body {
   /// @param density the shape density (set to zero for static bodies).
   /// @warning This function is locked during callbacks.
   Fixture createFixtureFromShape(Shape shape, [double density = 0.0]) {
-    _fixDef.shape = shape;
-    _fixDef.density = density;
-
-    return createFixture(_fixDef);
+    return createFixture(FixtureDef(shape)..density = density);
   }
 
   /// Destroy a fixture. This removes the fixture from the broad-phase and destroys all contacts
@@ -293,7 +286,7 @@ class Body {
   ///
   /// @param force the world force vector, usually in Newtons (N).
   /// @param point the world position of the point of application (default: center of mass)
-  void applyForce(Vector2 force, {Vector2 point}) {
+  void applyForce(Vector2 force, {Vector2? point}) {
     point ??= worldCenter;
     _applyForceToCenter(force);
     _torque +=
@@ -340,7 +333,7 @@ class Body {
   /// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
   /// @param point the world position of the point of application (default: center of mass)
   /// @param wake also wake up the body (default: true)
-  void applyLinearImpulse(Vector2 impulse, {Vector2 point, bool wake = true}) {
+  void applyLinearImpulse(Vector2 impulse, {Vector2? point, bool wake = true}) {
     if (_bodyType != BodyType.dynamic) {
       return;
     }

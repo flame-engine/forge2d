@@ -80,7 +80,7 @@ class PrismaticJoint extends Joint {
   final Vector2 localAnchorB;
   final Vector2 localXAxisA;
   final Vector2 _localYAxisA;
-  double _referenceAngle;
+  late double _referenceAngle;
   double get referenceAngle => _referenceAngle;
 
   final Vector3 _impulse = Vector3.zero();
@@ -91,7 +91,7 @@ class PrismaticJoint extends Joint {
   double _motorSpeed = 0.0;
   bool _enableLimit = false;
   bool _enableMotor = false;
-  LimitState _limitState;
+  late LimitState _limitState;
 
   // Solver temp
   int _indexA = 0;

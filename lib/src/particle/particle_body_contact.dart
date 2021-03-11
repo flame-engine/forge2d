@@ -5,7 +5,7 @@ class ParticleBodyContact {
   final Particle particle;
 
   /// The body making contact.
-  Body body;
+  final Body body;
 
   /// Weight of the contact. A value between 0.0f and 1.0f.
   double weight = 0.0;
@@ -16,5 +16,5 @@ class ParticleBodyContact {
   /// The effective mass used in calculating force.
   double mass = 0.0;
 
-  ParticleBodyContact(this.particle);
+  ParticleBodyContact(this.particle, this.body);
 }

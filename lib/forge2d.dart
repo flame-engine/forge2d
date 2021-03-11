@@ -49,7 +49,6 @@ export 'src/dynamics/contacts/chain_and_polygon_contact.dart';
 export 'src/dynamics/contacts/circle_contact.dart';
 export 'src/dynamics/contacts/contact.dart';
 export 'src/dynamics/contacts/contact_position_and_constraint.dart';
-export 'src/dynamics/contacts/contact_register.dart';
 export 'src/dynamics/contacts/contact_solver.dart';
 export 'src/dynamics/contacts/contact_velocity_constraint.dart';
 export 'src/dynamics/contacts/edge_and_circle_contact.dart';

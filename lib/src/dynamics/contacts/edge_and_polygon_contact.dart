@@ -6,8 +6,8 @@ class EdgeAndPolygonContact extends Contact {
     int indexA,
     Fixture fixtureB,
     int indexB,
-  )   : assert(fixtureA.getType() == ShapeType.edge),
-        assert(fixtureB.getType() == ShapeType.polygon),
+  )   : assert(fixtureA.type == ShapeType.edge),
+        assert(fixtureB.type == ShapeType.polygon),
         super(fixtureA, indexA, fixtureB, indexB);
 
   @override

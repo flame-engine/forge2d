@@ -11,9 +11,9 @@ import '../settings.dart' as settings;
 class Fixture {
   double _density = 0.0;
 
-  Body body;
+  final Body body;
 
-  Shape shape;
+  late Shape shape;
 
   double friction = 0.0;
   double restitution = 0.0;
@@ -27,12 +27,12 @@ class Fixture {
   bool _isSensor = false;
 
   /// Use this to store your application specific data.
-  Object userData;
+  Object? userData;
 
   /// Get the type of the child shape. You can use this to down cast to the concrete shape.
   ///
   /// @return the shape type.
-  ShapeType getType() => shape.shapeType;
+  ShapeType get type => shape.shapeType;
 
   /// Is this fixture a sensor (non-solid)?
   bool get isSensor => _isSensor;
@@ -52,26 +52,17 @@ class Fixture {
   /// awake. This automatically calls refilter.
   ///
   /// @param filter
-  void setFilterData(final Filter filter) {
+  set filterData(final Filter filter) {
     _filter.set(filter);
-
     refilter();
   }
 
   /// Get the contact filtering data.
-  ///
-  /// @return
-  Filter getFilterData() {
-    return _filter;
-  }
+  Filter get filterData => _filter;
 
   /// Call this if you want to establish collision that was previously disabled by
   /// ContactFilter::ShouldCollide.
   void refilter() {
-    if (body == null) {
-      return;
-    }
-
     // Flag associated contacts for filtering.
     for (final contact in body.contacts) {
       final fixtureA = contact.fixtureA;
@@ -81,14 +72,8 @@ class Fixture {
       }
     }
 
-    final world = body.world;
-
-    if (world == null) {
-      return;
-    }
-
     // Touch each proxy so that new pairs may be created
-    final broadPhase = world.contactManager.broadPhase;
+    final broadPhase = body.world.contactManager.broadPhase;
     for (var i = 0; i < _proxyCount; ++i) {
       broadPhase.touchProxy(proxies[i].proxyId);
     }
@@ -138,19 +123,20 @@ class Fixture {
   ///
   /// @param p a point in world coordinates.
   /// @return distance
-  double computeDistance(Vector2 p, int childIndex, Vector2 normalOut) {
+  double computeDistance(
+    Vector2 p,
+    int childIndex,
+    Vector2 normalOut,
+  ) {
     return shape.computeDistanceToOut(body.transform, p, childIndex, normalOut);
   }
 
   // We need separation create/destroy functions from the constructor/destructor because
   // the destructor cannot access the allocator (no destructor arguments allowed by C++).
-
-  void create(Body body, FixtureDef def) {
+  Fixture(this.body, FixtureDef def) {
     userData = def.userData;
     friction = def.friction;
     restitution = def.restitution;
-
-    this.body = body;
 
     _filter.set(def.filter);
 
@@ -165,7 +151,7 @@ class Fixture {
       final newLength = max(old.length * 2, childCount);
       proxies.clear();
       for (var x = 0; x < newLength; x++) {
-        proxies.add(FixtureProxy()..proxyId = BroadPhase.nullProxy);
+        proxies.add(FixtureProxy(this)..proxyId = BroadPhase.nullProxy);
       }
     }
     _proxyCount = 0;
@@ -183,7 +169,6 @@ class Fixture {
       final proxy = proxies[i];
       shape.computeAABB(proxy.aabb, xf, i);
       proxy.proxyId = broadPhase.createProxy(proxy.aabb, proxy);
-      proxy.fixture = this;
       proxy.childIndex = i;
     }
   }
@@ -268,7 +253,7 @@ class Fixture {
     Color3i color,
     bool wireframe,
   ) {
-    switch (getType()) {
+    switch (type) {
       case ShapeType.circle:
         {
           final circle = shape as CircleShape;

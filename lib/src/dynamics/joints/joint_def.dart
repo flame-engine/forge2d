@@ -8,21 +8,19 @@ class JointDef {
   /// The local anchor point relative to body2's origin.
   final Vector2 localAnchorB = Vector2.zero();
 
-  JointDef(this.type) {
-    collideConnected = false;
-  }
+  JointDef(this.type, [this.collideConnected = false]);
 
   /// The joint type is set automatically for concrete joint types.
   JointType type;
 
   /// Use this to attach application specific data to your joints.
-  Object userData;
+  Object? userData;
 
   /// The first attached body.
-  Body bodyA;
+  late Body bodyA;
 
   /// The second attached body.
-  Body bodyB;
+  late Body bodyB;
 
   /// Set this flag to true if the attached bodies should collide.
   bool collideConnected = false;

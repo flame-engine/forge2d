@@ -5,7 +5,7 @@ import '../../../src/callbacks/tree_raycast_callback.dart';
 
 abstract class BroadPhaseStrategy {
   /// Create a proxy. Provide a tight fitting AABB and a userData pointer.
-  int createProxy(AABB aabb, Object userData);
+  int createProxy(AABB aabb, Object? userData);
 
   /// Destroy a proxy
   void destroyProxy(int proxyId);
@@ -15,7 +15,7 @@ abstract class BroadPhaseStrategy {
   /// @return true if the proxy was re-inserted.
   bool moveProxy(int proxyId, AABB aabb, Vector2 displacement);
 
-  Object getUserData(int proxyId);
+  Object? getUserData(int proxyId);
 
   AABB getFatAABB(int proxyId);
 

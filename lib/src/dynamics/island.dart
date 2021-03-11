@@ -134,21 +134,19 @@ class BodyMeta {
 
 /// This is an internal class.
 class Island {
-  ContactListener _listener;
+  ContactListener? _listener;
 
   final List<BodyMeta> bodies = <BodyMeta>[];
-  List<Contact> _contacts;
-  List<Joint> _joints;
+  late List<Contact> _contacts;
+  late List<Joint> _joints;
 
   // TODO: Make this as efficient as it used to be
   List<Position> get _positions {
-    return bodies?.map((BodyMeta bodyMeta) => bodyMeta.position)?.toList() ??
-        <Position>[];
+    return bodies.map((BodyMeta bodyMeta) => bodyMeta.position).toList();
   }
 
   List<Velocity> get _velocities {
-    return bodies?.map((BodyMeta bodyMeta) => bodyMeta.velocity)?.toList() ??
-        <Velocity>[];
+    return bodies.map((BodyMeta bodyMeta) => bodyMeta.velocity).toList();
   }
 
   Island() {
@@ -156,7 +154,7 @@ class Island {
     _joints = <Joint>[];
   }
 
-  void init(ContactListener listener) {
+  void init(ContactListener? listener) {
     _listener = listener;
   }
 
@@ -477,7 +475,7 @@ class Island {
         _impulse.tangentImpulses[j] = vc.points[j].tangentImpulse;
       }
 
-      _listener.postSolve(contact, _impulse);
+      _listener!.postSolve(contact, _impulse);
     }
   }
 }

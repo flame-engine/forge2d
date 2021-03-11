@@ -16,7 +16,7 @@ class Particle {
   final Vector2 velocity = Vector2.zero();
 
   /// The group which the particle belongs to
-  ParticleGroup group;
+  late ParticleGroup group;
 
   // TODO: No idea what this is used for
   double accumulation = 0.0;
@@ -30,10 +30,10 @@ class Particle {
   Color3i color = Color3i.black;
 
   /// Use this to store application-specific body data.
-  Object userData;
+  Object? userData;
 
-  Particle(this.system, {this.group}) {
-    group ??= ParticleGroup(system);
+  Particle(this.system, {ParticleGroup? group}) {
+    this.group = group ?? ParticleGroup(system);
   }
 
   Particle clone() {
@@ -42,7 +42,7 @@ class Particle {
       ..position.setFrom(position)
       ..velocity.setFrom(velocity)
       ..depth = depth
-      ..color = color?.clone()
+      ..color = color.clone()
       ..userData = userData;
   }
 }

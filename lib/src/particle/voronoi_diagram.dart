@@ -15,19 +15,10 @@ class VoronoiGenerator {
 }
 
 class VoronoiDiagramTask {
-  int x = 0, y = 0, i = 0;
-  VoronoiGenerator generator;
+  final int x, y, i;
+  final VoronoiGenerator generator;
 
   VoronoiDiagramTask(this.x, this.y, this.i, this.generator);
-
-  VoronoiDiagramTask.zero();
-
-  void set(int x, int y, int i, VoronoiGenerator generator) {
-    this.x = x;
-    this.y = y;
-    this.i = i;
-    this.generator = generator;
-  }
 }
 
 class VoronoiDiagram {
@@ -39,10 +30,10 @@ class VoronoiDiagram {
     for (var y = 0; y < _countY - 1; y++) {
       for (var x = 0; x < _countX - 1; x++) {
         final i = x + y * _countX;
-        final a = _diagram[i];
-        final b = _diagram[i + 1];
-        final c = _diagram[i + _countX];
-        final d = _diagram[i + 1 + _countX];
+        final a = _diagram[i]!;
+        final b = _diagram[i + 1]!;
+        final c = _diagram[i + _countX]!;
+        final d = _diagram[i + 1 + _countX]!;
         if (b != c) {
           if (a != b && a != c) {
             callback.call(a.particle, b.particle, c.particle);
@@ -116,8 +107,8 @@ class VoronoiDiagram {
       for (var y = 0; y < _countY; y++) {
         for (var x = 0; x < _countX - 1; x++) {
           final i = x + y * _countX;
-          final a = _diagram[i];
-          final b = _diagram[i + 1];
+          final a = _diagram[i]!;
+          final b = _diagram[i + 1]!;
           if (a != b) {
             _queue.addFirst(VoronoiDiagramTask(x, y, i, b));
             _queue.addFirst(VoronoiDiagramTask(x + 1, y, i + 1, a));
@@ -127,8 +118,8 @@ class VoronoiDiagram {
       for (var y = 0; y < _countY - 1; y++) {
         for (var x = 0; x < _countX; x++) {
           final i = x + y * _countX;
-          final a = _diagram[i];
-          final b = _diagram[i + _countX];
+          final a = _diagram[i]!;
+          final b = _diagram[i + _countX]!;
           if (a != b) {
             _queue.addFirst(VoronoiDiagramTask(x, y, i, b));
             _queue.addFirst(VoronoiDiagramTask(x, y + 1, i + _countX, a));
@@ -142,7 +133,7 @@ class VoronoiDiagram {
         final y = front.y;
         final i = front.i;
         final k = front.generator;
-        final a = _diagram[i];
+        final a = _diagram[i]!;
         final b = k;
         if (a != b) {
           final ax = a.center.x - x;

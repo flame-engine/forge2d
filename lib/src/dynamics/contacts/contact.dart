@@ -73,17 +73,16 @@ abstract class Contact {
     // order the arguments should come in the different contact classes.
     // { CIRCLE, EDGE, POLYGON, CHAIN }
     /// TODO.spydon: Clean this mess up.
-    final typeA = fixtureA.getType().index < fixtureB.getType().index
-        ? fixtureA.getType()
-        : fixtureB.getType();
-    final typeB =
-        fixtureA.getType() == typeA ? fixtureB.getType() : fixtureA.getType();
+    final typeA = fixtureA.type.index < fixtureB.type.index
+        ? fixtureA.type
+        : fixtureB.type;
+    final typeB = fixtureA.type == typeA ? fixtureB.type : fixtureA.type;
     final indexTemp = indexA;
-    final firstIndex = fixtureA.getType() == typeA ? indexA : indexB;
-    final secondIndex = fixtureB.getType() == typeB ? indexB : indexTemp;
+    final firstIndex = fixtureA.type == typeA ? indexA : indexB;
+    final secondIndex = fixtureB.type == typeB ? indexB : indexTemp;
     final temp = fixtureA;
-    final firstFixture = fixtureA.getType() == typeA ? fixtureA : fixtureB;
-    final secondFixture = fixtureB.getType() == typeB ? fixtureB : temp;
+    final firstFixture = fixtureA.type == typeA ? fixtureA : fixtureB;
+    final secondFixture = fixtureB.type == typeB ? fixtureB : temp;
 
     if (typeA == ShapeType.circle && typeB == ShapeType.circle) {
       return CircleContact(firstFixture, secondFixture);
@@ -196,7 +195,7 @@ abstract class Contact {
   // djm pooling
   final Manifold _oldManifold = Manifold();
 
-  void update(ContactListener listener) {
+  void update(ContactListener? listener) {
     _oldManifold.set(manifold);
 
     // Re-enable this contact.

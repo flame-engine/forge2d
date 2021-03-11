@@ -4,10 +4,10 @@ import '../../../forge2d.dart';
 import '../../settings.dart' as settings;
 
 class ContactSolverDef {
-  TimeStep step;
-  List<Contact> contacts;
-  List<Position> positions;
-  List<Velocity> velocities;
+  late TimeStep step;
+  late List<Contact> contacts;
+  late List<Position> positions;
+  late List<Velocity> velocities;
 }
 
 class ContactSolver {
@@ -17,10 +17,10 @@ class ContactSolver {
   /// Ensure a reasonable condition number. for the block solver
   static const double maxConditionNumber = 100.0;
 
-  TimeStep _step;
-  List<Position> _positions;
-  List<Velocity> _velocities;
-  List<Contact> _contacts;
+  late TimeStep _step;
+  late List<Position> _positions;
+  late List<Velocity> _velocities;
+  late List<Contact> _contacts;
 
   void init(ContactSolverDef def) {
     _step = def.step;

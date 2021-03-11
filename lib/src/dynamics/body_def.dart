@@ -8,7 +8,7 @@ class BodyDef {
   BodyType type = BodyType.static;
 
   /// Use this to store application specific body data.
-  Object userData;
+  Object? userData;
 
   /// The world position of the body. Avoid creating bodies at the origin since this can lead to many
   /// overlapping shapes.
