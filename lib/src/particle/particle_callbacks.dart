@@ -7,10 +7,9 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   final ParticleSystem system;
   final Shape shape;
   final Transform xf;
-  bool callDestructionListener;
-  int destroyed = 0;
+  final bool callDestructionListener;
 
-  DestroyParticlesInShapeCallback(
+  const DestroyParticlesInShapeCallback(
     this.system,
     this.shape,
     this.xf, {
@@ -21,16 +20,15 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   bool reportParticle(Particle particle) {
     if (shape.testPoint(xf, particle.position)) {
       system.destroyParticle(particle, callDestructionListener);
-      destroyed++;
     }
     return true;
   }
 }
 
 class UpdateBodyContactsCallback implements QueryCallback {
-  late ParticleSystem system;
+  final ParticleSystem system;
 
-  final Vector2 _tempVec = Vector2.zero();
+  const UpdateBodyContactsCallback(this.system);
 
   @override
   bool reportFixture(Fixture fixture) {
@@ -78,7 +76,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
             aabbLowerBoundY <= ap.y &&
             ap.y <= aabbUpperBoundY) {
           double d;
-          final n = _tempVec;
+          final n = Vector2.zero();
           d = fixture.computeDistance(ap, childIndex, n);
           if (d < system.particleDiameter) {
             final invAm = (particle.flags & ParticleType.wallParticle) != 0
@@ -87,8 +85,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
             final rpx = ap.x - bp.x;
             final rpy = ap.y - bp.y;
             final rpn = rpx * n.y - rpy * n.x;
-            final contact = ParticleBodyContact(particle)
-              ..body = b
+            final contact = ParticleBodyContact(particle, b)
               ..weight = 1 - d * system.inverseDiameter
               ..normal.x = -n.x
               ..normal.y = -n.y
@@ -104,8 +101,10 @@ class UpdateBodyContactsCallback implements QueryCallback {
 
 // Callback used with VoronoiDiagram.
 class CreateParticleGroupCallback implements VoronoiDiagramCallback {
-  late ParticleSystem system;
-  late ParticleGroupDef def;
+  final ParticleSystem system;
+  final ParticleGroupDef def;
+
+  const CreateParticleGroupCallback(this.system, this.def);
 
   @override
   void call(Particle particleA, Particle particleB, Particle particleC) {
@@ -145,9 +144,11 @@ class CreateParticleGroupCallback implements VoronoiDiagramCallback {
 
 // Callback used with VoronoiDiagram.
 class JoinParticleGroupsCallback implements VoronoiDiagramCallback {
-  late ParticleSystem system;
-  late ParticleGroup groupA;
-  late ParticleGroup groupB;
+  final ParticleSystem system;
+  final ParticleGroup groupA;
+  final ParticleGroup groupB;
+
+  const JoinParticleGroupsCallback(this.system, this.groupA, this.groupB);
 
   @override
   void call(Particle particleA, Particle particleB, Particle particleC) {

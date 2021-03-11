@@ -15,19 +15,10 @@ class VoronoiGenerator {
 }
 
 class VoronoiDiagramTask {
-  int x = 0, y = 0, i = 0;
-  late VoronoiGenerator generator;
+  final int x, y, i;
+  final VoronoiGenerator generator;
 
   VoronoiDiagramTask(this.x, this.y, this.i, this.generator);
-
-  VoronoiDiagramTask.zero();
-
-  void set(int x, int y, int i, VoronoiGenerator generator) {
-    this.x = x;
-    this.y = y;
-    this.i = i;
-    this.generator = generator;
-  }
 }
 
 class VoronoiDiagram {
