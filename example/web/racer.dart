@@ -67,14 +67,12 @@ class Racer extends Demo implements ContactListener {
     _groundBody = world.createBody(def);
     _groundBody.userData = 'Ground';
 
-    final shape = PolygonShape();
+    final shape = PolygonShape()
+      ..setAsBox(27.0, 21.0, Vector2(-30.0, 30.0), radians(20.0));
 
-    final fixtureDef = FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.isSensor = true;
-
-    fixtureDef.userData = GroundArea(0.001, false);
-    shape.setAsBox(27.0, 21.0, Vector2(-30.0, 30.0), radians(20.0));
+    final fixtureDef = FixtureDef(shape)
+      ..isSensor = true
+      ..userData = GroundArea(0.001, false);
     _groundBody.createFixture(fixtureDef);
 
     fixtureDef.userData = GroundArea(0.2, false);
@@ -89,8 +87,7 @@ class Racer extends Demo implements ContactListener {
 
     final shape = PolygonShape();
 
-    final fixtureDef = FixtureDef();
-    fixtureDef.shape = shape;
+    final fixtureDef = FixtureDef(shape);
 
     const boundaryX = 150.0;
     const boundaryY = 100.0;

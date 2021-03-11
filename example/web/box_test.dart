@@ -52,10 +52,9 @@ class BoxTest extends Demo {
     shape.setAsBox(3.0, 1.5, Vector2.zero(), pi / 2);
 
     // Define fixture (links body and shape)
-    final activeFixtureDef = FixtureDef();
-    activeFixtureDef.restitution = 0.5;
-    activeFixtureDef.density = 0.05;
-    activeFixtureDef.shape = shape;
+    final activeFixtureDef = FixtureDef(shape)
+      ..restitution = 0.5
+      ..density = 0.05;
 
     // Define body
     final bodyDef = BodyDef();

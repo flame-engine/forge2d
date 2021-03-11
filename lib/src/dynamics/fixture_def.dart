@@ -3,11 +3,11 @@ import '../../forge2d.dart';
 /// A fixture definition is used to create a fixture. This class defines an abstract fixture
 /// definition. You can reuse fixture definitions safely.
 class FixtureDef {
-  FixtureDef({required this.shape});
-
   /// The shape, this must be set. The shape will be cloned, so you can create the shape on the
   /// stack.
   Shape shape;
+
+  FixtureDef(this.shape);
 
   /// Use this to store application specific fixture data.
   Object? userData;

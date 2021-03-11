@@ -10,64 +10,55 @@ class DominoTest extends Demo {
   void initialize() {
     {
       // Floor
-      final fd = FixtureDef();
-      final sd = PolygonShape();
-      sd.setAsBoxXY(50.0, 10.0);
-      fd.shape = sd;
+      final shape = PolygonShape()..setAsBoxXY(50.0, 10.0);
+      final fixtureDef = FixtureDef(shape);
 
       final bd = BodyDef();
       bd.position = Vector2(0.0, -10.0);
       final body = world.createBody(bd);
-      body.createFixture(fd);
+      body.createFixture(fixtureDef);
       bodies.add(body);
     }
 
     {
       // Platforms
       for (var i = 0; i < 4; i++) {
-        final fd = FixtureDef();
-        final sd = PolygonShape();
-        sd.setAsBoxXY(15.0, 0.125);
-        fd.shape = sd;
+        final shape = PolygonShape()..setAsBoxXY(15.0, 0.125);
+        final fixtureDef = FixtureDef(shape);
 
-        final bd = BodyDef();
-        bd.position = Vector2(0.0, 5.0 + 5 * i);
-        final body = world.createBody(bd);
-        body.createFixture(fd);
+        final bodyDef = BodyDef()..position = Vector2(0.0, 5.0 + 5 * i);
+        final body = world.createBody(bodyDef);
+        body.createFixture(fixtureDef);
         bodies.add(body);
       }
     }
 
     // Dominoes
     {
-      final fd = FixtureDef();
-      final sd = PolygonShape();
-      sd.setAsBoxXY(0.125, 2.0);
-      fd.shape = sd;
-      fd.density = 25.0;
+      final shape = PolygonShape()..setAsBoxXY(0.125, 2.0);
+      final fixtureDef = FixtureDef(shape)
+        ..density = 25.0
+        ..friction = 0.5;
 
-      final bd = BodyDef();
-      bd.type = BodyType.dynamic;
+      final bodyDef = BodyDef()..type = BodyType.dynamic;
 
-      const friction = .5;
       const numPerRow = 25;
 
       for (var i = 0; i < 4; ++i) {
         for (var j = 0; j < numPerRow; j++) {
-          fd.friction = friction;
-          bd.position =
+          bodyDef.position =
               Vector2(-14.75 + j * (29.5 / (numPerRow - 1)), 7.3 + 5 * i);
           if (i == 2 && j == 0) {
-            bd.angle = -.1;
-            bd.position.x += .1;
+            bodyDef.angle = -.1;
+            bodyDef.position.x += .1;
           } else if (i == 3 && j == numPerRow - 1) {
-            bd.angle = .1;
-            bd.position.x -= .1;
+            bodyDef.angle = .1;
+            bodyDef.position.x -= .1;
           } else {
-            bd.angle = 0.0;
+            bodyDef.angle = 0.0;
           }
-          final body = world.createBody(bd);
-          body.createFixture(fd);
+          final body = world.createBody(bodyDef);
+          body.createFixture(fixtureDef);
           bodies.add(body);
         }
       }

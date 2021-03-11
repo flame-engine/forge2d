@@ -53,13 +53,11 @@ class BlobTest extends Demo {
       bd.type = BodyType.dynamic;
       final body = world.createBody(bd);
 
-      final fd = FixtureDef();
-      final cd = CircleShape();
-      cd.radius = bodyRadius;
-      fd.shape = cd;
-      fd.density = 1.0;
-      fd.filter.groupIndex = -2;
-      body.createFixture(fd);
+      final shape = CircleShape()..radius = bodyRadius;
+      final fixtureDef = FixtureDef(shape)
+        ..density = 1.0
+        ..filter.groupIndex = -2;
+      body.createFixture(fixtureDef);
       jointDef.addBody(body);
     }
 

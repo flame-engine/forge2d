@@ -54,10 +54,9 @@ class FrictionJointTest extends Demo {
     boxShape.setAsBox(3.0, 1.5, Vector2.zero(), pi / 2);
 
     // Define fixture (links body and shape)
-    _boxFixture = FixtureDef();
-    _boxFixture.restitution = 0.5;
-    _boxFixture.density = 0.10;
-    _boxFixture.shape = boxShape;
+    _boxFixture = FixtureDef(boxShape)
+      ..restitution = 0.5
+      ..density = 0.10;
   }
 
   void _createBox() {

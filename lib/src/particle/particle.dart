@@ -33,7 +33,7 @@ class Particle {
   Object? userData;
 
   Particle(this.system, {ParticleGroup? group}) {
-    group ??= ParticleGroup(system);
+    this.group = group ?? ParticleGroup(system);
   }
 
   Particle clone() {
