@@ -27,8 +27,9 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
 
 class UpdateBodyContactsCallback implements QueryCallback {
   final ParticleSystem system;
-
   const UpdateBodyContactsCallback(this.system);
+
+  static final Vector2 _zeroVec = Vector2.zero();
 
   @override
   bool reportFixture(Fixture fixture) {
@@ -76,7 +77,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
             aabbLowerBoundY <= ap.y &&
             ap.y <= aabbUpperBoundY) {
           double d;
-          final n = Vector2.zero();
+          final n = _zeroVec;
           d = fixture.computeDistance(ap, childIndex, n);
           if (d < system.particleDiameter) {
             final invAm = (particle.flags & ParticleType.wallParticle) != 0
