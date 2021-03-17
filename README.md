@@ -31,3 +31,9 @@ A few years after that [Lukas Klingsbo](https://github.com/spydon) refactored th
 After this refactor we renamed it to Forge2D since the upstream wasn't maintained to take in our PRs.
 
 There has also been countless other contributors which we are very thankful to!
+
+## Credits
+
+ * The [Flame engine team](https://github.com/orgs/flame-engine/people) who is continuously working on maintaining and improving Forge2D.
+ * Special thanks for [Lukas Klingsbo](https://github.com/spydon), a Flame team member which took this project under his wing and greatly improved the project!
+ * The Dart port of [Box2D](https://github.com/google/box2d.dart).
