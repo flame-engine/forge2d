@@ -436,7 +436,7 @@ class PolygonShape extends Shape {
       final D = e1.cross(e2);
 
       final triangleArea = 0.5 * D;
-      area += triangleArea;
+      area += triangleArea.abs();
 
       // Area weighted centroid
       e1
@@ -511,7 +511,7 @@ class PolygonShape extends Shape {
       final D = e1.cross(e2);
 
       final triangleArea = 0.5 * D;
-      area += triangleArea;
+      area += triangleArea.abs();
 
       // Area weighted centroid
       center.x += triangleArea * kInv3 * (e1.x + e2.x);

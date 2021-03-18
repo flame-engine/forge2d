@@ -8,8 +8,8 @@ class CanvasViewportTransform extends ViewportTransform {
   static const double defaultDrawingScale = 20.0;
 
   /// Constructs a new viewport transform with the default scale.
-  CanvasViewportTransform(Vector2 _extents, Vector2 _center)
-      : super(_extents, _center, defaultDrawingScale) {
+  CanvasViewportTransform(Vector2 extents, Vector2 center)
+      : super(extents, center, defaultDrawingScale) {
     yFlip = true;
   }
 
