@@ -1,24 +1,22 @@
 import '../../forge2d.dart';
 
 class ViewportTransform {
-  ViewportTransform(Vector2 e, Vector2 c, this.scale)
-      : extents = Vector2.copy(e),
-        center = Vector2.copy(c);
-
   /// if we flip the y axis when transforming.
   bool yFlip = false;
 
   /// This is the half-width and half-height.
   /// This should be the actual half-width and
   /// half-height, not anything transformed or scaled.
-  Vector2 extents;
+  final Vector2 extents;
+
+  /// center of the viewport.
+  final Vector2 center;
 
   /// Returns the scaling factor used in converting from world sizes to rendering
   /// sizes.
   double scale;
 
-  /// center of the viewport.
-  Vector2 center;
+  ViewportTransform(this.extents, this.center, this.scale);
 
   /// Sets the transform's center to the given x and y coordinates,
   /// and using the given scale.

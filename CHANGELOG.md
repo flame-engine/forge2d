@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.7.1
+ - Fix area for polygon that is defined counter-clockwise
+
 ## 0.7.0
  - Refactored the particle system
  - Cleaned up the code and remove buffer_utils
