@@ -1,5 +1,5 @@
 name: forge2d
-version: 0.7.0
+version: 0.7.1
 description: A 2D physics engine for Dart, also works with the Flame game engine in Flutter
 homepage: https://github.com/flame-engine/forge2d
 
