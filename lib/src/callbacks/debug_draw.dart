@@ -100,14 +100,12 @@ abstract class DebugDraw {
   }
 
   /// Takes the world coordinate and returns the screen coordinates.
-  Vector2 worldToScreen(Vector2 argWorld) =>
-      viewport.worldToScreen(argWorld);
+  Vector2 worldToScreen(Vector2 argWorld) => viewport.worldToScreen(argWorld);
 
   /// Takes the world coordinates and returns the screen coordinates
   Vector2 worldToScreenXY(double worldX, double worldY) =>
       viewport.worldToScreen(Vector2(worldX, worldY));
 
   /// Takes the screen coordinates (argScreen) and returns the world coordinates
-  Vector2 screenToWorld(Vector2 argScreen) =>
-      viewport.screenToWorld(argScreen);
+  Vector2 screenToWorld(Vector2 argScreen) => viewport.screenToWorld(argScreen);
 }
