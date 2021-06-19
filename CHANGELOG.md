@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.7.2
+ - Use field getters on getter methods where computation is O(1)
+
 ## 0.7.1
  - Fix area for polygon that is defined counter-clockwise
 

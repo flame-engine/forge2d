@@ -63,15 +63,13 @@ abstract class Joint {
   /// get the type of the concrete joint.
   ///
   /// @return
-  JointType getType() {
-    return _type;
-  }
+  JointType get type => _type;
 
   /// Whether the body is connected to the joint
   bool containsBody(Body body) => body == bodyA || body == bodyB;
 
   /// Get the other body than the argument in the joint
-  Body getOtherBody(Body body) {
+  Body otherBody(Body body) {
     assert(containsBody(body), 'Body is not in the joint');
     return body == bodyA ? bodyB : bodyA;
   }
@@ -79,36 +77,34 @@ abstract class Joint {
   /// Get the anchor point on bodyA in world coordinates.
   ///
   /// @return
-  Vector2 getAnchorA() => bodyA.getWorldPoint(localAnchorA);
+  Vector2 get anchorA => bodyA.worldPoint(localAnchorA);
 
   /// Get the anchor point on bodyB in world coordinates.
   ///
   /// @return
-  Vector2 getAnchorB() => bodyB.getWorldPoint(localAnchorB);
+  Vector2 get anchorB => bodyB.worldPoint(localAnchorB);
 
   /// Get the reaction force on body2 at the joint anchor in Newtons.
   ///
   /// @param invDt
   /// @return
-  Vector2 getReactionForce(double invDt);
+  Vector2 reactionForce(double invDt);
 
   /// get the reaction torque on body2 in N*m.
   ///
   /// @param invDt
   /// @return
-  double getReactionTorque(double invDt);
+  double reactionTorque(double invDt);
 
   /// Get collide connected. Note: modifying the collide connect flag won't work correctly because
   /// the flag is only checked when fixture AABBs begin to overlap.
-  bool getCollideConnected() {
-    return _collideConnected;
-  }
+  bool get collideConnected => _collideConnected;
 
   /// Short-cut function to determine if either body is inactive.
   ///
   /// @return
-  bool isActive() {
-    return bodyA.isActive() && bodyB.isActive();
+  bool get isActive {
+    return bodyA.isActive && bodyB.isActive;
   }
 
   /// Internal
@@ -130,12 +126,12 @@ abstract class Joint {
     final xf2 = bodyB.transform;
     final x1 = xf1.p;
     final x2 = xf2.p;
-    final p1 = getAnchorA();
-    final p2 = getAnchorB();
+    final p1 = anchorA;
+    final p2 = anchorB;
 
     _color.setFromRGBd(0.5, 0.8, 0.8);
 
-    switch (getType()) {
+    switch (type) {
       case JointType.distance:
         debugDraw.drawSegment(p1, p2, _color);
         break;

@@ -211,17 +211,17 @@ class ConstantVolumeJoint extends Joint {
 
   /// No-op
   @override
-  Vector2 getAnchorA() => Vector2.zero();
+  Vector2 get anchorA => Vector2.zero();
 
   /// No-op
   @override
-  Vector2 getAnchorB() => Vector2.zero();
+  Vector2 get anchorB => Vector2.zero();
 
   /// No-op
   @override
-  Vector2 getReactionForce(double invDt) => Vector2.zero();
+  Vector2 reactionForce(double invDt) => Vector2.zero();
 
   /// No-op
   @override
-  double getReactionTorque(double invDt) => 0.0;
+  double reactionTorque(double invDt) => 0.0;
 }

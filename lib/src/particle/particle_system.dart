@@ -208,7 +208,7 @@ class ParticleSystem {
       final shape = groupDef.shape;
       transform.setVec2Angle(groupDef.position, groupDef.angle);
       final aabb = _temp;
-      final childCount = shape!.getChildCount();
+      final childCount = shape!.childCount;
       for (var childIndex = 0; childIndex < childCount; childIndex++) {
         if (childIndex == 0) {
           shape.computeAABB(aabb, identity, childIndex);
@@ -512,13 +512,13 @@ class ParticleSystem {
     for (final group in groupBuffer) {
       allGroupFlags |= group.groupFlags;
     }
-    final gravityx = step.dt * gravityScale * world.getGravity().x;
-    final gravityy = step.dt * gravityScale * world.getGravity().y;
+    final gravityX = step.dt * gravityScale * world.gravity.x;
+    final gravityY = step.dt * gravityScale * world.gravity.y;
     final criticalVelocitySquared = getCriticalVelocitySquared(step);
     for (final particle in _particles) {
       final v = particle.velocity;
-      v.x += gravityx;
-      v.y += gravityy;
+      v.x += gravityX;
+      v.y += gravityY;
       final v2 = v.x * v.x + v.y * v.y;
       if (v2 > criticalVelocitySquared) {
         final a =

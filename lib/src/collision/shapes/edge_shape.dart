@@ -25,7 +25,7 @@ class EdgeShape extends Shape {
   }
 
   @override
-  int getChildCount() {
+  int get childCount {
     return 1;
   }
 

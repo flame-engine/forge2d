@@ -133,7 +133,7 @@ class Body {
   /// @param def the fixture definition.
   /// @warning This function is locked during callbacks.
   Fixture createFixture(FixtureDef def) {
-    assert(world.isLocked() == false);
+    assert(!world.isLocked);
 
     final fixture = Fixture(this, def);
 
@@ -175,7 +175,7 @@ class Body {
   /// @param fixture the fixture to be removed.
   /// @warning This function is locked during callbacks.
   void destroyFixture(Fixture fixture) {
-    assert(world.isLocked() == false);
+    assert(!world.isLocked);
     assert(fixture.body == this);
 
     // Remove the fixture from this body's singly linked list.
@@ -219,7 +219,7 @@ class Body {
   /// @param position the world position of the body's local origin.
   /// @param angle the world rotation in radians.
   void setTransform(Vector2 position, double angle) {
-    assert(world.isLocked() == false);
+    assert(!world.isLocked);
     transform.q.setAngle(angle);
     transform.p.setFrom(position);
 
@@ -243,7 +243,7 @@ class Body {
   /// Get the angle in radians.
   ///
   /// @return the current world rotation angle in radians.
-  double getAngle() => sweep.a;
+  double get angle => sweep.a;
 
   /// Get the world position of the center of mass. Do not modify.
   Vector2 get worldCenter => sweep.c;
@@ -301,7 +301,7 @@ class Body {
       return;
     }
 
-    if (isAwake() == false) {
+    if (isAwake == false) {
       setAwake(true);
     }
 
@@ -318,7 +318,7 @@ class Body {
       return;
     }
 
-    if (isAwake() == false) {
+    if (isAwake == false) {
       setAwake(true);
     }
 
@@ -339,7 +339,7 @@ class Body {
     }
     point ??= worldCenter;
 
-    if (!isAwake()) {
+    if (!isAwake) {
       if (wake) {
         setAwake(true);
       } else {
@@ -360,7 +360,7 @@ class Body {
       return;
     }
 
-    if (isAwake() == false) {
+    if (isAwake == false) {
       setAwake(true);
     }
     _angularVelocity += inverseInertia * impulse;
@@ -399,7 +399,7 @@ class Body {
   /// @param massData the mass properties.
   void setMassData(MassData massData) {
     // TODO_ERIN adjust linear velocity and torque to account for movement of center.
-    assert(world.isLocked() == false);
+    assert(!world.isLocked);
     if (_bodyType != BodyType.dynamic) {
       return;
     }
@@ -509,7 +509,7 @@ class Body {
   ///
   /// @param localPoint a point on the body measured relative the the body's origin.
   /// @return the same point expressed in world coordinates.
-  Vector2 getWorldPoint(Vector2 localPoint) {
+  Vector2 worldPoint(Vector2 localPoint) {
     return Transform.mulVec2(transform, localPoint);
   }
 
@@ -517,7 +517,7 @@ class Body {
   ///
   /// @param localVector a vector fixed in the body.
   /// @return the same vector expressed in world coordinates.
-  Vector2 getWorldVector(Vector2 localVector) {
+  Vector2 worldVector(Vector2 localVector) {
     return Rot.mulVec2(transform.q, localVector);
   }
 
@@ -525,7 +525,7 @@ class Body {
   ///
   /// @param a point in world coordinates.
   /// @return the corresponding local point relative to the body's origin.
-  Vector2 getLocalPoint(Vector2 worldPoint) {
+  Vector2 localPoint(Vector2 worldPoint) {
     return Transform.mulTransVec2(transform, worldPoint);
   }
 
@@ -533,7 +533,7 @@ class Body {
   ///
   /// @param a vector in world coordinates.
   /// @return the corresponding local vector.
-  Vector2 getLocalVector(Vector2 worldVector) {
+  Vector2 localVector(Vector2 worldVector) {
     return Rot.mulTransVec2(transform.q, worldVector);
   }
 
@@ -541,7 +541,7 @@ class Body {
   ///
   /// @param a point in world coordinates.
   /// @return the world velocity of a point.
-  Vector2 getLinearVelocityFromWorldPoint(Vector2 worldPoint) {
+  Vector2 linearVelocityFromWorldPoint(Vector2 worldPoint) {
     return Vector2(
       -_angularVelocity * (worldPoint.y - sweep.c.y) + linearVelocity.x,
       _angularVelocity * (worldPoint.x - sweep.c.x) + linearVelocity.y,
@@ -552,8 +552,8 @@ class Body {
   ///
   /// @param a point in local coordinates.
   /// @return the world velocity of a point.
-  Vector2 getLinearVelocityFromLocalPoint(Vector2 localPoint) {
-    return getLinearVelocityFromWorldPoint(getWorldPoint(localPoint));
+  Vector2 linearVelocityFromLocalPoint(Vector2 localPoint) {
+    return linearVelocityFromWorldPoint(worldPoint(localPoint));
   }
 
   /// Remove all the current forces on the body
@@ -566,7 +566,7 @@ class Body {
   ///
   /// @param type
   void setType(BodyType type) {
-    assert(world.isLocked() == false);
+    assert(!world.isLocked);
     if (_bodyType == type) {
       return;
     }
@@ -659,9 +659,7 @@ class Body {
   /// Get the sleeping state of this body.
   ///
   /// @return true if the body is awake.
-  bool isAwake() {
-    return (flags & awakeFlag) == awakeFlag;
-  }
+  bool get isAwake => (flags & awakeFlag) == awakeFlag;
 
   /// Set the active state of the body. An inactive body is not simulated and cannot be collided with
   /// or woken up. If you pass a flag of true, all fixtures will be added to the broad-phase. If you
@@ -672,9 +670,9 @@ class Body {
   /// body are implicitly inactive. An inactive body is still owned by a World object and remains in
   /// the body list.
   void setActive(bool flag) {
-    assert(world.isLocked() == false);
+    assert(!world.isLocked);
 
-    if (flag == isActive()) {
+    if (flag == isActive) {
       return;
     }
 
@@ -708,9 +706,7 @@ class Body {
   /// Get the active state of the body.
   ///
   /// @return
-  bool isActive() {
-    return (flags & activeFlag) == activeFlag;
-  }
+  bool get isActive => (flags & activeFlag) == activeFlag;
 
   /// Set this body to have fixed rotation. This causes the mass to be reset.
   ///
@@ -773,7 +769,7 @@ class Body {
 
     // Does a joint prevent collision?
     for (final joint in joints) {
-      if (joint.containsBody(other) && !joint.getCollideConnected()) {
+      if (joint.containsBody(other) && !joint.collideConnected) {
         return false;
       }
     }

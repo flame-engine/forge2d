@@ -52,22 +52,22 @@ class MotorJoint extends Joint {
   }
 
   @override
-  Vector2 getAnchorA() {
+  Vector2 get anchorA {
     return Vector2.copy(bodyA.position);
   }
 
   @override
-  Vector2 getAnchorB() {
+  Vector2 get anchorB {
     return Vector2.copy(bodyB.position);
   }
 
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     return Vector2.copy(_linearImpulse)..scale(invDt);
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return _angularImpulse * invDt;
   }
 

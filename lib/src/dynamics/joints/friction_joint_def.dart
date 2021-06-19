@@ -15,7 +15,7 @@ class FrictionJointDef extends JointDef {
   void initialize(Body bodyA, Body bodyB, Vector2 anchor) {
     this.bodyA = bodyA;
     this.bodyB = bodyB;
-    localAnchorA.setFrom(bodyA.getLocalPoint(anchor));
-    localAnchorB.setFrom(bodyB.getLocalPoint(anchor));
+    localAnchorA.setFrom(bodyA.localPoint(anchor));
+    localAnchorB.setFrom(bodyB.localPoint(anchor));
   }
 }

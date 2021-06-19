@@ -44,22 +44,22 @@ class MouseJoint extends Joint {
   }
 
   @override
-  Vector2 getAnchorA() {
+  Vector2 get anchorA {
     return Vector2.copy(_targetA);
   }
 
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     return Vector2.copy(_impulse)..scale(invDt);
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return invDt * 0.0;
   }
 
   void setTarget(Vector2 target) {
-    if (bodyB.isAwake() == false) {
+    if (bodyB.isAwake == false) {
       bodyB.setAwake(true);
     }
     _targetA.setFrom(target);

@@ -29,14 +29,20 @@ class RevoluteJoint extends Joint {
   double _motorImpulse = 0.0;
 
   bool _enableMotor = false;
+  bool get motorEnabled => _enableMotor;
   double _maxMotorTorque = 0.0;
+  double get maxMotorTorque => _maxMotorTorque;
   double _motorSpeed = 0.0;
+  double get motorSpeed => _motorSpeed;
 
   bool _enableLimit = false;
+  bool get limitEnabled => _enableLimit;
   double _referenceAngle = 0.0;
   double get referenceAngle => _referenceAngle;
   double _lowerAngle = 0.0;
   double _upperAngle = 0.0;
+  double get lowerLimit => _lowerAngle;
+  double get upperLimit => _upperAngle;
 
   // Solver temp
   int _indexA = 0;
@@ -427,34 +433,26 @@ class RevoluteJoint extends Joint {
         angularError <= settings.angularSlop;
   }
 
-  double getReferenceAngle() {
-    return _referenceAngle;
-  }
-
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     return Vector2(_impulse.x, _impulse.y)..scale(invDt);
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return invDt * _impulse.z;
   }
 
-  double getJointAngle() {
+  double jointAngle() {
     final b1 = bodyA;
     final b2 = bodyB;
     return b2.sweep.a - b1.sweep.a - referenceAngle;
   }
 
-  double getJointSpeed() {
+  double jointSpeed() {
     final b1 = bodyA;
     final b2 = bodyB;
     return b2.angularVelocity - b1.angularVelocity;
-  }
-
-  bool isMotorEnabled() {
-    return _enableMotor;
   }
 
   void enableMotor(bool flag) {
@@ -463,32 +461,18 @@ class RevoluteJoint extends Joint {
     _enableMotor = flag;
   }
 
-  double getMotorTorque(double invDt) {
-    return _motorImpulse * invDt;
-  }
-
   void setMotorSpeed(final double speed) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
+  double motorTorque(double invDt) => _motorImpulse * invDt;
+
   void setMaxMotorTorque(final double torque) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _maxMotorTorque = torque;
-  }
-
-  double getMotorSpeed() {
-    return _motorSpeed;
-  }
-
-  double getMaxMotorTorque() {
-    return _maxMotorTorque;
-  }
-
-  bool isLimitEnabled() {
-    return _enableLimit;
   }
 
   void enableLimit(final bool flag) {
@@ -498,14 +482,6 @@ class RevoluteJoint extends Joint {
       _enableLimit = flag;
       _impulse.z = 0.0;
     }
-  }
-
-  double getLowerLimit() {
-    return _lowerAngle;
-  }
-
-  double getUpperLimit() {
-    return _upperAngle;
   }
 
   void setLimits(final double lower, final double upper) {

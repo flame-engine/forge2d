@@ -84,7 +84,7 @@ class WheelJoint extends Joint {
   }
 
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     final temp = Vector2.zero();
     temp
       ..setFrom(_ay)
@@ -98,7 +98,7 @@ class WheelJoint extends Joint {
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return invDt * _motorImpulse;
   }
 
@@ -109,10 +109,10 @@ class WheelJoint extends Joint {
     final p1 = Vector2.zero();
     final p2 = Vector2.zero();
     final axis = Vector2.zero();
-    p1.setFrom(b1.getWorldPoint(localAnchorA));
-    p2.setFrom(b2.getWorldPoint(localAnchorA));
+    p1.setFrom(b1.worldPoint(localAnchorA));
+    p2.setFrom(b2.worldPoint(localAnchorA));
     p2.sub(p1);
-    axis.setFrom(b1.getWorldVector(_localXAxisA));
+    axis.setFrom(b1.worldVector(_localXAxisA));
 
     final translation = p2.dot(axis);
     return translation;

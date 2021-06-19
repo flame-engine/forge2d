@@ -71,7 +71,7 @@ class Tire {
         return;
     }
 
-    final currentForwardNormal = body.getWorldVector(Vector2(0.0, 1.0));
+    final currentForwardNormal = body.worldVector(Vector2(0.0, 1.0));
     final currentSpeed = _forwardVelocity.dot(currentForwardNormal);
     var force = 0.0;
     if (desiredSpeed < currentSpeed) {
@@ -110,13 +110,13 @@ class Tire {
   }
 
   Vector2 get _lateralVelocity {
-    final currentRightNormal = body.getWorldVector(_worldLeft);
+    final currentRightNormal = body.worldVector(_worldLeft);
     return currentRightNormal
       ..scale(currentRightNormal.dot(body.linearVelocity));
   }
 
   Vector2 get _forwardVelocity {
-    final currentForwardNormal = body.getWorldVector(_worldUp);
+    final currentForwardNormal = body.worldVector(_worldUp);
     return currentForwardNormal
       ..scale(currentForwardNormal.dot(body.linearVelocity));
   }

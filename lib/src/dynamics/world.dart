@@ -33,6 +33,7 @@ class World {
   final List<Joint> joints = <Joint>[];
 
   final Vector2 _gravity;
+  Vector2 get gravity => _gravity;
   bool _allowSleep = false;
 
   DestroyListener? destroyListener;
@@ -84,7 +85,7 @@ class World {
     }
 
     _allowSleep = flag;
-    if (_allowSleep == false) {
+    if (!_allowSleep) {
       for (final b in bodies) {
         b.setAwake(true);
       }
@@ -124,7 +125,7 @@ class World {
   /// @param def
   /// @return
   Body createBody(BodyDef def) {
-    assert(isLocked() == false);
+    assert(!isLocked);
     final body = Body(def, this);
     bodies.add(body);
     return body;
@@ -137,7 +138,7 @@ class World {
   /// @warning This function is locked during callbacks.
   void destroyBody(Body body) {
     assert(bodies.isNotEmpty);
-    assert(isLocked() == false);
+    assert(!isLocked);
 
     // Delete the attached joints.
     for (final joint in body.joints) {
@@ -163,7 +164,7 @@ class World {
   ///
   /// @warning This function is locked during callbacks.
   Joint createJoint(JointDef def) {
-    assert(isLocked() == false);
+    assert(!isLocked);
 
     final joint = Joint.create(this, def);
     joints.add(joint);
@@ -175,7 +176,7 @@ class World {
     final bodyB = def.bodyB;
 
     // If the joint prevents collisions, then flag any contacts for filtering.
-    if (def.collideConnected == false) {
+    if (!def.collideConnected) {
       for (final contact in bodyB.contacts) {
         if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
@@ -195,9 +196,9 @@ class World {
   /// @warning This function is locked during callbacks.
   /// @param joint
   void destroyJoint(Joint joint) {
-    assert(isLocked() == false);
+    assert(!isLocked);
 
-    final collideConnected = joint.getCollideConnected();
+    final collideConnected = joint.collideConnected;
     joints.remove(joint);
 
     // Disconnect from island graph.
@@ -214,7 +215,7 @@ class World {
     Joint.destroy(joint);
 
     // If the joint prevents collisions, then flag any contacts for filtering.
-    if (collideConnected == false) {
+    if (!collideConnected) {
       for (final contact in bodyB.contacts) {
         if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
@@ -321,7 +322,7 @@ class World {
       for (final body in bodies) {
         xf.set(body.transform);
         for (final fixture in body.fixtures) {
-          if (body.isActive() == false) {
+          if (!body.isActive) {
             color.setFromRGBd(0.5, 0.5, 0.3);
             fixture.render(debugDraw!, xf, color, wireframe);
           } else if (body.bodyType == BodyType.static) {
@@ -330,7 +331,7 @@ class World {
           } else if (body.bodyType == BodyType.kinematic) {
             color.setFromRGBd(0.5, 0.5, 0.9);
             fixture.render(debugDraw!, xf, color, wireframe);
-          } else if (body.isAwake() == false) {
+          } else if (!body.isAwake) {
             color.setFromRGBd(0.5, 0.5, 0.5);
             fixture.render(debugDraw!, xf, color, wireframe);
           } else {
@@ -361,14 +362,14 @@ class World {
       color.setFromRGBd(0.9, 0.3, 0.9);
 
       for (final b in bodies) {
-        if (b.isActive() == false) {
+        if (b.isActive == false) {
           continue;
         }
 
         for (final f in b.fixtures) {
           for (var i = 0; i < f.proxyCount; ++i) {
             final proxy = f.proxies[i];
-            final aabb = contactManager.broadPhase.getFatAABB(proxy.proxyId);
+            final aabb = contactManager.broadPhase.fatAABB(proxy.proxyId);
             final vs = <Vector2>[
               Vector2(aabb.lowerBound.x, aabb.lowerBound.y),
               Vector2(aabb.upperBound.x, aabb.lowerBound.y),
@@ -490,39 +491,24 @@ class World {
   }
 
   /// Get the number of broad-phase proxies.
-  int getProxyCount() {
-    return contactManager.broadPhase.getProxyCount();
-  }
+  int get proxyCount => contactManager.broadPhase.proxyCount;
 
   /// Gets the height of the dynamic tree
-  int getTreeHeight() {
-    return contactManager.broadPhase.getTreeHeight();
-  }
+  int getTreeHeight() => contactManager.broadPhase.getTreeHeight();
 
   /// Gets the balance of the dynamic tree
-  int getTreeBalance() {
-    return contactManager.broadPhase.getTreeBalance();
-  }
+  int getTreeBalance() => contactManager.broadPhase.getTreeBalance();
 
   /// Gets the quality of the dynamic tree
-  double getTreeQuality() {
-    return contactManager.broadPhase.getTreeQuality();
-  }
+  double getTreeQuality() => contactManager.broadPhase.getTreeQuality();
 
   /// Change the global gravity vector.
   void setGravity(Vector2 gravity) {
     _gravity.setFrom(gravity);
   }
 
-  /// Get the global gravity vector.
-  Vector2 getGravity() {
-    return _gravity;
-  }
-
   /// Is the world locked (in the middle of a time step).
-  bool isLocked() {
-    return (flags & locked) == locked;
-  }
+  bool get isLocked => (flags & locked) == locked;
 
   /// Set flag to control automatic clearing of forces after each time step.
   void setAutoClearForces(bool shouldAutoClear) {
@@ -534,9 +520,7 @@ class World {
   }
 
   /// Get the flag that controls automatic clearing of forces after each time step.
-  bool getAutoClearForces() {
-    return (flags & clearForcesBit) == clearForcesBit;
-  }
+  bool get autoClearForces => (flags & clearForcesBit) == clearForcesBit;
 
   final Island island = Island();
   final List<Body> stack = [];
@@ -571,7 +555,7 @@ class World {
         continue;
       }
 
-      if (seed.isAwake() == false || seed.isActive() == false) {
+      if (seed.isAwake == false || seed.isActive == false) {
         continue;
       }
 
@@ -590,7 +574,7 @@ class World {
       while (stack.isNotEmpty) {
         // Grab the next body off the stack and add it to the island.
         final body = stack.removeLast();
-        assert(body.isActive() == true);
+        assert(body.isActive);
         island.addBody(body);
 
         // Make sure the body is awake.
@@ -637,14 +621,14 @@ class World {
 
         // Search all joints connect to this body.
         for (final joint in body.joints) {
-          if (joint.islandFlag == true) {
+          if (joint.islandFlag) {
             continue;
           }
 
-          final other = joint.getOtherBody(body);
+          final other = joint.otherBody(body);
 
           // Don't simulate joints connected to inactive bodies.
-          if (other.isActive() == false) {
+          if (!other.isActive) {
             continue;
           }
 
@@ -755,8 +739,8 @@ class World {
           final typeB = bodyB.bodyType;
           assert(typeA == BodyType.dynamic || typeB == BodyType.dynamic);
 
-          final activeA = bodyA.isAwake() && typeA != BodyType.static;
-          final activeB = bodyB.isAwake() && typeB != BodyType.static;
+          final activeA = bodyA.isAwake && typeA != BodyType.static;
+          final activeB = bodyB.isAwake && typeB != BodyType.static;
 
           // Is at least one body active (awake and dynamic or kinematic)?
           if (activeA == false && activeB == false) {

@@ -61,12 +61,12 @@ class WeldJoint extends Joint {
   }
 
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     return Vector2(_impulse.x, _impulse.y)..scale(invDt);
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return invDt * _impulse.z;
   }
 

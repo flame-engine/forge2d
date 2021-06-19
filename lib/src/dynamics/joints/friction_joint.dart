@@ -30,12 +30,12 @@ class FrictionJoint extends Joint {
 
   /// Get the reaction force given the inverse time step. Unit is N.
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     return Vector2.copy(_linearImpulse)..scale(invDt);
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return invDt * _angularImpulse;
   }
 

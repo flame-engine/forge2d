@@ -266,15 +266,15 @@ abstract class Contact {
       return;
     }
 
-    if (wasTouching == false && touching == true) {
+    if (!wasTouching && touching) {
       listener.beginContact(this);
     }
 
-    if (wasTouching == true && touching == false) {
+    if (wasTouching && !touching) {
       listener.endContact(this);
     }
 
-    if (sensor == false && touching) {
+    if (!sensor && touching) {
       listener.preSolve(this, _oldManifold);
     }
   }

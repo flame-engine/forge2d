@@ -51,7 +51,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   }
 
   @override
-  AABB getFatAABB(int proxyId) {
+  AABB fatAABB(int proxyId) {
     return _tree.getFatAABB(proxyId);
   }
 
@@ -73,9 +73,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   }
 
   @override
-  int getProxyCount() {
-    return _moveBuffer.length;
-  }
+  int get proxyCount => _moveBuffer.length;
 
   @override
   void drawTree(DebugDraw argDraw) {

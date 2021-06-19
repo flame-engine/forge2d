@@ -33,7 +33,7 @@ class CanvasDraw extends DebugDraw {
     _setColor(color);
     // TODO(gregbglw): Do a single ctx transform rather than convert all of
     // these vectors.
-    final screenVertices = vertices.map(getWorldToScreen).toList();
+    final screenVertices = vertices.map(worldToScreen).toList();
 
     ctx.beginPath();
     ctx.moveTo(screenVertices[0].x, screenVertices[0].y);
@@ -54,8 +54,8 @@ class CanvasDraw extends DebugDraw {
   @override
   void drawSegment(Vector2 p1, Vector2 p2, Color3i color) {
     _setColor(color);
-    final screenP1 = getWorldToScreen(p1);
-    final screenP2 = getWorldToScreen(p2);
+    final screenP1 = worldToScreen(p1);
+    final screenP2 = worldToScreen(p2);
 
     ctx.beginPath();
     ctx.moveTo(screenP1.x, screenP1.y);
@@ -92,7 +92,7 @@ class CanvasDraw extends DebugDraw {
 
   void _pathCircle(Vector2 center, num radius, Color3i color) {
     _setColor(color);
-    final screenCenter = getWorldToScreen(center);
+    final screenCenter = worldToScreen(center);
 
     ctx.beginPath();
     ctx.arc(screenCenter.x, screenCenter.y, radius, 0, pi * 2, true);
