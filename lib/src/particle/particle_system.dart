@@ -268,7 +268,7 @@ class ParticleSystem {
       diagram.generate(stride / 2);
       final _createParticleGroupCallback =
           CreateParticleGroupCallback(this, groupDef);
-      diagram.getNodes(_createParticleGroupCallback);
+      diagram.nodes(_createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
       computeDepthForGroup(group);
@@ -308,7 +308,7 @@ class ParticleSystem {
       }
       diagram.generate(particleStride / 2);
       final callback = JoinParticleGroupsCallback(this, groupA, groupB);
-      diagram.getNodes(callback);
+      diagram.nodes(callback);
     }
 
     for (final particle in groupB.particles) {

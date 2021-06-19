@@ -121,13 +121,13 @@ class DynamicTree implements BroadPhaseStrategy {
   }
 
   @override
-  Object? getUserData(int proxyId) {
+  Object? userData(int proxyId) {
     assert(0 <= proxyId && proxyId < _nodeCapacity);
     return _nodes[proxyId].userData;
   }
 
   @override
-  AABB getFatAABB(int proxyId) {
+  AABB fatAABB(int proxyId) {
     assert(0 <= proxyId && proxyId < _nodeCapacity);
     return _nodes[proxyId].aabb;
   }
@@ -335,7 +335,7 @@ class DynamicTree implements BroadPhaseStrategy {
       return 0.0;
     }
 
-    final rootArea = _root!.aabb.getPerimeter();
+    final rootArea = _root!.aabb.perimeter;
 
     var totalArea = 0.0;
     for (var i = 0; i < _nodeCapacity; ++i) {
@@ -345,7 +345,7 @@ class DynamicTree implements BroadPhaseStrategy {
         continue;
       }
 
-      totalArea += node.aabb.getPerimeter();
+      totalArea += node.aabb.perimeter;
     }
 
     return totalArea / rootArea;
@@ -383,7 +383,7 @@ class DynamicTree implements BroadPhaseStrategy {
         for (var j = i + 1; j < count; ++j) {
           final aabbj = _nodes[nodes[j]].aabb;
           b.combine2(aabbi, aabbj);
-          final cost = b.getPerimeter();
+          final cost = b.perimeter;
           if (cost < minCost) {
             iMin = i;
             jMin = j;
@@ -475,10 +475,10 @@ class DynamicTree implements BroadPhaseStrategy {
       final child1 = node.child1!;
       final child2 = node.child2!;
 
-      final area = node.aabb.getPerimeter();
+      final area = node.aabb.perimeter;
 
       _combinedAABB.combine2(node.aabb, leafAABB);
-      final combinedArea = _combinedAABB.getPerimeter();
+      final combinedArea = _combinedAABB.perimeter;
 
       // Cost of creating a new parent for this node and the new leaf
       final cost = 2.0 * combinedArea;
@@ -490,11 +490,11 @@ class DynamicTree implements BroadPhaseStrategy {
       double cost1;
       if (child1.child1 == null) {
         _combinedAABB.combine2(leafAABB, child1.aabb);
-        cost1 = _combinedAABB.getPerimeter() + inheritanceCost;
+        cost1 = _combinedAABB.perimeter + inheritanceCost;
       } else {
         _combinedAABB.combine2(leafAABB, child1.aabb);
-        final oldArea = child1.aabb.getPerimeter();
-        final newArea = _combinedAABB.getPerimeter();
+        final oldArea = child1.aabb.perimeter;
+        final newArea = _combinedAABB.perimeter;
         cost1 = (newArea - oldArea) + inheritanceCost;
       }
 
@@ -502,11 +502,11 @@ class DynamicTree implements BroadPhaseStrategy {
       double cost2;
       if (child2.child1 == null) {
         _combinedAABB.combine2(leafAABB, child2.aabb);
-        cost2 = _combinedAABB.getPerimeter() + inheritanceCost;
+        cost2 = _combinedAABB.perimeter + inheritanceCost;
       } else {
         _combinedAABB.combine2(leafAABB, child2.aabb);
-        final oldArea = child2.aabb.getPerimeter();
-        final newArea = _combinedAABB.getPerimeter();
+        final oldArea = child2.aabb.perimeter;
+        final newArea = _combinedAABB.perimeter;
         cost2 = newArea - oldArea + inheritanceCost;
       }
 

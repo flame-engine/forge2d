@@ -15,9 +15,9 @@ abstract class BroadPhaseStrategy {
   /// @return true if the proxy was re-inserted.
   bool moveProxy(int proxyId, AABB aabb, Vector2 displacement);
 
-  Object? getUserData(int proxyId);
+  Object? userData(int proxyId);
 
-  AABB getFatAABB(int proxyId);
+  AABB fatAABB(int proxyId);
 
   /// Query an AABB for overlapping proxies. The callback class is called for each proxy that
   /// overlaps the supplied AABB.

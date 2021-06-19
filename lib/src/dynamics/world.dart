@@ -352,8 +352,8 @@ class World {
       for (final c in contactManager.contacts) {
         final fixtureA = c.fixtureA;
         final fixtureB = c.fixtureB;
-        cA.setFrom(fixtureA.getAABB(c.indexA).getCenter());
-        cB.setFrom(fixtureB.getAABB(c.indexB).getCenter());
+        cA.setFrom(fixtureA.getAABB(c.indexA).center);
+        cB.setFrom(fixtureB.getAABB(c.indexB).center);
         debugDraw!.drawSegment(cA, cB, color);
       }
     }
