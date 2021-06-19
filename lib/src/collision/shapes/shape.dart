@@ -10,7 +10,7 @@ abstract class Shape {
   Shape(this.shapeType);
 
   /// Get the number of child primitives
-  int getChildCount();
+  int get childCount;
 
   /// Test a point for containment in this shape. This only works for convex shapes.
   ///

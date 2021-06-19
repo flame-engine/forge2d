@@ -145,7 +145,7 @@ class Fixture {
     shape = def.shape.clone();
 
     // Reserve proxy space
-    final childCount = shape.getChildCount();
+    final childCount = shape.childCount;
     if (proxies.length < childCount) {
       final old = proxies;
       final newLength = max(old.length * 2, childCount);
@@ -163,7 +163,7 @@ class Fixture {
     assert(_proxyCount == 0);
 
     // Create proxies in the broad-phase.
-    _proxyCount = shape.getChildCount();
+    _proxyCount = shape.childCount;
 
     for (var i = 0; i < _proxyCount; ++i) {
       final proxy = proxies[i];

@@ -119,7 +119,7 @@ class Car {
         break;
     }
     final turnPerTimeStep = _turnSpeedPerSec * 1000 / time;
-    final angleNow = _flJoint.getJointAngle();
+    final angleNow = _flJoint.jointAngle();
     final angleToTurn = (desiredAngle - angleNow)
         .clamp(-turnPerTimeStep, turnPerTimeStep)
         .toDouble();
@@ -129,7 +129,7 @@ class Car {
   }
 
   void update(num time, int controlState) {
-    if (_body.isAwake() || controlState != 0) {
+    if (_body.isAwake || controlState != 0) {
       _body.setAwake(true);
       _updateFriction();
       _updateDrive(controlState);

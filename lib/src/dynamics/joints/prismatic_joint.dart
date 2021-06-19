@@ -129,7 +129,7 @@ class PrismaticJoint extends Joint {
   }
 
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     final temp = Vector2.zero();
     temp
       ..setFrom(_axis)
@@ -142,7 +142,7 @@ class PrismaticJoint extends Joint {
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return invDt * _impulse.y;
   }
 
@@ -202,9 +202,9 @@ class PrismaticJoint extends Joint {
     final pA = Vector2.zero();
     final pB = Vector2.zero();
     final axis = Vector2.zero();
-    pA.setFrom(bodyA.getWorldPoint(localAnchorA));
-    pB.setFrom(bodyB.getWorldPoint(localAnchorB));
-    axis.setFrom(bodyA.getWorldVector(localXAxisA));
+    pA.setFrom(bodyA.worldPoint(localAnchorA));
+    pB.setFrom(bodyB.worldPoint(localAnchorB));
+    axis.setFrom(bodyA.worldVector(localXAxisA));
     pB.sub(pA);
     final translation = pB.dot(axis);
     return translation;

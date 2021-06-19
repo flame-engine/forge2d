@@ -208,7 +208,7 @@ class ParticleSystem {
       final shape = groupDef.shape;
       transform.setVec2Angle(groupDef.position, groupDef.angle);
       final aabb = _temp;
-      final childCount = shape!.getChildCount();
+      final childCount = shape!.childCount;
       for (var childIndex = 0; childIndex < childCount; childIndex++) {
         if (childIndex == 0) {
           shape.computeAABB(aabb, identity, childIndex);
@@ -268,7 +268,7 @@ class ParticleSystem {
       diagram.generate(stride / 2);
       final _createParticleGroupCallback =
           CreateParticleGroupCallback(this, groupDef);
-      diagram.getNodes(_createParticleGroupCallback);
+      diagram.nodes(_createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
       computeDepthForGroup(group);
@@ -308,7 +308,7 @@ class ParticleSystem {
       }
       diagram.generate(particleStride / 2);
       final callback = JoinParticleGroupsCallback(this, groupA, groupB);
-      diagram.getNodes(callback);
+      diagram.nodes(callback);
     }
 
     for (final particle in groupB.particles) {
@@ -512,13 +512,13 @@ class ParticleSystem {
     for (final group in groupBuffer) {
       allGroupFlags |= group.groupFlags;
     }
-    final gravityx = step.dt * gravityScale * world.getGravity().x;
-    final gravityy = step.dt * gravityScale * world.getGravity().y;
+    final gravityX = step.dt * gravityScale * world.gravity.x;
+    final gravityY = step.dt * gravityScale * world.gravity.y;
     final criticalVelocitySquared = getCriticalVelocitySquared(step);
     for (final particle in _particles) {
       final v = particle.velocity;
-      v.x += gravityx;
-      v.y += gravityy;
+      v.x += gravityX;
+      v.y += gravityY;
       final v2 = v.x * v.x + v.y * v.y;
       if (v2 > criticalVelocitySquared) {
         final a =

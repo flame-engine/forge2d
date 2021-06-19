@@ -60,25 +60,25 @@ class PulleyJoint extends Joint {
 
   double getCurrentLengthA() {
     final p = Vector2.zero();
-    p.setFrom(bodyA.getWorldPoint(localAnchorA));
+    p.setFrom(bodyA.worldPoint(localAnchorA));
     p.sub(_groundAnchorA);
     return p.length;
   }
 
   double getCurrentLengthB() {
     final p = Vector2.zero();
-    p.setFrom(bodyB.getWorldPoint(localAnchorB));
+    p.setFrom(bodyB.worldPoint(localAnchorB));
     p.sub(_groundAnchorB);
     return p.length;
   }
 
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     return Vector2.copy(_uB)..scale(_impulse)..scale(invDt);
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return 0.0;
   }
 

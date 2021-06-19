@@ -13,7 +13,7 @@ class ChainAndCircleContact extends Contact {
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     final chain = fixtureA.shape as ChainShape;
-    final edge = chain.getChildEdge(indexA);
+    final edge = chain.childEdge(indexA);
     World.collision.collideEdgeAndCircle(
       manifold,
       edge,

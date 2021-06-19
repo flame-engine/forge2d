@@ -24,12 +24,12 @@ class ChainShape extends Shape {
   }
 
   @override
-  int getChildCount() {
+  int get childCount {
     return vertexCount - 1;
   }
 
   /// Get a child edge.
-  EdgeShape getChildEdge(int index) {
+  EdgeShape childEdge(int index) {
     assert(0 <= index && index < vertexCount - 1);
     final edge = EdgeShape();
 
@@ -72,7 +72,7 @@ class ChainShape extends Shape {
     int childIndex,
     Vector2 normalOut,
   ) {
-    final edge = getChildEdge(childIndex);
+    final edge = childEdge(childIndex);
     return edge.computeDistanceToOut(xf, p, 0, normalOut);
   }
 
@@ -156,7 +156,7 @@ class ChainShape extends Shape {
   ///
   /// @param index the index of the vertex 0 <= index < getVertexCount( )
   /// @param vertex output vertex object, must be initialized
-  Vector2 getVertex(int index) {
+  Vector2 vertex(int index) {
     assert(index >= 0 && index < vertices.length);
     return vertices[index].clone();
   }

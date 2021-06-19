@@ -37,8 +37,8 @@ class PulleyJointDef extends JointDef {
     bodyB = b2;
     groundAnchorA = ga1;
     groundAnchorB = ga2;
-    localAnchorA.setFrom(bodyA.getLocalPoint(anchor1));
-    localAnchorB.setFrom(bodyB.getLocalPoint(anchor2));
+    localAnchorA.setFrom(bodyA.localPoint(anchor1));
+    localAnchorB.setFrom(bodyB.localPoint(anchor2));
     final d1 = anchor1 - ga1;
     lengthA = d1.length;
     final d2 = anchor2 - ga2;

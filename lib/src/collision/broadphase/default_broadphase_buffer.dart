@@ -47,18 +47,18 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
   @override
   Object? getUserData(int proxyId) {
-    return _tree.getUserData(proxyId);
+    return _tree.userData(proxyId);
   }
 
   @override
-  AABB getFatAABB(int proxyId) {
-    return _tree.getFatAABB(proxyId);
+  AABB fatAABB(int proxyId) {
+    return _tree.fatAABB(proxyId);
   }
 
   @override
   bool testOverlap(int proxyIdA, int proxyIdB) {
-    final a = _tree.getFatAABB(proxyIdA);
-    final b = _tree.getFatAABB(proxyIdB);
+    final a = _tree.fatAABB(proxyIdA);
+    final b = _tree.fatAABB(proxyIdB);
     if (b.lowerBound.x - a.upperBound.x > 0.0 ||
         b.lowerBound.y - a.upperBound.y > 0.0) {
       return false;
@@ -73,9 +73,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
   }
 
   @override
-  int getProxyCount() {
-    return _moveBuffer.length;
-  }
+  int get proxyCount => _moveBuffer.length;
 
   @override
   void drawTree(DebugDraw argDraw) {
@@ -96,7 +94,7 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
       // We have to query the tree with the fat AABB so that
       // we don't fail to create a pair that may touch later.
-      final fatAABB = _tree.getFatAABB(proxyId);
+      final fatAABB = _tree.fatAABB(proxyId);
 
       // Query tree, create pairs and add them pair buffer.
       _tree.query(this, fatAABB);
@@ -107,8 +105,8 @@ class DefaultBroadPhaseBuffer implements TreeCallback, BroadPhase {
 
     // Send the pairs back to the client.
     for (final pair in _pairBuffer) {
-      final userDataA = _tree.getUserData(pair.proxyIdA);
-      final userDataB = _tree.getUserData(pair.proxyIdB);
+      final userDataA = _tree.userData(pair.proxyIdA);
+      final userDataB = _tree.userData(pair.proxyIdB);
 
       callback.addPair(userDataA, userDataB);
     }

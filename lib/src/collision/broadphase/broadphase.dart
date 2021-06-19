@@ -22,12 +22,12 @@ abstract class BroadPhase {
 
   Object? getUserData(int proxyId);
 
-  AABB getFatAABB(int proxyId);
+  AABB fatAABB(int proxyId);
 
   bool testOverlap(int proxyIdA, int proxyIdB);
 
   /// Get the number of proxies.
-  int getProxyCount();
+  int get proxyCount;
 
   void drawTree(DebugDraw argDraw);
 

@@ -125,8 +125,8 @@ class ContactManager implements PairCallback {
         c.flags &= ~Contact.filterFlag;
       }
 
-      final activeA = bodyA.isAwake() && bodyA.bodyType != BodyType.static;
-      final activeB = bodyB.isAwake() && bodyB.bodyType != BodyType.static;
+      final activeA = bodyA.isAwake && bodyA.bodyType != BodyType.static;
+      final activeB = bodyB.isAwake && bodyB.bodyType != BodyType.static;
 
       // At least one body must be awake and it must be dynamic or kinematic.
       if (activeA == false && activeB == false) {

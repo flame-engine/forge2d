@@ -44,7 +44,7 @@ class UpdateBodyContactsCallback implements QueryCallback {
     final bI = b.getInertia() - bm * b.getLocalCenter().length2;
     final invBm = bm > 0 ? 1 / bm : 0.0;
     final invBI = bI > 0 ? 1 / bI : 0.0;
-    final childCount = shape.getChildCount();
+    final childCount = shape.childCount;
     for (var childIndex = 0; childIndex < childCount; childIndex++) {
       final aabb = fixture.getAABB(childIndex);
       final aabbLowerBoundX = aabb.lowerBound.x - system.particleDiameter;
@@ -210,7 +210,7 @@ class SolveCollisionCallback implements QueryCallback {
     }
     final shape = fixture.shape;
     final body = fixture.body;
-    final childCount = shape.getChildCount();
+    final childCount = shape.childCount;
     for (var childIndex = 0; childIndex < childCount; childIndex++) {
       final aabb = fixture.getAABB(childIndex);
       final particleDiameter = system.particleDiameter;

@@ -26,7 +26,7 @@ class VoronoiDiagram {
   int _countX = 0, _countY = 0;
   final Map<int, VoronoiGenerator> _diagram = {};
 
-  void getNodes(VoronoiDiagramCallback callback) {
+  void nodes(VoronoiDiagramCallback callback) {
     for (var y = 0; y < _countY - 1; y++) {
       for (var x = 0; x < _countX - 1; x++) {
         final i = x + y * _countX;

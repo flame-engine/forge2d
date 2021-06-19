@@ -31,8 +31,8 @@ class WheelJointDef extends JointDef {
   void initialize(Body b1, Body b2, Vector2 anchor, Vector2 axis) {
     bodyA = b1;
     bodyB = b2;
-    localAnchorA.setFrom(b1.getLocalPoint(anchor));
-    localAnchorB.setFrom(b2.getLocalPoint(anchor));
-    localAxisA.setFrom(bodyA.getLocalVector(axis));
+    localAnchorA.setFrom(b1.localPoint(anchor));
+    localAnchorB.setFrom(b2.localPoint(anchor));
+    localAxisA.setFrom(bodyA.localVector(axis));
   }
 }

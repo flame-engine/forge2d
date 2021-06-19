@@ -57,16 +57,16 @@ class AABB {
   }
 
   /// Get the center of the AABB
-  Vector2 getCenter() => (lowerBound + upperBound)..scale(0.5);
+  Vector2 get center => (lowerBound + upperBound)..scale(0.5);
 
   /// Get the extents of the AABB (half-widths).
-  Vector2 getExtents() {
+  Vector2 get extents {
     return Vector2.copy(upperBound)
       ..sub(lowerBound)
       ..scale(.5);
   }
 
-  void getExtentsToOut(final Vector2 out) {
+  void extentsToOut(final Vector2 out) {
     out.x = (upperBound.x - lowerBound.x) * .5;
     out.y = (upperBound.y - lowerBound.y) * .5; // thanks FDN1
   }
@@ -97,7 +97,7 @@ class AABB {
   }
 
   /// Gets the perimeter length
-  double getPerimeter() {
+  double get perimeter {
     return 2.0 * (upperBound.x - lowerBound.x + upperBound.y - lowerBound.y);
   }
 

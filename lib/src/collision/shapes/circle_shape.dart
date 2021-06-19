@@ -21,7 +21,7 @@ class CircleShape extends Shape {
   }
 
   @override
-  int getChildCount() => 1;
+  int get childCount => 1;
 
   /// Get the supporting vertex index in the given direction.
   int getSupport(final Vector2 d) => 0;

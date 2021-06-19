@@ -71,8 +71,8 @@ class GearJoint extends Joint {
   GearJoint(GearJointDef def)
       : _joint1 = def.joint1,
         _joint2 = def.joint2,
-        _typeA = def.joint1.getType(),
-        _typeB = def.joint2.getType(),
+        _typeA = def.joint1.type,
+        _typeB = def.joint2.type,
         _bodyC = def.joint1.bodyA,
         _bodyD = def.joint2.bodyA,
         super(def) {
@@ -157,12 +157,12 @@ class GearJoint extends Joint {
 
   /// Get the reaction force given the inverse time step. Unit is N.
   @override
-  Vector2 getReactionForce(double invDt) {
+  Vector2 reactionForce(double invDt) {
     return Vector2.copy(_jvAC)..scale(_impulse)..scale(invDt);
   }
 
   @override
-  double getReactionTorque(double invDt) {
+  double reactionTorque(double invDt) {
     return invDt * _impulse * _jwA;
   }
 

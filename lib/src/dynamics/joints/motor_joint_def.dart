@@ -23,10 +23,10 @@ class MotorJointDef extends JointDef {
     this.bodyA = bodyA;
     this.bodyB = bodyB;
     final xB = bodyB.position;
-    linearOffset.setFrom(bodyA.getLocalPoint(xB));
+    linearOffset.setFrom(bodyA.localPoint(xB));
 
-    final angleA = bodyA.getAngle();
-    final angleB = bodyB.getAngle();
+    final angleA = bodyA.angle;
+    final angleB = bodyB.angle;
     angularOffset = angleB - angleA;
   }
 }

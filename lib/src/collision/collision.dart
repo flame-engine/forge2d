@@ -113,7 +113,7 @@ class Collision {
   /// Compute the point states given two manifolds. The states pertain to the transition from
   /// manifold1 to manifold2. So state1 is either persist or remove while state2 is either add or
   /// persist.
-  static void getPointStates(
+  static void computePointStates(
     final List<PointState> state1,
     final List<PointState> state2,
     final Manifold manifold1,
