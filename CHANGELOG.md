@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.7.3
+ - Fix bug with the hull creation of `PolygonShape`
+
 ## 0.7.2
  - Use field getters on getter methods where computation is O(1)
 
