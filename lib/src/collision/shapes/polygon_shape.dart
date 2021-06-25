@@ -88,31 +88,46 @@ class PolygonShape extends Shape {
     }
 
     final hull = <Vector2>[rightMostPoint];
-    for (final point1 in points) {
-      var currentPoint = hull.last;
-      for (final point2 in points) {
-        if (currentPoint == hull.last) {
-          currentPoint = point2;
+    var pointOnHull = rightMostPoint;
+    do {
+      // Set first point in the set as the initial candidate for the
+      // next point on the convex hull.
+      var endPoint = points[0];
+
+      // Test the candidate point against all points in the set to find
+      // the next convex hull point.
+      for (final point in points) {
+        // If the candidate point is the current last point on the convex
+        // hull, update the candidate point to the current point and continue
+        // checking against the remaining points.
+        if (endPoint == pointOnHull) {
+          endPoint = point;
           continue;
         }
 
-        final r = currentPoint.clone()..sub(point1);
-        final v = point2.clone()..sub(point1);
+        // Use the cross product of the vectors from the current convex hull
+        // point to the candidate point and the test point to see if the winding
+        // changes from CCW to CW. This indicates the current point is a better
+        // candidate for a hull point. Update the candidate point.
+        final r = endPoint.clone()..sub(pointOnHull);
+        final v = point.clone()..sub(pointOnHull);
         final c = r.cross(v);
         if (c < 0.0) {
-          currentPoint = point2;
+          endPoint = point;
         }
 
         // Collinearity check
         if (c == 0.0 && v.length2 > r.length2) {
-          currentPoint = point2;
+          endPoint = point;
         }
       }
 
-      if (!hull.contains(currentPoint)) {
-        hull.add(currentPoint);
+      // Set the end point candidate as the new current convex hull point.
+      pointOnHull = endPoint;
+      if (!hull.contains(pointOnHull)) {
+        hull.add(pointOnHull);
       }
-    }
+    } while (pointOnHull != hull.first);
 
     // Copy vertices.
     vertices.clear();
