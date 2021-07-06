@@ -232,10 +232,8 @@ class World {
 
   /// Take a time step. This performs collision detection, integration, and constraint solution.
   ///
-  /// @param timeStep the amount of time to simulate, this should not vary.
-  /// @param velocityIterations for the velocity constraint solver.
-  /// @param positionIterations for the position constraint solver.
-  void stepDt(double dt, int velocityIterations, int positionIterations) {
+  /// @param dt the amount of time that has passed since the last step
+  void stepDt(double dt) {
     _stepTimer.reset();
     _tempTimer.reset();
     // If new fixtures were added, we need to find the new contacts.
@@ -247,8 +245,8 @@ class World {
     flags |= locked;
 
     _step.dt = dt;
-    _step.velocityIterations = velocityIterations;
-    _step.positionIterations = positionIterations;
+    _step.velocityIterations = settings.velocityIterations;
+    _step.positionIterations = settings.positionIterations;
     if (dt > 0.0) {
       _step.invDt = 1.0 / dt;
     } else {

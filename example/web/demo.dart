@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html' hide Body;
+
 import 'package:forge2d/forge2d_browser.dart' hide Timer;
 
 /// An abstract class for any Demo of the Forge2D library.
@@ -19,8 +20,6 @@ abstract class Demo {
 
   /// The timestep and iteration numbers.
   static const double timeStep = 1 / 60;
-  static const int velocityIterations = 10;
-  static const int positionIterations = 10;
 
   /// The physics world.
   final World world;
@@ -65,7 +64,7 @@ abstract class Demo {
   /// Advances the world forward by timestep seconds.
   void step(num timestamp) {
     _stopwatch.reset();
-    world.stepDt(timeStep, velocityIterations, positionIterations);
+    world.stepDt(timeStep);
     elapsedUs = _stopwatch.elapsedMicroseconds;
 
     // Clear the animation panel and draw new frame.

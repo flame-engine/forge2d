@@ -97,3 +97,9 @@ const int maxTriadDistanceSquared = maxTriadDistance * maxTriadDistance;
 
 /// The initial size of particle data buffers.
 const int minParticleBufferCapacity = 256;
+
+/// The amount of iterations for velocities that should be done in the solver.
+int velocityIterations = 10;
+
+/// The amount of iterations for positions that should be done in the solver.
+int positionIterations = 10;

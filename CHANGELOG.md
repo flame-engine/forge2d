@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.8.0
+ - Move `velocityIterations` and `positionIterations` to settings instead of `stepDt`
+ - Make `settings.velocityThreshold` mutable
+
 ## 0.7.3
  - Fix bug with the hull creation of `PolygonShape`
 

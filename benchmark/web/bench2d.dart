@@ -107,7 +107,7 @@ class Bench2d {
   }
 
   void step() {
-    world.stepDt(_timeStep, 3, 3);
+    world.stepDt(_timeStep);
   }
 
   void printChecksum(World world) {
