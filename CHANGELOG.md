@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [Next]
+ - Export `settings.dart`
+
 ## 0.8.0
  - Move `velocityIterations` and `positionIterations` to settings instead of `stepDt`
  - Make `settings.velocityThreshold` mutable
