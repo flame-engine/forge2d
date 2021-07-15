@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [Next]
+## 0.8.1
  - Export `settings.dart`
  - Make fields in `settings.dart` mutable
 
