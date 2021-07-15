@@ -313,9 +313,9 @@ class Island {
     if (allowSleep) {
       var minSleepTime = double.maxFinite;
 
-      const linTolSqr =
+      final linTolSqr =
           settings.linearSleepTolerance * settings.linearSleepTolerance;
-      const angTolSqr =
+      final angTolSqr =
           settings.angularSleepTolerance * settings.angularSleepTolerance;
 
       for (final bodyMeta in bodies) {

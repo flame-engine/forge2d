@@ -11,7 +11,6 @@ export 'src/callbacks/query_callback.dart';
 export 'src/callbacks/raycast_callback.dart';
 export 'src/callbacks/tree_callback.dart';
 export 'src/callbacks/tree_raycast_callback.dart';
-
 export 'src/collision/aabb.dart';
 export 'src/collision/broadphase/broadphase.dart';
 export 'src/collision/broadphase/broadphase_strategy.dart';
@@ -37,12 +36,10 @@ export 'src/collision/shapes/shape.dart';
 export 'src/collision/shapes/shape_type.dart';
 export 'src/collision/time_of_impact.dart';
 export 'src/collision/world_manifold.dart';
-
 export 'src/common.dart';
 export 'src/dynamics/body.dart';
 export 'src/dynamics/body_def.dart';
 export 'src/dynamics/body_type.dart';
-
 export 'src/dynamics/contact_manager.dart';
 export 'src/dynamics/contacts/chain_and_circle_contact.dart';
 export 'src/dynamics/contacts/chain_and_polygon_contact.dart';
@@ -57,13 +54,11 @@ export 'src/dynamics/contacts/polygon_and_circle_contact.dart';
 export 'src/dynamics/contacts/polygon_contact.dart';
 export 'src/dynamics/contacts/position.dart';
 export 'src/dynamics/contacts/velocity.dart';
-
 export 'src/dynamics/filter.dart';
 export 'src/dynamics/fixture.dart';
 export 'src/dynamics/fixture_def.dart';
 export 'src/dynamics/fixture_proxy.dart';
 export 'src/dynamics/island.dart';
-
 export 'src/dynamics/joints/constant_volume_joint.dart';
 export 'src/dynamics/joints/constant_volume_joint_def.dart';
 export 'src/dynamics/joints/distance_joint.dart';
@@ -93,12 +88,10 @@ export 'src/dynamics/joints/weld_joint.dart';
 export 'src/dynamics/joints/weld_joint_def.dart';
 export 'src/dynamics/joints/wheel_joint.dart';
 export 'src/dynamics/joints/wheel_joint_def.dart';
-
 export 'src/dynamics/profile.dart';
 export 'src/dynamics/solver_data.dart';
 export 'src/dynamics/time_step.dart';
 export 'src/dynamics/world.dart';
-
 export 'src/particle/particle.dart';
 export 'src/particle/particle_body_contact.dart';
 export 'src/particle/particle_callbacks.dart';
@@ -109,5 +102,5 @@ export 'src/particle/particle_group_type.dart';
 export 'src/particle/particle_system.dart';
 export 'src/particle/particle_type.dart';
 export 'src/particle/voronoi_diagram.dart';
-
+export 'src/settings.dart';
 export 'src/vector_math.dart';
