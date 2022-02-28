@@ -1,31 +1,36 @@
-<!--
-  Thanks for contributing!
+# Description
 
-  Provide a description of your changes below and a general summary in the title
+*Replace this paragraph with a description of what this PR is doing. 
+If you're modifying existing behavior, describe the existing behavior, how this PR is changing it,
+and what motivated the change. If this is a breaking change, specify explicitly which APIs have been
+changed.*
 
-  Please look at the following checklist to ensure that your PR can be accepted quickly:
--->
+## Checklist
 
-## Status
+Before you create this PR confirm that it meets all requirements listed below by checking the
+relevant checkboxes (`[x]`). This will ensure a smooth and quick review process.
 
-**READY/IN DEVELOPMENT/HOLD**
+- [ ] The title of my PR starts with a [Conventional Commit] prefix (`fix:`, `feat:`, `docs:` etc).
+- [ ] I have read the [Contributor Guide] and followed the process outlined for submitting PRs.
+- [ ] I have updated/added tests for ALL new/updated/fixed functionality.
+- [ ] I have updated/added relevant documentation in `docs` and added dartdoc comments with `///`.
+- [ ] I have updated/added relevant examples in `examples`.
 
-## Breaking Changes
+## Breaking Change
 
-YES | NO
+Does your PR require Flame users to manually update their apps to accommodate your change?
 
-## Description
+- [ ] Yes, this is a breaking change. (Indicate it in the [Conventional Commit] prefix with a `!`,
+  e.g. `feat!:`, `fix!:`).
+- [ ] No, this is *not* a breaking change.
 
-<!--- Describe your changes in detail -->
+## Related Issues
 
-## Type of Change
+*Replace this paragraph with a list of issues related to this PR from the [issue database].
+Indicate which of these issues are resolved or fixed by this PR, i.e. Fixes #xxxx*
 
-<!--- Put an `x` in all the boxes that apply: -->
-
-- [ ] ✨ New feature (non-breaking change which adds functionality)
-- [ ] 🛠️ Bug fix (non-breaking change which fixes an issue)
-- [ ] ❌ Breaking change (fix or feature that would cause existing functionality to change)
-- [ ] 🧹 Code refactor
-- [ ] ✅ Build configuration change
-- [ ] 📝 Documentation
-- [ ] 🗑️ Chore
+<!-- Links -->
+[issue database]: https://github.com/flame-engine/flame/issues
+[Contributor Guide]: https://github.com/flame-engine/flame/blob/main/CONTRIBUTING.md
+[Flame Style Guide]: https://github.com/flame-engine/flame/blob/main/STYLEGUIDE.md
+[Conventional Commit]: https://conventionalcommits.org
