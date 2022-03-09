@@ -141,7 +141,8 @@ class World {
     assert(!isLocked);
 
     // Delete the attached joints.
-    for (final joint in body.joints) {
+    while (body.joints.isNotEmpty) {
+      final joint = body.joints.first;
       destroyListener?.onDestroyJoint(joint);
       destroyJoint(joint);
     }

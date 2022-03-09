@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [Next]
+ - Fix `ConcurrentModificationError` when destroying a body with joints
+
 ## 0.8.1
  - Export `settings.dart`
  - Make fields in `settings.dart` mutable
