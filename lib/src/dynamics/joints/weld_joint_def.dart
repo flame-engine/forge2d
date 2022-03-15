@@ -1,6 +1,6 @@
 import '../../../forge2d.dart';
 
-class WeldJointDef extends JointDef {
+class WeldJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The body2 angle minus body1 angle in the reference state (radians).
   double referenceAngle = 0.0;
 
@@ -13,7 +13,7 @@ class WeldJointDef extends JointDef {
   WeldJointDef() : super(JointType.weld);
 
   /// Initialize the bodies, anchors, and reference angle using a world anchor point.
-  void initialize(Body bodyA, Body bodyB, Vector2 anchor) {
+  void initialize(A bodyA, B bodyB, Vector2 anchor) {
     this.bodyA = bodyA;
     this.bodyB = bodyB;
     localAnchorA.setFrom(bodyA.localPoint(anchor));
