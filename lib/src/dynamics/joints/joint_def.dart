@@ -9,7 +9,7 @@ import '../../../forge2d.dart';
 /// [Joint]s between [BodyType.static] and/or [BodyType.kinematic] are allowed,
 /// but have no effect and use some processing time.
 ///
-/// If possible, avoid directly extending [JointDef]. Instead, extend from
+/// If possible, avoid directly extending [JointDef]. Instead, extend from an
 /// already defined [JointDef] inplementations.
 /// {@endtemplate}
 abstract class JointDef {
