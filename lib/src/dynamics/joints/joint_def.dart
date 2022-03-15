@@ -10,7 +10,7 @@ import '../../../forge2d.dart';
 /// but have no effect and use some processing time.
 ///
 /// If possible, avoid directly extending [JointDef]. Instead, extend from an
-/// already defined [JointDef] inplementations.
+/// already defined [JointDef] implementation.
 /// {@endtemplate}
 abstract class JointDef {
   /// {@macro dynamics.joints.joint_def.type}
