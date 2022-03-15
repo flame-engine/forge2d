@@ -1,5 +1,4 @@
 enum JointType {
-  unknown,
   revolute,
   prismatic,
   distance,
