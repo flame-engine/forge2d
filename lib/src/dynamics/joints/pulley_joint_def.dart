@@ -3,7 +3,7 @@ import '../../settings.dart' as settings;
 
 /// Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, and a
 /// pulley ratio.
-class PulleyJointDef extends JointDef {
+class PulleyJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The first ground anchor in world coordinates. This point never moves.
   Vector2 groundAnchorA = Vector2(-1.0, 1.0);
 
@@ -25,8 +25,8 @@ class PulleyJointDef extends JointDef {
 
   /// Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
   void initialize(
-    Body b1,
-    Body b2,
+    A b1,
+    B b2,
     Vector2 ga1,
     Vector2 ga2,
     Vector2 anchor1,
