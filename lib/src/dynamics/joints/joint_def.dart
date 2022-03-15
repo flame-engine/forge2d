@@ -1,14 +1,26 @@
 import '../../../forge2d.dart';
 
-/// Joint definitions are used to construct joints.
+/// {@template dynamics.joints.joint_def}
+/// [JointDef]s are used to construct [Joint]s.
+///
+/// All [Joint]s are connected between two different [Body]ies.
+/// One [Body] may [BodyType.static].
+///
+/// [Joint]s between [BodyType.static] and/or [BodyType.kinematic] are allowed,
+/// but have no effect and use some processing time.
+///
+/// If possible, avoid directly extending [JointDef]. Instead, extend from
+/// already defined [JointDef] inplementations.
+/// {@endtemplate}
 abstract class JointDef {
+  /// {@macro dynamics.joints.joint_def.type}
+  JointDef(this.type, [this.collideConnected = false]);
+
   /// The local anchor point relative to body1's origin.
   final Vector2 localAnchorA = Vector2.zero();
 
   /// The local anchor point relative to body2's origin.
   final Vector2 localAnchorB = Vector2.zero();
-
-  JointDef(this.type, [this.collideConnected = false]);
 
   /// The joint type is set automatically for concrete joint types.
   JointType type;
