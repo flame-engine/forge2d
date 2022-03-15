@@ -9,7 +9,7 @@ import '../../../forge2d.dart';
 /// <li>you might not know where the center of mass will be.</li>
 /// <li>if you add/remove shapes from a body and recompute the mass, the joints will be broken.</li>
 /// </ul>
-class RevoluteJointDef extends JointDef {
+class RevoluteJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The body2 angle minus body1 angle in the reference state (radians).
   double referenceAngle = 0.0;
 
@@ -38,7 +38,7 @@ class RevoluteJointDef extends JointDef {
   /// @param b1
   /// @param b2
   /// @param anchor
-  void initialize(final Body b1, final Body b2, final Vector2 anchor) {
+  void initialize(final A b1, final B b2, final Vector2 anchor) {
     bodyA = b1;
     bodyB = b2;
     localAnchorA.setFrom(bodyA.localPoint(anchor));
