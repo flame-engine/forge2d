@@ -5,7 +5,7 @@ import '../../../forge2d.dart';
 /// can violate the constraint slightly. The joint translation is zero when the local anchor points
 /// coincide in world space. Using local anchors and a local axis helps when saving and loading a
 /// game.
-class WheelJointDef extends JointDef {
+class WheelJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The local translation axis in body1.
   final Vector2 localAxisA = Vector2.zero();
 
@@ -28,7 +28,7 @@ class WheelJointDef extends JointDef {
     localAxisA.setValues(1.0, 0.0);
   }
 
-  void initialize(Body b1, Body b2, Vector2 anchor, Vector2 axis) {
+  void initialize(A b1, B b2, Vector2 anchor, Vector2 axis) {
     bodyA = b1;
     bodyB = b2;
     localAnchorA.setFrom(b1.localPoint(anchor));
