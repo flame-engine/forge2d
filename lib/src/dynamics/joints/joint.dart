@@ -29,9 +29,6 @@ abstract class Joint {
         return RopeJoint(def as RopeJointDef);
       case JointType.motor:
         return MotorJoint(def as MotorJointDef);
-      case JointType.unknown:
-      default:
-        throw 'Exception unknown joint type';
     }
   }
 
