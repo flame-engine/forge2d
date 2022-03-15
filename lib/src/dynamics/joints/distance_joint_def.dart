@@ -5,8 +5,7 @@ import '../../../forge2d.dart';
 /// configuration can violate the constraint slightly. This helps when saving and loading a game.
 ///
 /// @warning Do not use a zero or short length.
-
-class DistanceJointDef extends JointDef {
+class DistanceJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The equilibrium length between the anchor points.
   double length = 1.0;
 
@@ -25,8 +24,8 @@ class DistanceJointDef extends JointDef {
   /// @param anchor1 World anchor on first body
   /// @param anchor2 World anchor on second body
   void initialize(
-    final Body b1,
-    final Body b2,
+    final A b1,
+    final B b2,
     final Vector2 anchor1,
     final Vector2 anchor2,
   ) {
