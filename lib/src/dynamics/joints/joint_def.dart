@@ -1,7 +1,7 @@
 import '../../../forge2d.dart';
 
 /// Joint definitions are used to construct joints.
-class JointDef {
+abstract class JointDef {
   /// The local anchor point relative to body1's origin.
   final Vector2 localAnchorA = Vector2.zero();
 
