@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [Next]
+## 0.8.2
  - Fix `ConcurrentModificationError` when destroying a body with joints
 
 ## 0.8.1
