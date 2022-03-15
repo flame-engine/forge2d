@@ -1,7 +1,7 @@
 import '../../../forge2d.dart';
 
 /// Motor joint definition.
-class MotorJointDef extends JointDef {
+class MotorJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// Position of bodyB minus the position of bodyA, in bodyA's frame, in meters.
   final Vector2 linearOffset = Vector2.zero();
 
@@ -19,7 +19,7 @@ class MotorJointDef extends JointDef {
 
   MotorJointDef() : super(JointType.motor);
 
-  void initialize(Body bodyA, Body bodyB) {
+  void initialize(A bodyA, B bodyB) {
     this.bodyA = bodyA;
     this.bodyB = bodyB;
     final xB = bodyB.position;

@@ -7,7 +7,7 @@ import '../../../forge2d.dart';
 /// game.
 ///
 /// @warning at least one body should by dynamic with a non-fixed rotation.
-class PrismaticJointDef extends JointDef {
+class PrismaticJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The local translation axis in body1.
   final Vector2 localAxisA = Vector2(1.0, 0.0);
 
@@ -36,7 +36,7 @@ class PrismaticJointDef extends JointDef {
 
   /// Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
   /// axis.
-  void initialize(Body b1, Body b2, Vector2 anchor, Vector2 axis) {
+  void initialize(A b1, B b2, Vector2 anchor, Vector2 axis) {
     bodyA = b1;
     bodyB = b2;
     localAnchorA.setFrom(bodyA.localPoint(anchor));

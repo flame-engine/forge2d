@@ -1,7 +1,7 @@
 import '../../../forge2d.dart';
 
 /// Mouse joint definition. This requires a world target point, tuning parameters, and the time step.
-class MouseJointDef extends JointDef {
+class MouseJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The initial world target point. This is assumed to coincide with the body anchor initially.
   final Vector2 target = Vector2.zero();
 

@@ -1,7 +1,7 @@
 import '../../../forge2d.dart';
 
 /// Friction joint definition.
-class FrictionJointDef extends JointDef {
+class FrictionJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The maximum friction force in N.
   double maxForce = 0.0;
 
@@ -12,7 +12,7 @@ class FrictionJointDef extends JointDef {
 
   /// Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
   /// axis.
-  void initialize(Body bodyA, Body bodyB, Vector2 anchor) {
+  void initialize(A bodyA, B bodyB, Vector2 anchor) {
     this.bodyA = bodyA;
     this.bodyB = bodyB;
     localAnchorA.setFrom(bodyA.localPoint(anchor));

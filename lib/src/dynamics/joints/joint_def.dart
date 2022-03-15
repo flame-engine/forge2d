@@ -10,9 +10,9 @@ import '../../../forge2d.dart';
 /// but have no effect and use some processing time.
 ///
 /// If possible, avoid directly extending [JointDef]. Instead, extend from an
-/// already defined [JointDef] inplementations.
+/// already defined [JointDef] implementation.
 /// {@endtemplate}
-abstract class JointDef {
+abstract class JointDef<A extends Body, B extends Body> {
   /// {@macro dynamics.joints.joint_def.type}
   JointDef(this.type, [this.collideConnected = false]);
 
@@ -29,10 +29,10 @@ abstract class JointDef {
   Object? userData;
 
   /// The first attached body.
-  late Body bodyA;
+  late A bodyA;
 
   /// The second attached body.
-  late Body bodyB;
+  late B bodyB;
 
   /// Set this flag to true if the attached bodies should collide.
   bool collideConnected = false;
