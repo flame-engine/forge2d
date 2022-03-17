@@ -134,7 +134,7 @@ class CircleStress extends Demo {
         ..maxMotorTorque = 1000000.0
         ..enableMotor = true;
 
-      world.createJoint(rjd);
+      world.createJoint<RevoluteJoint>(rjd);
 
       for (var j = 0; j < columns; j++) {
         for (var i = 0; i < loadSize; i++) {

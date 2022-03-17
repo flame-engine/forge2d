@@ -164,10 +164,10 @@ class World {
   /// This may cause the connected bodies to cease colliding.
   ///
   /// @warning This function is locked during callbacks.
-  Joint createJoint(JointDef def) {
+  T createJoint<T extends Joint>(JointDef def) {
     assert(!isLocked);
 
-    final joint = Joint.create(this, def);
+    final joint = Joint.create<T>(this, def);
     joints.add(joint);
 
     joint.bodyA.joints.add(joint);

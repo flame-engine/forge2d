@@ -3,32 +3,35 @@ import '../../../forge2d.dart';
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
 /// joints also feature limits and motors.
 abstract class Joint {
-  static Joint create(World world, JointDef def) {
-    switch (def.type) {
-      case JointType.mouse:
-        return MouseJoint(def as MouseJointDef);
-      case JointType.distance:
-        return DistanceJoint(def as DistanceJointDef);
-      case JointType.prismatic:
-        return PrismaticJoint(def as PrismaticJointDef);
-      case JointType.revolute:
-        return RevoluteJoint(def as RevoluteJointDef);
-      case JointType.weld:
-        return WeldJoint(def as WeldJointDef);
-      case JointType.friction:
-        return FrictionJoint(def as FrictionJointDef);
-      case JointType.wheel:
-        return WheelJoint(def as WheelJointDef);
-      case JointType.gear:
-        return GearJoint(def as GearJointDef);
-      case JointType.pulley:
-        return PulleyJoint(def as PulleyJointDef);
-      case JointType.constantVolume:
-        return ConstantVolumeJoint(world, def as ConstantVolumeJointDef);
-      case JointType.rope:
-        return RopeJoint(def as RopeJointDef);
-      case JointType.motor:
-        return MotorJoint(def as MotorJointDef);
+  static T create<T extends Joint>(World world, JointDef def) {
+    if (T == ConstantVolumeJoint || def.type == JointType.constantVolume) {
+      return ConstantVolumeJoint(world, def as ConstantVolumeJointDef) as T;
+    } else if (T == DistanceJoint || def.type == JointType.distance) {
+      return DistanceJoint(def as DistanceJointDef) as T;
+    } else if (T == FrictionJoint || def.type == JointType.friction) {
+      return FrictionJoint(def as FrictionJointDef) as T;
+    } else if (T == GearJoint || def.type == JointType.gear) {
+      return GearJoint(def as GearJointDef) as T;
+    } else if (T == MotorJoint || def.type == JointType.motor) {
+      return MotorJoint(def as MotorJointDef) as T;
+    } else if (T == MouseJoint || def.type == JointType.mouse) {
+      return MouseJoint(def as MouseJointDef) as T;
+    } else if (T == PrismaticJoint || def.type == JointType.prismatic) {
+      return PrismaticJoint(def as PrismaticJointDef) as T;
+    } else if (T == PulleyJoint || def.type == JointType.pulley) {
+      return PulleyJoint(def as PulleyJointDef) as T;
+    } else if (T == RevoluteJoint || def.type == JointType.revolute) {
+      return RevoluteJoint(def as RevoluteJointDef) as T;
+    } else if (T == RopeJoint || def.type == JointType.rope) {
+      return RopeJoint(def as RopeJointDef) as T;
+    } else if (T == WeldJoint || def.type == JointType.weld) {
+      return WeldJoint(def as WeldJointDef) as T;
+    } else if (T == WheelJoint || def.type == JointType.wheel) {
+      return WheelJoint(def as WheelJointDef) as T;
+    } else {
+      throw ArgumentError(
+        'Invalid joint type $T with invalid joint definition ${def.type}',
+      );
     }
   }
 

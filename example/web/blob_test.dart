@@ -64,7 +64,7 @@ class BlobTest extends Demo {
     jointDef.frequencyHz = 10.0;
     jointDef.dampingRatio = 1.0;
     jointDef.collideConnected = false;
-    world.createJoint(jointDef);
+    world.createJoint<ConstantVolumeJoint>(jointDef);
 
     final bd2 = BodyDef();
     bd2.type = BodyType.dynamic;

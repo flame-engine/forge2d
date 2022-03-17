@@ -90,7 +90,7 @@ class FrictionJointTest extends Demo {
     frictionJointDef.maxTorque = 5.0;
     frictionJointDef.collideConnected = true;
 
-    world.createJoint(frictionJointDef);
+    world.createJoint<FrictionJoint>(frictionJointDef);
 
     // Add to list
     bodies.add(fallingBox);
