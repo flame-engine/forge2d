@@ -209,6 +209,16 @@ void main() {
           );
         },
       );
+
+      test('throws TypeError when invalid JointDef is given', () {
+        final jointDef = WheelJointDef()
+          ..bodyA = bodyA
+          ..bodyB = bodyB;
+        expect(
+          () => Joint.create<DistanceJoint>(world, jointDef),
+          throwsA(isA<TypeError>()),
+        );
+      });
     });
   });
 }
