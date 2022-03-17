@@ -40,7 +40,7 @@ void main() {
 
       final revoluteJointDef = RevoluteJointDef()
         ..initialize(body1, body2, body1.position);
-      world.createJoint(revoluteJointDef);
+      world.createJoint<RevoluteJoint>(revoluteJointDef);
 
       expect(body1.joints.length, 1);
       expect(body2.joints.length, 1);
