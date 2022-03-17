@@ -270,8 +270,7 @@ void main() {
       });
 
       test(
-        'throws TypeError '
-        'when Joint type is not valid',
+        'throws TypeError when Joint type is not valid',
         () {
           expect(
             () => Joint.create<UnknownJoint>(world, MockJointDef()),
