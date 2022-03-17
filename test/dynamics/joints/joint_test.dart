@@ -10,6 +10,8 @@ class MockJoint extends Mock implements Joint {}
 
 class MockDistanceJoint extends Mock implements DistanceJoint {}
 
+class MockRevoluteJoint extends Mock implements RevoluteJoint {}
+
 class UnknownJoint extends Joint {
   UnknownJoint(JointDef def) : super(def);
 
@@ -78,11 +80,15 @@ void main() {
           when(() => body.localPoint(any())).thenReturn(
             Vector2.zero(),
           );
-          when(() => world.createJoint(any())).thenReturn(
+          when(() => world.createJoint<DistanceJoint>(any())).thenReturn(
             MockDistanceJoint(),
           );
         }
 
+        expect(
+          Joint.create(world, jointDef),
+          isA<ConstantVolumeJoint>(),
+        );
         expect(
           Joint.create<ConstantVolumeJoint>(world, jointDef),
           isA<ConstantVolumeJoint>(),
@@ -94,6 +100,10 @@ void main() {
           ..bodyA = bodyA
           ..bodyB = bodyB;
         expect(
+          Joint.create(world, jointDef),
+          isA<DistanceJoint>(),
+        );
+        expect(
           Joint.create<DistanceJoint>(world, jointDef),
           isA<DistanceJoint>(),
         );
@@ -104,15 +114,39 @@ void main() {
           ..bodyA = bodyA
           ..bodyB = bodyB;
         expect(
+          Joint.create(world, jointDef),
+          isA<FrictionJoint>(),
+        );
+        expect(
           Joint.create<FrictionJoint>(world, jointDef),
           isA<FrictionJoint>(),
         );
       });
 
       test('creates GearJoint', () {
+        final joint = MockRevoluteJoint();
         final jointDef = GearJointDef()
           ..bodyA = bodyA
-          ..bodyB = bodyB;
+          ..bodyB = bodyB
+          ..joint1 = joint
+          ..joint2 = joint;
+
+        when(() => bodyA.transform).thenReturn(Transform.zero());
+        when(() => bodyB.transform).thenReturn(Transform.zero());
+        when(() => bodyA.sweep).thenReturn(Sweep());
+        when(() => bodyB.sweep).thenReturn(Sweep());
+
+        when(() => joint.type).thenReturn(JointType.revolute);
+        when(() => joint.bodyA).thenReturn(bodyA);
+        when(() => joint.bodyB).thenReturn(bodyB);
+        when(() => joint.localAnchorA).thenReturn(Vector2.zero());
+        when(() => joint.localAnchorB).thenReturn(Vector2.zero());
+        when(() => joint.referenceAngle).thenReturn(0);
+
+        expect(
+          Joint.create(world, jointDef),
+          isA<GearJoint>(),
+        );
         expect(
           Joint.create<GearJoint>(world, jointDef),
           isA<GearJoint>(),
@@ -124,6 +158,10 @@ void main() {
           ..bodyA = bodyA
           ..bodyB = bodyB;
         expect(
+          Joint.create(world, jointDef),
+          isA<MotorJoint>(),
+        );
+        expect(
           Joint.create<MotorJoint>(world, jointDef),
           isA<MotorJoint>(),
         );
@@ -133,6 +171,14 @@ void main() {
         final jointDef = MouseJointDef()
           ..bodyA = bodyA
           ..bodyB = bodyB;
+
+        when(() => bodyA.transform).thenReturn(Transform.zero());
+        when(() => bodyB.transform).thenReturn(Transform.zero());
+
+        expect(
+          Joint.create(world, jointDef),
+          isA<MouseJoint>(),
+        );
         expect(
           Joint.create<MouseJoint>(world, jointDef),
           isA<MouseJoint>(),
@@ -144,6 +190,10 @@ void main() {
           ..bodyA = bodyA
           ..bodyB = bodyB;
         expect(
+          Joint.create(world, jointDef),
+          isA<PrismaticJoint>(),
+        );
+        expect(
           Joint.create<PrismaticJoint>(world, jointDef),
           isA<PrismaticJoint>(),
         );
@@ -153,6 +203,10 @@ void main() {
         final jointDef = PulleyJointDef()
           ..bodyA = bodyA
           ..bodyB = bodyB;
+        expect(
+          Joint.create(world, jointDef),
+          isA<PulleyJoint>(),
+        );
         expect(
           Joint.create<PulleyJoint>(world, jointDef),
           isA<PulleyJoint>(),
@@ -164,6 +218,10 @@ void main() {
           ..bodyA = bodyA
           ..bodyB = bodyB;
         expect(
+          Joint.create(world, jointDef),
+          isA<RevoluteJoint>(),
+        );
+        expect(
           Joint.create<RevoluteJoint>(world, jointDef),
           isA<RevoluteJoint>(),
         );
@@ -173,6 +231,10 @@ void main() {
         final jointDef = RopeJointDef()
           ..bodyA = bodyA
           ..bodyB = bodyB;
+        expect(
+          Joint.create(world, jointDef),
+          isA<RopeJoint>(),
+        );
         expect(
           Joint.create<RopeJoint>(world, jointDef),
           isA<RopeJoint>(),
@@ -184,6 +246,10 @@ void main() {
           ..bodyA = bodyA
           ..bodyB = bodyB;
         expect(
+          Joint.create(world, jointDef),
+          isA<WeldJoint>(),
+        );
+        expect(
           Joint.create<WeldJoint>(world, jointDef),
           isA<WeldJoint>(),
         );
@@ -194,18 +260,22 @@ void main() {
           ..bodyA = bodyA
           ..bodyB = bodyB;
         expect(
+          Joint.create(world, jointDef),
+          isA<WheelJoint>(),
+        );
+        expect(
           Joint.create<WheelJoint>(world, jointDef),
           isA<WheelJoint>(),
         );
       });
 
       test(
-        'throws ArguementError '
-        'when Joint type is not defined',
+        'throws TypeError '
+        'when Joint type is not valid',
         () {
           expect(
             () => Joint.create<UnknownJoint>(world, MockJointDef()),
-            throwsArgumentError,
+            throwsA(isA<TypeError>()),
           );
         },
       );

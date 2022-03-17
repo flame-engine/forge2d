@@ -4,32 +4,34 @@ import '../../../forge2d.dart';
 /// joints also feature limits and motors.
 abstract class Joint {
   static T create<T extends Joint>(World world, JointDef def) {
-    if (T == ConstantVolumeJoint) {
+    if (T == ConstantVolumeJoint || def.type == JointType.constantVolume) {
       return ConstantVolumeJoint(world, def as ConstantVolumeJointDef) as T;
-    } else if (T == DistanceJoint) {
+    } else if (T == DistanceJoint || def.type == JointType.distance) {
       return DistanceJoint(def as DistanceJointDef) as T;
-    } else if (T == FrictionJoint) {
+    } else if (T == FrictionJoint || def.type == JointType.friction) {
       return FrictionJoint(def as FrictionJointDef) as T;
-    } else if (T == GearJoint) {
+    } else if (T == GearJoint || def.type == JointType.gear) {
       return GearJoint(def as GearJointDef) as T;
-    } else if (T == MotorJoint) {
+    } else if (T == MotorJoint || def.type == JointType.motor) {
       return MotorJoint(def as MotorJointDef) as T;
-    } else if (T == MouseJoint) {
+    } else if (T == MouseJoint || def.type == JointType.mouse) {
       return MouseJoint(def as MouseJointDef) as T;
-    } else if (T == PrismaticJoint) {
+    } else if (T == PrismaticJoint || def.type == JointType.prismatic) {
       return PrismaticJoint(def as PrismaticJointDef) as T;
-    } else if (T == PulleyJoint) {
+    } else if (T == PulleyJoint || def.type == JointType.pulley) {
       return PulleyJoint(def as PulleyJointDef) as T;
-    } else if (T == RevoluteJoint) {
+    } else if (T == RevoluteJoint || def.type == JointType.revolute) {
       return RevoluteJoint(def as RevoluteJointDef) as T;
-    } else if (T == RopeJoint) {
+    } else if (T == RopeJoint || def.type == JointType.rope) {
       return RopeJoint(def as RopeJointDef) as T;
-    } else if (T == WeldJoint) {
+    } else if (T == WeldJoint || def.type == JointType.weld) {
       return WeldJoint(def as WeldJointDef) as T;
-    } else if (T == WheelJoint) {
+    } else if (T == WheelJoint || def.type == JointType.wheel) {
       return WheelJoint(def as WheelJointDef) as T;
     } else {
-      throw ArgumentError('Unknown joint type: $T');
+      throw ArgumentError(
+        'Invalid joint type $T with invalid joint definition ${def.type}',
+      );
     }
   }
 
