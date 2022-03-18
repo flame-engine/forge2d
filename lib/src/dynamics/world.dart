@@ -1,17 +1,6 @@
 import 'dart:math';
 
 import '../../forge2d.dart';
-import '../callbacks/contact_filter.dart';
-import '../callbacks/contact_listener.dart';
-import '../callbacks/debug_draw.dart';
-import '../callbacks/destroy_listener.dart';
-import '../callbacks/particle_destroy_listener.dart';
-import '../callbacks/particle_query_callback.dart';
-import '../callbacks/particle_raycast_callback.dart';
-import '../callbacks/query_callback.dart';
-import '../callbacks/raycast_callback.dart';
-import '../callbacks/tree_callback.dart';
-import '../callbacks/tree_raycast_callback.dart';
 import '../settings.dart' as settings;
 
 /// The world class manages all physics entities, dynamic simulation, and asynchronous queries. The

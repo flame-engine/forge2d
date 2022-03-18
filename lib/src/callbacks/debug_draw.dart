@@ -1,5 +1,4 @@
 import '../../forge2d.dart';
-import '../particle/particle.dart';
 
 /// Implement this abstract class to allow DBox2d to automatically draw your physics for debugging
 /// purposes. Not intended to replace your own custom rendering routines!

@@ -234,7 +234,9 @@ class RopeJoint extends Joint {
 
   @override
   Vector2 reactionForce(double invDt) {
-    return Vector2.copy(_u)..scale(invDt)..scale(_impulse);
+    return Vector2.copy(_u)
+      ..scale(invDt)
+      ..scale(_impulse);
   }
 
   @override

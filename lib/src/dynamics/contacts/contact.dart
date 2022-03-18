@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import '../../../forge2d.dart';
-import '../../callbacks/contact_listener.dart';
 
 /// The class manages contact between two shapes. A contact exists for each overlapping AABB in the
 /// broad-phase (except if filtered). Therefore a contact object may exist that has no contact

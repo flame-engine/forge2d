@@ -1,10 +1,6 @@
 import 'dart:math';
 
 import '../../../forge2d.dart';
-import '../../../src/callbacks/debug_draw.dart';
-import '../../../src/callbacks/pair_callback.dart';
-import '../../../src/callbacks/tree_callback.dart';
-import '../../../src/callbacks/tree_raycast_callback.dart';
 
 /// The broad-phase is used for computing pairs and performing volume queries and ray casts. This
 /// broad-phase does not persist pairs. Instead, this reports potentially new pairs. It is up to the

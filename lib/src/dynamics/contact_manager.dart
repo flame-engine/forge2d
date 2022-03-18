@@ -1,7 +1,4 @@
 import '../../forge2d.dart';
-import '../callbacks/contact_filter.dart';
-import '../callbacks/contact_listener.dart';
-import '../callbacks/pair_callback.dart';
 
 /// Delegate of World.
 class ContactManager implements PairCallback {
