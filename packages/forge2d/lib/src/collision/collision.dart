@@ -694,12 +694,16 @@ class Collision {
       ..sub(a);
 
     // Barycentric coordinates
-    final u = _e.dot(_temp
-      ..setFrom(b)
-      ..sub(_q));
-    final v = _e.dot(_temp
-      ..setFrom(_q)
-      ..sub(a));
+    final u = _e.dot(
+      _temp
+        ..setFrom(b)
+        ..sub(_q),
+    );
+    final v = _e.dot(
+      _temp
+        ..setFrom(_q)
+        ..sub(a),
+    );
 
     final radius = edgeA.radius + circleB.radius;
 
@@ -724,9 +728,11 @@ class Collision {
         _e1
           ..setFrom(b1)
           ..sub(a1);
-        final u1 = _e1.dot(_temp
-          ..setFrom(b1)
-          ..sub(_q));
+        final u1 = _e1.dot(
+          _temp
+            ..setFrom(b1)
+            ..sub(_q),
+        );
 
         // Is the circle in Region AB of the previous edge?
         if (u1 > 0.0) {
@@ -765,9 +771,11 @@ class Collision {
         e2
           ..setFrom(b2)
           ..sub(a2);
-        final v2 = e2.dot(_temp
-          ..setFrom(_q)
-          ..sub(a2));
+        final v2 = e2.dot(
+          _temp
+            ..setFrom(_q)
+            ..sub(a2),
+        );
 
         // Is the circle in Region AB of the next edge?
         if (v2 > 0.0) {
@@ -794,9 +802,11 @@ class Collision {
     _p
       ..setFrom(a)
       ..scale(u)
-      ..add(_temp
-        ..setFrom(b)
-        ..scale(v));
+      ..add(
+        _temp
+          ..setFrom(b)
+          ..scale(v),
+      );
     _p.scale(1.0 / den);
     _d
       ..setFrom(_q)
@@ -808,9 +818,11 @@ class Collision {
 
     _n.x = -_e.y;
     _n.y = _e.x;
-    if (_n.dot(_temp
-          ..setFrom(_q)
-          ..sub(a)) <
+    if (_n.dot(
+          _temp
+            ..setFrom(_q)
+            ..sub(a),
+        ) <
         0.0) {
       _n.setValues(-_n.x, -_n.y);
     }
@@ -898,9 +910,11 @@ class EdgePolygonCollider {
       ..sub(v1);
     _edge1.normalize();
     normal1.setValues(_edge1.y, -_edge1.x);
-    final offset1 = normal1.dot(_temp
-      ..setFrom(centroidB)
-      ..sub(v1));
+    final offset1 = normal1.dot(
+      _temp
+        ..setFrom(centroidB)
+        ..sub(v1),
+    );
     var offset0 = 0.0;
     var offset2 = 0.0;
     var convex1 = false, convex2 = false;
@@ -913,9 +927,11 @@ class EdgePolygonCollider {
       _edge0.normalize();
       normal0.setValues(_edge0.y, -_edge0.x);
       convex1 = _edge0.cross(_edge1) >= 0.0;
-      offset0 = normal0.dot(_temp
-        ..setFrom(centroidB)
-        ..sub(v0));
+      offset0 = normal0.dot(
+        _temp
+          ..setFrom(centroidB)
+          ..sub(v0),
+      );
     }
 
     // Is there a following edge?
@@ -926,9 +942,11 @@ class EdgePolygonCollider {
       _edge2.normalize();
       normal2.setValues(_edge2.y, -_edge2.x);
       convex2 = _edge1.cross(_edge2) > 0.0;
-      offset2 = normal2.dot(_temp
-        ..setFrom(centroidB)
-        ..sub(v2));
+      offset2 = normal2.dot(
+        _temp
+          ..setFrom(centroidB)
+          ..sub(v2),
+      );
     }
 
     // Determine front or back collision. Determine collision normal limits.
@@ -1249,9 +1267,11 @@ class EdgePolygonCollider {
     for (var i = 0; i < settings.maxManifoldPoints; ++i) {
       double separation;
 
-      separation = _rf.normal.dot(_temp
-        ..setFrom(_clipPoints2[i].v)
-        ..sub(_rf.v1));
+      separation = _rf.normal.dot(
+        _temp
+          ..setFrom(_clipPoints2[i].v)
+          ..sub(_rf.v1),
+      );
 
       if (separation <= radius) {
         final cp = manifold.points[pointCount];

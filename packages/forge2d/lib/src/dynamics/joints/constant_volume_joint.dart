@@ -51,22 +51,24 @@ class ConstantVolumeJoint extends Joint {
     }
     if (def.joints.isEmpty) {
       final distanceJointDef = DistanceJointDef();
-      _distanceJoints.addAll(List<DistanceJoint>.generate(
-        _bodies.length,
-        (i) {
-          final next = (i == _bodies.length - 1) ? 0 : i + 1;
-          distanceJointDef.frequencyHz = def.frequencyHz; // 20.0;
-          distanceJointDef.dampingRatio = def.dampingRatio; // 50.0;
-          distanceJointDef.collideConnected = def.collideConnected;
-          distanceJointDef.initialize(
-            _bodies[i],
-            _bodies[next],
-            _bodies[i].worldCenter,
-            _bodies[next].worldCenter,
-          );
-          return _world.createJoint<DistanceJoint>(distanceJointDef);
-        },
-      ));
+      _distanceJoints.addAll(
+        List<DistanceJoint>.generate(
+          _bodies.length,
+          (i) {
+            final next = (i == _bodies.length - 1) ? 0 : i + 1;
+            distanceJointDef.frequencyHz = def.frequencyHz; // 20.0;
+            distanceJointDef.dampingRatio = def.dampingRatio; // 50.0;
+            distanceJointDef.collideConnected = def.collideConnected;
+            distanceJointDef.initialize(
+              _bodies[i],
+              _bodies[next],
+              _bodies[i].worldCenter,
+              _bodies[next].worldCenter,
+            );
+            return _world.createJoint<DistanceJoint>(distanceJointDef);
+          },
+        ),
+      );
     } else {
       _distanceJoints.clear();
       _distanceJoints.addAll(def.joints);

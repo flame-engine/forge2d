@@ -942,11 +942,15 @@ class World {
 class WorldQueryWrapper implements TreeCallback {
   @override
   bool treeCallback(int nodeId) {
-    final proxy = broadPhase!.getUserData(nodeId) as FixtureProxy;
+    final userData = broadPhase.getUserData(nodeId);
+    if (userData == null) {
+      return false;
+    }
+    final proxy = userData as FixtureProxy;
     return callback?.reportFixture(proxy.fixture) ?? false;
   }
 
-  BroadPhase? broadPhase;
+  late BroadPhase broadPhase;
   QueryCallback? callback;
 }
 
@@ -958,8 +962,11 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
 
   @override
   double raycastCallback(RayCastInput input, int nodeId) {
-    final userData = broadPhase?.getUserData(nodeId) as FixtureProxy;
-    final proxy = userData;
+    final userData = broadPhase.getUserData(nodeId);
+    if (userData == null) {
+      return 0;
+    }
+    final proxy = userData as FixtureProxy;
     final fixture = proxy.fixture;
     final index = proxy.childIndex;
     final hit = fixture.raycast(_output, input, index);
@@ -986,6 +993,6 @@ class WorldRayCastWrapper implements TreeRayCastCallback {
     return input.maxFraction;
   }
 
-  BroadPhase? broadPhase;
+  late BroadPhase broadPhase;
   RayCastCallback? callback;
 }

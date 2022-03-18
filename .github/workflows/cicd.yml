@@ -1,0 +1,44 @@
+name: cicd
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  # BEGIN LINTING STAGE
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - uses: bluefireteam/melos-action@main
+      - run: melos run format-check
+
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - uses: bluefireteam/melos-action@main
+      - run: melos run analyze
+  # END LINTING STAGE
+
+  # BEGIN TESTING STAGE
+  test:
+    needs: [format, analyze]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - uses: bluefireteam/melos-action@main
+      - run: melos run test
+  # END TESTING STAGE

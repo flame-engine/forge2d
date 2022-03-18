@@ -335,9 +335,11 @@ class WheelJoint extends Joint {
 
     // Solve spring constraint
     {
-      final cDot = _ax.dot(temp
-            ..setFrom(vB)
-            ..sub(vA)) +
+      final cDot = _ax.dot(
+            temp
+              ..setFrom(vB)
+              ..sub(vA),
+          ) +
           _sBx * wB -
           _sAx * wA;
       final impulse = -_springMass * (cDot + _bias + _gamma * _springImpulse);
@@ -374,9 +376,11 @@ class WheelJoint extends Joint {
 
     // Solve point to line constraint
     {
-      final cDot = _ay.dot(temp
-            ..setFrom(vB)
-            ..sub(vA)) +
+      final cDot = _ay.dot(
+            temp
+              ..setFrom(vB)
+              ..sub(vA),
+          ) +
           _sBy * wB -
           _sAy * wA;
       final impulse = -_mass * cDot;

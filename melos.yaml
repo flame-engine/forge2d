@@ -1,0 +1,59 @@
+name: Forge2D
+repository: https://github.com/flame-engine/forge2d
+
+packages:
+  - packages/**
+
+ignore:
+  - packages/benchmark/build
+
+command:
+  version:
+    # Generate commit links in package changelogs.
+    linkToCommits: true
+    # Only allow versioning to happen on main branch.
+    branch: main
+    # Additionally build a changelog at the root of the workspace.
+    workspaceChangelog: true
+
+scripts:
+  lint:all:
+    run: melos run analyze && melos run format
+    description: Run all static analysis checks.
+
+  analyze:
+    run: |
+      melos exec -c 1 -- \
+        dart analyze --fatal-infos
+    description: Run `dart analyze` for all packages.
+
+  format:
+    run: melos exec dart format . --fix
+    description: Run `dart format` for all packages.
+
+  format-check:
+    run: melos exec dart format . --set-exit-if-changed
+    description: Run `dart format` checks for all packages.
+
+  dartdoc:
+    run: melos exec dart pub run dartdoc
+    description: Run dartdoc checks for all packages.
+
+  test:select:
+    run: melos exec -c 1 -- dart test
+    select-package:
+      dir-exists:
+        - test
+    description: Run `dart test` for selected packages.
+
+  test:
+    run: melos run test:select --no-select
+    description: Run all tests in this project.
+
+  coverage:
+    run: |
+      melos exec -- dart test --coverage &&
+      melos exec -- genhtml coverage/lcov.info --output-directory=coverage/
+    select-package:
+      dir-exists: test
+    description: Generate coverage for the selected package.

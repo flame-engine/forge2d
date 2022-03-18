@@ -1,6 +1,6 @@
 name: forge2d
 version: 0.8.2
-description: A 2D physics engine for Dart, also works with the Flame game engine in Flutter
+description: A 2D physics engine for Dart (based on Box2D), also works with the Flame game engine in Flutter
 homepage: https://github.com/flame-engine/forge2d
 
 environment:
@@ -12,3 +12,5 @@ dependencies:
 dev_dependencies:
   mocktail: ^0.3.0
   test: ^1.20.1
+  flame_lint: ^0.0.1
+  dartdoc: ^5.0.1

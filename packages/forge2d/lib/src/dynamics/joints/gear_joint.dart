@@ -319,12 +319,16 @@ class GearJoint extends Joint {
 
     final temp1 = Vector2.zero();
     final temp2 = Vector2.zero();
-    var cDot = _jvAC.dot(temp1
-          ..setFrom(vA)
-          ..sub(vC)) +
-        _jvBD.dot(temp2
-          ..setFrom(vB)
-          ..sub(vD));
+    var cDot = _jvAC.dot(
+          temp1
+            ..setFrom(vA)
+            ..sub(vC),
+        ) +
+        _jvBD.dot(
+          temp2
+            ..setFrom(vB)
+            ..sub(vD),
+        );
     cDot += (_jwA * wA - _jwC * wC) + (_jwB * wB - _jwD * wD);
 
     final impulse = -_mass * cDot;

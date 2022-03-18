@@ -276,7 +276,10 @@ class Fixture {
               ..add(_liquidOffset);
             renderCenter.sub(_liquidOffset);
             debugDraw.drawSegment(
-                renderCenter, _circleCenterMoved, _liquidColor);
+              renderCenter,
+              _circleCenterMoved,
+              _liquidColor,
+            );
             return;
           }
           if (wireframe) {
