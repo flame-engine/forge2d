@@ -74,7 +74,9 @@ class PulleyJoint extends Joint {
 
   @override
   Vector2 reactionForce(double invDt) {
-    return Vector2.copy(_uB)..scale(_impulse)..scale(invDt);
+    return Vector2.copy(_uB)
+      ..scale(_impulse)
+      ..scale(invDt);
   }
 
   @override

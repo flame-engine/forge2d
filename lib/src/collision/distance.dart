@@ -235,7 +235,9 @@ class _Simplex {
         _case33
           ..setFrom(vertex3.wA)
           ..scale(vertex3.a);
-        pA..add(_case3)..add(_case33);
+        pA
+          ..add(_case3)
+          ..add(_case33);
         pB.setFrom(pA);
         break;
       default:
