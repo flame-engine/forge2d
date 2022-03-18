@@ -3,8 +3,6 @@ import 'dart:math';
 
 import '../../forge2d.dart';
 import '../../forge2d_browser.dart';
-import '../particle/particle.dart';
-import 'debug_draw.dart';
 
 class CanvasDraw extends DebugDraw {
   /// The canvas rendering context with which to draw.

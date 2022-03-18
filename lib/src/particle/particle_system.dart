@@ -2,8 +2,6 @@ import 'dart:collection';
 import 'dart:math';
 
 import '../../forge2d.dart';
-import '../callbacks/particle_query_callback.dart';
-import '../callbacks/particle_raycast_callback.dart';
 import '../settings.dart' as settings;
 
 /// Connection between two particles

@@ -1,8 +1,6 @@
 import 'dart:math';
 
 import '../../forge2d.dart';
-import '../callbacks/contact_impulse.dart';
-import '../callbacks/contact_listener.dart';
 import '../settings.dart' as settings;
 
 /*

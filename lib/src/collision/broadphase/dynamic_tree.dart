@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import '../../../forge2d.dart';
-import '../../../src/callbacks/debug_draw.dart';
-import '../../../src/callbacks/tree_callback.dart';
-import '../../../src/callbacks/tree_raycast_callback.dart';
 import '../../settings.dart' as settings;
 
 /// A dynamic tree arranges data in a binary tree to accelerate queries such as volume queries and
