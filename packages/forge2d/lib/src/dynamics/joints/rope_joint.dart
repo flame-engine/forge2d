@@ -148,9 +148,11 @@ class RopeJoint extends Joint {
     vpB.add(vB);
 
     final c = _length - _maxLength;
-    var cDot = _u.dot(temp
-      ..setFrom(vpB)
-      ..sub(vpA));
+    var cDot = _u.dot(
+      temp
+        ..setFrom(vpB)
+        ..sub(vpA),
+    );
 
     // Predictive constraint.
     if (c < 0.0) {

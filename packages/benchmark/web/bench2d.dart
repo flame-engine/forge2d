@@ -65,7 +65,7 @@ class Bench2d {
         final bd = BodyDef()
           ..type = BodyType.dynamic
           ..position.setFrom(y);
-        world.createBody(bd)..createFixtureFromShape(shape, 5.0);
+        world.createBody(bd).createFixtureFromShape(shape, 5.0);
         y.add(deltaY);
       }
 
