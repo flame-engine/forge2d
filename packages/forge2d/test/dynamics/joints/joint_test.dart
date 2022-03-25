@@ -245,7 +245,7 @@ void main() {
         () {
           expect(
             () => Joint.create<UnknownJoint>(world, UnknownJointDef()),
-            throwsA(isA<ArgumentError>()),
+            throwsA(isA<TypeError>()),
           );
         },
       );
