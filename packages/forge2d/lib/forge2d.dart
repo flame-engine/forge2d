@@ -70,7 +70,6 @@ export 'src/dynamics/joints/gear_joint_def.dart';
 export 'src/dynamics/joints/jacobian.dart';
 export 'src/dynamics/joints/joint.dart';
 export 'src/dynamics/joints/joint_def.dart';
-export 'src/dynamics/joints/joint_type.dart';
 export 'src/dynamics/joints/limit_state.dart';
 export 'src/dynamics/joints/motor_joint.dart';
 export 'src/dynamics/joints/motor_joint_def.dart';

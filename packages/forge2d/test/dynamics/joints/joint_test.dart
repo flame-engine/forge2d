@@ -136,7 +136,6 @@ void main() {
         when(() => bodyA.sweep).thenReturn(Sweep());
         when(() => bodyB.sweep).thenReturn(Sweep());
 
-        when(() => joint.type).thenReturn(JointType.revolute);
         when(() => joint.bodyA).thenReturn(bodyA);
         when(() => joint.bodyB).thenReturn(bodyB);
         when(() => joint.localAnchorA).thenReturn(Vector2.zero());
@@ -274,7 +273,7 @@ void main() {
         () {
           expect(
             () => Joint.create<UnknownJoint>(world, MockJointDef()),
-            throwsA(isA<TypeError>()),
+            throwsA(isA<ArgumentError>()),
           );
         },
       );

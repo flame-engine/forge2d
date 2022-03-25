@@ -24,7 +24,7 @@ class WheelJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// Suspension damping ratio, one indicates critical damping
   double dampingRatio = 0.0;
 
-  WheelJointDef() : super(JointType.wheel) {
+  WheelJointDef() : super() {
     localAxisA.setValues(1.0, 0.0);
   }
 

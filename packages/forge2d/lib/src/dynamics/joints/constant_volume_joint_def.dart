@@ -10,10 +10,6 @@ class ConstantVolumeJointDef<A extends Body> extends JointDef<A, A> {
   final List<A> bodies = <A>[];
   final List<DistanceJoint> joints = [];
 
-  ConstantVolumeJointDef() : super(JointType.constantVolume) {
-    collideConnected = false;
-  }
-
   /// Adds a body to the group
   ///
   /// @param argBody

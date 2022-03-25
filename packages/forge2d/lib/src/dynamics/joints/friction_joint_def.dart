@@ -8,8 +8,6 @@ class FrictionJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The maximum friction torque in N-m.
   double maxTorque = 0.0;
 
-  FrictionJointDef() : super(JointType.friction);
-
   /// Initialize the bodies, anchors, axis, and reference angle using the world anchor and world
   /// axis.
   void initialize(A bodyA, B bodyB, Vector2 anchor) {

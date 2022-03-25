@@ -14,16 +14,13 @@ import '../../../forge2d.dart';
 /// {@endtemplate}
 abstract class JointDef<A extends Body, B extends Body> {
   /// {@macro dynamics.joints.joint_def.type}
-  JointDef(this.type, [this.collideConnected = false]);
+  JointDef([this.collideConnected = false]);
 
   /// The local anchor point relative to body1's origin.
   final Vector2 localAnchorA = Vector2.zero();
 
   /// The local anchor point relative to body2's origin.
   final Vector2 localAnchorB = Vector2.zero();
-
-  /// The joint type is set automatically for concrete joint types.
-  JointType type;
 
   /// Use this to attach application specific data to your joints.
   Object? userData;
