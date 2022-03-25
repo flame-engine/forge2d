@@ -4,16 +4,16 @@ import '../../../forge2d.dart';
 /// [JointDef]s are used to construct [Joint]s.
 ///
 /// All [Joint]s are connected between two different [Body]ies.
-/// One [Body] may [BodyType.static].
+/// One [Body] may be [BodyType.static].
 ///
 /// [Joint]s between [BodyType.static] and/or [BodyType.kinematic] are allowed,
 /// but have no effect and use some processing time.
 ///
-/// If possible, avoid directly extending [JointDef]. Instead, extend from an
-/// already defined [JointDef] implementation.
+/// Don't subclass [JointDef]. Instead, extend from an already defined
+/// [JointDef] subclass.
 /// {@endtemplate}
 abstract class JointDef<A extends Body, B extends Body> {
-  /// {@macro dynamics.joints.joint_def.type}
+  /// {@macro dynamics.joints.joint_def}
   JointDef([this.collideConnected = false]);
 
   /// The local anchor point relative to body1's origin.
