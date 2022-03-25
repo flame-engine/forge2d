@@ -238,11 +238,11 @@ void main() {
       });
 
       test(
-        'throws TypeError when Joint type is not valid',
+        'throws ArgumentError when Joint type is not valid',
         () {
           expect(
             () => Joint.create<UnknownJoint>(world, UnknownJointDef()),
-            throwsA(isA<TypeError>()),
+            throwsA(isA<ArgumentError>()),
           );
         },
       );
