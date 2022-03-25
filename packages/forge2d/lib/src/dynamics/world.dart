@@ -750,7 +750,7 @@ class World {
           if (bodyA.sweep.alpha0 < bodyB.sweep.alpha0) {
             alpha0 = bodyB.sweep.alpha0;
             bodyA.sweep.advance(alpha0);
-          } else if (bodyB.sweep.alpha0 < bodyA.sweep.alpha0) {
+          } else {
             alpha0 = bodyA.sweep.alpha0;
             bodyB.sweep.advance(alpha0);
           }
