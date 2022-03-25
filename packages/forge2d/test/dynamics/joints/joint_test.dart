@@ -1,16 +1,5 @@
 import 'package:forge2d/forge2d.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-
-class MockWorld extends Mock implements World {}
-
-class MockJointDef extends Mock implements JointDef {}
-
-class MockJoint extends Mock implements Joint {}
-
-class MockDistanceJoint extends Mock implements DistanceJoint {}
-
-class MockRevoluteJoint extends Mock implements RevoluteJoint {}
 
 class UnknownJoint extends Joint {
   UnknownJoint(JointDef def) : super(def);
@@ -19,7 +8,10 @@ class UnknownJoint extends Joint {
   void noSuchMethod(_) {}
 }
 
-class MockBody extends Mock implements Body {}
+class UnknownJointDef extends JointDef {
+  // TODO(alestiago): Remove constructor once JointType is removed.
+  UnknownJointDef() : super(JointType.revolute);
+}
 
 void main() {
   group('Joint', () {
@@ -58,15 +50,10 @@ void main() {
       late Body bodyC;
 
       setUp(() {
-        world = MockWorld();
-        bodyA = MockBody();
-        bodyB = MockBody();
-        bodyC = MockBody();
-      });
-
-      setUpAll(() {
-        registerFallbackValue(Vector2.zero());
-        registerFallbackValue(MockJointDef());
+        world = World();
+        bodyA = Body(BodyDef(), world);
+        bodyB = Body(BodyDef(), world);
+        bodyC = Body(BodyDef(), world);
       });
 
       test('creates ConstantVolumeJoint', () {
@@ -74,16 +61,6 @@ void main() {
           ..addBody(bodyA)
           ..addBody(bodyB)
           ..addBody(bodyC);
-
-        for (final body in jointDef.bodies) {
-          when(() => body.worldCenter).thenReturn(Vector2.zero());
-          when(() => body.localPoint(any())).thenReturn(
-            Vector2.zero(),
-          );
-          when(() => world.createJoint<DistanceJoint>(any())).thenReturn(
-            MockDistanceJoint(),
-          );
-        }
 
         expect(
           Joint.create(world, jointDef),
@@ -124,24 +101,21 @@ void main() {
       });
 
       test('creates GearJoint', () {
-        final joint = MockRevoluteJoint();
+        final joint1 = RevoluteJoint(
+          RevoluteJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        final joint2 = RevoluteJoint(
+          RevoluteJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
         final jointDef = GearJointDef()
-          ..bodyA = bodyA
-          ..bodyB = bodyB
-          ..joint1 = joint
-          ..joint2 = joint;
-
-        when(() => bodyA.transform).thenReturn(Transform.zero());
-        when(() => bodyB.transform).thenReturn(Transform.zero());
-        when(() => bodyA.sweep).thenReturn(Sweep());
-        when(() => bodyB.sweep).thenReturn(Sweep());
-
-        when(() => joint.type).thenReturn(JointType.revolute);
-        when(() => joint.bodyA).thenReturn(bodyA);
-        when(() => joint.bodyB).thenReturn(bodyB);
-        when(() => joint.localAnchorA).thenReturn(Vector2.zero());
-        when(() => joint.localAnchorB).thenReturn(Vector2.zero());
-        when(() => joint.referenceAngle).thenReturn(0);
+          ..bodyA = Body(BodyDef(), world)
+          ..bodyB = Body(BodyDef(), world)
+          ..joint1 = joint1
+          ..joint2 = joint2;
 
         expect(
           Joint.create(world, jointDef),
@@ -171,9 +145,6 @@ void main() {
         final jointDef = MouseJointDef()
           ..bodyA = bodyA
           ..bodyB = bodyB;
-
-        when(() => bodyA.transform).thenReturn(Transform.zero());
-        when(() => bodyB.transform).thenReturn(Transform.zero());
 
         expect(
           Joint.create(world, jointDef),
@@ -273,8 +244,8 @@ void main() {
         'throws TypeError when Joint type is not valid',
         () {
           expect(
-            () => Joint.create<UnknownJoint>(world, MockJointDef()),
-            throwsA(isA<TypeError>()),
+            () => Joint.create<UnknownJoint>(world, UnknownJointDef()),
+            throwsA(isA<ArgumentError>()),
           );
         },
       );
