@@ -1,4 +1,5 @@
 import 'package:forge2d/forge2d.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class UnknownJointDef extends JointDef {}
@@ -9,6 +10,8 @@ class UnknownJoint extends Joint {
   @override
   void noSuchMethod(_) {}
 }
+
+class MockDebugDraw extends Mock implements DebugDraw {}
 
 void main() {
   group('Joint', () {
@@ -255,6 +258,152 @@ void main() {
           () => Joint.create<DistanceJoint>(world, jointDef),
           throwsA(isA<TypeError>()),
         );
+      });
+    });
+
+    group('render', () {
+      late World world;
+
+      late DebugDraw debugDraw;
+
+      setUp(() {
+        world = World();
+        debugDraw = MockDebugDraw();
+
+        registerFallbackValue(Vector2.zero());
+        registerFallbackValue(Color3i.black);
+      });
+
+      test('does nothing when joint is ConstantVolumeJoint', () {
+        final joint = ConstantVolumeJoint(
+          world,
+          ConstantVolumeJointDef()
+            ..addBody(Body(BodyDef(), world))
+            ..addBody(Body(BodyDef(), world))
+            ..addBody(Body(BodyDef(), world)),
+        );
+        joint.render(debugDraw);
+        verifyNever<void>(() => debugDraw.drawSegment(any(), any(), any()));
+      });
+
+      test('draws a single segment when joint is DistanceJoint', () {
+        final joint = DistanceJoint(
+          DistanceJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(1);
+      });
+
+      test('draws a single segment when joint is FrictionJoint', () {
+        final joint = FrictionJoint(
+          FrictionJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(1);
+      });
+
+      test('draws three segments when joint is GearJoint', () {
+        final joint = GearJoint(
+          GearJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world)
+            ..joint1 = RevoluteJoint(
+              RevoluteJointDef()
+                ..bodyA = Body(BodyDef(), world)
+                ..bodyB = Body(BodyDef(), world),
+            )
+            ..joint2 = RevoluteJoint(
+              RevoluteJointDef()
+                ..bodyA = Body(BodyDef(), world)
+                ..bodyB = Body(BodyDef(), world),
+            ),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test('draws three segments when joint is MotorJoint', () {
+        final joint = MotorJoint(
+          MotorJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test('does nothing when joint is MouseJoint', () {
+        final joint = MouseJoint(
+          MouseJointDef()
+            ..bodyA = (Body(BodyDef(), world))
+            ..bodyB = (Body(BodyDef(), world)),
+        );
+        joint.render(debugDraw);
+        verifyNever<void>(() => debugDraw.drawSegment(any(), any(), any()));
+      });
+
+      test('draws three segments  when joint is PrismaticJoint', () {
+        final joint = PrismaticJoint(
+          PrismaticJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test('draws three segments  when joint is PulleyJoint', () {
+        final joint = PulleyJoint(
+          PulleyJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test('draws three segments  when joint is RevoluteJoint', () {
+        final joint = RevoluteJoint(
+          RevoluteJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test('draws three segments when joint is RopeJoint', () {
+        final joint = RopeJoint(
+          RopeJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test('draws three segments  when joint is WeldJoint', () {
+        final joint = WeldJoint(
+          WeldJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test('draws three segments  when joint is WheelJoint', () {
+        final joint = WheelJoint(
+          WheelJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
       });
     });
   });
