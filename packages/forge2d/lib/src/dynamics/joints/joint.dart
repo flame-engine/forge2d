@@ -136,7 +136,7 @@ abstract class Joint {
     } else if (this is FrictionJoint) {
       debugDraw.drawSegment(x1, x2, _color);
     } else if (this is ConstantVolumeJoint || this is MouseJoint) {
-      // Don't draw this joints.
+      // Don't draw these joints.
     } else {
       debugDraw.drawSegment(x1, p1, _color);
       debugDraw.drawSegment(p1, p2, _color);
