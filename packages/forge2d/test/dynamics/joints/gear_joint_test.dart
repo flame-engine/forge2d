@@ -83,8 +83,7 @@ void main() {
             expect(GearJoint(revoluteRevoluteGearJointDef), isA<GearJoint>());
           });
 
-          test('when joint1 is RevoluteJoint and joint2 are is PrismaticJoint',
-              () {
+          test('when joint1 is RevoluteJoint and joint2 is PrismaticJoint', () {
             expect(GearJoint(revolutePrismaticGearJointDef), isA<GearJoint>());
           });
 
@@ -114,12 +113,12 @@ void main() {
               ..bodyA = Body(BodyDef(), world)
               ..bodyB = Body(BodyDef(), world),
           );
-
           final jointDef = GearJointDef()
             ..bodyA = Body(BodyDef(), world)
             ..bodyB = Body(BodyDef(), world)
             ..joint1 = unknownJoint1
             ..joint2 = unknownJoint2;
+
           expect(() => GearJoint(jointDef), throwsA(isA<AssertionError>()));
         },
       );
@@ -144,8 +143,7 @@ void main() {
           );
         });
 
-        test('when joint1 is RevoluteJoint and joint2 are is PrismaticJoint',
-            () {
+        test('when joint1 is RevoluteJoint and joint2 is PrismaticJoint', () {
           expect(
             () => GearJoint(revolutePrismaticGearJointDef)
                 .initVelocityConstraints(data),
@@ -190,8 +188,7 @@ void main() {
           );
         });
 
-        test('when joint1 is RevoluteJoint and joint2 are is PrismaticJoint',
-            () {
+        test('when joint1 is RevoluteJoint and joint2 is PrismaticJoint', () {
           expect(
             () => GearJoint(revolutePrismaticGearJointDef)
                 .solvePositionConstraints(data),
