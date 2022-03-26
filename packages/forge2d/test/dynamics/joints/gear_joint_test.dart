@@ -1,95 +1,219 @@
 import 'package:forge2d/forge2d.dart';
 import 'package:test/test.dart';
 
+class UnknownJointDef extends JointDef {}
+
+class UnknownJoint extends Joint {
+  UnknownJoint(UnknownJointDef unknownJointDef) : super(unknownJointDef);
+
+  @override
+  void noSuchMethod(_) {}
+}
+
 void main() {
   group('GearJoint', () {
-    group('can be instantiated', () {
-      test('with two RevoluteJoints', () {
-        final world = World();
+    late World world;
 
-        final joint1 = RevoluteJoint(
+    late GearJointDef revoluteRevoluteGearJointDef;
+    late GearJointDef revolutePrismaticGearJointDef;
+    late GearJointDef prismaticRevoluteGearJointDef;
+    late GearJointDef prismaticPrismaticGearJointDef;
+
+    setUp(() {
+      world = World();
+      revoluteRevoluteGearJointDef = GearJointDef()
+        ..bodyA = Body(BodyDef(), world)
+        ..bodyB = Body(BodyDef(), world)
+        ..joint1 = RevoluteJoint(
+          RevoluteJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        )
+        ..joint2 = RevoluteJoint(
           RevoluteJointDef()
             ..bodyA = Body(BodyDef(), world)
             ..bodyB = Body(BodyDef(), world),
         );
-        final joint2 = RevoluteJoint(
+      revolutePrismaticGearJointDef = GearJointDef()
+        ..bodyA = Body(BodyDef(), world)
+        ..bodyB = Body(BodyDef(), world)
+        ..joint1 = RevoluteJoint(
+          RevoluteJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        )
+        ..joint2 = PrismaticJoint(
+          PrismaticJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+      prismaticRevoluteGearJointDef = GearJointDef()
+        ..bodyA = Body(BodyDef(), world)
+        ..bodyB = Body(BodyDef(), world)
+        ..joint1 = PrismaticJoint(
+          PrismaticJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        )
+        ..joint2 = RevoluteJoint(
           RevoluteJointDef()
             ..bodyA = Body(BodyDef(), world)
             ..bodyB = Body(BodyDef(), world),
         );
-        final jointDef = GearJointDef()
-          ..bodyA = Body(BodyDef(), world)
-          ..bodyB = Body(BodyDef(), world)
-          ..joint1 = joint1
-          ..joint2 = joint2;
+      prismaticPrismaticGearJointDef = GearJointDef()
+        ..bodyA = Body(BodyDef(), world)
+        ..bodyB = Body(BodyDef(), world)
+        ..joint1 = PrismaticJoint(
+          PrismaticJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        )
+        ..joint2 = PrismaticJoint(
+          PrismaticJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world),
+        );
+    });
 
-        expect(GearJoint(jointDef), isA<GearJoint>());
+    group('constructor', () {
+      group(
+        'builds',
+        () {
+          test('when joint1 and joint2 are both RevoluteJoints', () {
+            expect(GearJoint(revoluteRevoluteGearJointDef), isA<GearJoint>());
+          });
+
+          test('when joint1 is RevoluteJoint and joint2 are is PrismaticJoint',
+              () {
+            expect(GearJoint(revolutePrismaticGearJointDef), isA<GearJoint>());
+          });
+
+          test('when joint1 is PrismaticJoint and joint2 is RevoluteJoint', () {
+            expect(GearJoint(prismaticRevoluteGearJointDef), isA<GearJoint>());
+          });
+
+          test('when joint1 and joint2 are both PrismaticJoints', () {
+            expect(GearJoint(revoluteRevoluteGearJointDef), isA<GearJoint>());
+          });
+        },
+      );
+
+      test(
+        'throws AssertionError '
+        'when joints are not RevoluteJoint and/or PrismaticJoint',
+        () {
+          // TODO(alestiago): Consider removing UnknownJoint and test for all
+          // possible Joint subclasses combinations.
+          final unknownJoint1 = UnknownJoint(
+            UnknownJointDef()
+              ..bodyA = Body(BodyDef(), world)
+              ..bodyB = Body(BodyDef(), world),
+          );
+          final unknownJoint2 = UnknownJoint(
+            UnknownJointDef()
+              ..bodyA = Body(BodyDef(), world)
+              ..bodyB = Body(BodyDef(), world),
+          );
+
+          final jointDef = GearJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world)
+            ..joint1 = unknownJoint1
+            ..joint2 = unknownJoint2;
+          expect(() => GearJoint(jointDef), throwsA(isA<AssertionError>()));
+        },
+      );
+    });
+
+    group('initVelocityConstraints', () {
+      late SolverData data;
+
+      setUp(() {
+        data = SolverData()
+          ..step = TimeStep()
+          ..positions = [Position()]
+          ..velocities = [Velocity()];
       });
 
-      test('with two PrismaticJoints', () {
-        final world = World();
+      group('returns normally', () {
+        test('when joint1 and joint2 are both RevoluteJoints', () {
+          expect(
+            () => GearJoint(revoluteRevoluteGearJointDef)
+                .initVelocityConstraints(data),
+            returnsNormally,
+          );
+        });
 
-        final joint1 = PrismaticJoint(
-          PrismaticJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world),
-        );
-        final joint2 = PrismaticJoint(
-          PrismaticJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world),
-        );
-        final jointDef = GearJointDef()
-          ..bodyA = Body(BodyDef(), world)
-          ..bodyB = Body(BodyDef(), world)
-          ..joint1 = joint1
-          ..joint2 = joint2;
+        test('when joint1 is RevoluteJoint and joint2 are is PrismaticJoint',
+            () {
+          expect(
+            () => GearJoint(revolutePrismaticGearJointDef)
+                .initVelocityConstraints(data),
+            returnsNormally,
+          );
+        });
 
-        expect(GearJoint(jointDef), isA<GearJoint>());
+        test('when joint1 is PrismaticJoint and joint2 is RevoluteJoint', () {
+          expect(
+            () => GearJoint(prismaticRevoluteGearJointDef)
+                .initVelocityConstraints(data),
+            returnsNormally,
+          );
+        });
+
+        test('when joint1 and joint2 are both PrismaticJoints', () {
+          expect(
+            () => GearJoint(prismaticPrismaticGearJointDef)
+                .initVelocityConstraints(data),
+            returnsNormally,
+          );
+        });
+      });
+    });
+
+    group('solvePositionConstraints', () {
+      late SolverData data;
+
+      setUp(() {
+        data = SolverData()
+          ..step = TimeStep()
+          ..positions = [Position()]
+          ..velocities = [Velocity()];
       });
 
-      test('with one RevoluteJoint and another PrismaticJoint', () {
-        final world = World();
+      group('returns normally', () {
+        test('when joint1 and joint2 are both RevoluteJoints', () {
+          expect(
+            () => GearJoint(revoluteRevoluteGearJointDef)
+                .solvePositionConstraints(data),
+            returnsNormally,
+          );
+        });
 
-        final joint1 = RevoluteJoint(
-          RevoluteJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world),
-        );
-        final joint2 = PrismaticJoint(
-          PrismaticJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world),
-        );
-        final jointDef = GearJointDef()
-          ..bodyA = Body(BodyDef(), world)
-          ..bodyB = Body(BodyDef(), world)
-          ..joint1 = joint1
-          ..joint2 = joint2;
+        test('when joint1 is RevoluteJoint and joint2 are is PrismaticJoint',
+            () {
+          expect(
+            () => GearJoint(revolutePrismaticGearJointDef)
+                .solvePositionConstraints(data),
+            returnsNormally,
+          );
+        });
 
-        expect(GearJoint(jointDef), isA<GearJoint>());
-      });
+        test('when joint1 is PrismaticJoint and joint2 is RevoluteJoint', () {
+          expect(
+            () => GearJoint(prismaticRevoluteGearJointDef)
+                .solvePositionConstraints(data),
+            returnsNormally,
+          );
+        });
 
-      test('with one PrismaticJoint and another RevoluteJoint', () {
-        final world = World();
-
-        final joint1 = PrismaticJoint(
-          PrismaticJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world),
-        );
-        final joint2 = RevoluteJoint(
-          RevoluteJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world),
-        );
-        final jointDef = GearJointDef()
-          ..bodyA = Body(BodyDef(), world)
-          ..bodyB = Body(BodyDef(), world)
-          ..joint1 = joint1
-          ..joint2 = joint2;
-
-        expect(GearJoint(jointDef), isA<GearJoint>());
+        test('when joint1 and joint2 are both PrismaticJoints', () {
+          expect(
+            () => GearJoint(prismaticPrismaticGearJointDef)
+                .solvePositionConstraints(data),
+            returnsNormally,
+          );
+        });
       });
     });
   });
