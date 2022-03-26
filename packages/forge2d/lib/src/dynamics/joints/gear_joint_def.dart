@@ -13,6 +13,4 @@ class GearJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   ///
   /// @see GearJoint
   double ratio = 0.0;
-
-  GearJointDef() : super(JointType.gear);
 }

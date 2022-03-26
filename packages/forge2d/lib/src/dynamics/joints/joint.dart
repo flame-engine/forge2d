@@ -4,33 +4,33 @@ import '../../../forge2d.dart';
 /// joints also feature limits and motors.
 abstract class Joint {
   static T create<T extends Joint>(World world, JointDef def) {
-    if (T == ConstantVolumeJoint || def.type == JointType.constantVolume) {
+    if (T == ConstantVolumeJoint || def is ConstantVolumeJointDef) {
       return ConstantVolumeJoint(world, def as ConstantVolumeJointDef) as T;
-    } else if (T == DistanceJoint || def.type == JointType.distance) {
+    } else if (T == DistanceJoint || def is DistanceJointDef) {
       return DistanceJoint(def as DistanceJointDef) as T;
-    } else if (T == FrictionJoint || def.type == JointType.friction) {
+    } else if (T == FrictionJoint || def is FrictionJointDef) {
       return FrictionJoint(def as FrictionJointDef) as T;
-    } else if (T == GearJoint || def.type == JointType.gear) {
+    } else if (T == GearJoint || def is GearJointDef) {
       return GearJoint(def as GearJointDef) as T;
-    } else if (T == MotorJoint || def.type == JointType.motor) {
+    } else if (T == MotorJoint || def is MotorJointDef) {
       return MotorJoint(def as MotorJointDef) as T;
-    } else if (T == MouseJoint || def.type == JointType.mouse) {
+    } else if (T == MouseJoint || def is MouseJointDef) {
       return MouseJoint(def as MouseJointDef) as T;
-    } else if (T == PrismaticJoint || def.type == JointType.prismatic) {
+    } else if (T == PrismaticJoint || def is PrismaticJointDef) {
       return PrismaticJoint(def as PrismaticJointDef) as T;
-    } else if (T == PulleyJoint || def.type == JointType.pulley) {
+    } else if (T == PulleyJoint || def is PulleyJointDef) {
       return PulleyJoint(def as PulleyJointDef) as T;
-    } else if (T == RevoluteJoint || def.type == JointType.revolute) {
+    } else if (T == RevoluteJoint || def is RevoluteJointDef) {
       return RevoluteJoint(def as RevoluteJointDef) as T;
-    } else if (T == RopeJoint || def.type == JointType.rope) {
+    } else if (T == RopeJoint || def is RopeJointDef) {
       return RopeJoint(def as RopeJointDef) as T;
-    } else if (T == WeldJoint || def.type == JointType.weld) {
+    } else if (T == WeldJoint || def is WeldJointDef) {
       return WeldJoint(def as WeldJointDef) as T;
-    } else if (T == WheelJoint || def.type == JointType.wheel) {
+    } else if (T == WheelJoint || def is WheelJointDef) {
       return WheelJoint(def as WheelJointDef) as T;
     } else {
       throw ArgumentError(
-        'Invalid joint type $T with invalid joint definition ${def.type}',
+        'Invalid joint type $T with invalid joint definition $def',
       );
     }
   }
@@ -39,7 +39,6 @@ abstract class Joint {
     joint.destructor();
   }
 
-  final JointType _type;
   late Body bodyA;
   late Body bodyB;
 
@@ -52,18 +51,12 @@ abstract class Joint {
   Joint(JointDef def)
       : assert(def.bodyA != def.bodyB),
         localAnchorA = def.localAnchorA,
-        localAnchorB = def.localAnchorB,
-        _type = def.type {
+        localAnchorB = def.localAnchorB {
     bodyA = def.bodyA;
     bodyB = def.bodyB;
     _collideConnected = def.collideConnected;
     islandFlag = false;
   }
-
-  /// get the type of the concrete joint.
-  ///
-  /// @return
-  JointType get type => _type;
 
   /// Whether the body is connected to the joint
   bool containsBody(Body body) => body == bodyA || body == bodyB;
@@ -131,34 +124,23 @@ abstract class Joint {
 
     _color.setFromRGBd(0.5, 0.8, 0.8);
 
-    switch (type) {
-      case JointType.distance:
-        debugDraw.drawSegment(p1, p2, _color);
-        break;
-
-      case JointType.pulley:
-        {
-          final pulley = this as PulleyJoint;
-          final s1 = pulley.getGroundAnchorA();
-          final s2 = pulley.getGroundAnchorB();
-          debugDraw.drawSegment(s1, p1, _color);
-          debugDraw.drawSegment(s2, p2, _color);
-          debugDraw.drawSegment(s1, s2, _color);
-        }
-        break;
-
-      case JointType.friction:
-        debugDraw.drawSegment(x1, x2, _color);
-        break;
-
-      case JointType.constantVolume:
-      case JointType.mouse:
-        // don't draw this
-        break;
-      default:
-        debugDraw.drawSegment(x1, p1, _color);
-        debugDraw.drawSegment(p1, p2, _color);
-        debugDraw.drawSegment(x2, p2, _color);
+    if (this is DistanceJoint) {
+      debugDraw.drawSegment(p1, p2, _color);
+    } else if (this is PulleyJoint) {
+      final pulley = this as PulleyJoint;
+      final s1 = pulley.getGroundAnchorA();
+      final s2 = pulley.getGroundAnchorB();
+      debugDraw.drawSegment(s1, p1, _color);
+      debugDraw.drawSegment(s2, p2, _color);
+      debugDraw.drawSegment(s1, s2, _color);
+    } else if (this is FrictionJoint) {
+      debugDraw.drawSegment(x1, x2, _color);
+    } else if (this is ConstantVolumeJoint || this is MouseJoint) {
+      // Don't draw these joints.
+    } else {
+      debugDraw.drawSegment(x1, p1, _color);
+      debugDraw.drawSegment(p1, p2, _color);
+      debugDraw.drawSegment(x2, p2, _color);
     }
   }
 }

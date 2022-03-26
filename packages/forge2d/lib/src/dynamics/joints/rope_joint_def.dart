@@ -7,7 +7,7 @@ class RopeJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// will have no effect.
   double maxLength = 0.0;
 
-  RopeJointDef() : super(JointType.rope) {
+  RopeJointDef() : super() {
     localAnchorA.setValues(-1.0, 0.0);
     localAnchorB.setValues(1.0, 0.0);
   }

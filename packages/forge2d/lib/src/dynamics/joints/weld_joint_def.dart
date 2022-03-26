@@ -10,8 +10,6 @@ class WeldJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The damping ratio. 0 = no damping, 1 = critical damping.
   double dampingRatio = 0.0;
 
-  WeldJointDef() : super(JointType.weld);
-
   /// Initialize the bodies, anchors, and reference angle using a world anchor point.
   void initialize(A bodyA, B bodyB, Vector2 anchor) {
     this.bodyA = bodyA;
