@@ -263,7 +263,6 @@ void main() {
 
     group('render', () {
       late World world;
-
       late DebugDraw debugDraw;
 
       setUp(() {
