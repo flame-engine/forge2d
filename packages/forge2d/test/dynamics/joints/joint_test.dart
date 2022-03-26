@@ -1,14 +1,14 @@
 import 'package:forge2d/forge2d.dart';
 import 'package:test/test.dart';
 
+class UnknownJointDef extends JointDef {}
+
 class UnknownJoint extends Joint {
-  UnknownJoint(JointDef def) : super(def);
+  UnknownJoint() : super(UnknownJointDef());
 
   @override
   void noSuchMethod(_) {}
 }
-
-class UnknownJointDef extends JointDef {}
 
 void main() {
   group('Joint', () {
