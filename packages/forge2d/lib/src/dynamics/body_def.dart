@@ -3,56 +3,74 @@ import '../../forge2d.dart';
 /// A body definition holds all the data needed to construct a rigid body. You can safely re-use body
 /// definitions. Shapes are added to a body after construction.
 class BodyDef {
+  BodyDef({
+    this.type = BodyType.static,
+    this.userData,
+    Vector2? position,
+    this.angle = 0.0,
+    Vector2? linearVelocity,
+    this.angularVelocity = 0.0,
+    this.linearDamping = 0.0,
+    this.angularDamping = 0.0,
+    this.allowSleep = true,
+    this.isAwake = true,
+    this.fixedRotation = false,
+    this.bullet = false,
+    this.active = true,
+    this.gravityScale = 1.0,
+  })  : position = position ?? Vector2.zero(),
+        linearVelocity = linearVelocity ?? Vector2.zero();
+
   /// The body type: static, kinematic, or dynamic. Note: if a dynamic body would have zero mass, the
   /// mass is set to one.
-  BodyType type = BodyType.static;
+  BodyType type;
 
   /// Use this to store application specific body data.
   Object? userData;
 
   /// The world position of the body. Avoid creating bodies at the origin since this can lead to many
   /// overlapping shapes.
-  Vector2 position = Vector2.zero();
+  Vector2 position;
 
   /// The world angle of the body in radians.
-  double angle = 0.0;
+  double angle;
 
   /// The linear velocity of the body in world co-ordinates.
-  Vector2 linearVelocity = Vector2.zero();
+  Vector2 linearVelocity;
 
   /// The angular velocity of the body.
-  double angularVelocity = 0.0;
+  double angularVelocity;
 
   /// Linear damping is use to reduce the linear velocity. The damping parameter can be larger than
   /// 1.0f but the damping effect becomes sensitive to the time step when the damping parameter is
   /// large.
-  double linearDamping = 0.0;
+  double linearDamping;
 
   /// Angular damping is use to reduce the angular velocity. The damping parameter can be larger than
   /// 1.0f but the damping effect becomes sensitive to the time step when the damping parameter is
   /// large.
-  double angularDamping = 0.0;
+  double angularDamping;
 
   /// Set this flag to false if this body should never fall asleep. Note that this increases CPU
   /// usage.
-  bool allowSleep = true;
+  bool allowSleep;
 
   /// Is this body initially sleeping?
-  bool isAwake = true;
+  bool isAwake;
 
   /// Should this body be prevented from rotating? Useful for characters.
-  bool fixedRotation = false;
+  bool fixedRotation;
 
   /// Is this a fast moving body that should be prevented from tunneling through other moving bodies?
   /// Note that all bodies are prevented from tunneling through kinematic and static bodies. This
   /// setting is only considered on dynamic bodies.
   ///
   /// @warning You should use this flag sparingly since it increases processing time.
-  bool bullet = false;
+  bool bullet;
 
   /// Does this body start out active?
-  bool active = true;
+  bool active;
 
   /// Experimental: scales the inertia tensor.
-  double gravityScale = 1.0;
+  double gravityScale;
 }
