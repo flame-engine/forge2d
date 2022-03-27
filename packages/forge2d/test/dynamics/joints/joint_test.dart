@@ -1,5 +1,4 @@
 import 'package:forge2d/forge2d.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 class UnknownJointDef extends JointDef {}
