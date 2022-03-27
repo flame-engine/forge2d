@@ -1,3 +1,12 @@
+## 0.10.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: moved Joint render method implementation (#49). ([b9128e5a](https://github.com/flame-engine/forge2d/commit/b9128e5a589140b596cf377faeaaf1140ada3c9e))
+ - **REFACTOR**: removed mock instances (#48). ([6fdf5646](https://github.com/flame-engine/forge2d/commit/6fdf5646a36b2749481269bfc56a0b88f35516c3))
+ - **BREAKING** **REFACTOR**: made `createJoint` use `Joint` over `JointDef` (#50). ([0e8f3655](https://github.com/flame-engine/forge2d/commit/0e8f3655b75d1c7c516b0ac79c7b6bde54fd3fcf))
+ - **BREAKING** **FEAT**: remove `JointType` (#45). ([42a39524](https://github.com/flame-engine/forge2d/commit/42a395241bb9c70932a1bbf6e84f936b52965d35))
+
 ## 0.9.0
 
 # CHANGELOG
