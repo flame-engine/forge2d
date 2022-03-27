@@ -218,34 +218,43 @@ void main() {
     });
 
     group('render', () {
-      late World world;
       late DebugDraw debugDraw;
 
       setUp(() {
-        world = World();
         debugDraw = MockDebugDraw();
 
         registerFallbackValue(Vector2.zero());
         registerFallbackValue(Color3i.black);
       });
 
-      test('draws three segments when joint is GearJoint', () {
-        // TODO(alestiago) : Test each joint type.
-        final joint = GearJoint(
-          GearJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world)
-            ..joint1 = RevoluteJoint(
-              RevoluteJointDef()
-                ..bodyA = Body(BodyDef(), world)
-                ..bodyB = Body(BodyDef(), world),
-            )
-            ..joint2 = RevoluteJoint(
-              RevoluteJointDef()
-                ..bodyA = Body(BodyDef(), world)
-                ..bodyB = Body(BodyDef(), world),
-            ),
-        );
+      test(
+          'draws three segments '
+          'when joint1 and joint2 are both RevoluteJoints', () {
+        final joint = GearJoint(revoluteRevoluteGearJointDef);
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test(
+          'draws three segments '
+          'when joint1 is RevoluteJoint and joint2 is PrismaticJoint', () {
+        final joint = GearJoint(revolutePrismaticGearJointDef);
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test(
+          'draws three segments '
+          'when joint1 is PrismaticJoint and joint2 is RevoluteJoint', () {
+        final joint = GearJoint(prismaticRevoluteGearJointDef);
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
+      });
+
+      test(
+          'draws three segments '
+          'when joint1 and joint2 are both PrismaticJoints', () {
+        final joint = GearJoint(prismaticPrismaticGearJointDef);
         joint.render(debugDraw);
         verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
       });
