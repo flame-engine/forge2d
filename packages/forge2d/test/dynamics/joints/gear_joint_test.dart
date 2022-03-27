@@ -1,5 +1,8 @@
 import 'package:forge2d/forge2d.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+
+import '../../helpers/helpers.dart';
 
 class UnknownJointDef extends JointDef {}
 
@@ -211,6 +214,40 @@ void main() {
             returnsNormally,
           );
         });
+      });
+    });
+
+    group('render', () {
+      late World world;
+      late DebugDraw debugDraw;
+
+      setUp(() {
+        world = World();
+        debugDraw = MockDebugDraw();
+
+        registerFallbackValue(Vector2.zero());
+        registerFallbackValue(Color3i.black);
+      });
+
+      test('draws three segments when joint is GearJoint', () {
+        // TODO(alestiago) : Test each joint type.
+        final joint = GearJoint(
+          GearJointDef()
+            ..bodyA = Body(BodyDef(), world)
+            ..bodyB = Body(BodyDef(), world)
+            ..joint1 = RevoluteJoint(
+              RevoluteJointDef()
+                ..bodyA = Body(BodyDef(), world)
+                ..bodyB = Body(BodyDef(), world),
+            )
+            ..joint2 = RevoluteJoint(
+              RevoluteJointDef()
+                ..bodyA = Body(BodyDef(), world)
+                ..bodyB = Body(BodyDef(), world),
+            ),
+        );
+        joint.render(debugDraw);
+        verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
       });
     });
   });
