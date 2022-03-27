@@ -156,7 +156,7 @@ class World {
   /// Adding a joint doesn't wake up the bodies.
   ///
   /// Warning: This function is locked during callbacks.
-  void addJoint(Joint joint) {
+  void createJoint(Joint joint) {
     assert(!isLocked);
     joints.add(joint);
 

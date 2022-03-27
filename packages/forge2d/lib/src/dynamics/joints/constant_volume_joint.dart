@@ -68,7 +68,7 @@ class ConstantVolumeJoint extends Joint {
             );
 
             final distanceJoint = DistanceJoint(distanceJointDef);
-            _world.addJoint(distanceJoint);
+            _world.createJoint(distanceJoint);
 
             return distanceJoint;
           },

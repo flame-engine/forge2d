@@ -135,7 +135,7 @@ class CircleStress extends Demo {
         ..enableMotor = true;
 
       final revoluteJoint = RevoluteJoint(revoluteJointDef);
-      world.addJoint(revoluteJoint);
+      world.createJoint(revoluteJoint);
 
       for (var j = 0; j < columns; j++) {
         for (var i = 0; i < loadSize; i++) {

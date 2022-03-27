@@ -66,7 +66,7 @@ class BlobTest extends Demo {
     jointDef.collideConnected = false;
 
     final constantVolumeJoint = ConstantVolumeJoint(world, jointDef);
-    world.addJoint(constantVolumeJoint);
+    world.createJoint(constantVolumeJoint);
 
     final bd2 = BodyDef();
     bd2.type = BodyType.dynamic;

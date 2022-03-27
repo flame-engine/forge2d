@@ -8,7 +8,7 @@ class AnotherRevoluteJoint extends RevoluteJoint {
 
 void main() {
   group(
-    'addJoint',
+    'createJoint',
     () {
       // TODO(alesitiago): Consider improving test and testing for all other
       // Joints.
@@ -22,7 +22,7 @@ void main() {
             ..bodyA = Body(BodyDef(), world)
             ..bodyB = Body(BodyDef(), world),
         );
-        world.addJoint(joint);
+        world.createJoint(joint);
 
         expect(world.joints.first, joint);
       });
@@ -34,7 +34,7 @@ void main() {
             ..bodyA = Body(BodyDef(), world)
             ..bodyB = Body(BodyDef(), world),
         );
-        expect(() => world.addJoint(joint), returnsNormally);
+        expect(() => world.createJoint(joint), returnsNormally);
       });
     },
   );

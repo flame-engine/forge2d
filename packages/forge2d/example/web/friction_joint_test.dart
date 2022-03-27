@@ -91,7 +91,7 @@ class FrictionJointTest extends Demo {
     frictionJointDef.collideConnected = true;
 
     final frictionJoint = FrictionJoint(frictionJointDef);
-    world.addJoint(frictionJoint);
+    world.createJoint(frictionJoint);
 
     // Add to list
     bodies.add(fallingBox);
