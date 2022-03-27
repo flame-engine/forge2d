@@ -326,4 +326,18 @@ class PulleyJoint extends Joint {
 
     return linearError < settings.linearSlop;
   }
+
+  @override
+  void render(DebugDraw debugDraw) {
+    super.render(debugDraw);
+
+    final s1 = getGroundAnchorA();
+    final s2 = getGroundAnchorB();
+    final p1 = anchorA;
+    final p2 = anchorB;
+
+    debugDraw.drawSegment(s1, p1, renderColor);
+    debugDraw.drawSegment(s2, p2, renderColor);
+    debugDraw.drawSegment(s1, s2, renderColor);
+  }
 }

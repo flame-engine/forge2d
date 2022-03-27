@@ -223,4 +223,16 @@ class FrictionJoint extends Joint {
   bool solvePositionConstraints(final SolverData data) {
     return true;
   }
+
+  @override
+  void render(DebugDraw debugDraw) {
+    super.render(debugDraw);
+
+    final xf1 = bodyA.transform;
+    final xf2 = bodyB.transform;
+    final x1 = xf1.p;
+    final x2 = xf2.p;
+
+    debugDraw.drawSegment(x1, x2, renderColor);
+  }
 }

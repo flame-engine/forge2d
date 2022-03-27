@@ -1,33 +1,39 @@
 import '../../forge2d.dart';
 
-/// Implement this abstract class to allow DBox2d to automatically draw your physics for debugging
-/// purposes. Not intended to replace your own custom rendering routines!
+/// {@template callbacks.debug_draw}
+/// Implement this abstract class to allow Forge2d to automatically draw your
+/// physics for debugging purposes.
+///
+/// Not intended to replace your own custom rendering routines!
+/// {@endtemplate}
 abstract class DebugDraw {
-  /// Draw shapes
+  /// {@macro callbacks.debug_draw}
+  DebugDraw(this.viewport);
+
+  /// Draw shapes.
   static const int shapeBit = 1 << 1;
 
-  /// Draw joint connections
+  /// Draw joint connections.
   static const int jointBit = 1 << 2;
 
-  /// Draw axis aligned bounding boxes
+  /// Draw axis aligned bounding boxes.
   static const int aabbBit = 1 << 3;
 
-  /// Draw pairs of connected objects
+  /// Draw pairs of connected objects.
   static const int pairBit = 1 << 4;
 
-  /// Draw center of mass frame
+  /// Draw center of mass frame.
   static const int centerOfMassBit = 1 << 5;
 
-  /// Draw dynamic tree
+  /// Draw dynamic tree.
   static const int dynamicTreeBit = 1 << 6;
 
-  /// Draw only the wireframe for drawing performance
+  /// Draw only the wireframe for drawing performance.
   static const int wireFrameDrawingBit = 1 << 7;
 
-  int drawFlags = shapeBit;
   final ViewportTransform viewport;
 
-  DebugDraw(this.viewport);
+  int drawFlags = shapeBit;
 
   void appendFlags(int flags) {
     drawFlags |= flags;
@@ -37,8 +43,9 @@ abstract class DebugDraw {
     drawFlags &= ~flags;
   }
 
-  /// Draw a closed polygon provided in CCW order. This implementation uses
-  /// {@link #drawSegment(Vec2, Vec2, Color3f)} to draw each side of the polygon.
+  /// Draw a closed polygon provided in counter-clockwise order.
+  ///
+  /// This implementation uses [drawSegment] to draw each side of the polygon.
   void drawPolygon(List<Vector2> vertices, Color3i color) {
     final vertexCount = vertices.length;
     if (vertexCount == 1) {
@@ -57,13 +64,13 @@ abstract class DebugDraw {
 
   void drawPoint(Vector2 argPoint, double argRadiusOnScreen, Color3i argColor);
 
-  /// Draw a solid closed polygon provided in CCW order.
+  /// Draw a solid closed polygon provided in counter-clockwise order.
   void drawSolidPolygon(List<Vector2> vertices, Color3i color);
 
   /// Draw a circle.
   void drawCircle(Vector2 center, double radius, Color3i color);
 
-  /// Draws a circle with an axis
+  /// Draws a circle with an axis.
   void drawCircleAxis(
     Vector2 center,
     double radius,
@@ -79,32 +86,35 @@ abstract class DebugDraw {
   /// Draw a line segment.
   void drawSegment(Vector2 p1, Vector2 p2, Color3i color);
 
-  /// Draw a transform. Choose your own length scale
+  /// Draw a transform.
+  ///
+  /// Choose your own length scale.
   void drawTransform(Transform xf, Color3i color);
 
   /// Draw a string.
   void drawStringXY(double x, double y, String s, Color3i color);
 
-  /// Draw a particle array
+  /// Draw a particle array.
   void drawParticles(List<Particle> particles, double radius);
 
-  /// Draw a particle array
+  /// Draw a particle array.
   void drawParticlesWireframe(List<Particle> particles, double radius);
-
-  /// Called at the end of drawing a world
-  void flush() {}
 
   void drawString(Vector2 pos, String s, Color3i color) {
     drawStringXY(pos.x, pos.y, s, color);
   }
 
+  /// Called at the end of drawing a world.
+  void flush() {}
+
   /// Takes the world coordinate and returns the screen coordinates.
   Vector2 worldToScreen(Vector2 argWorld) => viewport.worldToScreen(argWorld);
 
-  /// Takes the world coordinates and returns the screen coordinates
+  /// Takes the world coordinates and returns the screen coordinates.
   Vector2 worldToScreenXY(double worldX, double worldY) =>
       viewport.worldToScreen(Vector2(worldX, worldY));
 
-  /// Takes the screen coordinates (argScreen) and returns the world coordinates
+  /// Takes the screen coordinates (argScreen) and returns the world
+  /// coordinates.
   Vector2 screenToWorld(Vector2 argScreen) => viewport.screenToWorld(argScreen);
 }
