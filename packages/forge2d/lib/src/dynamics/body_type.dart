@@ -1,8 +1,6 @@
 import '../../forge2d.dart';
 
-/// {@template dynamics.body_type}
 /// Defines the type of a [Body].
-/// {@endtemplate}
 enum BodyType {
   /// Defines a [Body] with zero mass, zero velocity, may be manually moved.
   static,
