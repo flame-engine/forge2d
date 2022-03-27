@@ -1,29 +1,41 @@
 import '../../forge2d.dart';
 
-/// A fixture definition is used to create a fixture. This class defines an abstract fixture
-/// definition. You can reuse fixture definitions safely.
+/// Used to create a [Fixture].
+///
+/// You can reuse fixture definitions safely.
 class FixtureDef {
-  /// The shape, this must be set. The shape will be cloned, so you can create the shape on the
+  FixtureDef(
+    this.shape, {
+    this.userData,
+    this.friction = 0.2,
+    this.restitution = 0,
+    this.density = 0,
+    this.isSensor = false,
+    Filter? filter,
+  }) : filter = filter ?? Filter();
+
+  /// The [Shape], this must be set.
+  ///
+  /// The [Shape] will be [Shape.clone]d, so you can create the shape on the
   /// stack.
   Shape shape;
-
-  FixtureDef(this.shape);
 
   /// Use this to store application specific fixture data.
   Object? userData;
 
   /// The friction coefficient, usually in the range [0,1].
-  double friction = 0.2;
+  double friction;
 
   /// The restitution (elasticity) usually in the range [0,1].
-  double restitution = 0.0;
+  double restitution;
 
-  /// The density, usually in kg/m^2
-  double density = 0.0;
+  /// The density, usually in kg/m^2.
+  double density;
 
-  /// A sensor shape collects contact information but never generates a collision response.
-  bool isSensor = false;
+  /// A sensor shape collects contact information but never generates a
+  /// collision response.
+  bool isSensor;
 
-  /// Contact filtering data;
-  Filter filter = Filter();
+  /// Contact filtering data.
+  Filter filter;
 }
