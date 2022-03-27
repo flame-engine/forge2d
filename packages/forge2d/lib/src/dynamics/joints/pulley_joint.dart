@@ -335,10 +335,9 @@ class PulleyJoint extends Joint {
     final s2 = getGroundAnchorB();
     final p1 = anchorA;
     final p2 = anchorB;
-    final color = Color3i.zero()..setFromRGBd(0.5, 0.8, 0.8);
 
-    debugDraw.drawSegment(s1, p1, color);
-    debugDraw.drawSegment(s2, p2, color);
-    debugDraw.drawSegment(s1, s2, color);
+    debugDraw.drawSegment(s1, p1, renderColor);
+    debugDraw.drawSegment(s2, p2, renderColor);
+    debugDraw.drawSegment(s1, s2, renderColor);
   }
 }

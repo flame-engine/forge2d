@@ -313,10 +313,9 @@ class MotorJoint extends Joint {
     final x2 = xf2.p;
     final p1 = anchorA;
     final p2 = anchorB;
-    final color = Color3i.zero()..setFromRGBd(0.5, 0.8, 0.8);
 
-    debugDraw.drawSegment(x1, p1, color);
-    debugDraw.drawSegment(p1, p2, color);
-    debugDraw.drawSegment(x2, p2, color);
+    debugDraw.drawSegment(x1, p1, renderColor);
+    debugDraw.drawSegment(p1, p2, renderColor);
+    debugDraw.drawSegment(x2, p2, renderColor);
   }
 }

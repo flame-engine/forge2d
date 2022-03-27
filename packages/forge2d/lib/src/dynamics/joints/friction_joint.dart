@@ -232,8 +232,7 @@ class FrictionJoint extends Joint {
     final xf2 = bodyB.transform;
     final x1 = xf1.p;
     final x2 = xf2.p;
-    final color = Color3i.zero()..setFromRGBd(0.5, 0.8, 0.8);
 
-    debugDraw.drawSegment(x1, x2, color);
+    debugDraw.drawSegment(x1, x2, renderColor);
   }
 }

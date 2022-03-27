@@ -247,8 +247,7 @@ class DistanceJoint extends Joint {
 
     final p1 = anchorA;
     final p2 = anchorB;
-    final color = Color3i.zero()..setFromRGBd(0.5, 0.8, 0.8);
 
-    debugDraw.drawSegment(p1, p2, color);
+    debugDraw.drawSegment(p1, p2, renderColor);
   }
 }

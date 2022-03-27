@@ -112,5 +112,8 @@ abstract class Joint {
   /// Override to handle destruction of joint
   void destructor() {}
 
+  /// Color used to [render].
+  final renderColor = Color3i.zero()..setFromRGBd(0.5, 0.8, 0.8);
+
   void render(DebugDraw debugDraw) {}
 }
