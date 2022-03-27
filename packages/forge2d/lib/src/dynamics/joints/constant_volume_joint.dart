@@ -51,6 +51,7 @@ class ConstantVolumeJoint extends Joint {
     }
     if (def.joints.isEmpty) {
       final distanceJointDef = DistanceJointDef();
+
       _distanceJoints.addAll(
         List<DistanceJoint>.generate(
           _bodies.length,
@@ -65,7 +66,11 @@ class ConstantVolumeJoint extends Joint {
               _bodies[i].worldCenter,
               _bodies[next].worldCenter,
             );
-            return _world.createJoint<DistanceJoint>(distanceJointDef);
+
+            final distanceJoint = DistanceJoint(distanceJointDef);
+            _world.addJoint(distanceJoint);
+
+            return distanceJoint;
           },
         ),
       );
