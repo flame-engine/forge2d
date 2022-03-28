@@ -58,7 +58,8 @@ class Car {
     );
     jointDef.bodyB = _blTire.body;
     jointDef.localAnchorA.setValues(-3.0, 0.75);
-    world.createJoint<RevoluteJoint>(jointDef);
+
+    world.createJoint(RevoluteJoint(jointDef));
 
     _brTire = Tire(
       world,
@@ -69,7 +70,8 @@ class Car {
     );
     jointDef.bodyB = _brTire.body;
     jointDef.localAnchorA.setValues(3.0, 0.75);
-    world.createJoint<RevoluteJoint>(jointDef);
+
+    world.createJoint(RevoluteJoint(jointDef));
 
     _flTire = Tire(
       world,
@@ -80,7 +82,9 @@ class Car {
     );
     jointDef.bodyB = _flTire.body;
     jointDef.localAnchorA.setValues(-3.0, 8.5);
-    _flJoint = world.createJoint<RevoluteJoint>(jointDef);
+
+    _flJoint = RevoluteJoint(jointDef);
+    world.createJoint(_flJoint);
 
     _frTire = Tire(
       world,
@@ -91,7 +95,8 @@ class Car {
     );
     jointDef.bodyB = _frTire.body;
     jointDef.localAnchorA.setValues(3.0, 8.5);
-    _frJoint = world.createJoint<RevoluteJoint>(jointDef);
+    _frJoint = RevoluteJoint(jointDef);
+    world.createJoint(_frJoint);
   }
 
   void _updateFriction() {

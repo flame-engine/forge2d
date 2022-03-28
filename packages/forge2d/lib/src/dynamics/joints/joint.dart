@@ -3,38 +3,6 @@ import '../../../forge2d.dart';
 /// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
 /// joints also feature limits and motors.
 abstract class Joint {
-  static T create<T extends Joint>(World world, JointDef def) {
-    if (T == ConstantVolumeJoint || def is ConstantVolumeJointDef) {
-      return ConstantVolumeJoint(world, def as ConstantVolumeJointDef) as T;
-    } else if (T == DistanceJoint || def is DistanceJointDef) {
-      return DistanceJoint(def as DistanceJointDef) as T;
-    } else if (T == FrictionJoint || def is FrictionJointDef) {
-      return FrictionJoint(def as FrictionJointDef) as T;
-    } else if (T == GearJoint || def is GearJointDef) {
-      return GearJoint(def as GearJointDef) as T;
-    } else if (T == MotorJoint || def is MotorJointDef) {
-      return MotorJoint(def as MotorJointDef) as T;
-    } else if (T == MouseJoint || def is MouseJointDef) {
-      return MouseJoint(def as MouseJointDef) as T;
-    } else if (T == PrismaticJoint || def is PrismaticJointDef) {
-      return PrismaticJoint(def as PrismaticJointDef) as T;
-    } else if (T == PulleyJoint || def is PulleyJointDef) {
-      return PulleyJoint(def as PulleyJointDef) as T;
-    } else if (T == RevoluteJoint || def is RevoluteJointDef) {
-      return RevoluteJoint(def as RevoluteJointDef) as T;
-    } else if (T == RopeJoint || def is RopeJointDef) {
-      return RopeJoint(def as RopeJointDef) as T;
-    } else if (T == WeldJoint || def is WeldJointDef) {
-      return WeldJoint(def as WeldJointDef) as T;
-    } else if (T == WheelJoint || def is WheelJointDef) {
-      return WheelJoint(def as WheelJointDef) as T;
-    } else {
-      throw ArgumentError(
-        'Invalid joint type $T with invalid joint definition $def',
-      );
-    }
-  }
-
   static void destroy(Joint joint) {
     joint.destructor();
   }

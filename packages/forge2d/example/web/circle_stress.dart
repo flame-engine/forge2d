@@ -128,13 +128,14 @@ class CircleStress extends Demo {
       final bodyDef = BodyDef();
       final groundBody = world.createBody(bodyDef);
 
-      final rjd = RevoluteJointDef()
+      final revoluteJointDef = RevoluteJointDef()
         ..initialize(body, groundBody, body.position)
         ..motorSpeed = -pi
         ..maxMotorTorque = 1000000.0
         ..enableMotor = true;
 
-      world.createJoint<RevoluteJoint>(rjd);
+      final revoluteJoint = RevoluteJoint(revoluteJointDef);
+      world.createJoint(revoluteJoint);
 
       for (var j = 0; j < columns; j++) {
         for (var i = 0; i < loadSize; i++) {
