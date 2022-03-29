@@ -5,7 +5,7 @@ import 'package:test/scaffolding.dart';
 void main() {
   group('Body', () {
     group('gravityScale', () {
-      // TODO(alestiago): Make this tests pass.
+      // TODO(alestiago): Make these tests pass.
       test('scales appropiately in x', () {
         final gravity = Vector2(10, 0);
         final world = World(gravity);
