@@ -92,7 +92,7 @@ class ParticleSystem {
   int allGroupFlags = 0;
   double _particleDensity = 1.0;
   double _inverseDensity = 1.0;
-  double gravityScale = 1.0;
+  Vector2 gravityScale = Vector2.all(1);
   double particleDiameter = 1.0;
   double inverseDiameter = 1.0;
   double squaredDiameter = 1.0;
@@ -510,8 +510,8 @@ class ParticleSystem {
     for (final group in groupBuffer) {
       allGroupFlags |= group.groupFlags;
     }
-    final gravityX = step.dt * gravityScale * world.gravity.x;
-    final gravityY = step.dt * gravityScale * world.gravity.y;
+    final gravityX = step.dt * gravityScale.x * world.gravity.x;
+    final gravityY = step.dt * gravityScale.y * world.gravity.y;
     final criticalVelocitySquared = getCriticalVelocitySquared(step);
     for (final particle in _particles) {
       final v = particle.velocity;

@@ -57,7 +57,7 @@ class Body {
 
   double linearDamping = 0.0;
   double angularDamping = 0.0;
-  double gravityScale = 0.0;
+  Vector2 gravityScale = Vector2.all(0);
 
   double sleepTime = 0.0;
 
@@ -67,7 +67,10 @@ class Body {
   Body(final BodyDef bd, this.world)
       : assert(!bd.position.isInfinite && !bd.position.isNaN),
         assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
-        assert(bd.gravityScale >= 0.0),
+        assert(
+          bd.gravityScale.x >= 0.0 && bd.gravityScale.y >= 0.0,
+          'Gravity scale must be greater than or equal to zero.',
+        ),
         assert(bd.angularDamping >= 0.0),
         assert(bd.linearDamping >= 0.0) {
     flags = 0;
