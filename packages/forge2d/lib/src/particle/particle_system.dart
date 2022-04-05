@@ -92,7 +92,7 @@ class ParticleSystem {
   int allGroupFlags = 0;
   double _particleDensity = 1.0;
   double _inverseDensity = 1.0;
-  int gravityScale = 1;
+  double gravityScale = 1.0;
   double particleDiameter = 1.0;
   double inverseDiameter = 1.0;
   double squaredDiameter = 1.0;
