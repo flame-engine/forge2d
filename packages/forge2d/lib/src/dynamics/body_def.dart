@@ -94,6 +94,6 @@ class BodyDef {
   /// (0, 0) the body will behave as if the world does not have a gravity.
   ///
   /// If you wish to modify the gravity relative to the world, use
-  /// [World.gravity].
+  /// [World.gravity] as part of the calculation.
   Vector2? gravityModifier;
 }
