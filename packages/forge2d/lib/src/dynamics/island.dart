@@ -186,10 +186,10 @@ class Island {
         // Integrate velocities.
         final bodyGravity = b.gravityOverride ?? gravity;
         v.x += dt *
-            ((b.gravityScale?.x ?? 0) * bodyGravity.x +
+            ((b.gravityScale?.x ?? 1) * bodyGravity.x +
                 b.inverseMass * b.force.x);
         v.y += dt *
-            ((b.gravityScale?.y ?? 0) * bodyGravity.y +
+            ((b.gravityScale?.y ?? 1) * bodyGravity.y +
                 b.inverseMass * b.force.y);
         w += dt * b.inverseInertia * b.torque;
 
