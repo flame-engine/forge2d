@@ -87,6 +87,13 @@ class BodyDef {
   /// Does this body start out active?
   bool active;
 
-  /// Changes how the [World] treats [World.gravity] for this body.
+  /// Changes how the [World] treats the gravity for this body.
+  ///
+  /// Specifying a [gravityModifier] overrides the world's gravity. For example,
+  /// if [World.gravity] is (0, -10), and a body has a [gravityModifier] of
+  /// (0, 0) the body will behave as if the world does not have a gravity.
+  ///
+  /// If you wish to modify the gravity relative to the world, use
+  /// [World.gravity].
   Vector2? gravityModifier;
 }
