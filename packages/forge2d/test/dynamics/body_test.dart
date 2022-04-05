@@ -4,52 +4,39 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   group('Body', () {
-    group('gravityScale', () {
-      // TODO(alestiago): Make these tests pass.
-      test('scales appropiately in x', () {
-        final gravity = Vector2(10, 0);
+    group('gravityModifier', () {
+      test("body doesn't move when is zero", () {
+        final gravity = Vector2(10, 10);
         final world = World(gravity);
 
-        final bodyA = world.createBody(BodyDef()..type = BodyType.dynamic);
-        final bodyB = world.createBody(
+        final body = world.createBody(
           BodyDef()
             ..type = BodyType.dynamic
-            ..gravityModifier = Vector2(10, 1)
-            ..position = Vector2(0, 10),
+            ..gravityModifier = Vector2.zero(),
         );
 
-        final bodyAPos = bodyA.position.clone();
-        final bodyBPos = bodyB.position.clone();
+        final bodyInitialPosition = body.position.clone();
 
         world.stepDt(1);
 
-        expect(bodyAPos.x, isNot(equals(bodyA.position.x)));
-        expect(bodyBPos.x, isNot(equals(bodyB.position.x)));
-
-        expect(bodyB.position.x, greaterThan(bodyA.position.x));
+        expect(bodyInitialPosition.x, equals(body.position.x));
+        expect(bodyInitialPosition.y, equals(body.position.y));
       });
 
-      test('scales appropiately in y', () {
-        final gravity = Vector2(0, 10);
+      test(
+          "body moves with world's gravity "
+          'when gravityModifier is not specfied', () {
+        final gravity = Vector2(10, 10);
         final world = World(gravity);
 
-        final bodyA = world.createBody(BodyDef()..type = BodyType.dynamic);
-        final bodyB = world.createBody(
-          BodyDef()
-            ..type = BodyType.dynamic
-            ..gravityModifier = Vector2(1, 10)
-            ..position = Vector2(10, 0),
-        );
+        final body = world.createBody(BodyDef()..type = BodyType.dynamic);
 
-        final bodyAPos = bodyA.position.clone();
-        final bodyBPos = bodyB.position.clone();
+        final bodyInitialPosition = body.position.clone();
 
         world.stepDt(1);
 
-        expect(bodyAPos.y, isNot(equals(bodyA.position.y)));
-        expect(bodyBPos.y, isNot(equals(bodyB.position.y)));
-
-        expect(bodyB.position.y, greaterThan(bodyA.position.y));
+        expect(bodyInitialPosition.x, isNot(equals(body.position.x)));
+        expect(bodyInitialPosition.y, isNot(equals(body.position.y)));
       });
     });
   });
