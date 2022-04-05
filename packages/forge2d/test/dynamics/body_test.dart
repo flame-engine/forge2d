@@ -14,7 +14,7 @@ void main() {
         final bodyB = world.createBody(
           BodyDef()
             ..type = BodyType.dynamic
-            ..gravityScale = Vector2(10, 1)
+            ..gravityModifier = Vector2(10, 1)
             ..position = Vector2(0, 10),
         );
 
@@ -37,7 +37,7 @@ void main() {
         final bodyB = world.createBody(
           BodyDef()
             ..type = BodyType.dynamic
-            ..gravityScale = Vector2(1, 10)
+            ..gravityModifier = Vector2(1, 10)
             ..position = Vector2(10, 0),
         );
 

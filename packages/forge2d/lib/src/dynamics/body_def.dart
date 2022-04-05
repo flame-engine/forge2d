@@ -21,10 +21,9 @@ class BodyDef {
     this.fixedRotation = false,
     this.bullet = false,
     this.active = true,
-    Vector2? gravityScale,
+    this.gravityModifier,
   })  : position = position ?? Vector2.zero(),
-        linearVelocity = linearVelocity ?? Vector2.zero(),
-        gravityScale = gravityScale ?? Vector2.all(1);
+        linearVelocity = linearVelocity ?? Vector2.zero();
 
   /// The body type: static, kinematic, or dynamic.
   ///
@@ -88,6 +87,6 @@ class BodyDef {
   /// Does this body start out active?
   bool active;
 
-  /// Scales the inertia tensor by the given value.
-  Vector2 gravityScale;
+  /// Changes how the [World] treats [World.gravity] for this body.
+  Vector2? gravityModifier;
 }

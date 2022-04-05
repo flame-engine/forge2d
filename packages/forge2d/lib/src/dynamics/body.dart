@@ -57,7 +57,8 @@ class Body {
 
   double linearDamping = 0.0;
   double angularDamping = 0.0;
-  Vector2 gravityScale = Vector2.all(0);
+
+  Vector2? gravityModifier;
 
   double sleepTime = 0.0;
 
@@ -68,8 +69,9 @@ class Body {
       : assert(!bd.position.isInfinite && !bd.position.isNaN),
         assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
         assert(
-          bd.gravityScale.x >= 0.0 && bd.gravityScale.y >= 0.0,
-          'Gravity scale must be greater than or equal to zero.',
+          bd.gravityModifier == null ||
+              (bd.gravityModifier!.x >= 0.0 && bd.gravityModifier!.y >= 0.0),
+          'gravityModifier must be greater than or equal to zero.',
         ),
         assert(bd.angularDamping >= 0.0),
         assert(bd.linearDamping >= 0.0) {
@@ -106,7 +108,7 @@ class Body {
 
     linearDamping = bd.linearDamping;
     angularDamping = bd.angularDamping;
-    gravityScale = bd.gravityScale;
+    gravityModifier = bd.gravityModifier;
 
     force.setZero();
 
