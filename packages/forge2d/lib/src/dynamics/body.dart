@@ -58,7 +58,11 @@ class Body {
   double linearDamping = 0.0;
   double angularDamping = 0.0;
 
-  Vector2? gravityModifier;
+  /// {@macto dynamics.body_def.gravity_override}
+  Vector2? gravityOverride;
+
+  /// {@macro dynamics.body_def.gravity_scale}
+  Vector2? gravityScale;
 
   double sleepTime = 0.0;
 
@@ -68,11 +72,6 @@ class Body {
   Body(final BodyDef bd, this.world)
       : assert(!bd.position.isInfinite && !bd.position.isNaN),
         assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
-        assert(
-          bd.gravityModifier == null ||
-              (bd.gravityModifier!.x >= 0.0 && bd.gravityModifier!.y >= 0.0),
-          'gravityModifier must be greater than or equal to zero.',
-        ),
         assert(bd.angularDamping >= 0.0),
         assert(bd.linearDamping >= 0.0) {
     flags = 0;
@@ -108,7 +107,8 @@ class Body {
 
     linearDamping = bd.linearDamping;
     angularDamping = bd.angularDamping;
-    gravityModifier = bd.gravityModifier;
+    gravityOverride = bd.gravityOverride;
+    gravityScale = bd.gravityScale;
 
     force.setZero();
 

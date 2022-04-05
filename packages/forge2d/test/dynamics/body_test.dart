@@ -4,7 +4,7 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   group('Body', () {
-    group('gravityModifier', () {
+    group('gravityOverride', () {
       test("body doesn't move when is zero", () {
         final gravity = Vector2(10, 10);
         final world = World(gravity);
@@ -12,7 +12,7 @@ void main() {
         final body = world.createBody(
           BodyDef()
             ..type = BodyType.dynamic
-            ..gravityModifier = Vector2.zero(),
+            ..gravityOverride = Vector2.zero(),
         );
 
         final bodyInitialPosition = body.position.clone();
@@ -25,7 +25,7 @@ void main() {
 
       test(
           "body moves with world's gravity "
-          'when gravityModifier is not specfied', () {
+          'when gravityOverride is not specfied', () {
         final gravity = Vector2(10, 10);
         final world = World(gravity);
 
