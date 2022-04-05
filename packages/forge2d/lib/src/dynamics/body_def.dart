@@ -21,7 +21,7 @@ class BodyDef {
     this.fixedRotation = false,
     this.bullet = false,
     this.active = true,
-    this.gravityModifier,
+    this.gravityOverride,
   })  : position = position ?? Vector2.zero(),
         linearVelocity = linearVelocity ?? Vector2.zero();
 
@@ -89,11 +89,11 @@ class BodyDef {
 
   /// Changes how the [World] treats the gravity for this body.
   ///
-  /// Specifying a [gravityModifier] overrides the world's gravity. For example,
-  /// if [World.gravity] is (0, -10), and a body has a [gravityModifier] of
+  /// Specifying a [gravityOverride] overrides the world's gravity. For example,
+  /// if [World.gravity] is (0, -10), and a body has a [gravityOverride] of
   /// (0, 0) the body will behave as if the world does not have a gravity.
   ///
   /// If you wish to modify the gravity relative to the world, use
   /// [World.gravity] as part of the calculation.
-  Vector2? gravityModifier;
+  Vector2? gravityOverride;
 }
