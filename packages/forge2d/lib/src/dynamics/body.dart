@@ -58,7 +58,7 @@ class Body {
   double linearDamping = 0.0;
   double angularDamping = 0.0;
 
-  /// {@macto dynamics.body_def.gravity_override}
+  /// {@macro dynamics.body_def.gravity_override}
   Vector2? gravityOverride;
 
   /// {@macro dynamics.body_def.gravity_scale}
