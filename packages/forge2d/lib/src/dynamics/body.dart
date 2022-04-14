@@ -57,7 +57,12 @@ class Body {
 
   double linearDamping = 0.0;
   double angularDamping = 0.0;
-  double gravityScale = 0.0;
+
+  /// {@macro dynamics.body_def.gravity_override}
+  Vector2? gravityOverride;
+
+  /// {@macro dynamics.body_def.gravity_scale}
+  Vector2? gravityScale;
 
   double sleepTime = 0.0;
 
@@ -67,7 +72,6 @@ class Body {
   Body(final BodyDef bd, this.world)
       : assert(!bd.position.isInfinite && !bd.position.isNaN),
         assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
-        assert(bd.gravityScale >= 0.0),
         assert(bd.angularDamping >= 0.0),
         assert(bd.linearDamping >= 0.0) {
     flags = 0;
@@ -103,6 +107,7 @@ class Body {
 
     linearDamping = bd.linearDamping;
     angularDamping = bd.angularDamping;
+    gravityOverride = bd.gravityOverride;
     gravityScale = bd.gravityScale;
 
     force.setZero();

@@ -21,7 +21,8 @@ class BodyDef {
     this.fixedRotation = false,
     this.bullet = false,
     this.active = true,
-    this.gravityScale = 1.0,
+    this.gravityOverride,
+    this.gravityScale,
   })  : position = position ?? Vector2.zero(),
         linearVelocity = linearVelocity ?? Vector2.zero();
 
@@ -87,6 +88,23 @@ class BodyDef {
   /// Does this body start out active?
   bool active;
 
-  /// Experimental: scales the inertia tensor.
-  double gravityScale;
+  /// {@template dynamics.body_def.gravity_override}
+  /// Changes how the [World] treats the gravity for this body.
+  ///
+  /// Specifying a [gravityOverride] overrides the world's gravity. For example,
+  /// if [World.gravity] is (0, -10), and a body has a [gravityOverride] of
+  /// (0, 0) the body will behave as if the world does not have a gravity.
+  ///
+  /// If you wish to modify the gravity relative to the world, use
+  /// [World.gravity] as part of the calculation. However, if you only wish to
+  /// scale it, use [gravityScale] instead.
+  /// {@endtemplate}
+  Vector2? gravityOverride;
+
+  /// {@template dynamics.body_def.gravity_scale}
+  /// Multiplier for the body's gravity.
+  ///
+  /// If [gravityOverride] is specified, this value also affects it.\
+  /// {@endtemplate}
+  Vector2? gravityScale;
 }

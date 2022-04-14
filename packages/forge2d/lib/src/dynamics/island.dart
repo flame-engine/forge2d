@@ -184,8 +184,13 @@ class Island {
 
       if (b.bodyType == BodyType.dynamic) {
         // Integrate velocities.
-        v.x += dt * (b.gravityScale * gravity.x + b.inverseMass * b.force.x);
-        v.y += dt * (b.gravityScale * gravity.y + b.inverseMass * b.force.y);
+        final bodyGravity = b.gravityOverride ?? gravity;
+        v.x += dt *
+            ((b.gravityScale?.x ?? 1) * bodyGravity.x +
+                b.inverseMass * b.force.x);
+        v.y += dt *
+            ((b.gravityScale?.y ?? 1) * bodyGravity.y +
+                b.inverseMass * b.force.y);
         w += dt * b.inverseInertia * b.torque;
 
         // Apply damping.
