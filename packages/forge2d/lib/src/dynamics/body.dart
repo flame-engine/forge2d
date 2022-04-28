@@ -168,8 +168,18 @@ class Body {
   /// @param shape the shape to be cloned.
   /// @param density the shape density (set to zero for static bodies).
   /// @warning This function is locked during callbacks.
-  Fixture createFixtureFromShape(Shape shape, [double density = 0.0]) {
-    return createFixture(FixtureDef(shape)..density = density);
+  Fixture createFixtureFromShape(
+    Shape shape, {
+    double density = 0.0,
+    double friction = 0.0,
+    double restitution = 0.0,
+  }) {
+    return createFixture(
+      FixtureDef(shape)
+        ..density = density
+        ..friction = friction
+        ..restitution = restitution,
+    );
   }
 
   /// Destroy a fixture. This removes the fixture from the broad-phase and destroys all contacts
