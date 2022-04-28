@@ -170,7 +170,7 @@ class Body {
   /// @warning This function is locked during callbacks.
   Fixture createFixtureFromShape(
     Shape shape, {
-    double density = 0.0,
+    double density = 1.0,
     double friction = 0.0,
     double restitution = 0.0,
   }) {
