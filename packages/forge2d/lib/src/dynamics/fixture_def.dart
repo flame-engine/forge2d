@@ -7,9 +7,9 @@ class FixtureDef {
   FixtureDef(
     this.shape, {
     this.userData,
-    this.friction = 0,
-    this.restitution = 0,
-    this.density = 0,
+    this.friction = 0.2,
+    this.restitution = 0.2,
+    this.density = 1.0,
     this.isSensor = false,
     Filter? filter,
   }) : filter = filter ?? Filter();

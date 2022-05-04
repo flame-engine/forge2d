@@ -3,19 +3,20 @@ import 'dart:math';
 import '../../forge2d.dart';
 import '../settings.dart' as settings;
 
-/// A fixture is used to attach a shape to a body for collision detection. A fixture inherits its
-/// transform from its parent. Fixtures hold additional non-geometric data such as friction,
-/// collision filters, etc. Fixtures are created via Body::CreateFixture.
+/// A fixture is used to attach a shape to a body for collision detection.
+/// A fixture inherits its transform from its parent. Fixtures hold additional
+/// non-geometric data such as friction, density, restitution,
+/// collision filters, etc.
 ///
-/// @warning you cannot reuse fixtures.
+/// Fixtures are created via [Body.createFixture].
 class Fixture {
-  double _density = 0.0;
+  double _density = 1.0;
 
   final Body body;
 
   late Shape shape;
 
-  double friction = 0.0;
+  double friction = 0.2;
   double restitution = 0.0;
 
   final List<FixtureProxy> proxies = [];
