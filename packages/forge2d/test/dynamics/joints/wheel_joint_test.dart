@@ -6,21 +6,33 @@ import '../../helpers/helpers.dart';
 
 void main() {
   group('WheelJoint', () {
-    test('can be instantiated', () {
+    late WheelJointDef jointDef;
+
+    setUp(() {
       final world = World();
-      final jointDef = WheelJointDef()
+      jointDef = WheelJointDef()
         ..bodyA = Body(BodyDef(), world)
         ..bodyB = Body(BodyDef(), world);
+    });
 
+    test('can be instantiated', () {
       expect(WheelJoint(jointDef), isA<WheelJoint>());
     });
 
+    test('can change motor speed', () {
+      final joint = WheelJoint(jointDef);
+
+      final oldMotorSpeed = joint.motorSpeed;
+      final newMotorSpeed = oldMotorSpeed + 1;
+      joint.motorSpeed = newMotorSpeed;
+
+      expect(joint.motorSpeed, equals(newMotorSpeed));
+    });
+
     group('render', () {
-      late World world;
       late DebugDraw debugDraw;
 
       setUp(() {
-        world = World();
         debugDraw = MockDebugDraw();
 
         registerFallbackValue(Vector2.zero());
@@ -28,11 +40,7 @@ void main() {
       });
 
       test('draws three segments', () {
-        final joint = WheelJoint(
-          WheelJointDef()
-            ..bodyA = Body(BodyDef(), world)
-            ..bodyB = Body(BodyDef(), world),
-        );
+        final joint = WheelJoint(jointDef);
         joint.render(debugDraw);
         verify(() => debugDraw.drawSegment(any(), any(), any())).called(3);
       });
