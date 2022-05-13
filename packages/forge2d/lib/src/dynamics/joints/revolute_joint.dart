@@ -494,4 +494,20 @@ class RevoluteJoint extends Joint {
       _upperAngle = upper;
     }
   }
+
+  @override
+  void render(DebugDraw debugDraw) {
+    super.render(debugDraw);
+
+    final xf1 = bodyA.transform;
+    final xf2 = bodyB.transform;
+    final x1 = xf1.p;
+    final x2 = xf2.p;
+    final p1 = anchorA;
+    final p2 = anchorB;
+
+    debugDraw.drawSegment(x1, p1, renderColor);
+    debugDraw.drawSegment(p1, p2, renderColor);
+    debugDraw.drawSegment(x2, p2, renderColor);
+  }
 }

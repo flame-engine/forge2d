@@ -32,9 +32,6 @@ class GearJoint extends Joint {
   final Joint _joint1;
   final Joint _joint2;
 
-  final JointType _typeA;
-  final JointType _typeB;
-
   // Body A is connected to body C
   // Body B is connected to body D
   final Body _bodyC;
@@ -71,13 +68,14 @@ class GearJoint extends Joint {
   GearJoint(GearJointDef def)
       : _joint1 = def.joint1,
         _joint2 = def.joint2,
-        _typeA = def.joint1.type,
-        _typeB = def.joint2.type,
         _bodyC = def.joint1.bodyA,
         _bodyD = def.joint2.bodyA,
         super(def) {
-    assert(_typeA == JointType.revolute || _typeA == JointType.prismatic);
-    assert(_typeB == JointType.revolute || _typeB == JointType.prismatic);
+    assert(
+      (_joint1 is RevoluteJoint || _joint1 is PrismaticJoint) &&
+          (_joint2 is RevoluteJoint || _joint2 is PrismaticJoint),
+      'A GearJoint can only be joint with RevoluteJoint and/or PrismaticJoint.',
+    );
 
     double coordinateA, coordinateB;
 
@@ -90,7 +88,7 @@ class GearJoint extends Joint {
     final xfC = _bodyC.transform;
     final aC = _bodyC.sweep.a;
 
-    if (_typeA == JointType.revolute) {
+    if (_joint1 is RevoluteJoint) {
       final revolute = def.joint1 as RevoluteJoint;
       _localAnchorC.setFrom(revolute.localAnchorA);
       localAnchorA.setFrom(revolute.localAnchorB);
@@ -124,7 +122,7 @@ class GearJoint extends Joint {
     final xfD = _bodyD.transform;
     final aD = _bodyD.sweep.a;
 
-    if (_typeB == JointType.revolute) {
+    if (_joint2 is RevoluteJoint) {
       final revolute = def.joint2 as RevoluteJoint;
       _localAnchorD.setFrom(revolute.localAnchorA);
       localAnchorB.setFrom(revolute.localAnchorB);
@@ -228,7 +226,7 @@ class GearJoint extends Joint {
 
     final temp = Vector2.zero();
 
-    if (_typeA == JointType.revolute) {
+    if (_joint1 is RevoluteJoint) {
       _jvAC.setZero();
       _jwA = 1.0;
       _jwC = 1.0;
@@ -250,7 +248,7 @@ class GearJoint extends Joint {
       _mass += _mC + _mA + _iC * _jwC * _jwC + _iA * _jwA * _jwA;
     }
 
-    if (_typeB == JointType.revolute) {
+    if (_joint2 is RevoluteJoint) {
       _jvBD.setZero();
       _jwB = _ratio;
       _jwD = _ratio;
@@ -399,7 +397,7 @@ class GearJoint extends Joint {
     double jwA, jwB, jwC, jwD;
     var mass = 0.0;
 
-    if (_typeA == JointType.revolute) {
+    if (_joint1 is RevoluteJoint) {
       jvBC.setZero();
       jwA = 1.0;
       jwC = 1.0;
@@ -435,7 +433,7 @@ class GearJoint extends Joint {
       coordinateA = (pA..sub(pC)).dot(_localAxisC);
     }
 
-    if (_typeB == JointType.revolute) {
+    if (_joint2 is RevoluteJoint) {
       jvBD.setZero();
       jwB = _ratio;
       jwD = _ratio;
@@ -509,5 +507,21 @@ class GearJoint extends Joint {
 
     // TODO_ERIN not implemented
     return linearError < settings.linearSlop;
+  }
+
+  @override
+  void render(DebugDraw debugDraw) {
+    super.render(debugDraw);
+
+    final xf1 = bodyA.transform;
+    final xf2 = bodyB.transform;
+    final x1 = xf1.p;
+    final x2 = xf2.p;
+    final p1 = anchorA;
+    final p2 = anchorB;
+
+    debugDraw.drawSegment(x1, p1, renderColor);
+    debugDraw.drawSegment(p1, p2, renderColor);
+    debugDraw.drawSegment(x2, p2, renderColor);
   }
 }

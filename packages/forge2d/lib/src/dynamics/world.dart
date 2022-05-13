@@ -149,24 +149,24 @@ class World {
     bodies.remove(body);
   }
 
-  /// Create a joint to constrain bodies together. No reference to the definition is retained.
+  /// Adds a joint to constrain bodies together.
+  ///
   /// This may cause the connected bodies to cease colliding.
   ///
-  /// @warning This function is locked during callbacks.
-  T createJoint<T extends Joint>(JointDef def) {
+  /// Adding a joint doesn't wake up the bodies.
+  ///
+  /// Warning: This function is locked during callbacks.
+  void createJoint(Joint joint) {
     assert(!isLocked);
-
-    final joint = Joint.create<T>(this, def);
     joints.add(joint);
 
-    joint.bodyA.joints.add(joint);
-    joint.bodyB.joints.add(joint);
-
-    final bodyA = def.bodyA;
-    final bodyB = def.bodyB;
+    final bodyA = joint.bodyA;
+    final bodyB = joint.bodyB;
+    bodyA.joints.add(joint);
+    bodyB.joints.add(joint);
 
     // If the joint prevents collisions, then flag any contacts for filtering.
-    if (!def.collideConnected) {
+    if (!joint.collideConnected) {
       for (final contact in bodyB.contacts) {
         if (contact.getOtherBody(bodyB) == bodyA) {
           // Flag the contact for filtering at the next time step (where either
@@ -175,10 +175,6 @@ class World {
         }
       }
     }
-
-    // Note: creating a joint doesn't wake the bodies.
-
-    return joint;
   }
 
   /// destroy a joint. This may cause the connected bodies to begin colliding.

@@ -15,8 +15,6 @@ class DistanceJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The damping ratio. 0 = no damping, 1 = critical damping.
   double dampingRatio = 0.0;
 
-  DistanceJointDef() : super(JointType.distance);
-
   /// Initialize the bodies, anchors, and length using the world anchors.
   ///
   /// @param b1 First body

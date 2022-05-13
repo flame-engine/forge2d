@@ -17,8 +17,6 @@ class MotorJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// Position correction factor in the range [0,1].
   double correctionFactor = 0.3;
 
-  MotorJointDef() : super(JointType.motor);
-
   void initialize(A bodyA, B bodyB) {
     this.bodyA = bodyA;
     this.bodyB = bodyB;

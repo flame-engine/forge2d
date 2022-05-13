@@ -240,4 +240,14 @@ class DistanceJoint extends Joint {
 
     return C.abs() < settings.linearSlop;
   }
+
+  @override
+  void render(DebugDraw debugDraw) {
+    super.render(debugDraw);
+
+    final p1 = anchorA;
+    final p2 = anchorB;
+
+    debugDraw.drawSegment(p1, p2, renderColor);
+  }
 }
