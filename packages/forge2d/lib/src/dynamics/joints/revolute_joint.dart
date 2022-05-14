@@ -461,7 +461,7 @@ class RevoluteJoint extends Joint {
     _enableMotor = flag;
   }
 
-  void setMotorSpeed(final double speed) {
+  set motorSpeed(double speed) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _motorSpeed = speed;
