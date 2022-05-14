@@ -137,15 +137,13 @@ class WheelJoint extends Joint {
     _enableMotor = flag;
   }
 
-  void setMotorSpeed(double speed) {
+  set motorSpeed(double speed) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
-  double getMotorSpeed() {
-    return _motorSpeed;
-  }
+  double get motorSpeed => _motorSpeed;
 
   double getMaxMotorTorque() {
     return _maxMotorTorque;

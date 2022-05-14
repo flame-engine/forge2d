@@ -275,20 +275,14 @@ class PrismaticJoint extends Joint {
   }
 
   /// Set the motor speed, usually in meters per second.
-  ///
-  /// @param speed
-  void setMotorSpeed(double speed) {
+  set motorSpeed(double speed) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
   /// Get the motor speed, usually in meters per second.
-  ///
-  /// @return
-  double getMotorSpeed() {
-    return _motorSpeed;
-  }
+  double get motorSpeed => _motorSpeed;
 
   /// Set the maximum motor force, usually in N.
   ///
