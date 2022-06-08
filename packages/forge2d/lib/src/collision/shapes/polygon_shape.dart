@@ -152,16 +152,13 @@ class PolygonShape extends Shape {
   }
 
   /// Build vertices to represent an axis-aligned box.
-  ///
-  /// @param hx the half-width.
-  /// @param hy the half-height.
-  void setAsBoxXY(final double hx, final double hy) {
+  void setAsBoxXY(final double halfWidth, final double halfHeight) {
     vertices.clear();
     vertices.addAll([
-      Vector2(-hx, -hy),
-      Vector2(hx, -hy),
-      Vector2(hx, hy),
-      Vector2(-hx, hy),
+      Vector2(-halfWidth, -halfHeight),
+      Vector2(halfWidth, -halfHeight),
+      Vector2(halfWidth, halfHeight),
+      Vector2(-halfWidth, halfHeight),
     ]);
     normals.clear();
     normals.addAll([
@@ -174,18 +171,14 @@ class PolygonShape extends Shape {
   }
 
   /// Build vertices to represent an oriented box.
-  ///
-  /// @param hx the half-width.
-  /// @param hy the half-height.
-  /// @param center the center of the box in local coordinates.
-  /// @param angle the rotation of the box in local coordinates.
+  /// [center] and [angle] should be in local coordinates.
   void setAsBox(
-    final double hx,
-    final double hy,
+    final double halfWidth,
+    final double halfHeight,
     final Vector2 center,
     final double angle,
   ) {
-    setAsBoxXY(hx, hy);
+    setAsBoxXY(halfWidth, halfHeight);
     centroid.setFrom(center);
 
     final xf = Transform.zero();

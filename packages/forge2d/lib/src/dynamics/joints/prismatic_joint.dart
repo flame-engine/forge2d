@@ -218,15 +218,11 @@ class PrismaticJoint extends Joint {
   }
 
   /// Is the joint limit enabled?
-  ///
-  /// @return
   bool isLimitEnabled() {
     return _enableLimit;
   }
 
   /// Enable/disable the joint limit.
-  ///
-  /// @param flag
   void enableLimit(bool flag) {
     if (flag != _enableLimit) {
       bodyA.setAwake(true);
@@ -237,23 +233,16 @@ class PrismaticJoint extends Joint {
   }
 
   /// Get the lower joint limit, usually in meters.
-  ///
-  /// @return
   double getLowerLimit() {
     return _lowerTranslation;
   }
 
   /// Get the upper joint limit, usually in meters.
-  ///
-  /// @return
   double getUpperLimit() {
     return _upperTranslation;
   }
 
   /// Set the joint limits, usually in meters.
-  ///
-  /// @param lower
-  /// @param upper
   void setLimits(double lower, double upper) {
     assert(lower <= upper);
     if (lower != _lowerTranslation || upper != _upperTranslation) {
@@ -265,16 +254,12 @@ class PrismaticJoint extends Joint {
     }
   }
 
-  /// Is the joint motor enabled?
-  ///
-  /// @return
+  /// Whether the joint motor is enabled.
   bool isMotorEnabled() {
     return _enableMotor;
   }
 
   /// Enable/disable the joint motor.
-  ///
-  /// @param flag
   void enableMotor(bool flag) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
@@ -292,8 +277,6 @@ class PrismaticJoint extends Joint {
   double get motorSpeed => _motorSpeed;
 
   /// Set the maximum motor force, usually in N.
-  ///
-  /// @param force
   void setMaxMotorForce(double force) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
@@ -301,9 +284,6 @@ class PrismaticJoint extends Joint {
   }
 
   /// Get the current motor force, usually in N.
-  ///
-  /// @param invDt
-  /// @return
   double getMotorForce(double invDt) {
     return _motorImpulse * invDt;
   }

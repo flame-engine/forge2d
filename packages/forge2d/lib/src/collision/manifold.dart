@@ -3,22 +3,22 @@ import 'package:forge2d/src/settings.dart' as settings;
 
 /// A manifold for two touching convex shapes. Forge2D supports multiple types
 /// of contact:
-/// <ul>
-/// <li>clip point versus plane with radius</li>
-/// <li>point versus point with radius (circles)</li>
-/// </ul>
+///
+/// - clip point versus plane with radius
+/// - point versus point with radius (circles)
+///
 /// The local point usage depends on the manifold type:
-/// <ul>
-/// <li>e_circles: the local center of circleA</li>
-/// <li>e_faceA: the center of faceA</li>
-/// <li>e_faceB: the center of faceB</li>
-/// </ul>
+///
+/// - e_circles: the local center of circleA
+/// - e_faceA: the center of faceA
+/// - e_faceB: the center of faceB
+///
 /// Similarly the local normal usage:
-/// <ul>
-/// <li>e_circles: not used</li>
-/// <li>e_faceA: the normal on polygonA</li>
-/// <li>e_faceB: the normal on polygonB</li>
-/// </ul>
+///
+/// - e_circles: not used
+/// - e_faceA: the normal on polygonA
+/// - e_faceB: the normal on polygonB
+///
 /// We store contacts in this way so that position correction can account for
 /// movement, which is critical for continuous physics. All contact scenarios
 /// must be expressed in one of these types.
@@ -48,7 +48,7 @@ class Manifold {
   /// instantiated ManifoldPoints.
   Manifold();
 
-  /// Creates this manifold as a copy of the other
+  /// Creates this manifold as a copy of the other.
   Manifold.copy(Manifold other) {
     localNormal.setFrom(other.localNormal);
     localPoint.setFrom(other.localPoint);
@@ -60,17 +60,15 @@ class Manifold {
     }
   }
 
-  /// copies this manifold from the given one
-  ///
-  /// @param cp manifold to copy from
-  void set(Manifold cp) {
-    for (var i = 0; i < cp.pointCount; i++) {
-      points[i].set(cp.points[i]);
+  /// Set this manifold from the given one.
+  void set(Manifold manifold) {
+    for (var i = 0; i < manifold.pointCount; i++) {
+      points[i].set(manifold.points[i]);
     }
 
-    type = cp.type;
-    localNormal.setFrom(cp.localNormal);
-    localPoint.setFrom(cp.localPoint);
-    pointCount = cp.pointCount;
+    type = manifold.type;
+    localNormal.setFrom(manifold.localNormal);
+    localPoint.setFrom(manifold.localPoint);
+    pointCount = manifold.pointCount;
   }
 }

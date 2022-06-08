@@ -1,10 +1,9 @@
 import 'package:forge2d/forge2d.dart';
 
-/// Callback class for AABB queries. See
-/// {@link World#queryAABB(QueryCallback, org.jbox2d.collision.AABB)}.
+/// Callback class for AABB queries. See [World.queryAABB].
 abstract class ParticleQueryCallback {
   /// Called for each particle found in the query AABB.
   ///
-  /// @return false to terminate the query.
+  /// Return false to terminate the query.
   bool reportParticle(Particle particle);
 }

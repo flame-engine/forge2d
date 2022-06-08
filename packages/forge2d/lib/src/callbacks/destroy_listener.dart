@@ -6,11 +6,9 @@ import 'package:forge2d/forge2d.dart';
 abstract class DestroyListener {
   /// Called when any joint is about to be destroyed due
   /// to the destruction of one of its attached bodies.
-  /// @param joint
   void onDestroyJoint(Joint joint);
 
   /// Called when any fixture is about to be destroyed due
   /// to the destruction of its parent body.
-  /// @param fixture
   void onDestroyFixture(Fixture fixture);
 }

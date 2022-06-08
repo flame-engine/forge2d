@@ -154,9 +154,6 @@ class ChainShape extends Shape {
   }
 
   /// Returns the vertex at the given position (index).
-  ///
-  /// @param index the index of the vertex 0 <= index < getVertexCount( )
-  /// @param vertex output vertex object, must be initialized
   Vector2 vertex(int index) {
     assert(index >= 0 && index < vertices.length);
     return vertices[index].clone();
@@ -164,7 +161,7 @@ class ChainShape extends Shape {
 
   /// Create a loop. This automatically adjusts connectivity.
   ///
-  /// @param vertices an array of vertices, these are copied
+  /// The [vertices] are copied.
   void createLoop(final List<Vector2> vertices) {
     assert(vertexCount == 0);
     assert(
@@ -182,7 +179,7 @@ class ChainShape extends Shape {
 
   /// Create a chain with isolated end vertices.
   ///
-  /// @param vertices an array of vertices, these are copied
+  /// [vertices] are copied.
   void createChain(final List<Vector2> vertices) {
     assert(vertexCount == 0);
     assert(vertices.length >= 2);

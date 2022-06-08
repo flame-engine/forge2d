@@ -16,21 +16,19 @@ class AABB {
       : lowerBound = Vector2.zero(),
         upperBound = Vector2.zero();
 
-  /// Copies from the given object
-  /// @param copy the object to copy from
+  /// Copies from the given object.
   AABB.copy(final AABB copy)
       : lowerBound = Vector2.copy(copy.lowerBound),
         upperBound = Vector2.copy(copy.upperBound);
 
   /// Creates an AABB object using the given bounding vertices.
-  /// @param lowerVertex the bottom left vertex of the bounding box
-  /// @param maxVertex the top right vertex of the bounding box
+  /// [lowerVertex] should be the bottom left vertex of the bounding box.
+  /// [upperVertex] should be the top right vertex of the bounding box.
   AABB.withVec2(final Vector2 lowerVertex, final Vector2 upperVertex)
       : lowerBound = Vector2.copy(lowerVertex),
         upperBound = Vector2.copy(upperVertex);
 
-  /// Sets this object from the given object
-  /// @param aabb the object to copy from
+  /// Sets this object from the given object.
   void set(final AABB aabb) {
     final v = aabb.lowerBound;
     lowerBound.x = v.x;

@@ -93,8 +93,6 @@ class MotorJoint extends Joint {
   }
 
   /// Set the target angular offset, in radians.
-  ///
-  /// @param angularOffset
   void setAngularOffset(double angularOffset) {
     if (angularOffset != _angularOffset) {
       bodyA.setAwake(true);
@@ -108,8 +106,6 @@ class MotorJoint extends Joint {
   }
 
   /// Set the maximum friction force in N.
-  ///
-  /// @param force
   void setMaxForce(double force) {
     assert(force >= 0.0);
     _maxForce = force;

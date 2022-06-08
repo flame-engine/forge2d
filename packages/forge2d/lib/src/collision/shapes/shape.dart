@@ -15,17 +15,17 @@ abstract class Shape {
   /// Test a point for containment in this shape. This only works for convex
   /// shapes.
   ///
-  /// @param xf the shape world transform.
-  /// @param p a point in world coordinates.
-  bool testPoint(final Transform xf, final Vector2 p);
+  /// [xf] should be the shape world transform.
+  /// [point] should be in world coordinates.
+  bool testPoint(final Transform xf, final Vector2 point);
 
   /// Cast a ray against a child shape.
   ///
-  /// @param argOutput the ray-cast results.
-  /// @param argInput the ray-cast input parameters.
-  /// @param argTransform the transform to be applied to the shape.
-  /// @param argChildIndex the child shape index
-  /// @return if hit
+  /// [output] is the ray-cast results.
+  /// [input] the ray-cast input parameters.
+  /// [transform] to be applied to the shape.
+  /// [childIndex] the child shape index
+  /// Returns true if the child shape is hit.
   bool raycast(
     RayCastOutput output,
     RayCastInput input,
@@ -35,16 +35,11 @@ abstract class Shape {
 
   /// Given a transform, compute the associated axis aligned bounding box for a
   /// child shape.
-  ///
-  /// @param argAabb returns the axis aligned box.
-  /// @param argXf the world transform of the shape.
   void computeAABB(final AABB aabb, final Transform xf, int childIndex);
 
   /// Compute the mass properties of this shape using its dimensions and
   /// density. The inertia tensor is computed about the local origin.
-  ///
-  /// @param massData returns the mass data for this shape.
-  /// @param density the density in kilograms per meter squared.
+  /// [density] should be in kilograms per meter squared.
   void computeMass(final MassData massData, final double density);
 
   /// Compute the distance from the current shape to the specified point.

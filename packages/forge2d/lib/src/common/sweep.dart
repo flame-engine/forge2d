@@ -48,8 +48,8 @@ class Sweep {
 
   /// Get the interpolated transform at a specific time.
   ///
-  /// @param xf the result is placed here - must not be null
-  /// @param t the normalized time in [0,1].
+  /// The result is placed in [xf].
+  /// [beta] should be the normalized time in [0,1].
   void getTransform(final Transform xf, final double beta) {
     // xf->p = (1.0f - beta) * c0 + beta * c;
     // float32 angle = (1.0f - beta) * a0 + beta * a;
@@ -67,8 +67,6 @@ class Sweep {
   }
 
   /// Advance the sweep forward, yielding a new initial state.
-  ///
-  /// @param alpha the new initial time.
   void advance(double alpha) {
     assert(alpha0 < 1.0);
     // float32 beta = (alpha - alpha0) / (1.0f - alpha0);

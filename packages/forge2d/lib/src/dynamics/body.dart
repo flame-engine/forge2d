@@ -243,13 +243,9 @@ class Body {
   }
 
   /// Get the world body origin position. Do not modify.
-  ///
-  /// @return the world position of the body's origin.
   Vector2 get position => transform.p;
 
-  /// Get the angle in radians.
-  ///
-  /// @return the current world rotation angle in radians.
+  /// Get the current world rotation angle in radians.
   double get angle => sweep.a;
 
   /// Get the world position of the center of mass. Do not modify.
@@ -259,23 +255,21 @@ class Body {
   Vector2 getLocalCenter() => sweep.localCenter;
 
   /// Set the linear velocity of the center of mass.
-  ///
-  /// @param v the new linear velocity of the center of mass.
-  set linearVelocity(Vector2 v) {
+  set linearVelocity(Vector2 velocity) {
     if (_bodyType == BodyType.static) {
       return;
     }
 
-    if (v.dot(v) > 0.0) {
+    if (velocity.dot(velocity) > 0.0) {
       setAwake(true);
     }
 
-    linearVelocity.setFrom(v);
+    linearVelocity.setFrom(velocity);
   }
 
   /// Set the angular velocity.
   ///
-  /// @param omega the new angular velocity in radians/second.
+  /// [w] is the new angular velocity in radians/second.
   set angularVelocity(double w) {
     if (_bodyType == BodyType.static) {
       return;
@@ -303,7 +297,7 @@ class Body {
 
   /// Apply a force to the center of mass. This wakes up the body.
   ///
-  /// @param force the world force vector, usually in Newtons (N).
+  /// [force] is usually in Newtons (N).
   void _applyForceToCenter(Vector2 force) {
     if (_bodyType != BodyType.dynamic) {
       return;
@@ -320,7 +314,7 @@ class Body {
   /// Apply a torque. This affects the angular velocity without affecting the
   /// linear velocity of the center of mass. This wakes up the body.
   ///
-  /// @param torque about the z-axis (out of the screen), usually in N-m.
+  /// [torque] is usually in N-m.
   void applyTorque(double torque) {
     if (_bodyType != BodyType.dynamic) {
       return;
@@ -364,7 +358,7 @@ class Body {
 
   /// Apply an angular impulse.
   ///
-  /// @param impulse the angular impulse in units of kg*m*m/s
+  /// angular [impulse] in units of kg*m*m/s
   void applyAngularImpulse(double impulse) {
     if (_bodyType != BodyType.dynamic) {
       return;
@@ -376,14 +370,10 @@ class Body {
     _angularVelocity += inverseInertia * impulse;
   }
 
-  /// Get the total mass of the body.
-  ///
-  /// @return the mass, usually in kilograms (kg).
+  /// Get the total mass of the body, usually in kilograms (kg).
   double get mass => _mass;
 
-  /// Get the central rotational inertia of the body.
-  ///
-  /// @return the rotational inertia, usually in kg-m^2.
+  /// Get the central rotational inertia of the body, usually in kg-m^2.
   double getInertia() {
     return inertia +
         _mass *
@@ -540,9 +530,6 @@ class Body {
   }
 
   /// Get the world linear velocity of a world point attached to this body.
-  ///
-  /// @param a point in world coordinates.
-  /// @return the world velocity of a point.
   Vector2 linearVelocityFromWorldPoint(Vector2 worldPoint) {
     return Vector2(
       -_angularVelocity * (worldPoint.y - sweep.c.y) + linearVelocity.x,
@@ -551,9 +538,6 @@ class Body {
   }
 
   /// Get the world velocity of a local point.
-  ///
-  /// @param a point in local coordinates.
-  /// @return the world velocity of a point.
   Vector2 linearVelocityFromLocalPoint(Vector2 localPoint) {
     return linearVelocityFromWorldPoint(worldPoint(localPoint));
   }
@@ -565,8 +549,6 @@ class Body {
   }
 
   /// Set the type of this body. This may alter the mass and velocity.
-  ///
-  /// @param type
   void setType(BodyType type) {
     assert(!world.isLocked);
     if (_bodyType == type) {
@@ -632,16 +614,12 @@ class Body {
     }
   }
 
-  /// Is this body allowed to sleep
-  ///
-  /// @return
+  /// Whether this body allowed to sleep.
   bool isSleepingAllowed() {
     return (flags & autoSleepFlag) == autoSleepFlag;
   }
 
   /// Set the sleep state of the body. A sleeping body has very low CPU cost.
-  ///
-  /// @param awaken set to false to put body to sleep, true to wake it.
   void setAwake(bool awaken) {
     if (awaken) {
       if ((flags & awakeFlag) == 0) {
@@ -705,14 +683,10 @@ class Body {
     }
   }
 
-  /// Get the active state of the body.
-  ///
-  /// @return
+  /// Whether the body is active or not.
   bool get isActive => (flags & activeFlag) == activeFlag;
 
   /// Set this body to have fixed rotation. This causes the mass to be reset.
-  ///
-  /// @param flag
   void setFixedRotation(bool flag) {
     if (flag) {
       flags |= fixedRotationFlag;
@@ -724,13 +698,10 @@ class Body {
   }
 
   /// Does this body have fixed rotation?
-  ///
-  /// @return
   bool isFixedRotation() {
     return (flags & fixedRotationFlag) == fixedRotationFlag;
   }
 
-  // djm pooling
   final Transform _pxf = Transform.zero();
 
   void synchronizeFixtures() {

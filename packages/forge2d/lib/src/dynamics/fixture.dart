@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
 import 'package:forge2d/src/settings.dart' as settings;
+import 'package:meta/meta.dart';
 
 /// A fixture is used to attach a shape to a body for collision detection. A
 /// fixture inherits its transform from its parent. Fixtures hold additional
@@ -32,8 +33,6 @@ class Fixture {
 
   /// Get the type of the child shape. You can use this to down cast to the
   /// concrete shape.
-  ///
-  /// @return the shape type.
   ShapeType get type => shape.shapeType;
 
   /// Is this fixture a sensor (non-solid)?
@@ -94,9 +93,6 @@ class Fixture {
   }
 
   /// Cast a ray against this shape.
-  ///
-  /// @param input the ray-cast input parameters.
-  /// @param output the ray-cast results.
   bool raycast(RayCastOutput output, RayCastInput input, int childIndex) {
     return shape.raycast(output, input, body.transform, childIndex);
   }
@@ -172,8 +168,6 @@ class Fixture {
   }
 
   /// Internal method
-  ///
-  /// @param broadPhase
   void destroyProxies(BroadPhase broadPhase) {
     // Destroy proxies in the broad-phase.
     for (var i = 0; i < _proxyCount; ++i) {
@@ -189,11 +183,7 @@ class Fixture {
   final AABB _pool2 = AABB();
   final Vector2 _displacement = Vector2.zero();
 
-  /// Internal method
-  ///
-  /// @param broadPhase
-  /// @param xf1
-  /// @param xf2
+  @internal
   void synchronize(
     BroadPhase broadPhase,
     final Transform transform1,

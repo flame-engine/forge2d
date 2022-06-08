@@ -13,12 +13,10 @@ class MassData {
   /// The rotational inertia of the shape about the local origin.
   double I = 0.0;
 
-  /// Blank mass data
+  /// Blank mass data.
   MassData() : center = Vector2.zero();
 
-  /// Copies from the given mass data
-  ///
-  /// @param md mass data to copy from
+  /// Copies from the given mass data.
   MassData.copy(MassData md)
       : mass = md.mass,
         center = md.center.clone(),

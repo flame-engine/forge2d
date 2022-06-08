@@ -45,10 +45,6 @@ class World {
 
   late ParticleSystem particleSystem;
 
-  /// Construct a world object.
-  ///
-  /// @param gravity the world gravity vector.
-  /// @param broadPhase what type of broad phase strategy that should be used.
   World([Vector2? gravity, BroadPhase? broadPhase])
       : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
     broadPhase ??= DefaultBroadPhaseBuffer(DynamicTree());
@@ -176,10 +172,9 @@ class World {
     }
   }
 
-  /// destroy a joint. This may cause the connected bodies to begin colliding.
+  /// Destroys a joint. This may cause the connected bodies to begin colliding.
   ///
   /// Warning: This function is locked during callbacks.
-  /// @param joint
   void destroyJoint(Joint joint) {
     assert(!isLocked);
 
