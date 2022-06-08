@@ -1,7 +1,8 @@
 import '../../forge2d.dart';
 import '../settings.dart' as settings;
 
-/// A manifold for two touching convex shapes. Forge2D supports multiple types of contact:
+/// A manifold for two touching convex shapes. Forge2D supports multiple types
+/// of contact:
 /// <ul>
 /// <li>clip point versus plane with radius</li>
 /// <li>point versus point with radius (circles)</li>
@@ -18,8 +19,9 @@ import '../settings.dart' as settings;
 /// <li>e_faceA: the normal on polygonA</li>
 /// <li>e_faceB: the normal on polygonB</li>
 /// </ul>
-/// We store contacts in this way so that position correction can account for movement, which is
-/// critical for continuous physics. All contact scenarios must be expressed in one of these types.
+/// We store contacts in this way so that position correction can account for
+/// movement, which is critical for continuous physics. All contact scenarios
+/// must be expressed in one of these types.
 /// This structure is stored across time steps, so we keep it small.
 
 enum ManifoldType { circles, faceA, faceB }
@@ -42,7 +44,8 @@ class Manifold {
   /// The number of manifold points.
   int pointCount = 0;
 
-  /// Initially a manifold with 0 points, with it's points array full of instantiated ManifoldPoints.
+  /// Initially a manifold with 0 points, with it's points array full of
+  /// instantiated ManifoldPoints.
   Manifold();
 
   /// Creates this manifold as a copy of the other

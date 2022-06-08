@@ -22,8 +22,10 @@ class PsTriad {
   final Particle particleC;
   int flags = 0;
   double strength = 0.0;
-  // TODO.spydon: Give these better names
-  final Vector2 pa = Vector2.zero(), pb = Vector2.zero(), pc = Vector2.zero();
+  // TODO(spydon): Give these better names
+  final Vector2 pa = Vector2.zero();
+  final pb = Vector2.zero();
+  final pc = Vector2.zero();
   double ka = 0.0, kb = 0.0, kc = 0.0, s = 0.0;
 
   PsTriad(this.particleA, this.particleB, this.particleC);
@@ -32,7 +34,7 @@ class PsTriad {
 /// Used for detecting particle contacts
 class PsProxy implements Comparable<PsProxy> {
   final Particle particle;
-  // TODO.spydon what is a tag?
+  // TODO(spydon): what is a tag?
   int tag = 0;
 
   PsProxy(this.particle);
@@ -363,7 +365,7 @@ class ParticleSystem {
     }
     for (final particle in group.particles) {
       if (particle.depth < double.maxFinite) {
-        // TODO.spydon: it will always go into this case?
+        // TODO(spydon): it will always go into this case?
         particle.depth *= particleDiameter;
       } else {
         particle.depth = 0.0;
@@ -711,8 +713,8 @@ class ParticleSystem {
         final velocityTransform = _tempXf2
           ..p.x = step.invDt * _tempXf.p.x
           ..p.y = step.invDt * _tempXf.p.y
-          ..q.s = step.invDt * _tempXf.q.s
-          ..q.c = step.invDt * (_tempXf.q.c - 1);
+          ..q.sin = step.invDt * _tempXf.q.sin
+          ..q.cos = step.invDt * (_tempXf.q.cos - 1);
         for (final particle in group.particles) {
           particle.velocity.setFrom(
             Transform.mulVec2(velocityTransform, particle.position),
@@ -928,7 +930,7 @@ class ParticleSystem {
 
   void solveSolid(final TimeStep step) {
     // applies extra repulsive force from solid particle groups
-    // TODO.spydon: Why was this separate depth buffer used?
+    // TODO(spydon): Why was this separate depth buffer used?
     //final depthBuffer = Float64List(_particleCount);
     final ejectionStrength = step.invDt * this.ejectionStrength;
     for (final contact in contactBuffer) {
@@ -1012,7 +1014,7 @@ class ParticleSystem {
       return toBeRemoved;
     });
 
-    // TODO: split the groups sometimes if they are rigid?
+    // TODO(spydon): split the groups sometimes if they are rigid?
   }
 
   double get particleRadius => particleDiameter / 2;
@@ -1107,7 +1109,8 @@ class ParticleSystem {
       ),
     );
     for (var i = firstProxy; i < lastProxy; ++i) {
-      // TODO: Does this still work now when we don't rotate the buffers?
+      // TODO(spydon): Does this still work now when we don't rotate the
+      // buffers?
       final particle = proxyBuffer[i].particle;
       final p = particle.position;
       if (lowerBoundX < p.x &&
@@ -1152,7 +1155,7 @@ class ParticleSystem {
     var v2 = vx * vx + vy * vy;
     v2 = v2 == 0 ? double.maxFinite : v2;
     for (var i = firstProxy; i < lastProxy; ++i) {
-      // TODO: Is this correct now when we are not rotating the buffers?
+      // TODO(spydon): Is this correct now when we are not rotating the buffers?
       final positionI = proxyBuffer[i].particle.position;
       final px = point1.x - positionI.x;
       final py = point1.y - positionI.y;

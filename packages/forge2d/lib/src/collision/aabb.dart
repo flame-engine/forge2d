@@ -115,18 +115,11 @@ class AABB {
 
   /// Does this aabb contain the provided AABB.
   bool contains(final AABB aabb) {
-    // djm: faster putting all of them together, as if one is false we leave the logic
-    // early
     return lowerBound.x <= aabb.lowerBound.x &&
         lowerBound.y <= aabb.lowerBound.y &&
         aabb.upperBound.x <= upperBound.x &&
         aabb.upperBound.y <= upperBound.y;
   }
-
-  /// @deprecated please use {@link #raycast(RayCastOutput, RayCastInput, IWorldPool)} for better performance
-  //bool raycast(final RayCastOutput output, final RayCastInput input) {
-  //  return raycastWithPool(output, input, DefaultWorldPool(4, 4));
-  //}
 
   /// From Real-time Collision Detection, p179.
   bool raycastWithPool(

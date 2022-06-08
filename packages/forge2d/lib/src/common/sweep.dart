@@ -2,9 +2,10 @@ import 'dart:math';
 
 import '../../forge2d.dart';
 
-/// This describes the motion of a body/shape for TOI computation. Shapes are defined with respect to
-/// the body origin, which may not coincide with the center of mass. However, to support dynamics we
-/// must interpolate the center of mass position.
+/// This describes the motion of a body/shape for TOI computation. Shapes are
+/// defined with respect to the body origin, which may not coincide with the
+/// center of mass. However, to support dynamics we must interpolate the center
+/// of mass position.
 class Sweep {
   /// Local center of mass position
   final Vector2 localCenter = Vector2.zero();
@@ -16,7 +17,8 @@ class Sweep {
   double a0 = 0.0;
   double a = 0.0;
 
-  /// Fraction of the current time step in the range [0,1] c0 and a0 are the positions at alpha0.
+  /// Fraction of the current time step in the range [0,1] c0 and a0 are the
+  /// positions at alpha0.
   double alpha0 = 0.0;
 
   @override
@@ -60,8 +62,8 @@ class Sweep {
     // Shift to origin
     // xf->p -= b2Mul(xf->q, localCenter);
     final q = xf.q;
-    xf.p.x -= q.c * localCenter.x - q.s * localCenter.y;
-    xf.p.y -= q.s * localCenter.x + q.c * localCenter.y;
+    xf.p.x -= q.cos * localCenter.x - q.sin * localCenter.y;
+    xf.p.y -= q.sin * localCenter.x + q.cos * localCenter.y;
   }
 
   /// Advance the sweep forward, yielding a new initial state.

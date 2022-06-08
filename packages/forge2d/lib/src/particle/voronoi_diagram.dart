@@ -57,10 +57,7 @@ class VoronoiDiagram {
 
   void generate(double radius) {
     if (generators.isEmpty) {
-      print('We do return');
       return;
-    } else {
-      print('We do go here');
     }
     _diagram.clear();
     _queue.clear();

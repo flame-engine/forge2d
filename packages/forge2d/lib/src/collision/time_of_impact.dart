@@ -22,8 +22,8 @@ class TOIOutput {
   double t = 0.0;
 }
 
-/// Class used for computing the time of impact. This class should not be constructed usually, just
-/// retrieve from the {@link SingletonPool#getTOI()}.
+/// Class used for computing the time of impact. This class should not be
+/// constructed usually, just retrieve from the {@link SingletonPool#getTOI()}.
 class TimeOfImpact {
   static const int maxIterations = 20;
   static const int maxRootIterations = 50;
@@ -47,10 +47,12 @@ class TimeOfImpact {
 
   TimeOfImpact();
 
-  /// Compute the upper bound on time before two shapes penetrate. Time is represented as a fraction
-  /// between [0,tMax]. This uses a swept separating axis and may miss some intermediate,
-  /// non-tunneling collision. If you change the time interval, you should call this function again.
-  /// Note: use Distance to compute the contact point and normal at the time of impact.
+  /// Compute the upper bound on time before two shapes penetrate. Time is
+  /// represented as a fraction between [0,tMax]. This uses a swept separating
+  /// axis and may miss some intermediate, non-tunneling collision.
+  /// If you change the time interval, you should call this function again.
+  /// Note: use Distance to compute the contact point and normal at the time of
+  /// impact.
   void timeOfImpact(TOIOutput output, TOIInput input) {
     // CCD via the local separating axis method. This seeks progression
     // by computing the largest time at which separation is maintained.

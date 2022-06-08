@@ -14,7 +14,8 @@ class CanvasViewportTransform extends ViewportTransform {
   }
 
   /// Sets the rendering context such that all drawing commands given in terms
-  /// of the world coordinate system will display correctly on the canvas screen.
+  /// of the world coordinate system will display correctly on the canvas
+  /// screen.
   void updateTransformation(CanvasRenderingContext2D ctx) {
     // Clear all previous transformation.
     ctx.setTransform(1, 0, 0, 1, 0, 0);

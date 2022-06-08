@@ -3,21 +3,19 @@ import 'dart:math';
 import '../../../forge2d.dart';
 import '../../settings.dart' as settings;
 
-/// A convex polygon shape. Polygons have a maximum number of vertices equal to _maxPolygonVertices.
+/// A convex polygon shape. Polygons have a maximum number of vertices equal to
+/// _maxPolygonVertices.
 /// In most cases you should not need many vertices for a convex polygon.
 class PolygonShape extends Shape {
-  /// Dump lots of debug information.
-  static const bool _debug = false;
-
   /// Local position of the shape centroid in parent body frame.
   final Vector2 centroid = Vector2.zero();
 
-  /// The vertices of the shape. Note: use vertexCount, not _vertices.length, to get number of
-  /// active vertices.
+  /// The vertices of the shape. Note: use vertexCount, not _vertices.length,
+  /// to get number of active vertices.
   final List<Vector2> vertices = [];
 
-  /// The normals of the shape. Note: use vertexCount, not _normals.length, to get number of
-  /// active normals.
+  /// The normals of the shape. Note: use vertexCount, not _normals.length, to
+  /// get number of active normals.
   final List<Vector2> normals = [];
 
   PolygonShape() : super(ShapeType.polygon) {
@@ -34,8 +32,8 @@ class PolygonShape extends Shape {
     return shape;
   }
 
-  /// Create a convex hull from the given array of points. The length of the list
-  /// must be in the range [3, Settings.maxPolygonVertices].
+  /// Create a convex hull from the given array of points. The length of the
+  /// list must be in the range [3, Settings.maxPolygonVertices].
   /// @warning the points may be re-ordered, even if they form a convex polygon.
   /// @warning collinear points are removed.
   void set(final List<Vector2> updatedVertices) {
@@ -228,15 +226,8 @@ class PolygonShape extends Shape {
 
     var tempX = p.x - xf.p.x;
     var tempY = p.y - xf.p.y;
-    final pLocalX = xfq.c * tempX + xfq.s * tempY;
-    final pLocalY = -xfq.s * tempX + xfq.c * tempY;
-
-    if (_debug) {
-      print('--testPoint debug--');
-      print('Vertices: ');
-      vertices.forEach(print);
-      print('pLocal: $pLocalX, $pLocalY');
-    }
+    final pLocalX = xfq.cos * tempX + xfq.sin * tempY;
+    final pLocalY = -xfq.sin * tempX + xfq.cos * tempY;
 
     for (var i = 0; i < vertices.length; ++i) {
       final vertex = vertices[i];
@@ -257,8 +248,8 @@ class PolygonShape extends Shape {
     final lower = aabb.lowerBound;
     final upper = aabb.upperBound;
     final v1 = vertices[0];
-    final xfqc = xf.q.c;
-    final xfqs = xf.q.s;
+    final xfqc = xf.q.cos;
+    final xfqs = xf.q.sin;
     final xfpx = xf.p.x;
     final xfpy = xf.p.y;
     lower.x = (xfqc * v1.x - xfqs * v1.y) + xfpx;
@@ -290,8 +281,8 @@ class PolygonShape extends Shape {
     int childIndex,
     Vector2 normalOut,
   ) {
-    final xfqc = xf.q.c;
-    final xfqs = xf.q.s;
+    final xfqc = xf.q.cos;
+    final xfqs = xf.q.sin;
     var tx = p.x - xf.p.x;
     var ty = p.y - xf.p.y;
     final pLocalx = xfqc * tx + xfqs * ty;
@@ -351,8 +342,8 @@ class PolygonShape extends Shape {
     Transform xf,
     int childIndex,
   ) {
-    final xfqc = xf.q.c;
-    final xfqs = xf.q.s;
+    final xfqc = xf.q.cos;
+    final xfqs = xf.q.sin;
     final xfp = xf.p;
     var tempX = input.p1.x - xfp.x;
     var tempY = input.p1.y - xfp.y;

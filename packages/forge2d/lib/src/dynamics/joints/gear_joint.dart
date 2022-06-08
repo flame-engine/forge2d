@@ -386,7 +386,7 @@ class GearJoint extends Joint {
     qC.setAngle(aC);
     qD.setAngle(aD);
 
-    // TODO: Is this really needed
+    // TODO(spydon): Is this really needed?
     const linearError = 0.0;
 
     double coordinateA, coordinateB;

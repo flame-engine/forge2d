@@ -130,13 +130,13 @@ class Body {
     userData = bd.userData;
   }
 
-  /// Creates a fixture and attach it to this body. Use this function if you need to set some fixture
-  /// parameters, like friction. Otherwise you can create the fixture directly from a shape. If the
-  /// density is non-zero, this function automatically updates the mass of the body. Contacts are not
+  /// Creates a fixture and attach it to this body. Use this function if you
+  /// need to set some fixture parameters, like friction. Otherwise you can
+  /// create the fixture directly from a shape. If the density is non-zero, this
+  /// function automatically updates the mass of the body. Contacts are not
   /// created until the next time step.
   ///
-  /// @param def the fixture definition.
-  /// @warning This function is locked during callbacks.
+  /// Warning: This function is locked during callbacks.
   Fixture createFixture(FixtureDef def) {
     assert(!world.isLocked);
 
@@ -738,14 +738,14 @@ class Body {
 
   void synchronizeFixtures() {
     final xf1 = _pxf;
-    xf1.q.s = sin(sweep.a0);
-    xf1.q.c = cos(sweep.a0);
+    xf1.q.sin = sin(sweep.a0);
+    xf1.q.cos = cos(sweep.a0);
     xf1.p.x = sweep.c0.x -
-        xf1.q.c * sweep.localCenter.x +
-        xf1.q.s * sweep.localCenter.y;
+        xf1.q.cos * sweep.localCenter.x +
+        xf1.q.sin * sweep.localCenter.y;
     xf1.p.y = sweep.c0.y -
-        xf1.q.s * sweep.localCenter.x -
-        xf1.q.c * sweep.localCenter.y;
+        xf1.q.sin * sweep.localCenter.x -
+        xf1.q.cos * sweep.localCenter.y;
 
     for (final f in fixtures) {
       f.synchronize(world.contactManager.broadPhase, xf1, transform);
@@ -753,12 +753,12 @@ class Body {
   }
 
   void synchronizeTransform() {
-    transform.q.s = sin(sweep.a);
-    transform.q.c = cos(sweep.a);
+    transform.q.sin = sin(sweep.a);
+    transform.q.cos = cos(sweep.a);
     final q = transform.q;
     final v = sweep.localCenter;
-    transform.p.x = sweep.c.x - q.c * v.x + q.s * v.y;
-    transform.p.y = sweep.c.y - q.s * v.x - q.c * v.y;
+    transform.p.x = sweep.c.x - q.cos * v.x + q.sin * v.y;
+    transform.p.y = sweep.c.y - q.sin * v.x - q.cos * v.y;
   }
 
   /// This is used to prevent connected bodies from colliding. It may lie, depending on the

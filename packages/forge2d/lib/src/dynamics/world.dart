@@ -3,14 +3,15 @@ import 'dart:math';
 import '../../forge2d.dart';
 import '../settings.dart' as settings;
 
-/// The world class manages all physics entities, dynamic simulation, and asynchronous queries. The
-/// world also contains efficient memory management facilities.
+/// The world class manages all physics entities, dynamic simulation, and
+/// asynchronous queries. The world also contains efficient memory management
+/// facilities.
 class World {
   static const int newFixture = 0x0001;
   static const int locked = 0x0002;
   static const int clearForcesBit = 0x0004;
 
-  // TODO.spydon: Don't have these fields as static
+  // TODO(spydon): Don't have these fields as static
   static final Distance distance = Distance();
   static final Collision collision = Collision();
   static final TimeOfImpact toi = TimeOfImpact();

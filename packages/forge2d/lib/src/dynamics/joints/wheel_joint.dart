@@ -364,8 +364,7 @@ class WheelJoint extends Joint {
 
       final oldImpulse = _motorImpulse;
       final maxImpulse = data.step.dt * _maxMotorTorque;
-      _motorImpulse =
-          (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
+      _motorImpulse = (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse);
       impulse = _motorImpulse - oldImpulse;
 
       wA -= iA * impulse;

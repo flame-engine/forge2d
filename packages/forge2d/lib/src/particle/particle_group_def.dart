@@ -1,8 +1,8 @@
 import '../../forge2d.dart';
 
-/// A particle group definition holds all the data needed to construct a particle group. You can
-/// safely re-use these definitions.
-// TODO: Remove this and only ues ParticleGroup directly
+/// A particle group definition holds all the data needed to construct a
+/// particle group. You can safely re-use these definitions.
+// TODO(spydon): Remove this and only use ParticleGroup directly
 class ParticleGroupDef {
   /// The particle-behavior flags.
   int flags = 0;
@@ -25,7 +25,7 @@ class ParticleGroupDef {
   double angularVelocity = 0.0;
 
   /// The color of all particles in the group.
-  Color3i color = Color3i.black;
+  Color3i color = Color3i.black();
 
   /// The strength of cohesion among the particles in a group with flag elasticParticle or
   /// springParticle.

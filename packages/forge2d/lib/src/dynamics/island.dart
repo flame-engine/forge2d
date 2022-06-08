@@ -121,7 +121,7 @@ import '../settings.dart' as settings;
  However, we can compute sin+cos of the same angle fast.
  */
 
-// TODO: Refactor this later
+// TODO(spydon): Refactor this later
 class BodyMeta {
   final Body body;
   final Velocity velocity = Velocity();
@@ -138,7 +138,7 @@ class Island {
   late List<Contact> _contacts;
   late List<Joint> _joints;
 
-  // TODO: Make this as efficient as it used to be
+  // TODO(spydon): Make this as efficient as it used to be
   List<Position> get _positions {
     return bodies.map((BodyMeta bodyMeta) => bodyMeta.position).toList();
   }
@@ -362,7 +362,7 @@ class Island {
       bodyMeta.velocity.w = body.angularVelocity;
     }
 
-    // TODO: Is this correct, since it is no longer a fixed list?
+    // TODO(spydon): Is this correct, since it is no longer a fixed list?
     _toiSolverDef.contacts = _contacts;
     _toiSolverDef.step = subStep;
     _toiSolverDef.positions = _positions;

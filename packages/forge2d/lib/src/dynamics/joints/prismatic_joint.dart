@@ -492,8 +492,7 @@ class PrismaticJoint extends Joint {
       var impulse = _motorMass * (_motorSpeed - cDot);
       final oldImpulse = _motorImpulse;
       final maxImpulse = data.step.dt * _maxMotorForce;
-      _motorImpulse =
-          (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
+      _motorImpulse = (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse);
       impulse = _motorImpulse - oldImpulse;
 
       final P = Vector2.zero();
@@ -679,23 +678,22 @@ class PrismaticJoint extends Joint {
       if ((_upperTranslation - _lowerTranslation).abs() <
           2.0 * settings.linearSlop) {
         // Prevent large angular corrections
-        c2 = translation
-            .clamp(-settings.maxLinearCorrection, settings.maxLinearCorrection)
-            .toDouble();
+        c2 = translation.clamp(
+          -settings.maxLinearCorrection,
+          settings.maxLinearCorrection,
+        );
         linearError = max(linearError, translation.abs());
         active = true;
       } else if (translation <= _lowerTranslation) {
         // Prevent large linear corrections and allow some slop.
         c2 = (translation - _lowerTranslation + settings.linearSlop)
-            .clamp(-settings.maxLinearCorrection, 0.0)
-            .toDouble();
+            .clamp(-settings.maxLinearCorrection, 0.0);
         linearError = max(linearError, _lowerTranslation - translation);
         active = true;
       } else if (translation >= _upperTranslation) {
         // Prevent large linear corrections and allow some slop.
         c2 = (translation - _upperTranslation - settings.linearSlop)
-            .clamp(0.0, settings.maxLinearCorrection)
-            .toDouble();
+            .clamp(0.0, settings.maxLinearCorrection);
         linearError = max(linearError, translation - _upperTranslation);
         active = true;
       }

@@ -78,8 +78,9 @@ class _ReferenceFace {
   double sideOffset2 = 0.0;
 }
 
-/// Functions used for computing contact points, distance queries, and TOI queries. Collision methods
-/// are non-static for pooling speed, retrieve a collision object from the {@link SingletonPool}.
+/// Functions used for computing contact points, distance queries, and TOI
+/// queries. Collision methods are non-static for pooling speed, retrieve a
+/// collision object from the SingletonPool.
 /// Should not be finalructed.
 class Collision {
   static const int nullFeature = 0x3FFFFFFF; // Integer.MAX_VALUE;
@@ -110,9 +111,9 @@ class Collision {
     return _output.distance < 10.0 * settings.epsilon;
   }
 
-  /// Compute the point states given two manifolds. The states pertain to the transition from
-  /// manifold1 to manifold2. So state1 is either persist or remove while state2 is either add or
-  /// persist.
+  /// Compute the point states given two manifolds. The states pertain to the
+  /// transition from manifold1 to manifold2. So state1 is either persist or
+  /// remove while state2 is either add or persist.
   static void computePointStates(
     final List<PointState> state1,
     final List<PointState> state2,
@@ -219,10 +220,10 @@ class Collision {
     // after inline:
     final circle1p = circle1.position;
     final circle2p = circle2.position;
-    final pAx = (xfA.q.c * circle1p.x - xfA.q.s * circle1p.y) + xfA.p.x;
-    final pAy = (xfA.q.s * circle1p.x + xfA.q.c * circle1p.y) + xfA.p.y;
-    final pBx = (xfB.q.c * circle2p.x - xfB.q.s * circle2p.y) + xfB.p.x;
-    final pBy = (xfB.q.s * circle2p.x + xfB.q.c * circle2p.y) + xfB.p.y;
+    final pAx = (xfA.q.cos * circle1p.x - xfA.q.sin * circle1p.y) + xfA.p.x;
+    final pAy = (xfA.q.sin * circle1p.x + xfA.q.cos * circle1p.y) + xfA.p.y;
+    final pBx = (xfB.q.cos * circle2p.x - xfB.q.sin * circle2p.y) + xfB.p.x;
+    final pBy = (xfB.q.sin * circle2p.x + xfB.q.cos * circle2p.y) + xfB.p.y;
     final dx = pBx - pAx;
     final dy = pBy - pAy;
     final distSqr = dx * dx + dy * dy;
@@ -266,12 +267,12 @@ class Collision {
     final circlep = circle.position;
     final xfBq = xfB.q;
     final xfAq = xfA.q;
-    final cx = (xfBq.c * circlep.x - xfBq.s * circlep.y) + xfB.p.x;
-    final cy = (xfBq.s * circlep.x + xfBq.c * circlep.y) + xfB.p.y;
+    final cx = (xfBq.cos * circlep.x - xfBq.sin * circlep.y) + xfB.p.x;
+    final cy = (xfBq.sin * circlep.x + xfBq.cos * circlep.y) + xfB.p.y;
     final px = cx - xfA.p.x;
     final py = cy - xfA.p.y;
-    final cLocalX = xfAq.c * px + xfAq.s * py;
-    final cLocalY = -xfAq.s * px + xfAq.c * py;
+    final cLocalX = xfAq.cos * px + xfAq.sin * py;
+    final cLocalY = -xfAq.sin * px + xfAq.cos * py;
     // end inline
 
     // Find the min separating edge.
@@ -393,13 +394,13 @@ class Collision {
     }
   }
 
-  // djm pooling, and from above
   final Vector2 _temp = Vector2.zero();
   final Transform _xf = Transform.zero();
   final Vector2 _n = Vector2.zero();
   final Vector2 _v1 = Vector2.zero();
 
-  /// Find the max separation between poly1 and poly2 using edge normals from poly1.
+  /// Find the max separation between poly1 and poly2 using edge normals from
+  /// poly1.
   void findMaxSeparation(
     _EdgeResults results,
     final PolygonShape poly1,
@@ -467,10 +468,10 @@ class Collision {
 
     // Get the normal of the reference edge in poly2's frame.
     final v = normals1[edge1];
-    final tempx = xf1q.c * v.x - xf1q.s * v.y;
-    final tempy = xf1q.s * v.x + xf1q.c * v.y;
-    final normal1x = xf2q.c * tempx + xf2q.s * tempy;
-    final normal1y = -xf2q.s * tempx + xf2q.c * tempy;
+    final tempx = xf1q.cos * v.x - xf1q.sin * v.y;
+    final tempy = xf1q.sin * v.x + xf1q.cos * v.y;
+    final normal1x = xf2q.cos * tempx + xf2q.sin * tempy;
+    final normal1y = -xf2q.sin * tempx + xf2q.cos * tempy;
 
     // Find the incident edge on poly2.
     var index = 0;
@@ -490,8 +491,8 @@ class Collision {
 
     final v1 = vertices2[i1];
     final out = c0.v;
-    out.x = (xf2q.c * v1.x - xf2q.s * v1.y) + xf2.p.x;
-    out.y = (xf2q.s * v1.x + xf2q.c * v1.y) + xf2.p.y;
+    out.x = (xf2q.cos * v1.x - xf2q.sin * v1.y) + xf2.p.x;
+    out.y = (xf2q.sin * v1.x + xf2q.cos * v1.y) + xf2.p.y;
     c0.id.indexA = edge1 & 0xFF;
     c0.id.indexB = i1 & 0xFF;
     c0.id.typeA = ContactIDType.face.index & 0xFF;
@@ -499,8 +500,8 @@ class Collision {
 
     final v2 = vertices2[i2];
     final out1 = c1.v;
-    out1.x = (xf2q.c * v2.x - xf2q.s * v2.y) + xf2.p.x;
-    out1.y = (xf2q.s * v2.x + xf2q.c * v2.y) + xf2.p.y;
+    out1.x = (xf2q.cos * v2.x - xf2q.sin * v2.y) + xf2.p.x;
+    out1.y = (xf2q.sin * v2.x + xf2q.cos * v2.y) + xf2.p.y;
     c1.id.indexA = edge1 & 0xFF;
     c1.id.indexB = i2 & 0xFF;
     c1.id.typeA = ContactIDType.face.index & 0xFF;
@@ -527,11 +528,13 @@ class Collision {
     final PolygonShape polyB,
     final Transform xfB,
   ) {
-    // Find edge normal of max separation on A - return if separating axis is found
-    // Find edge normal of max separation on B - return if separation axis is found
-    // Choose reference edge as min(minA, minB)
-    // Find incident edge
-    // Clip
+    // - Find edge normal of max separation on A - return if separating axis is
+    // found
+    // - Find edge normal of max separation on B - return if separation axis is
+    // found
+    // - Choose reference edge as min(minA, minB)
+    // - Find incident edge
+    // - Clip
 
     // The normal points from 1 to 2
 
@@ -593,8 +596,8 @@ class Collision {
     _planePoint.x = (_v11.x + _v12.x) * .5;
     _planePoint.y = (_v11.y + _v12.y) * .5;
 
-    _tangent.x = xf1q.c * _localTangent.x - xf1q.s * _localTangent.y;
-    _tangent.y = xf1q.s * _localTangent.x + xf1q.c * _localTangent.y;
+    _tangent.x = xf1q.cos * _localTangent.x - xf1q.sin * _localTangent.y;
+    _tangent.y = xf1q.sin * _localTangent.x + xf1q.cos * _localTangent.y;
 
     final normalx = 1.0 * _tangent.y;
     final normaly = -1.0 * _tangent.x;
@@ -651,8 +654,8 @@ class Collision {
         final out = cp.localPoint;
         final px = _clipPoints2[i].v.x - xf2.p.x;
         final py = _clipPoints2[i].v.y - xf2.p.y;
-        out.x = xf2.q.c * px + xf2.q.s * py;
-        out.y = -xf2.q.s * px + xf2.q.c * py;
+        out.x = xf2.q.cos * px + xf2.q.sin * py;
+        out.y = -xf2.q.sin * px + xf2.q.cos * py;
         cp.id.set(_clipPoints2[i].id);
         if (flip) {
           // Swap features
@@ -854,7 +857,8 @@ class Collision {
 
 enum VertexType { isolated, concave, convex }
 
-/// This class collides an edge and a polygon, taking into account edge adjacency.
+/// This class collides an edge and a polygon, taking into account edge
+/// adjacency.
 class EdgePolygonCollider {
   final TempPolygon polygonB = TempPolygon();
 
@@ -1160,7 +1164,8 @@ class EdgePolygonCollider {
     if (primaryAxis.type == EPAxisType.edgeA) {
       manifold.type = ManifoldType.faceA;
 
-      // Search for the polygon normal that is most anti-parallel to the edge normal.
+      // Search for the polygon normal that is most anti-parallel to the edge
+      // normal.
       var bestIndex = 0;
       var bestValue = normal.dot(polygonB.normals[0]);
       for (var i = 1; i < polygonB.count; ++i) {

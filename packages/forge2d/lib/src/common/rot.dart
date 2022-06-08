@@ -1,67 +1,64 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import '../../forge2d.dart';
 
 class Rot {
-  double s = 0.0, c = 1.0; // sin and cos
+  double sin;
+  double cos;
 
-  Rot();
+  Rot({this.sin = 0.0, this.cos = 1.0});
 
   Rot.withAngle(double angle)
-      : s = sin(angle),
-        c = cos(angle);
+      : sin = math.sin(angle),
+        cos = math.cos(angle);
 
   void setAngle(double angle) {
-    s = sin(angle);
-    c = cos(angle);
+    sin = math.sin(angle);
+    cos = math.cos(angle);
   }
 
   void setFrom(Rot other) {
-    s = other.s;
-    c = other.c;
+    sin = other.sin;
+    cos = other.cos;
   }
 
   void setIdentity() {
-    s = 0.0;
-    c = 1.0;
+    sin = 0.0;
+    cos = 1.0;
   }
 
-  double getSin() => s;
+  double getSin() => sin;
 
   @override
-  String toString() => 'Rot(s:$s, c:$c)';
+  String toString() => 'Rot(s:$sin, c:$cos)';
 
-  double getCos() => c;
+  double getCos() => cos;
 
-  double getAngle() => atan2(s, c);
+  double getAngle() => math.atan2(sin, cos);
 
-  Vector2 getXAxis(Vector2 xAxis) => Vector2(c, s);
+  Vector2 getXAxis(Vector2 xAxis) => Vector2(cos, sin);
 
-  Vector2 getYAxis(Vector2 yAxis) => Vector2(-s, c);
+  Vector2 getYAxis(Vector2 yAxis) => Vector2(-sin, cos);
 
-  Rot clone() {
-    return Rot()
-      ..s = s
-      ..c = c;
-  }
+  Rot clone() => Rot(sin: sin, cos: cos);
 
-  static Rot mul(Rot q, Rot r) {
-    return Rot()
-      ..s = q.s * r.c + q.c * r.s
-      ..c = q.c * r.c - q.s * r.s;
-  }
+  Rot.mul(Rot q, Rot r)
+      : this(
+          sin: q.sin * r.cos + q.cos * r.sin,
+          cos: q.cos * r.cos - q.sin * r.sin,
+        );
 
-  static Rot mulTrans(Rot q, Rot r) {
-    return Rot()
-      ..s = q.c * r.s - q.s * r.c
-      ..c = q.c * r.c + q.s * r.s;
-  }
+  Rot.mulTrans(Rot q, Rot r)
+      : this(
+          sin: q.cos * r.sin - q.sin * r.cos,
+          cos: q.cos * r.cos + q.sin * r.sin,
+        );
 
   static Vector2 mulVec2(Rot q, Vector2 v) {
-    return Vector2(q.c * v.x - q.s * v.y, q.s * v.x + q.c * v.y);
+    return Vector2(q.cos * v.x - q.sin * v.y, q.sin * v.x + q.cos * v.y);
   }
 
   static Vector2 mulTransVec2(Rot q, Vector2 v) {
-    return Vector2(q.c * v.x + q.s * v.y, -q.s * v.x + q.c * v.y);
+    return Vector2(q.cos * v.x + q.sin * v.y, -q.sin * v.x + q.cos * v.y);
   }
 }

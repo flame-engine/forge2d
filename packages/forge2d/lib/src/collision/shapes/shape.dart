@@ -1,8 +1,8 @@
 import '../../../forge2d.dart';
 
-/// A shape is used for collision detection. You can create a shape however you like. Shapes used for
-/// simulation in World are created automatically when a Fixture is created. Shapes may encapsulate a
-/// one or more child shapes.
+/// A shape is used for collision detection. You can create a shape however you
+/// like. Shapes used for simulation in World are created automatically when a
+/// [Fixture] is created. Shapes may encapsulate a one or more child shapes.
 abstract class Shape {
   final ShapeType shapeType;
   double radius = 0.0;
@@ -12,7 +12,8 @@ abstract class Shape {
   /// Get the number of child primitives
   int get childCount;
 
-  /// Test a point for containment in this shape. This only works for convex shapes.
+  /// Test a point for containment in this shape. This only works for convex
+  /// shapes.
   ///
   /// @param xf the shape world transform.
   /// @param p a point in world coordinates.
@@ -32,26 +33,27 @@ abstract class Shape {
     int childIndex,
   );
 
-  /// Given a transform, compute the associated axis aligned bounding box for a child shape.
+  /// Given a transform, compute the associated axis aligned bounding box for a
+  /// child shape.
   ///
   /// @param argAabb returns the axis aligned box.
   /// @param argXf the world transform of the shape.
   void computeAABB(final AABB aabb, final Transform xf, int childIndex);
 
-  /// Compute the mass properties of this shape using its dimensions and density. The inertia tensor
-  /// is computed about the local origin.
+  /// Compute the mass properties of this shape using its dimensions and
+  /// density. The inertia tensor is computed about the local origin.
   ///
   /// @param massData returns the mass data for this shape.
   /// @param density the density in kilograms per meter squared.
   void computeMass(final MassData massData, final double density);
 
-  /// Compute the distance from the current shape to the specified point. This only works for convex
-  /// shapes.
+  /// Compute the distance from the current shape to the specified point.
+  /// This only works for convex shapes.
   ///
-  /// @param xf the shape world transform.
-  /// @param p a point in world coordinates.
-  /// @param normalOut returns the direction in which the distance increases.
-  /// @return distance returns the distance from the current shape.
+  /// [xf] is the shape world transform.
+  /// [p] is a point in world coordinates.
+  /// [normalOut] returns the direction in which the distance increases.
+  /// Returns the distance from the current shape.
   double computeDistanceToOut(
     Transform xf,
     Vector2 p,

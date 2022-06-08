@@ -2,10 +2,9 @@ import 'dart:math';
 
 import '../../../forge2d.dart';
 
-/// The class manages contact between two shapes. A contact exists for each overlapping AABB in the
-/// broad-phase (except if filtered). Therefore a contact object may exist that has no contact
-/// points.
-/// TODO.spydon: Add generics
+/// The class manages contact between two shapes. A contact exists for each
+/// overlapping AABB in the broad-phase (except if filtered). Therefore a
+/// contact object may exist that has no contact points.
 abstract class Contact {
   // Flags stored in _flags
   // Used when crawling contact graph when forming islands.
@@ -71,7 +70,7 @@ abstract class Contact {
     // Remember that we use the order in the enum here to determine in which
     // order the arguments should come in the different contact classes.
     // { CIRCLE, EDGE, POLYGON, CHAIN }
-    /// TODO.spydon: Clean this mess up.
+    // TODO(spydon): Clean this mess up.
     final typeA = fixtureA.type.index < fixtureB.type.index
         ? fixtureA.type
         : fixtureB.type;

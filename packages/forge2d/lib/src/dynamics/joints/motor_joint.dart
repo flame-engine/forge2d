@@ -162,10 +162,10 @@ class MotorJoint extends Joint {
     // Compute the effective mass matrix.
     // _rA = b2Mul(qA, -_localCenterA);
     // _rB = b2Mul(qB, -_localCenterB);
-    _rA.x = qA.c * -_localCenterA.x - qA.s * -_localCenterA.y;
-    _rA.y = qA.s * -_localCenterA.x + qA.c * -_localCenterA.y;
-    _rB.x = qB.c * -_localCenterB.x - qB.s * -_localCenterB.y;
-    _rB.y = qB.s * -_localCenterB.x + qB.c * -_localCenterB.y;
+    _rA.x = qA.cos * -_localCenterA.x - qA.sin * -_localCenterA.y;
+    _rA.y = qA.sin * -_localCenterA.x + qA.cos * -_localCenterA.y;
+    _rB.x = qB.cos * -_localCenterB.x - qB.sin * -_localCenterB.y;
+    _rB.y = qB.sin * -_localCenterB.x + qB.cos * -_localCenterB.y;
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -242,7 +242,7 @@ class MotorJoint extends Joint {
       final oldImpulse = _angularImpulse;
       final maxImpulse = dt * _maxTorque;
       _angularImpulse =
-          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
+          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse);
       impulse = _angularImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -253,8 +253,8 @@ class MotorJoint extends Joint {
 
     // Solve linear friction
     {
-      // Cdot = vB + b2Cross(wB, _rB) - vA - b2Cross(wA, _rA) + inv_h * _correctionFactor *
-      // _linearError;
+      // Cdot = vB + b2Cross(wB, _rB) - vA - b2Cross(wA, _rA) + inv_h *
+      // _correctionFactor * _linearError;
       cDot.x = vB.x +
           -wB * _rB.y -
           vA.x -

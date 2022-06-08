@@ -77,7 +77,8 @@ class CanvasDraw extends DebugDraw {
     drawPoint(center, screenRadius, color);
   }
 
-  /// Draws the given point with the given *unscaled* radius, in the given [color].
+  /// Draws the given point with the given *unscaled* radius, in the given
+  /// [color].
   @override
   void drawPoint(
     Vector2 point,

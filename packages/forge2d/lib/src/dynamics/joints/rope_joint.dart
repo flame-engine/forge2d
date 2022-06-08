@@ -215,7 +215,7 @@ class RopeJoint extends Joint {
     final length = u.normalize();
     var c = length - _maxLength;
 
-    c = c.clamp(0.0, settings.maxLinearCorrection).toDouble();
+    c = c.clamp(0.0, settings.maxLinearCorrection);
 
     final impulse = -_mass * c;
     final pX = impulse * u.x;
@@ -246,7 +246,7 @@ class RopeJoint extends Joint {
     return 0.0;
   }
 
-  // TODO: remove these getters and setters
+  // TODO(spydon): Remove these old style getters and setters.
   double getMaxLength() {
     return _maxLength;
   }
