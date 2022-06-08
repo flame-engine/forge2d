@@ -224,7 +224,7 @@ void main() {
         debugDraw = MockDebugDraw();
 
         registerFallbackValue(Vector2.zero());
-        registerFallbackValue(Color3i.black);
+        registerFallbackValue(Color3i.black());
       });
 
       test(
