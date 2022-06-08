@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// A convex polygon shape. Polygons have a maximum number of vertices equal to
 /// _maxPolygonVertices.
@@ -34,8 +34,8 @@ class PolygonShape extends Shape {
 
   /// Create a convex hull from the given array of points. The length of the
   /// list must be in the range [3, Settings.maxPolygonVertices].
-  /// @warning the points may be re-ordered, even if they form a convex polygon.
-  /// @warning collinear points are removed.
+  /// Warning: the points may be re-ordered, even if they form a convex polygon.
+  /// Warning: collinear points are removed.
   void set(final List<Vector2> updatedVertices) {
     final updatedCount = updatedVertices.length;
     assert(updatedCount >= 3, 'Too few vertices to form polygon');

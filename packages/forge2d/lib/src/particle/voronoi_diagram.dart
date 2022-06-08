@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 abstract class VoronoiDiagramCallback {
   void call(Particle particleA, Particle particleB, Particle particleC);

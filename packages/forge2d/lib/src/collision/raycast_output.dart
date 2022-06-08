@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Ray-cast output data.
 /// The ray hits at p1 + fraction * (p2 - p1), where p1 and p2 come from

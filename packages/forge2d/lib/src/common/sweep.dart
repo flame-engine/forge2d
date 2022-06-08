@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// This describes the motion of a body/shape for TOI computation. Shapes are
 /// defined with respect to the body origin, which may not coincide with the

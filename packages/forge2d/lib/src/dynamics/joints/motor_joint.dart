@@ -1,4 +1,4 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 //Point-to-point constraint
 //Cdot = v2 - v1
@@ -12,8 +12,9 @@ import '../../../forge2d.dart';
 //J = [0 0 -1 0 0 1]
 //K = invI1 + invI2
 
-/// A motor joint is used to control the relative motion between two bodies. A typical usage is to
-/// control the movement of a dynamic body with respect to the ground.
+/// A motor joint is used to control the relative motion between two bodies.
+/// A typical usage is to control the movement of a dynamic body with respect to
+/// the ground.
 class MotorJoint extends Joint {
   // Solver shared
   final Vector2 _linearOffset = Vector2.zero();

@@ -1,10 +1,11 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// Distance joint definition. This requires defining an anchor point on both bodies and the non-zero
-/// length of the distance joint. The definition uses local anchor points so that the initial
-/// configuration can violate the constraint slightly. This helps when saving and loading a game.
+/// Distance joint definition. This requires defining an anchor point on both
+/// bodies and the non-zero length of the distance joint. The definition uses
+/// local anchor points so that the initial configuration can violate the
+/// constraint slightly. This helps when saving and loading a game.
 ///
-/// @warning Do not use a zero or short length.
+/// Warning: Do not use a zero or short length.
 class DistanceJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The equilibrium length between the anchor points.
   double length = 1.0;

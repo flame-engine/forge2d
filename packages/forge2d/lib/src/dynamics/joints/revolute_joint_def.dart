@@ -1,14 +1,14 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// Revolute joint definition. This requires defining an anchor point where the bodies are joined.
-/// The definition uses local anchor points so that the initial configuration can violate the
-/// constraint slightly. You also need to specify the initial relative angle for joint limits. This
-/// helps when saving and loading a game. The local anchor points are measured from the body's origin
-/// rather than the center of mass because:<br/>
-/// <ul>
-/// <li>you might not know where the center of mass will be.</li>
-/// <li>if you add/remove shapes from a body and recompute the mass, the joints will be broken.</li>
-/// </ul>
+/// Revolute joint definition. This requires defining an anchor point where the
+/// bodies are joined. The definition uses local anchor points so that the
+/// initial configuration can violate the constraint slightly.
+/// You also need to specify the initial relative angle for joint limits. This
+/// helps when saving and loading a game. The local anchor points are measured
+/// from the body's origin rather than the center of mass because:
+///  - You might not know where the center of mass will be.
+///  - If you add/remove shapes from a body and recompute the mass,
+///    the joints will be broken.
 class RevoluteJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The body2 angle minus body1 angle in the reference state (radians).
   double referenceAngle = 0.0;
@@ -28,17 +28,15 @@ class RevoluteJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The desired motor speed. Usually in radians per second.
   double motorSpeed = 0.0;
 
-  /// The maximum motor torque used to achieve the desired motor speed. Usually in N-m.
+  /// The maximum motor torque used to achieve the desired motor speed.
+  /// Usually in N-m.
   double maxMotorTorque = 0.0;
 
-  /// Initialize the bodies, anchors, and reference angle using the world anchor.
-  ///
-  /// @param b1
-  /// @param b2
-  /// @param anchor
-  void initialize(final A b1, final B b2, final Vector2 anchor) {
-    bodyA = b1;
-    bodyB = b2;
+  /// Initialize the bodies, anchors, and reference angle using the world
+  /// anchor.
+  void initialize(final A body1, final B body2, final Vector2 anchor) {
+    bodyA = body1;
+    bodyB = body2;
     localAnchorA.setFrom(bodyA.localPoint(anchor));
     localAnchorB.setFrom(bodyB.localPoint(anchor));
     referenceAngle = bodyB.angle - bodyA.angle;

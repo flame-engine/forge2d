@@ -1,77 +1,84 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-//Linear constraint (point-to-line)
-//d = p2 - p1 = x2 + r2 - x1 - r1
-//C = dot(perp, d)
-//Cdot = dot(d, cross(w1, perp)) + dot(perp, v2 + cross(w2, r2) - v1 - cross(w1, r1))
-//   = -dot(perp, v1) - dot(cross(d + r1, perp), w1) + dot(perp, v2) + dot(cross(r2, perp), v2)
-//J = [-perp, -cross(d + r1, perp), perp, cross(r2,perp)]
+// Linear constraint (point-to-line)
+// d = p2 - p1 = x2 + r2 - x1 - r1
+// C = dot(perp, d)
+// Cdot = dot(d, cross(w1, perp)) +
+//        dot(perp, v2 + cross(w2, r2) - v1 - cross(w1, r1))
+//    = -dot(perp, v1) - dot(cross(d + r1, perp), w1) + dot(perp, v2) +
+//       dot(cross(r2, perp), v2)
+// J = [-perp, -cross(d + r1, perp), perp, cross(r2,perp)]
 //
-//Angular constraint
-//C = a2 - a1 + a_initial
-//Cdot = w2 - w1
-//J = [0 0 -1 0 0 1]
+// Angular constraint
+// C = a2 - a1 + a_initial
+// Cdot = w2 - w1
+// J = [0 0 -1 0 0 1]
 //
-//K = J * invM * JT
+// K = J * invM * JT
 //
-//J = [-a -s1 a s2]
-//  [0  -1  0  1]
-//a = perp
-//s1 = cross(d + r1, a) = cross(p2 - x1, a)
-//s2 = cross(r2, a) = cross(p2 - x2, a)
+// J = [-a -s1 a s2]
+//   [0  -1  0  1]
+// a = perp
+// s1 = cross(d + r1, a) = cross(p2 - x1, a)
+// s2 = cross(r2, a) = cross(p2 - x2, a)
 
-//Motor/Limit linear constraint
-//C = dot(ax1, d)
-//Cdot = = -dot(ax1, v1) - dot(cross(d + r1, ax1), w1) + dot(ax1, v2) + dot(cross(r2, ax1), v2)
-//J = [-ax1 -cross(d+r1,ax1) ax1 cross(r2,ax1)]
+// Motor/Limit linear constraint
+// C = dot(ax1, d)
+// Cdot = -dot(ax1, v1) - dot(cross(d + r1, ax1), w1) + dot(ax1, v2) +
+//        dot(cross(r2, ax1), v2)
+// J = [-ax1 -cross(d+r1,ax1) ax1 cross(r2,ax1)]
 
-//Block Solver
-//We develop a block solver that includes the joint limit. This makes the limit stiff (inelastic) even
-//when the mass has poor distribution (leading to large torques about the joint anchor points).
+// Block Solver
+// We develop a block solver that includes the joint limit. This makes the limit
+// stiff (inelastic) even when the mass has poor distribution (leading to large
+// torques about the joint anchor points).
 //
-//The Jacobian has 3 rows:
-//J = [-uT -s1 uT s2] // linear
-//  [0   -1   0  1] // angular
-//  [-vT -a1 vT a2] // limit
+// The Jacobian has 3 rows:
+// J = [-uT -s1 uT s2] // linear
+//   [0   -1   0  1] // angular
+//   [-vT -a1 vT a2] // limit
 //
-//u = perp
-//v = axis
-//s1 = cross(d + r1, u), s2 = cross(r2, u)
-//a1 = cross(d + r1, v), a2 = cross(r2, v)
+// u = perp
+// v = axis
+// s1 = cross(d + r1, u), s2 = cross(r2, u)
+// a1 = cross(d + r1, v), a2 = cross(r2, v)
 
-//M * (v2 - v1) = JT * df
-//J * v2 = bias
+// M * (v2 - v1) = JT * df
+// J * v2 = bias
 //
-//v2 = v1 + invM * JT * df
-//J * (v1 + invM * JT * df) = bias
-//K * df = bias - J * v1 = -Cdot
-//K = J * invM * JT
-//Cdot = J * v1 - bias
+// v2 = v1 + invM * JT * df
+// J * (v1 + invM * JT * df) = bias
+// K * df = bias - J * v1 = -Cdot
+// K = J * invM * JT
+// Cdot = J * v1 - bias
 //
-//Now solve for f2.
-//df = f2 - f1
-//K * (f2 - f1) = -Cdot
-//f2 = invK * (-Cdot) + f1
+// Now solve for f2.
+// df = f2 - f1
+// K * (f2 - f1) = -Cdot
+// f2 = invK * (-Cdot) + f1
 //
-//Clamp accumulated limit impulse.
-//lower: f2(3) = max(f2(3), 0)
-//upper: f2(3) = min(f2(3), 0)
+// Clamp accumulated limit impulse.
+// lower: f2(3) = max(f2(3), 0)
+// upper: f2(3) = min(f2(3), 0)
 //
-//Solve for correct f2(1:2)
-//K(1:2, 1:2) * f2(1:2) = -Cdot(1:2) - K(1:2,3) * f2(3) + K(1:2,1:3) * f1
-//                    = -Cdot(1:2) - K(1:2,3) * f2(3) + K(1:2,1:2) * f1(1:2) + K(1:2,3) * f1(3)
-//K(1:2, 1:2) * f2(1:2) = -Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3)) + K(1:2,1:2) * f1(1:2)
-//f2(1:2) = invK(1:2,1:2) * (-Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3))) + f1(1:2)
+// Solve for correct f2(1:2)
+// K(1:2, 1:2) * f2(1:2) = -Cdot(1:2) - K(1:2,3) * f2(3) + K(1:2,1:3) * f1
+//                     = -Cdot(1:2) - K(1:2,3) * f2(3) + K(1:2,1:2) * f1(1:2) +
+//                        K(1:2,3) * f1(3)
+// K(1:2, 1:2) * f2(1:2) = -Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3)) +
+//                         K(1:2,1:2) * f1(1:2)
+// f2(1:2) = invK(1:2,1:2) * (-Cdot(1:2) - K(1:2,3) * (f2(3) - f1(3))) + f1(1:2)
 //
-//Now compute impulse to be applied:
-//df = f2 - f1
+// Now compute impulse to be applied:
+// df = f2 - f1
 
-/// A prismatic joint. This joint provides one degree of freedom: translation along an axis fixed in
-/// bodyA. Relative rotation is prevented. You can use a joint limit to restrict the range of motion
-/// and a joint motor to drive the motion or to model joint friction.
+/// A prismatic joint. This joint provides one degree of freedom: translation
+/// along an axis fixed in bodyA. Relative rotation is prevented. You can use a
+/// joint limit to restrict the range of motion and a joint motor to drive the
+/// motion or to model joint friction.
 class PrismaticJoint extends Joint {
   // Solver shared
   @override

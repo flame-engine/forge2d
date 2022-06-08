@@ -1,5 +1,5 @@
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// A chain shape is a free form sequence of line segments. The chain has
 /// two-sided collision, so you can use inside and outside collision.

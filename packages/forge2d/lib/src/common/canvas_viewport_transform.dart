@@ -1,6 +1,6 @@
 import 'dart:html';
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Transform for drawing using a canvas context. Y-flip is permanently set
 /// to true.

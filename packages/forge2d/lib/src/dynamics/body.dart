@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// A rigid body. These are created via World.createBody.
 class Body {
@@ -161,24 +161,26 @@ class Body {
     return fixture;
   }
 
-  /// Creates a fixture from a shape and attach it to this body. This is a convenience function. Use
-  /// FixtureDef if you need to set parameters like friction, restitution, user data, or filtering.
-  /// If the density is non-zero, this function automatically updates the mass of the body.
+  /// Creates a fixture from a shape and attach it to this body. This is a
+  /// convenience function. Use [FixtureDef] if you need to set parameters like
+  /// friction, restitution, user data, or filtering.
+  /// If the density is non-zero, this function automatically updates the mass
+  /// of the body.
   ///
-  /// @param shape the shape to be cloned.
-  /// @param density the shape density (set to zero for static bodies).
-  /// @warning This function is locked during callbacks.
+  /// [shape] the shape to be cloned.
+  /// [density] is the shape density (set to zero for static bodies).
+  /// Warning: This function is locked during callbacks.
   Fixture createFixtureFromShape(Shape shape, [double density = 0.0]) {
     return createFixture(FixtureDef(shape)..density = density);
   }
 
-  /// Destroy a fixture. This removes the fixture from the broad-phase and destroys all contacts
-  /// associated with this fixture. This will automatically adjust the mass of the body if the body
-  /// is dynamic and the fixture has positive density. All fixtures attached to a body are implicitly
-  /// destroyed when the body is destroyed.
+  /// Destroy a fixture. This removes the fixture from the broad-phase and
+  /// destroys all contacts associated with this fixture. This will
+  /// automatically adjust the mass of the body if the body is dynamic and the
+  /// fixture has positive density. All fixtures attached to a body are
+  /// implicitly destroyed when the body is destroyed.
   ///
-  /// @param fixture the fixture to be removed.
-  /// @warning This function is locked during callbacks.
+  /// Warning: This function is locked during callbacks.
   void destroyFixture(Fixture fixture) {
     assert(!world.isLocked);
     assert(fixture.body == this);
@@ -202,7 +204,8 @@ class Body {
         // this body's contact list.
         world.contactManager.destroy(contact);
       } else {
-        /// Increase index only if contact was not deleted and need move to next one.
+        /// Increase index only if contact was not deleted and need move to next
+        /// one.
         /// If contact was deleted, then index should not be increased.
         i++;
       }
@@ -217,12 +220,11 @@ class Body {
     resetMassData();
   }
 
-  /// Set the position of the body's origin and rotation. This breaks any contacts and wakes the
-  /// other bodies. Manipulating a body's transform may cause non-physical behavior. Note: contacts
-  /// are updated on the next call to World.step().
-  ///
-  /// @param position the world position of the body's local origin.
-  /// @param angle the world rotation in radians.
+  /// Set the position of the body's origin and rotation. This breaks any
+  /// contacts and wakes the
+  /// other bodies. Manipulating a body's transform may cause non-physical
+  /// behavior.
+  /// Note: contacts are updated on the next call to World.step().
   void setTransform(Vector2 position, double angle) {
     assert(!world.isLocked);
     transform.q.setAngle(angle);
@@ -286,11 +288,12 @@ class Body {
     _angularVelocity = w;
   }
 
-  /// Apply a force at a world point. If the force is not applied at the center of mass, it will
-  /// generate a torque and affect the angular velocity. This wakes up the body.
+  /// Apply a force at a world point. If the force is not applied at the center
+  /// of mass, it will generate a torque and affect the angular velocity.
+  /// This wakes up the body.
   ///
-  /// @param force the world force vector, usually in Newtons (N).
-  /// @param point the world position of the point of application (default: center of mass)
+  /// [point] is the world position of the point of application
+  /// (default: center of mass)
   void applyForce(Vector2 force, {Vector2? point}) {
     point ??= worldCenter;
     _applyForceToCenter(force);
@@ -314,8 +317,8 @@ class Body {
     this.force.y += force.y;
   }
 
-  /// Apply a torque. This affects the angular velocity without affecting the linear velocity of the
-  /// center of mass. This wakes up the body.
+  /// Apply a torque. This affects the angular velocity without affecting the
+  /// linear velocity of the center of mass. This wakes up the body.
   ///
   /// @param torque about the z-axis (out of the screen), usually in N-m.
   void applyTorque(double torque) {
@@ -330,14 +333,16 @@ class Body {
     _torque += torque;
   }
 
-  /// Apply an impulse at a point. This immediately modifies the velocity. It also modifies the
-  /// angular velocity if the point of application is not at the center of mass. This wakes up the
-  /// body if 'wake' is set to true. If the body is sleeping and 'wake' is false, then there is no
-  /// effect.
+  /// Apply an impulse at a point. This immediately modifies the velocity. It
+  /// also modifies the angular velocity if the point of application is not at
+  /// the center of mass. This wakes up the body if 'wake' is set to true. If
+  /// the body is sleeping and 'wake' is false, then there is no effect.
   ///
-  /// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
-  /// @param point the world position of the point of application (default: center of mass)
-  /// @param wake also wake up the body (default: true)
+  /// [impulse] is the world impulse vector, usually in N-seconds or kg-m/s.
+  /// [point] is the world position of the point of application
+  /// (default: center of mass)
+  /// [wake] decides whether to wake up the body if it is sleeping
+  /// (default: true)
   void applyLinearImpulse(Vector2 impulse, {Vector2? point, bool wake = true}) {
     if (_bodyType != BodyType.dynamic) {
       return;
@@ -386,9 +391,8 @@ class Body {
                 sweep.localCenter.y * sweep.localCenter.y);
   }
 
-  /// Get the mass data of the body. The rotational inertia is relative to the center of mass.
-  ///
-  /// @return a struct containing the mass, inertia and center of the body.
+  /// Get the mass data of the body. The rotational inertia is relative to the
+  /// center of mass.
   MassData getMassData() {
     return MassData()
       ..mass = _mass
@@ -397,13 +401,13 @@ class Body {
       ..center.y = sweep.localCenter.y;
   }
 
-  /// Set the mass properties to override the mass properties of the fixtures. Note that this changes
-  /// the center of mass position. Note that creating or destroying fixtures can also alter the mass.
+  /// Set the mass properties to override the mass properties of the fixtures.
+  /// Note that this changes the center of mass position.
+  /// Note that creating or destroying fixtures can also alter the mass.
   /// This function has no effect if the body isn't dynamic.
-  ///
-  /// @param massData the mass properties.
   void setMassData(MassData massData) {
-    // TODO_ERIN adjust linear velocity and torque to account for movement of center.
+    // TODO(Erin): adjust linear velocity and torque to account for movement of
+    // center.
     assert(!world.isLocked);
     if (_bodyType != BodyType.dynamic) {
       return;
@@ -440,9 +444,9 @@ class Body {
 
   final MassData _pmd = MassData();
 
-  /// This resets the mass properties to the sum of the mass properties of the fixtures. This
-  /// normally does not need to be called unless you called setMassData to override the mass and you
-  /// later want to reset the mass.
+  /// This resets the mass properties to the sum of the mass properties of the
+  /// fixtures. This normally does not need to be called unless you called
+  /// [setMassData] to override the mass and you later want to reset the mass.
   void resetMassData() {
     // Compute mass data from shapes. Each shape has its own density.
     _mass = 0.0;
@@ -512,32 +516,25 @@ class Body {
 
   /// Get the world coordinates of a point given the local coordinates.
   ///
-  /// @param localPoint a point on the body measured relative the the body's origin.
-  /// @return the same point expressed in world coordinates.
+  /// [localPoint] is a point on the body measured relative the the body's
+  /// origin.
   Vector2 worldPoint(Vector2 localPoint) {
     return Transform.mulVec2(transform, localPoint);
   }
 
   /// Get the world coordinates of a vector given the local coordinates.
   ///
-  /// @param localVector a vector fixed in the body.
-  /// @return the same vector expressed in world coordinates.
+  /// [localVector] is a vector fixed in the body.
   Vector2 worldVector(Vector2 localVector) {
     return Rot.mulVec2(transform.q, localVector);
   }
 
   /// Gets a local point relative to the body's origin given a world point.
-  ///
-  /// @param a point in world coordinates.
-  /// @return the corresponding local point relative to the body's origin.
   Vector2 localPoint(Vector2 worldPoint) {
     return Transform.mulTransVec2(transform, worldPoint);
   }
 
   /// Gets a local vector given a world vector.
-  ///
-  /// @param a vector in world coordinates.
-  /// @return the corresponding local vector.
   Vector2 localVector(Vector2 worldVector) {
     return Rot.mulTransVec2(transform.q, worldVector);
   }
@@ -614,7 +611,8 @@ class Body {
     return (flags & bulletFlag) == bulletFlag;
   }
 
-  /// Should this body be treated like a bullet for continuous collision detection?
+  /// Whether this body should be treated like a bullet for continuous collision
+  /// detection.
   void setBullet(bool flag) {
     if (flag) {
       flags |= bulletFlag;
@@ -623,9 +621,8 @@ class Body {
     }
   }
 
-  /// You can disable sleeping on this body. If you disable sleeping, the body will be woken.
-  ///
-  /// @param flag
+  /// You can disable sleeping on this body. If you disable sleeping, the body
+  /// will be woken.
   void setSleepingAllowed(bool flag) {
     if (flag) {
       flags |= autoSleepFlag;
@@ -661,19 +658,19 @@ class Body {
     }
   }
 
-  /// Get the sleeping state of this body.
-  ///
-  /// @return true if the body is awake.
+  /// Whether the body is awake or sleeping.
   bool get isAwake => (flags & awakeFlag) == awakeFlag;
 
-  /// Set the active state of the body. An inactive body is not simulated and cannot be collided with
-  /// or woken up. If you pass a flag of true, all fixtures will be added to the broad-phase. If you
-  /// pass a flag of false, all fixtures will be removed from the broad-phase and all contacts will
-  /// be destroyed. Fixtures and joints are otherwise unaffected. You may continue to create/destroy
-  /// fixtures and joints on inactive bodies. Fixtures on an inactive body are implicitly inactive
-  /// and will not participate in collisions, ray-casts, or queries. Joints connected to an inactive
-  /// body are implicitly inactive. An inactive body is still owned by a World object and remains in
-  /// the body list.
+  /// Set the active state of the body. An inactive body is not simulated and
+  /// cannot be collided with or woken up. If you pass a flag of true, all
+  /// fixtures will be added to the broad-phase. If you pass a flag of false,
+  /// all fixtures will be removed from the broad-phase and all contacts will be
+  /// destroyed. Fixtures and joints are otherwise unaffected. You may continue
+  /// to create/destroy fixtures and joints on inactive bodies. Fixtures on an
+  /// inactive body are implicitly inactive and will not participate in
+  /// collisions, ray-casts, or queries. Joints connected to an inactive body
+  /// are implicitly inactive. An inactive body is still owned by a World object
+  /// and remains in the body list.
   void setActive(bool flag) {
     assert(!world.isLocked);
 
@@ -761,11 +758,8 @@ class Body {
     transform.p.y = sweep.c.y - q.sin * v.x - q.cos * v.y;
   }
 
-  /// This is used to prevent connected bodies from colliding. It may lie, depending on the
-  /// collideConnected flag.
-  ///
-  /// @param other
-  /// @return
+  /// This is used to prevent connected bodies from colliding. It may lie,
+  /// depending on the collideConnected flag.
   bool shouldCollide(Body other) {
     // At least one body should be dynamic.
     if (_bodyType != BodyType.dynamic && other._bodyType != BodyType.dynamic) {
@@ -794,6 +788,9 @@ class Body {
 
   @override
   String toString() {
-    return 'Body[pos: $position linVel: $linearVelocity angVel: $angularVelocity]';
+    return 'Body['
+        'pos: $position '
+        'linVel: $linearVelocity '
+        'angVel: $angularVelocity]';
   }
 }

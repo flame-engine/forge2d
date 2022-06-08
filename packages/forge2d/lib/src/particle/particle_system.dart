@@ -1,8 +1,8 @@
 import 'dart:collection';
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// Connection between two particles
 class PsPair {
@@ -261,7 +261,6 @@ class ParticleSystem {
     }
     if ((groupDef.flags & triadFlags) != 0) {
       final diagram = VoronoiDiagram();
-      print('group: ${group.particles.length}');
       for (final particle in group.particles) {
         diagram.addGenerator(particle.position, particle);
       }
@@ -965,9 +964,9 @@ class ParticleSystem {
           0) {
         final colorA = particleA.color;
         final colorB = particleB.color;
-        final dr = (colorMixing256 * (colorB.r - colorA.r)).toInt() >> 8;
-        final dg = (colorMixing256 * (colorB.g - colorA.g)).toInt() >> 8;
-        final db = (colorMixing256 * (colorB.b - colorA.b)).toInt() >> 8;
+        final dr = (colorMixing256 * (colorB.r - colorA.r)) >> 8;
+        final dg = (colorMixing256 * (colorB.g - colorA.g)) >> 8;
+        final db = (colorMixing256 * (colorB.b - colorA.b)) >> 8;
         final da = (colorMixing256 * (colorB.a - colorA.a)).toInt() >> 8;
         colorA.r += dr;
         colorA.g += dg;

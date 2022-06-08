@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// A dynamic tree arranges data in a binary tree to accelerate queries such as
 /// volume queries and ray casts. Leaves are proxies with an AABB. In the tree

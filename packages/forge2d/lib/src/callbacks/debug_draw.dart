@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// {@template callbacks.debug_draw}
 /// Implement this abstract class to allow Forge2d to automatically draw your

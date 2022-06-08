@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class Rot {
   double sin;

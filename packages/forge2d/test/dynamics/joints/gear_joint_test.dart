@@ -7,7 +7,7 @@ import '../../helpers/helpers.dart';
 class UnknownJointDef extends JointDef {}
 
 class UnknownJoint extends Joint {
-  UnknownJoint(UnknownJointDef unknownJointDef) : super(unknownJointDef);
+  UnknownJoint(UnknownJointDef super.unknownJointDef);
 
   @override
   void noSuchMethod(_) {}

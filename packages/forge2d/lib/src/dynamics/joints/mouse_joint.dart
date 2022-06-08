@@ -1,12 +1,14 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// A mouse joint is used to make a point on a body track a specified world point. This a soft
-/// constraint with a maximum force. This allows the constraint to stretch and without applying huge
-/// forces. NOTE: this joint is not documented in the manual because it was developed to be used in
-/// the testbed. If you want to learn how to use the mouse joint, look at the testbed.
+/// A mouse joint is used to make a point on a body track a specified world
+/// point. This a soft constraint with a maximum force. This allows the
+/// constraint to stretch and without applying huge forces.
+/// NOTE: this joint is not documented in the manual because it was developed to
+/// be used in the testbed. If you want to learn how to use the mouse joint,
+/// look at the testbed.
 class MouseJoint extends Joint {
   final Vector2 _targetA = Vector2.zero();
   double _frequencyHz = 0.0;

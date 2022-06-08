@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// Java-specific class for returning edge results
 class _EdgeResults {

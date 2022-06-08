@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Ray-cast input data.
 /// The ray extends from p1 to p1 + maxFraction * (p2 - p1).

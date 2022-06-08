@@ -1,4 +1,4 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 abstract class BroadPhaseStrategy {
   /// Create a proxy. Provide a tight fitting AABB and a userData pointer.

@@ -1,9 +1,9 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class Particle {
-  /// Specifies the type of particle. A particle may be more than one type. Multiple types are
-  /// chained by logical sums, for example: pd.flags = ParticleType.elasticParticle |
-  /// ParticleType.viscousParticle.
+  /// Specifies the type of particle. A particle may be more than one type.
+  /// Multiple types are chained by logical sums, for example:
+  /// pd.flags = ParticleType.elasticParticle | ParticleType.viscousParticle.
   int flags = 0;
 
   /// The ParticleSystem which the particle belongs to

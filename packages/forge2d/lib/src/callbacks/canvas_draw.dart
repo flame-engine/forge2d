@@ -1,14 +1,14 @@
 import 'dart:html';
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../../forge2d_browser.dart';
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/forge2d_browser.dart';
 
 class CanvasDraw extends DebugDraw {
   /// The canvas rendering context with which to draw.
   final CanvasRenderingContext2D ctx;
 
-  CanvasDraw(ViewportTransform viewport, this.ctx) : super(viewport);
+  CanvasDraw(super.viewport, this.ctx);
 
   /// Draw a closed polygon provided in CCW order. WARNING: This mutates
   /// [vertices].

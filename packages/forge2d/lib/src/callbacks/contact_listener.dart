@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Implement this class to get contact information. You can use these results
 /// for things like sounds and game logic. You can also get contact results by
@@ -8,7 +8,7 @@ import '../../forge2d.dart';
 /// single time step.
 /// You should strive to make your callbacks efficient because there may be
 /// many callbacks per time step.
-/// @warning You cannot create/destroy Forge2D entities inside these callbacks.
+/// Warning: You cannot create/destroy Forge2D entities inside these callbacks.
 abstract class ContactListener {
   /// Called when two fixtures begin to touch.
   void beginContact(Contact contact) {}

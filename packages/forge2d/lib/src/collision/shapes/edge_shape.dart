@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// A line segment (edge) shape. These can be connected in chains or loops to
 /// other edge shapes. The connectivity information is used to ensure correct

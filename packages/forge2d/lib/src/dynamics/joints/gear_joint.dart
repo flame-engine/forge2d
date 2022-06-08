@@ -1,5 +1,5 @@
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 //Gear Joint:
 //C0 = (coordinate1 + ratio * coordinate2)_initial
@@ -20,14 +20,17 @@ import '../../settings.dart' as settings;
 //J = [ug cross(r, ug)]
 //K = J * invM * JT = invMass + invI * cross(r, ug)^2
 
-/// A gear joint is used to connect two joints together. Either joint can be a revolute or prismatic
-/// joint. You specify a gear ratio to bind the motions together: coordinate1 + ratio * coordinate2 =
-/// constant The ratio can be negative or positive. If one joint is a revolute joint and the other
-/// joint is a prismatic joint, then the ratio will have units of length or units of 1/length.
+/// A gear joint is used to connect two joints together. Either joint can be a
+/// revolute or prismatic joint. You specify a gear ratio to bind the motion
+/// together: coordinate1 + ratio * coordinate2 =
+/// constant The ratio can be negative or positive. If one joint is a revolute
+/// joint and the other joint is a prismatic joint, then the ratio will have
+/// units of length or units of 1/length.
 ///
-/// @warning The revolute and prismatic joints must be attached to fixed bodies (which must be body1
-///          on those joints).
-/// @warning You have to manually destroy the gear joint if joint1 or joint2 is destroyed.
+/// Warning: The revolute and prismatic joints must be attached to fixed bodies
+///          (which must be body1 on those joints).
+/// Warning: You have to manually destroy the gear joint if joint1 or joint2 is
+///          destroyed.
 class GearJoint extends Joint {
   final Joint _joint1;
   final Joint _joint2;

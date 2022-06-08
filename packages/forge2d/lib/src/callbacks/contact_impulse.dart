@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import '../settings.dart' as settings;
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// Contact impulses for reporting. Impulses are used instead of forces because
 /// sub-step forces may approach infinity for rigid body collisions. These match

@@ -1,6 +1,8 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// This holds the mass data computed for a shape.
+///
+/// Contains the mass, inertia and center of the body.
 class MassData {
   /// The mass of the shape, usually in kilograms.
   double mass = 0.0;

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// The broad-phase is used for computing pairs and performing volume queries
 /// and ray casts. This broad-phase does not persist pairs. Instead, this

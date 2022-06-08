@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// A transform contains translation and rotation. It is used to represent the
 /// position and orientation of rigid frames.

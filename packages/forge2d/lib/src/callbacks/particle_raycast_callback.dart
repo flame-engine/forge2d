@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 abstract class ParticleRaycastCallback {
   /// Called for each particle found in the query.
