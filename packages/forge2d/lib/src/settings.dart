@@ -16,25 +16,27 @@ int maxManifoldPoints = 2;
 /// The maximum number of vertices on a convex polygon.
 int maxPolygonVertices = 8;
 
-/// This is used to fatten AABBs in the dynamic tree. This allows proxies to move by a small amount
-/// without triggering a tree adjustment. This is in meters.
+/// This is used to fatten AABBs in the dynamic tree. This allows proxies to
+/// move by a small amount without triggering a tree adjustment. This is in
+/// meters.
 double aabbExtension = 0.1;
 
-/// This is used to fatten AABBs in the dynamic tree. This is used to predict the future position
-/// based on the current displacement. This is a dimensionless multiplier.
+/// This is used to fatten AABBs in the dynamic tree. This is used to predict
+/// the future position based on the current displacement.
+/// This is a dimensionless multiplier.
 double aabbMultiplier = 2.0;
 
-/// A small length used as a collision and constraint tolerance. Usually it is chosen to be
-/// numerically significant, but visually insignificant.
+/// A small length used as a collision and constraint tolerance. Usually it is
+/// chosen to be numerically significant, but visually insignificant.
 double linearSlop = 0.005;
 
-/// A small angle used as a collision and constraint tolerance. Usually it is chosen to be
-/// numerically significant, but visually insignificant.
+/// A small angle used as a collision and constraint tolerance. Usually it is
+/// chosen to be numerically significant, but visually insignificant.
 double angularSlop = 2.0 / 180.0 * pi;
 
-/// The radius of the polygon/edge shape skin. This should not be modified. Making this smaller
-/// means polygons will have and insufficient for continuous collision. Making it larger may create
-/// artifacts for vertex collision.
+/// The radius of the polygon/edge shape skin. This should not be modified.
+/// Making this smaller means polygons will have and insufficient for continuous
+/// collision. Making it larger may create artifacts for vertex collision.
 double polygonRadius = 2.0 * linearSlop;
 
 /// Maximum number of sub-steps per contact in continuous physics simulation.
@@ -45,30 +47,31 @@ int maxSubSteps = 8;
 /// Maximum number of contacts to be handled to solve a TOI island.
 int maxTOIContacts = 32;
 
-/// A velocity threshold for elastic collisions. Any collision with a relative linear velocity
-/// below this threshold will be treated as inelastic.
+/// A velocity threshold for elastic collisions. Any collision with a relative
+/// linear velocity below this threshold will be treated as inelastic.
 double velocityThreshold = 1.0;
 
-/// The maximum linear position correction used when solving constraints. This helps to prevent
-/// overshoot.
+/// The maximum linear position correction used when solving constraints.
+/// This helps to prevent overshoot.
 double maxLinearCorrection = 0.2;
 
-/// The maximum angular position correction used when solving constraints. This helps to prevent
-/// overshoot.
+/// The maximum angular position correction used when solving constraints.
+/// This helps to prevent overshoot.
 double maxAngularCorrection = 8.0 / 180.0 * pi;
 
-/// The maximum linear velocity of a body. This limit is very large and is used to prevent
-/// numerical problems. You shouldn't need to adjust this.
+/// The maximum linear velocity of a body. This limit is very large and is used
+/// to prevent numerical problems. You shouldn't need to adjust this.
 double maxTranslation = 2.0;
 double maxTranslationSquared = maxTranslation * maxTranslation;
 
-/// The maximum angular velocity of a body. This limit is very large and is used to prevent
-/// numerical problems. You shouldn't need to adjust this.
+/// The maximum angular velocity of a body. This limit is very large and is used
+/// to prevent numerical problems. You shouldn't need to adjust this.
 double maxRotation = 0.5 * pi;
 double maxRotationSquared = maxRotation * maxRotation;
 
-/// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so that
-/// overlap is removed in one time step. However using values close to 1 often lead to overshoot.
+/// This scale factor controls how fast overlap is resolved. Ideally this would
+/// be 1 so that overlap is removed in one time step. However using values close
+/// to 1 often lead to overshoot.
 double baumgarte = 0.2;
 
 // Sleep
@@ -96,7 +99,8 @@ double minParticleWeight = 1.0;
 /// The upper limit for particle weight used in pressure calculation.
 double maxParticleWeight = 5.0;
 
-/// The maximum distance between particles in a triad, divided by the particle radius.
+/// The maximum distance between particles in a triad, divided by the particle
+/// radius.
 int maxTriadDistance = 2;
 int maxTriadDistanceSquared = maxTriadDistance * maxTriadDistance;
 

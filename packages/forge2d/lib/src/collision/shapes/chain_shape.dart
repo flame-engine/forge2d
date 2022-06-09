@@ -1,15 +1,16 @@
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// A chain shape is a free form sequence of line segments. The chain has two-sided collision, so you
-/// can use inside and outside collision. Therefore, you may use any winding order. Connectivity
-/// information is used to create smooth collisions. WARNING: The chain will not collide properly if
+/// A chain shape is a free form sequence of line segments. The chain has
+/// two-sided collision, so you can use inside and outside collision.
+/// Therefore, you may use any winding order. Connectivity information is used
+/// to create smooth collisions. WARNING: The chain will not collide properly if
 /// there are self-intersections.
 class ChainShape extends Shape {
   /// Do not modify directly
   final List<Vector2> vertices = <Vector2>[];
   int get vertexCount => vertices.length;
-  // TODO: Rely on order of list instead
+  // TODO(spydon): Rely on order of list instead
   final Vector2 _prevVertex = Vector2.zero();
   final Vector2 _nextVertex = Vector2.zero();
   bool _hasPrevVertex = false;
@@ -123,10 +124,10 @@ class ChainShape extends Shape {
     final vi2 = vertices[i2];
     final xfq = xf.q;
     final xfp = xf.p;
-    final v1x = (xfq.c * vi1.x - xfq.s * vi1.y) + xfp.x;
-    final v1y = (xfq.s * vi1.x + xfq.c * vi1.y) + xfp.y;
-    final v2x = (xfq.c * vi2.x - xfq.s * vi2.y) + xfp.x;
-    final v2y = (xfq.s * vi2.x + xfq.c * vi2.y) + xfp.y;
+    final v1x = (xfq.cos * vi1.x - xfq.sin * vi1.y) + xfp.x;
+    final v1y = (xfq.sin * vi1.x + xfq.cos * vi1.y) + xfp.y;
+    final v2x = (xfq.cos * vi2.x - xfq.sin * vi2.y) + xfp.x;
+    final v2y = (xfq.sin * vi2.x + xfq.cos * vi2.y) + xfp.y;
 
     lower.x = v1x < v2x ? v1x : v2x;
     lower.y = v1y < v2y ? v1y : v2y;
@@ -153,9 +154,6 @@ class ChainShape extends Shape {
   }
 
   /// Returns the vertex at the given position (index).
-  ///
-  /// @param index the index of the vertex 0 <= index < getVertexCount( )
-  /// @param vertex output vertex object, must be initialized
   Vector2 vertex(int index) {
     assert(index >= 0 && index < vertices.length);
     return vertices[index].clone();
@@ -163,7 +161,7 @@ class ChainShape extends Shape {
 
   /// Create a loop. This automatically adjusts connectivity.
   ///
-  /// @param vertices an array of vertices, these are copied
+  /// The [vertices] are copied.
   void createLoop(final List<Vector2> vertices) {
     assert(vertexCount == 0);
     assert(
@@ -181,7 +179,7 @@ class ChainShape extends Shape {
 
   /// Create a chain with isolated end vertices.
   ///
-  /// @param vertices an array of vertices, these are copied
+  /// [vertices] are copied.
   void createChain(final List<Vector2> vertices) {
     assert(vertexCount == 0);
     assert(vertices.length >= 2);
@@ -193,13 +191,15 @@ class ChainShape extends Shape {
     _hasNextVertex = false;
   }
 
-  /// Establish connectivity to a vertex that precedes the first vertex. Don't call this for loops.
+  /// Establish connectivity to a vertex that precedes the first vertex.
+  /// Don't call this for loops.
   set prevVertex(Vector2 prevVertex) {
     _prevVertex.setFrom(prevVertex);
     _hasPrevVertex = true;
   }
 
-  /// Establish connectivity to a vertex that follows the last vertex. Don't call this for loops.
+  /// Establish connectivity to a vertex that follows the last vertex.
+  /// Don't call this for loops.
   set nextVertex(Vector2 nextVertex) {
     _nextVertex.setFrom(nextVertex);
     _hasNextVertex = true;
@@ -209,7 +209,8 @@ class ChainShape extends Shape {
     for (var i = 1; i < vertices.length; i++) {
       final v1 = vertices[i - 1];
       final v2 = vertices[i];
-      // If the code crashes here, it means your vertices are too close together.
+      // If the code crashes here, it means your vertices are too close
+      // together.
       if (v1.distanceToSquared(v2) <
           settings.linearSlop * settings.linearSlop) {
         throw 'Vertices of chain shape are too close together';

@@ -47,7 +47,7 @@ void main() {
         debugDraw = _MockDebugDraw();
 
         registerFallbackValue(Vector2.zero());
-        registerFallbackValue(Color3i.black);
+        registerFallbackValue(Color3i.black());
       });
 
       test('draws three segments', () {

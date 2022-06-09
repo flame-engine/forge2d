@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Delegate of World.
 class ContactManager implements PairCallback {
@@ -91,8 +91,8 @@ class ContactManager implements PairCallback {
     }
   }
 
-  /// This is the top level collision call for the time step. Here all the narrow phase collision is
-  /// processed for the world contact list.
+  /// This is the top level collision call for the time step. Here all the
+  /// narrow phase collision is processed for the world contact list.
   void collide() {
     final contactRemovals = <Contact>[];
     // Update awake contacts.

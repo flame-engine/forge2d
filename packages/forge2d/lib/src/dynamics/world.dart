@@ -1,16 +1,17 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// The world class manages all physics entities, dynamic simulation, and asynchronous queries. The
-/// world also contains efficient memory management facilities.
+/// The world class manages all physics entities, dynamic simulation, and
+/// asynchronous queries. The world also contains efficient memory management
+/// facilities.
 class World {
   static const int newFixture = 0x0001;
   static const int locked = 0x0002;
   static const int clearForcesBit = 0x0004;
 
-  // TODO.spydon: Don't have these fields as static
+  // TODO(spydon): Don't have these fields as static
   static final Distance distance = Distance();
   static final Collision collision = Collision();
   static final TimeOfImpact toi = TimeOfImpact();
@@ -29,7 +30,8 @@ class World {
   ParticleDestroyListener? particleDestroyListener;
   DebugDraw? debugDraw;
 
-  /// This is used to compute the time step ratio to support a variable time step.
+  /// This is used to compute the time step ratio to support a variable time
+  /// step.
   double _invDt0 = 0.0;
 
   // these are for debugging the solver
@@ -43,10 +45,6 @@ class World {
 
   late ParticleSystem particleSystem;
 
-  /// Construct a world object.
-  ///
-  /// @param gravity the world gravity vector.
-  /// @param broadPhase what type of broad phase strategy that should be used.
   World([Vector2? gravity, BroadPhase? broadPhase])
       : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
     broadPhase ??= DefaultBroadPhaseBuffer(DynamicTree());
@@ -93,26 +91,23 @@ class World {
     return _allowSleep;
   }
 
-  /// Register a contact filter to provide specific control over collision. Otherwise the default
-  /// filter is used (_defaultFilter). The listener is owned by you and must remain in scope.
-  ///
-  /// @param filter
+  /// Register a contact filter to provide specific control over collision.
+  /// Otherwise the default filter is used (_defaultFilter).
+  /// The listener is owned by you and must remain in scope.
   void setContactFilter(ContactFilter filter) {
     contactManager.contactFilter = filter;
   }
 
-  /// Register a contact event listener. The listener is owned by you and must remain in scope.
-  ///
-  /// @param listener
+  /// Register a contact event listener. The listener is owned by you and must
+  /// remain in scope.
   void setContactListener(ContactListener listener) {
     contactManager.contactListener = listener;
   }
 
-  /// create a rigid body given a definition. No reference to the definition is retained.
+  /// Create a rigid body given a definition. No reference to the definition is
+  /// retained.
   ///
-  /// @warning This function is locked during callbacks.
-  /// @param def
-  /// @return
+  /// Warning: This function is locked during callbacks.
   Body createBody(BodyDef def) {
     assert(!isLocked);
     final body = Body(def, this);
@@ -120,11 +115,11 @@ class World {
     return body;
   }
 
-  /// Destroys a rigid body given a definition. No reference to the definition is retained. This
-  /// function is locked during callbacks.
+  /// Destroys a rigid body given a definition. No reference to the definition
+  /// is retained. This function is locked during callbacks.
   ///
-  /// @warning This automatically deletes all associated shapes and joints.
-  /// @warning This function is locked during callbacks.
+  /// Warning: This automatically deletes all associated shapes and joints.
+  /// Warning: This function is locked during callbacks.
   void destroyBody(Body body) {
     assert(bodies.isNotEmpty);
     assert(!isLocked);
@@ -177,10 +172,9 @@ class World {
     }
   }
 
-  /// destroy a joint. This may cause the connected bodies to begin colliding.
+  /// Destroys a joint. This may cause the connected bodies to begin colliding.
   ///
-  /// @warning This function is locked during callbacks.
-  /// @param joint
+  /// Warning: This function is locked during callbacks.
   void destroyJoint(Joint joint) {
     assert(!isLocked);
 
@@ -216,9 +210,11 @@ class World {
   final Timer _stepTimer = Timer();
   final Timer _tempTimer = Timer();
 
-  /// Take a time step. This performs collision detection, integration, and constraint solution.
+  /// Take a time step. This performs collision detection, integration, and
+  /// constraint solution.
   ///
-  /// @param dt the amount of time that has passed since the last step
+  /// [dt] should be the amount of time (in seconds) that has passed since the
+  /// last step.
   void stepDt(double dt) {
     _stepTimer.reset();
     _tempTimer.reset();
@@ -249,7 +245,8 @@ class World {
     contactManager.collide();
     _profile.collide.record(_tempTimer.getMilliseconds());
 
-    // Integrate velocities, solve velocity constraints, and integrate positions.
+    // Integrate velocities, solve velocity constraints, and integrate
+    // positions.
     if (_stepComplete && _step.dt > 0.0) {
       _tempTimer.reset();
       particleSystem.solve(_step); // Particle Simulation
@@ -279,11 +276,11 @@ class World {
     _profile.step.record(_stepTimer.getMilliseconds());
   }
 
-  /// Call this after you are done with time steps to clear the forces. You normally call this after
-  /// each call to Step, unless you are performing sub-steps. By default, forces will be
-  /// automatically cleared, so you don't need to call this function.
-  ///
-  /// @see setAutoClearForces
+  /// Call this after you are done with time steps to clear the forces. You
+  /// normally call this after each call to [stepDt], unless you are performing
+  /// sub-steps.
+  /// By default, forces will be automatically cleared, so you don't need to
+  /// call this function.
   void clearForces() {
     bodies.forEach((b) => b.clearForces());
   }
@@ -384,21 +381,16 @@ class World {
 
   final WorldQueryWrapper _worldQueryWrapper = WorldQueryWrapper();
 
-  /// Query the world for all fixtures that potentially overlap the provided AABB.
-  ///
-  /// @param callback a user implemented callback class.
-  /// @param aabb the query box.
+  /// Query the world for all fixtures that potentially overlap the provided
+  /// AABB.
   void queryAABB(QueryCallback callback, AABB aabb) {
     _worldQueryWrapper.broadPhase = contactManager.broadPhase;
     _worldQueryWrapper.callback = callback;
     contactManager.broadPhase.query(_worldQueryWrapper, aabb);
   }
 
-  /// Query the world for all fixtures and particles that potentially overlap the provided AABB.
-  ///
-  /// @param callback a user implemented callback class.
-  /// @param particleCallback callback for particles.
-  /// @param aabb the query box.
+  /// Query the world for all fixtures and particles that potentially overlap
+  /// the provided AABB.
   void queryAABBTwoCallbacks(
     QueryCallback callback,
     ParticleQueryCallback particleCallback,
@@ -410,10 +402,8 @@ class World {
     particleSystem.queryAABB(particleCallback, aabb);
   }
 
-  /// Query the world for all particles that potentially overlap the provided AABB.
-  ///
-  /// @param particleCallback callback for particles.
-  /// @param aabb the query box.
+  /// Query the world for all particles that potentially overlap the provided
+  /// AABB.
   void queryAABBParticle(ParticleQueryCallback particleCallback, AABB aabb) {
     particleSystem.queryAABB(particleCallback, aabb);
   }
@@ -421,13 +411,12 @@ class World {
   final WorldRayCastWrapper _raycastWrapper = WorldRayCastWrapper();
   final RayCastInput _input = RayCastInput();
 
-  /// Ray-cast the world for all fixtures in the path of the ray. Your callback controls whether you
-  /// get the closest point, any point, or n-points. The ray-cast ignores shapes that contain the
-  /// starting point.
+  /// Ray-cast the world for all fixtures in the path of the ray. Your callback
+  /// controls whether you get the closest point, any point, or n-points.
+  /// The ray-cast ignores shapes that contain the starting point.
   ///
-  /// @param callback a user implemented callback class.
-  /// @param point1 the ray starting point
-  /// @param point2 the ray ending point
+  /// [point1] is the ray's starting point
+  /// [point2] is the ray's ending point
   void raycast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
     _raycastWrapper.broadPhase = contactManager.broadPhase;
     _raycastWrapper.callback = callback;
@@ -437,14 +426,12 @@ class World {
     contactManager.broadPhase.raycast(_raycastWrapper, _input);
   }
 
-  /// Ray-cast the world for all fixtures and particles in the path of the ray. Your callback
-  /// controls whether you get the closest point, any point, or n-points. The ray-cast ignores shapes
-  /// that contain the starting point.
+  /// Ray-cast the world for all fixtures and particles in the path of the ray.
+  /// Your callback controls whether you get the closest point, any point, or
+  /// n-points. The ray-cast ignores shapes that contain the starting point.
   ///
-  /// @param callback a user implemented callback class.
-  /// @param particleCallback the particle callback class.
-  /// @param point1 the ray starting point
-  /// @param point2 the ray ending point
+  /// [point1] is the ray's starting point
+  /// [point2] is the ray's ending point
   void raycastTwoCallBacks(
     RayCastCallback callback,
     ParticleRaycastCallback particleCallback,
@@ -460,12 +447,11 @@ class World {
     particleSystem.raycast(particleCallback, point1, point2);
   }
 
-  /// Ray-cast the world for all particles in the path of the ray. Your callback controls whether you
-  /// get the closest point, any point, or n-points.
+  /// Ray-cast the world for all particles in the path of the ray. Your callback
+  /// controls whether you get the closest point, any point, or n-points.
   ///
-  /// @param particleCallback the particle callback class.
-  /// @param point1 the ray starting point
-  /// @param point2 the ray ending point
+  /// [point1] is the ray's starting point
+  /// [point2] is the ray's ending point
   void raycastParticle(
     ParticleRaycastCallback particleCallback,
     Vector2 point1,
@@ -503,7 +489,8 @@ class World {
     }
   }
 
-  /// Get the flag that controls automatic clearing of forces after each time step.
+  /// Get the flag that controls automatic clearing of forces after each time
+  /// step.
   bool get autoClearForces => (flags & clearForcesBit) == clearForcesBit;
 
   final Island island = Island();
@@ -927,8 +914,8 @@ class World {
         }
       }
 
-      // Commit fixture proxy movements to the broad-phase so that new contacts are created.
-      // Also, some contacts can be destroyed.
+      // Commit fixture proxy movements to the broad-phase so that new contacts
+      // are created. Also, some contacts can be destroyed.
       contactManager.findNewContacts();
 
       if (_subStepping) {

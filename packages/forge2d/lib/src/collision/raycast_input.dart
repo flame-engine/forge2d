@@ -1,6 +1,7 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// Ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
+/// Ray-cast input data.
+/// The ray extends from p1 to p1 + maxFraction * (p2 - p1).
 class RayCastInput {
   final Vector2 p1 = Vector2.zero(), p2 = Vector2.zero();
   double maxFraction = 0.0;
