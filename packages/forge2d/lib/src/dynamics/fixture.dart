@@ -4,10 +4,10 @@ import 'package:forge2d/forge2d.dart';
 import 'package:forge2d/src/settings.dart' as settings;
 import 'package:meta/meta.dart';
 
-/// A fixture is used to attach a shape to a body for collision detection. A
+/// A fixture is used to attach a [Shape] to a [Body] for collision detection. A
 /// fixture inherits its transform from its parent. Fixtures hold additional
 /// non-geometric data such as friction, collision filters, etc. Fixtures are
-/// created via Body::CreateFixture.
+/// created via `body.createFixture`.
 ///
 /// Do note that you cannot reuse fixtures.
 class Fixture {
@@ -249,7 +249,7 @@ class Fixture {
 
           renderCenter.setFrom(Transform.mulVec2(xf, circle.position));
           final radius = circle.radius;
-          xf.q.getXAxis(renderAxis);
+          xf.q.getXAxis(out: renderAxis);
 
           if (userData != null && userData == liquidFlag) {
             _liquidOffset.setFrom(body.linearVelocity);
