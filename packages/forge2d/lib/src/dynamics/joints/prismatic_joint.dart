@@ -276,20 +276,18 @@ class PrismaticJoint extends Joint {
   /// Get the motor speed, usually in meters per second.
   double get motorSpeed => _motorSpeed;
 
-  /// Set the maximum motor force, usually in N.
-  void setMaxMotorForce(double force) {
-    bodyA.setAwake(true);
-    bodyB.setAwake(true);
-    _maxMotorForce = force;
-  }
-
   /// Get the current motor force, usually in N.
   double getMotorForce(double invDt) {
     return _motorImpulse * invDt;
   }
 
-  double getMaxMotorForce() {
-    return _maxMotorForce;
+  double get maxMotorForce => _maxMotorForce;
+
+  /// Set the maximum motor force, usually in N.
+  set maxMotorForce(double force) {
+    bodyA.setAwake(true);
+    bodyB.setAwake(true);
+    _maxMotorForce = force;
   }
 
   double getReferenceAngle() {
