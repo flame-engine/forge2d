@@ -46,11 +46,10 @@ void main() {
       test('can change maxMotorForce', () {
         final joint = PrismaticJoint(jointDef);
 
-        final oldValue = joint.maxMotorForce;
-        final newValue = oldValue + 1;
-        joint.maxMotorForce = newValue;
+        final newMaxMotorForce = joint.maxMotorForce + 1;
+        joint.maxMotorForce = newMaxMotorForce;
 
-        expect(joint.maxMotorForce, equals(newValue));
+        expect(joint.maxMotorForce, equals(newMaxMotorForce));
       });
 
       test('wakes up both bodies', () {
