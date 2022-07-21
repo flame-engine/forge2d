@@ -578,7 +578,7 @@ class World {
           }
 
           // Is this contact solid and touching?
-          if (contact.isEnabled() == false || contact.isTouching() == false) {
+          if (contact.enabled == false || contact.isTouching() == false) {
             continue;
           }
 
@@ -694,7 +694,7 @@ class World {
 
       for (final contact in contactManager.contacts) {
         // Is this contact disabled?
-        if (contact.isEnabled() == false) {
+        if (contact.enabled == false) {
           continue;
         }
 
@@ -807,9 +807,9 @@ class World {
       ++minContact.toiCount;
 
       // Is the contact solid?
-      if (minContact.isEnabled() == false || minContact.isTouching() == false) {
+      if (minContact.enabled == false || minContact.isTouching() == false) {
         // Restore the sweeps.
-        minContact.setEnabled(false);
+        minContact.enabled = false;
         bodyA.sweep.set(_backup1);
         bodyB.sweep.set(_backup2);
         bodyA.synchronizeTransform();
@@ -864,7 +864,7 @@ class World {
             contact.update(contactManager.contactListener);
 
             // Was the contact disabled by the user?
-            if (contact.isEnabled() == false) {
+            if (contact.enabled == false) {
               other.sweep.set(_backup1);
               other.synchronizeTransform();
               continue;
