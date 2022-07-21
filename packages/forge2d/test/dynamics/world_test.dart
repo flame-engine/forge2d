@@ -7,6 +7,17 @@ class AnotherRevoluteJoint extends RevoluteJoint {
 }
 
 void main() {
+  group('gravity', () {
+    test('can change', () {
+      final world = World();
+
+      final newGravity = world.gravity.clone()..x += 1;
+      world.gravity = newGravity;
+
+      expect(world.gravity, equals(newGravity));
+    });
+  });
+
   group(
     'createJoint',
     () {
