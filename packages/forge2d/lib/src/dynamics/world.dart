@@ -731,8 +731,8 @@ class World {
             continue;
           }
 
-          final collideA = bodyA.isBullet() || typeA != BodyType.dynamic;
-          final collideB = bodyB.isBullet() || typeB != BodyType.dynamic;
+          final collideA = bodyA.bullet || typeA != BodyType.dynamic;
+          final collideB = bodyB.bullet || typeB != BodyType.dynamic;
 
           // Are these two non-bullet dynamic bodies?
           if (collideA == false && collideB == false) {
@@ -842,8 +842,8 @@ class World {
             // Only add static, kinematic, or bullet bodies.
             final other = contact.getOtherBody(body);
             if (other.bodyType == BodyType.dynamic &&
-                body.isBullet() == false &&
-                other.isBullet() == false) {
+                body.bullet == false &&
+                other.bullet == false) {
               continue;
             }
 

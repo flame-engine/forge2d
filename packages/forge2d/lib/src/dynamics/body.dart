@@ -610,12 +610,10 @@ class Body {
   }
 
   /// Is this body treated like a bullet for continuous collision detection?
-  bool isBullet() {
-    return (flags & bulletFlag) == bulletFlag;
-  }
+  bool get bullet => (flags & bulletFlag) == bulletFlag;
 
   /// Should this body be treated like a bullet for continuous collision detection?
-  void setBullet(bool flag) {
+  set bullet(bool flag) {
     if (flag) {
       flags |= bulletFlag;
     } else {
