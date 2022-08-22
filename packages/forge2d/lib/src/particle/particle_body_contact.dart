@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class ParticleBodyContact {
   /// Index of the particle making contact.

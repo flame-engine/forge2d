@@ -1,9 +1,9 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class Particle {
-  /// Specifies the type of particle. A particle may be more than one type. Multiple types are
-  /// chained by logical sums, for example: pd.flags = ParticleType.elasticParticle |
-  /// ParticleType.viscousParticle.
+  /// Specifies the type of particle. A particle may be more than one type.
+  /// Multiple types are chained by logical sums, for example:
+  /// pd.flags = ParticleType.elasticParticle | ParticleType.viscousParticle.
   int flags = 0;
 
   /// The ParticleSystem which the particle belongs to
@@ -18,16 +18,16 @@ class Particle {
   /// The group which the particle belongs to
   late ParticleGroup group;
 
-  // TODO: No idea what this is used for
+  // TODO(spydon): No idea what this is used for
   double accumulation = 0.0;
 
   final Vector2 accumulationVector = Vector2.zero();
 
-  /// TODO: The depth of the particle?
+  // TODO(spydon): What is the depth of the particle?
   double depth = 0.0;
 
   /// The color of the particle.
-  Color3i color = Color3i.black;
+  Color3i color = Color3i.black();
 
   /// Use this to store application-specific body data.
   Object? userData;

@@ -1,11 +1,13 @@
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// The pulley joint is connected to two bodies and two fixed ground points. The pulley supports a
-/// ratio such that: length1 + ratio * length2 <= constant Yes, the force transmitted is scaled by
-/// the ratio. Warning: the pulley joint can get a bit squirrelly by itself. They often work better
-/// when combined with prismatic joints. You should also cover the the anchor points with static
-/// shapes to prevent one side from going to zero length.
+/// The pulley joint is connected to two bodies and two fixed ground points.
+/// The pulley supports a ratio such that: length1 + ratio * length2 <= constant
+/// Yes, the force transmitted is scaled by the ratio.
+/// Warning: the pulley joint can get a bit squirrelly by itself. They often
+/// work better when combined with prismatic joints. You should also cover the
+/// anchor points with static shapes to prevent one side from going to zero
+/// length.
 class PulleyJoint extends Joint {
   static const double minPulleyLength = 2.0;
 

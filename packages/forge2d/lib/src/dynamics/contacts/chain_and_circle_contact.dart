@@ -1,14 +1,13 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class ChainAndCircleContact extends Contact {
   ChainAndCircleContact(
-    Fixture fixtureA,
-    int indexA,
-    Fixture fixtureB,
-    int indexB,
+    super.fixtureA,
+    super.indexA,
+    super.fixtureB,
+    super.indexB,
   )   : assert(fixtureA.type == ShapeType.chain),
-        assert(fixtureB.type == ShapeType.circle),
-        super(fixtureA, indexA, fixtureB, indexB);
+        assert(fixtureB.type == ShapeType.circle);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {

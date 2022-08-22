@@ -1,11 +1,10 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// A distance joint constrains two points on two bodies to remain at a fixed distance from each
-/// other. You can view this as a massless, rigid rod.
-
+/// A distance joint constrains two points on two bodies to remain at a fixed
+/// distance from each other. You can view this as a massless, rigid rod.
 class DistanceJoint extends Joint {
   double _frequencyHz = 0.0;
   double _dampingRatio = 0.0;
@@ -45,8 +44,8 @@ class DistanceJoint extends Joint {
     );
   }
 
-  /// Get the reaction torque given the inverse time step. Unit is N*m. This is always zero for a
-  /// distance joint.
+  /// Get the reaction torque given the inverse time step. Unit is N*m. This is
+  /// always zero for a distance joint.
   @override
   double reactionTorque(double invDt) => 0.0;
 
