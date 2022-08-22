@@ -20,7 +20,7 @@ class Tire {
 
     final polygonShape = PolygonShape();
     polygonShape.setAsBoxXY(0.5, 1.25);
-    final fixture = body.createFixtureFromShape(polygonShape, 1.0);
+    final fixture = body.createFixtureFromShape(polygonShape, density: 1.0);
     fixture.userData = this;
 
     _currentTraction = 1.0;

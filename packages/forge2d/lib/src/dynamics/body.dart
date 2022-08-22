@@ -166,12 +166,18 @@ class Body {
   /// friction, restitution, user data, or filtering.
   /// If the density is non-zero, this function automatically updates the mass
   /// of the body.
-  ///
-  /// [shape] the shape to be cloned.
-  /// [density] is the shape density (set to zero for static bodies).
-  /// Warning: This function is locked during callbacks.
-  Fixture createFixtureFromShape(Shape shape, [double density = 0.0]) {
-    return createFixture(FixtureDef(shape)..density = density);
+  Fixture createFixtureFromShape(
+    Shape shape, {
+    double density = 1.0,
+    double friction = 0.0,
+    double restitution = 0.0,
+  }) {
+    return createFixture(
+      FixtureDef(shape)
+        ..density = density
+        ..friction = friction
+        ..restitution = restitution,
+    );
   }
 
   /// Destroy a fixture. This removes the fixture from the broad-phase and

@@ -40,7 +40,7 @@ class Car {
 
     final shape = PolygonShape()..set(vertices);
 
-    _body.createFixtureFromShape(shape, 0.1);
+    _body.createFixtureFromShape(shape, density: 0.1);
 
     final jointDef = RevoluteJointDef();
     jointDef.bodyA = _body;
