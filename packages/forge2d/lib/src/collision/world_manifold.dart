@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// This is used to compute the current state of a contact manifold.
 class WorldManifold {
@@ -42,11 +42,11 @@ class WorldManifold {
           normal.x = 1.0;
           normal.y = 0.0;
           final v = manifold.localPoint;
-          pointA.x = (xfA.q.c * v.x - xfA.q.s * v.y) + xfA.p.x;
-          pointA.y = (xfA.q.s * v.x + xfA.q.c * v.y) + xfA.p.y;
+          pointA.x = (xfA.q.cos * v.x - xfA.q.sin * v.y) + xfA.p.x;
+          pointA.y = (xfA.q.sin * v.x + xfA.q.cos * v.y) + xfA.p.y;
           final mp0p = manifold.points[0].localPoint;
-          pointB.x = (xfB.q.c * mp0p.x - xfB.q.s * mp0p.y) + xfB.p.x;
-          pointB.y = (xfB.q.s * mp0p.x + xfB.q.c * mp0p.y) + xfB.p.y;
+          pointB.x = (xfB.q.cos * mp0p.x - xfB.q.sin * mp0p.y) + xfB.p.x;
+          pointB.y = (xfB.q.sin * mp0p.x + xfB.q.cos * mp0p.y) + xfB.p.y;
 
           if (pointA.distanceToSquared(pointB) >
               settings.epsilon * settings.epsilon) {

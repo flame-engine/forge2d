@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class ViewportTransform {
   /// if we flip the y axis when transforming.
@@ -12,8 +12,8 @@ class ViewportTransform {
   /// center of the viewport.
   final Vector2 center;
 
-  /// Returns the scaling factor used in converting from world sizes to rendering
-  /// sizes.
+  /// Returns the scaling factor used in converting from world sizes to
+  /// rendering sizes.
   double scale;
 
   ViewportTransform(this.extents, this.center, this.scale);
@@ -36,7 +36,8 @@ class ViewportTransform {
     center.sub(translation);
   }
 
-  /// Takes the world coordinates and return the corresponding screen coordinates
+  /// Takes the world coordinates and return the corresponding screen
+  /// coordinates.
   Vector2 worldToScreen(Vector2 argWorld) {
     // Correct for canvas considering the upper-left corner, rather than the
     // center, to be the origin.
@@ -47,7 +48,8 @@ class ViewportTransform {
     return gridCorrected + (translation..y *= (yFlip ? 1 : -1));
   }
 
-  /// Takes the screen coordinates and return the corresponding world coordinates
+  /// Takes the screen coordinates and return the corresponding world
+  /// coordinates.
   Vector2 screenToWorld(Vector2 argScreen) {
     final translatedCorrected =
         argScreen - (translation..y *= (yFlip ? 1 : -1));

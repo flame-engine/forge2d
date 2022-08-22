@@ -1,10 +1,11 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// This describes the motion of a body/shape for TOI computation. Shapes are defined with respect to
-/// the body origin, which may not coincide with the center of mass. However, to support dynamics we
-/// must interpolate the center of mass position.
+/// This describes the motion of a body/shape for TOI computation. Shapes are
+/// defined with respect to the body origin, which may not coincide with the
+/// center of mass. However, to support dynamics we must interpolate the center
+/// of mass position.
 class Sweep {
   /// Local center of mass position
   final Vector2 localCenter = Vector2.zero();
@@ -16,7 +17,8 @@ class Sweep {
   double a0 = 0.0;
   double a = 0.0;
 
-  /// Fraction of the current time step in the range [0,1] c0 and a0 are the positions at alpha0.
+  /// Fraction of the current time step in the range [0,1] c0 and a0 are the
+  /// positions at alpha0.
   double alpha0 = 0.0;
 
   @override
@@ -46,8 +48,8 @@ class Sweep {
 
   /// Get the interpolated transform at a specific time.
   ///
-  /// @param xf the result is placed here - must not be null
-  /// @param t the normalized time in [0,1].
+  /// The result is placed in [xf].
+  /// [beta] should be the normalized time in [0,1].
   void getTransform(final Transform xf, final double beta) {
     // xf->p = (1.0f - beta) * c0 + beta * c;
     // float32 angle = (1.0f - beta) * a0 + beta * a;
@@ -60,13 +62,11 @@ class Sweep {
     // Shift to origin
     // xf->p -= b2Mul(xf->q, localCenter);
     final q = xf.q;
-    xf.p.x -= q.c * localCenter.x - q.s * localCenter.y;
-    xf.p.y -= q.s * localCenter.x + q.c * localCenter.y;
+    xf.p.x -= q.cos * localCenter.x - q.sin * localCenter.y;
+    xf.p.y -= q.sin * localCenter.x + q.cos * localCenter.y;
   }
 
   /// Advance the sweep forward, yielding a new initial state.
-  ///
-  /// @param alpha the new initial time.
   void advance(double alpha) {
     assert(alpha0 < 1.0);
     // float32 beta = (alpha - alpha0) / (1.0f - alpha0);

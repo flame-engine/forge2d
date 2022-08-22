@@ -1,21 +1,22 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /*
  Position Correction Notes
  =========================
- I tried the several algorithms for position correction of the 2D revolute joint.
+ I tried several algorithms for position correction of the 2D revolute joint.
  I looked at these systems:
- - simple pendulum (1m diameter sphere on massless 5m stick) with initial angular velocity of 100 rad/s.
+ - simple pendulum (1m diameter sphere on massless 5m stick) with initial
+   angular velocity of 100 rad/s.
  - suspension bridge with 30 1m long planks of length 1m.
  - multi-link chain with 30 1m long links.
 
  Here are the algorithms:
 
- Baumgarte - A fraction of the position error is added to the velocity error. There is no
- separate position solver.
+ Baumgarte - A fraction of the position error is added to the velocity error.
+ There is no  separate position solver.
 
  Pseudo Velocities - After the velocity solver and position integration,
  the position error, Jacobian, and effective mass are recomputed. Then
@@ -29,27 +30,28 @@ import '../settings.dart' as settings;
  position error is re-computed for each raint and the positions are updated
  after the raint is solved. The radius vectors (aka Jacobians) are
  re-computed too (otherwise the algorithm has horrible instability). The pseudo
- velocity states are not needed because they are effectively zero at the beginning
- of each iteration. Since we have the current position error, we allow the
- iterations to terminate early if the error becomes smaller than Settings.linearSlop.
+ velocity states are not needed because they are effectively zero at the
+ beginning of each iteration. Since we have the current position error, we allow
+ the iterations to terminate early if the error becomes smaller than Settings.
+ linearSlop.
 
- Full NGS or just NGS - Like Modified NGS except the effective mass are re-computed
- each time a raint is solved.
+ Full NGS or just NGS - Like Modified NGS except the effective mass are
+ re-computed each time a raint is solved.
 
  Here are the results:
  Baumgarte - this is the cheapest algorithm but it has some stability problems,
  especially with the bridge. The chain links separate easily close to the root
- and they jitter as they struggle to pull together. This is one of the most common
- methods in the field. The big drawback is that the position correction artificially
- affects the momentum, thus leading to instabilities and false bounce. I used a
- bias factor of 0.2. A larger bias factor makes the bridge less stable, a smaller
- factor makes joints and contacts more spongy.
+ and they jitter as they struggle to pull together. This is one of the most
+ common methods in the field. The big drawback is that the position correction
+ artificially affects the momentum, thus leading to instabilities and false
+ bounce. I used a bias factor of 0.2. A larger bias factor makes the bridge less
+ stable, a smaller factor makes joints and contacts more spongy.
 
  Pseudo Velocities - the is more stable than the Baumgarte method. The bridge is
  stable. However, joints still separate with large angular velocities. Drag the
- simple pendulum in a circle quickly and the joint will separate. The chain separates
- easily and does not recover. I used a bias factor of 0.2. A larger value lead to
- the bridge collapsing when a heavy cube drops on it.
+ simple pendulum in a circle quickly and the joint will separate. The chain
+ separates easily and does not recover. I used a bias factor of 0.2. A larger
+ value lead to the bridge collapsing when a heavy cube drops on it.
 
  Modified NGS - this algorithm is better in some ways than Baumgarte and Pseudo
  Velocities, but in other ways it is worse. The bridge and chain are much more
@@ -60,26 +62,28 @@ import '../settings.dart' as settings;
 
  Recommendations
  Pseudo Velocities are not really worthwhile because the bridge and chain cannot
- recover from joint separation. In other cases the benefit over Baumgarte is small.
+ recover from joint separation. In other cases the benefit over Baumgarte is
+ small.
 
  Modified NGS is not a robust method for the revolute joint due to the violent
  instability seen in the simple pendulum. Perhaps it is viable with other raint
  types, especially scalar constraints where the effective mass is a scalar.
 
- This leaves Baumgarte and Full NGS. Baumgarte has small, but manageable instabilities
- and is very fast. I don't think we can escape Baumgarte, especially in highly
- demanding cases where high raint fidelity is not needed.
+ This leaves Baumgarte and Full NGS. Baumgarte has small, but manageable
+ instabilities and is very fast. I don't think we can escape Baumgarte,
+ especially in highly demanding cases where high raint fidelity is not needed.
 
  Full NGS is robust and easy on the eyes. I recommend this as an option for
- higher fidelity simulation and certainly for suspension bridges and long chains.
- Full NGS might be a good choice for ragdolls, especially motorized ragdolls where
- joint separation can be problematic. The number of NGS iterations can be reduced
- for better performance without harming robustness much.
+ higher fidelity simulation and certainly for suspension bridges and long
+ chains.
+ Full NGS might be a good choice for ragdolls, especially motorized ragdolls
+ where joint separation can be problematic. The number of NGS iterations can be
+ reduced for better performance without harming robustness much.
 
- Each joint in a can be handled differently in the position solver. So I recommend
- a system where the user can select the algorithm on a per joint basis. I would
- probably default to the slower Full NGS and let the user select the faster
- Baumgarte method in performance critical scenarios.
+ Each joint in a can be handled differently in the position solver. So I
+ recommend a system where the user can select the algorithm on a per joint
+ basis. I would probably default to the slower Full NGS and let the user select
+ the faster Baumgarte method in performance critical scenarios.
  */
 
 /*
@@ -121,7 +125,7 @@ import '../settings.dart' as settings;
  However, we can compute sin+cos of the same angle fast.
  */
 
-// TODO: Refactor this later
+// TODO(spydon): Refactor this later
 class BodyMeta {
   final Body body;
   final Velocity velocity = Velocity();
@@ -138,7 +142,7 @@ class Island {
   late List<Contact> _contacts;
   late List<Joint> _joints;
 
-  // TODO: Make this as efficient as it used to be
+  // TODO(spydon): Make this as efficient as it used to be
   List<Position> get _positions {
     return bodies.map((BodyMeta bodyMeta) => bodyMeta.position).toList();
   }
@@ -196,7 +200,9 @@ class Island {
         // Apply damping.
         // ODE: dv/dt + c * v = 0
         // Solution: v(t) = v0 * exp(-c * t)
-        // Time step: v(t + dt) = v0 * exp(-c * (t + dt)) = v0 * exp(-c * t) * exp(-c * dt) = v *
+        // Time step:
+        //   v(t + dt) = v0 * exp(-c * (t + dt))
+        //     = v0 * exp(-c * t) * exp(-c * dt) = v *
         // exp(-c * dt)
         // v2 = exp(-c * dt) * v1
         // Pade approximation:
@@ -362,7 +368,7 @@ class Island {
       bodyMeta.velocity.w = body.angularVelocity;
     }
 
-    // TODO: Is this correct, since it is no longer a fixed list?
+    // TODO(spydon): Is this correct, since it is no longer a fixed list?
     _toiSolverDef.contacts = _contacts;
     _toiSolverDef.step = subStep;
     _toiSolverDef.positions = _positions;

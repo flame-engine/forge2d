@@ -1,8 +1,9 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Motor joint definition.
 class MotorJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
-  /// Position of bodyB minus the position of bodyA, in bodyA's frame, in meters.
+  /// Position of bodyB minus the position of bodyA, in bodyA's frame, in
+  /// meters.
   final Vector2 linearOffset = Vector2.zero();
 
   /// The bodyB angle minus bodyA angle in radians.
