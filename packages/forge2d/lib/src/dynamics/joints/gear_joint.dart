@@ -51,7 +51,7 @@ class GearJoint extends Joint {
   double _referenceAngleB = 0.0;
 
   double _constant = 0.0;
-  double _ratio = 0.0;
+  double ratio = 0.0;
 
   double _impulse = 0.0;
 
@@ -151,8 +151,8 @@ class GearJoint extends Joint {
       coordinateB = (pB..sub(pD)).dot(_localAxisD);
     }
 
-    _ratio = def.ratio;
-    _constant = coordinateA + _ratio * coordinateB;
+    ratio = def.ratio;
+    _constant = coordinateA + ratio * coordinateB;
     _impulse = 0.0;
   }
 
@@ -167,14 +167,6 @@ class GearJoint extends Joint {
   @override
   double reactionTorque(double invDt) {
     return invDt * _impulse * _jwA;
-  }
-
-  void setRatio(double argRatio) {
-    _ratio = argRatio;
-  }
-
-  double getRatio() {
-    return _ratio;
   }
 
   @override
@@ -253,9 +245,9 @@ class GearJoint extends Joint {
 
     if (_joint2 is RevoluteJoint) {
       _jvBD.setZero();
-      _jwB = _ratio;
-      _jwD = _ratio;
-      _mass += _ratio * _ratio * (_iB + _iD);
+      _jwB = ratio;
+      _jwD = ratio;
+      _mass += ratio * ratio * (_iB + _iD);
     } else {
       final u = Vector2.zero();
       final rD = Vector2.zero();
@@ -271,11 +263,11 @@ class GearJoint extends Joint {
       rB.setFrom(Rot.mulVec2(qB, temp));
       _jvBD
         ..setFrom(u)
-        ..scale(_ratio);
-      _jwD = _ratio * rD.cross(u);
-      _jwB = _ratio * rB.cross(u);
+        ..scale(ratio);
+      _jwD = ratio * rD.cross(u);
+      _jwB = ratio * rB.cross(u);
       _mass +=
-          _ratio * _ratio * (_mD + _mB) + _iD * _jwD * _jwD + _iB * _jwB * _jwB;
+          ratio * ratio * (_mD + _mB) + _iD * _jwD * _jwD + _iB * _jwB * _jwB;
     }
 
     // Compute effective mass.
@@ -438,9 +430,9 @@ class GearJoint extends Joint {
 
     if (_joint2 is RevoluteJoint) {
       jvBD.setZero();
-      jwB = _ratio;
-      jwD = _ratio;
-      mass += _ratio * _ratio * (_iB + _iD);
+      jwB = ratio;
+      jwD = ratio;
+      mass += ratio * ratio * (_iB + _iD);
 
       coordinateB = aB - aD - _referenceAngleB;
     } else {
@@ -460,10 +452,10 @@ class GearJoint extends Joint {
       rB.setFrom(Rot.mulVec2(qB, temp));
       jvBD
         ..setFrom(u)
-        ..scale(_ratio);
+        ..scale(ratio);
       jwD = rD.cross(u);
       jwB = rB.cross(u);
-      mass += _ratio * _ratio * (_mD + _mB) + _iD * jwD * jwD + _iB * jwB * jwB;
+      mass += ratio * ratio * (_mD + _mB) + _iD * jwD * jwD + _iB * jwB * jwB;
 
       pD
         ..setFrom(_localAnchorD)
@@ -476,7 +468,7 @@ class GearJoint extends Joint {
       coordinateB = (pB..sub(pD)).dot(_localAxisD);
     }
 
-    final c = (coordinateA + _ratio * coordinateB) - _constant;
+    final c = (coordinateA + ratio * coordinateB) - _constant;
 
     var impulse = 0.0;
     if (mass > 0.0) {
