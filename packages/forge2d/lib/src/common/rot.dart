@@ -36,9 +36,15 @@ class Rot {
 
   double getAngle() => math.atan2(sin, cos);
 
-  Vector2 getXAxis(Vector2 xAxis) => Vector2(cos, sin);
+  Vector2 getXAxis({Vector2? out}) {
+    final result = out ?? Vector2.zero();
+    return result..setValues(cos, sin);
+  }
 
-  Vector2 getYAxis(Vector2 yAxis) => Vector2(-sin, cos);
+  Vector2 getYAxis({Vector2? out}) {
+    final result = out ?? Vector2.zero();
+    return result..setValues(-sin, cos);
+  }
 
   Rot clone() => Rot(sin: sin, cos: cos);
 
