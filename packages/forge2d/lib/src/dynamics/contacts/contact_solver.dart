@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 class ContactSolverDef {
   late TimeStep step;
@@ -135,11 +135,9 @@ class ContactSolver {
     }
   }
 
-  // djm pooling, and from above
-  // TODO(srdjan): make them private.
-  final Transform xfA = Transform.zero();
-  final Transform xfB = Transform.zero();
-  final WorldManifold worldManifold = WorldManifold();
+  final Transform _xfA = Transform.zero();
+  final Transform _xfB = Transform.zero();
+  final WorldManifold _worldManifold = WorldManifold();
 
   void initializeVelocityConstraints() {
     // Warm start.
@@ -173,25 +171,25 @@ class ContactSolver {
 
       assert(manifold.pointCount > 0);
 
-      final xfAq = xfA.q;
-      final xfBq = xfB.q;
+      final xfAq = _xfA.q;
+      final xfBq = _xfB.q;
       xfAq.setAngle(aA);
       xfBq.setAngle(aB);
-      xfA.p.x = cA.x - (xfAq.c * localCenterA.x - xfAq.s * localCenterA.y);
-      xfA.p.y = cA.y - (xfAq.s * localCenterA.x + xfAq.c * localCenterA.y);
-      xfB.p.x = cB.x - (xfBq.c * localCenterB.x - xfBq.s * localCenterB.y);
-      xfB.p.y = cB.y - (xfBq.s * localCenterB.x + xfBq.c * localCenterB.y);
+      _xfA.p.x = cA.x - (xfAq.cos * localCenterA.x - xfAq.sin * localCenterA.y);
+      _xfA.p.y = cA.y - (xfAq.sin * localCenterA.x + xfAq.cos * localCenterA.y);
+      _xfB.p.x = cB.x - (xfBq.cos * localCenterB.x - xfBq.sin * localCenterB.y);
+      _xfB.p.y = cB.y - (xfBq.sin * localCenterB.x + xfBq.cos * localCenterB.y);
 
-      worldManifold.initialize(manifold, xfA, radiusA, xfB, radiusB);
+      _worldManifold.initialize(manifold, _xfA, radiusA, _xfB, radiusB);
 
       final vcNormal = velocityConstraint.normal;
-      vcNormal.x = worldManifold.normal.x;
-      vcNormal.y = worldManifold.normal.y;
+      vcNormal.x = _worldManifold.normal.x;
+      vcNormal.y = _worldManifold.normal.y;
 
       final pointCount = velocityConstraint.pointCount;
       for (var j = 0; j < pointCount; ++j) {
         final vcp = velocityConstraint.points[j];
-        final wmPj = worldManifold.points[j];
+        final wmPj = _worldManifold.points[j];
         final vcprA = vcp.rA;
         final vcprB = vcp.rB;
         vcprA.x = wmPj.x - cA.x;
@@ -292,9 +290,8 @@ class ContactSolver {
 
         // Clamp the accumulated force
         final maxFriction = (friction * vcp.normalImpulse).abs();
-        final newImpulse = (vcp.tangentImpulse + lambda)
-            .clamp(-maxFriction, maxFriction)
-            .toDouble();
+        final newImpulse =
+            (vcp.tangentImpulse + lambda).clamp(-maxFriction, maxFriction);
         lambda = newImpulse - vcp.tangentImpulse;
         vcp.tangentImpulse = newImpulse;
 
@@ -348,27 +345,28 @@ class ContactSolver {
         vB.y += pY * mB;
         wB += iB * (vcp.rB.x * pY - vcp.rB.y * pX);
       } else {
-        // Block solver developed in collaboration with Dirk Gregorius (back in 01/07 on
-        // Box2D_Lite).
+        // Block solver developed in collaboration with Dirk Gregorius
+        // (back in 01/07 on Box2D_Lite).
         // Build the mini LCP for this contact patch
         //
-        // vn = A * x + b, vn >= 0, , vn >= 0, x >= 0 and vn_i * x_i = 0 with i = 1..2
+        // vn = A * x + b, vn >= 0, , vn >= 0, x >= 0 and vn_i * x_i = 0
+        // with i = 1..2
         //
         // A = J * W * JT and J = ( -n, -r1 x n, n, r2 x n )
         // b = vn_0 - velocityBias
         //
-        // The system is solved using the "Total enumeration method" (s. Murty). The complementary
-        // constraint vn_i * x_i
-        // implies that we must have in any solution either vn_i = 0 or x_i = 0. So for the 2D
-        // contact problem the cases
-        // vn1 = 0 and vn2 = 0, x1 = 0 and x2 = 0, x1 = 0 and vn2 = 0, x2 = 0 and vn1 = 0 need to be
-        // tested. The first valid
-        // solution that satisfies the problem is chosen.
+        // The system is solved using the "Total enumeration method" (s. Murty).
+        // The complementary constraint vn_i * x_i
+        // implies that we must have in any solution either vn_i = 0 or x_i = 0.
+        // So for the 2D contact problem the cases
+        // vn1 = 0 and vn2 = 0, x1 = 0 and x2 = 0, x1 = 0 and vn2 = 0, x2 = 0
+        // and vn1 = 0 need to be tested.
+        // The first valid solution that satisfies the problem is chosen.
         //
-        // In order to account of the accumulated impulse 'a' (because of the iterative nature of
-        // the solver which only requires
-        // that the accumulated impulse is clamped and not the incremental impulse) we change the
-        // impulse variable (x_i).
+        // In order to account of the accumulated impulse 'a'
+        // (because of the iterative nature of the solver which only requires
+        // that the accumulated impulse is clamped and not the incremental
+        // impulse) we change the impulse variable (x_i).
         //
         // Substitute:
         //
@@ -378,8 +376,8 @@ class ContactSolver {
         // x := new total impulse
         // d := incremental impulse
         //
-        // For the current iteration we extend the formula for the incremental impulse
-        // to compute the new total impulse:
+        // For the current iteration we extend the formula for the incremental
+        // impulse to compute the new total impulse:
         //
         // vn = A * d + b
         // = A * (x - a) + b
@@ -449,9 +447,11 @@ class ContactSolver {
             final p2y = dy * normalY;
 
             /*
-             * vA -= invMassA * (P1 + P2); wA -= invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
+             * vA -= invMassA * (P1 + P2); wA -= invIA * (Cross(cp1.rA, P1) +
+             *       Cross(cp2.rA, P2));
              *
-             * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
+             * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) +
+             *       Cross(cp2.rB, P2));
              */
 
             vA.x -= mA * (p1x + p2x);
@@ -472,15 +472,12 @@ class ContactSolver {
             cp1.normalImpulse = xx;
             cp2.normalImpulse = xy;
 
-            /*
-             * #if B2_DEBUG_SOLVER == 1 // Postconditions dv1 = vB + Cross(wB, cp1.rB) - vA -
-             * Cross(wA, cp1.rA); dv2 = vB + Cross(wB, cp2.rB) - vA - Cross(wA, cp2.rA);
-             *
-             * // Compute normal velocity vn1 = Dot(dv1, normal); vn2 = Dot(dv2, normal);
-             *
-             * assert(Abs(vn1 - cp1.velocityBias) < k_errorTol); assert(Abs(vn2 - cp2.velocityBias)
-             * < k_errorTol); #endif
-             */
+            // Postconditions
+            // dv1 = vB + Cross(wB, cp1.rB) - vA - Cross(wA, cp1.rA);
+            // dv2 = vB + Cross(wB, cp2.rB) - vA - Cross(wA, cp2.rA);
+            //
+            // Compute normal velocity
+            // vn1 = Dot(dv1, normal); vn2 = Dot(dv2, normal);
             if (debugSolver) {
               // Postconditions
               final dv1 = vB + _crossDoubleVector2(wB, cp1rB)
@@ -521,13 +518,13 @@ class ContactSolver {
             final p2x = normalX * dy;
             final p2y = normalY * dy;
 
-            /*
-             * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
-             * invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
-             *
-             * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
-             */
-
+            // Vec2 P1 = d.x * normal;
+            // Vec2 P2 = d.y * normal;
+            // vA -= invMassA * (P1 + P2); wA -=
+            // invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
+            //
+            // vB += invMassB * (P1 + P2);
+            // wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
             vA.x -= mA * (p1x + p2x);
             vA.y -= mA * (p1y + p2y);
             vB.x += mB * (p1x + p2x);
@@ -584,13 +581,14 @@ class ContactSolver {
             final dy = xy - ay;
 
             // Apply incremental impulse
-            /*
-             * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
-             * invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
-             *
-             * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
-             */
-
+            //
+            // Vec2 P1 = d.x * normal;
+            // Vec2 P2 = d.y * normal;
+            // vA -= invMassA * (P1 + P2); wA -=
+            //   invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
+            //
+            // vB += invMassB * (P1 + P2);
+            //  wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
             final p1x = normalX * dx;
             final p1y = normalY * dx;
             final p2x = normalX * dy;
@@ -651,13 +649,13 @@ class ContactSolver {
             final dy = xy - ay;
 
             // Apply incremental impulse
-            /*
-             * Vec2 P1 = d.x * normal; Vec2 P2 = d.y * normal; vA -= invMassA * (P1 + P2); wA -=
-             * invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
-             *
-             * vB += invMassB * (P1 + P2); wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
-             */
-
+            // Vec2 P1 = d.x * normal;
+            // Vec2 P2 = d.y * normal;
+            // vA -= invMassA * (P1 + P2); wA -=
+            //   invIA * (Cross(cp1.rA, P1) + Cross(cp2.rA, P2));
+            //
+            // vB += invMassB * (P1 + P2);
+            // wB += invIB * (Cross(cp1.rB, P1) + Cross(cp2.rB, P2));
             final p1x = normalX * dx;
             final p1y = normalY * dx;
             final p2x = normalX * dy;
@@ -684,7 +682,8 @@ class ContactSolver {
             break;
           }
 
-          // No solution, give up. This is hit sometimes, but it doesn't seem to matter.
+          // No solution, give up.
+          // This is hit sometimes, but it doesn't seem to matter.
           break;
         }
       }
@@ -737,17 +736,17 @@ class ContactSolver {
 
       // Solve normal constraints
       for (var j = 0; j < pointCount; ++j) {
-        final xfAq = xfA.q;
-        final xfBq = xfB.q;
+        final xfAq = _xfA.q;
+        final xfBq = _xfB.q;
         xfAq.setAngle(aA);
         xfBq.setAngle(aB);
-        xfA.p.x = cA.x - xfAq.c * localCenterAx + xfAq.s * localCenterAy;
-        xfA.p.y = cA.y - xfAq.s * localCenterAx - xfAq.c * localCenterAy;
-        xfB.p.x = cB.x - xfBq.c * localCenterBx + xfBq.s * localCenterBy;
-        xfB.p.y = cB.y - xfBq.s * localCenterBx - xfBq.c * localCenterBy;
+        _xfA.p.x = cA.x - xfAq.cos * localCenterAx + xfAq.sin * localCenterAy;
+        _xfA.p.y = cA.y - xfAq.sin * localCenterAx - xfAq.cos * localCenterAy;
+        _xfB.p.x = cB.x - xfBq.cos * localCenterBx + xfBq.sin * localCenterBy;
+        _xfB.p.y = cB.y - xfBq.sin * localCenterBx - xfBq.cos * localCenterBy;
 
         final psm = _pSolver;
-        psm.initialize(pc, xfA, xfB, j);
+        psm.initialize(pc, _xfA, _xfB, j);
         final normal = psm.normal;
         final point = psm.point;
         final separation = psm.separation;
@@ -832,17 +831,17 @@ class ContactSolver {
 
       // Solve normal constraints
       for (var j = 0; j < pointCount; ++j) {
-        final xfAq = xfA.q;
-        final xfBq = xfB.q;
+        final xfAq = _xfA.q;
+        final xfBq = _xfB.q;
         xfAq.setAngle(aA);
         xfBq.setAngle(aB);
-        xfA.p.x = cA.x - xfAq.c * localCenterAx + xfAq.s * localCenterAy;
-        xfA.p.y = cA.y - xfAq.s * localCenterAx - xfAq.c * localCenterAy;
-        xfB.p.x = cB.x - xfBq.c * localCenterBx + xfBq.s * localCenterBy;
-        xfB.p.y = cB.y - xfBq.s * localCenterBx - xfBq.c * localCenterBy;
+        _xfA.p.x = cA.x - xfAq.cos * localCenterAx + xfAq.sin * localCenterAy;
+        _xfA.p.y = cA.y - xfAq.sin * localCenterAx - xfAq.cos * localCenterAy;
+        _xfB.p.x = cB.x - xfBq.cos * localCenterBx + xfBq.sin * localCenterBy;
+        _xfB.p.y = cB.y - xfBq.sin * localCenterBx - xfBq.cos * localCenterBy;
 
         final psm = _pSolver;
-        psm.initialize(pc, xfA, xfB, j);
+        psm.initialize(pc, _xfA, _xfB, j);
         final normal = psm.normal;
 
         final point = psm.point;
@@ -916,13 +915,13 @@ class PositionSolverManifold {
         final pLocalPoint = pc.localPoint;
         final pLocalPoints0 = pc.localPoints[0];
         final pointAx =
-            (xfAq.c * pLocalPoint.x - xfAq.s * pLocalPoint.y) + xfA.p.x;
+            (xfAq.cos * pLocalPoint.x - xfAq.sin * pLocalPoint.y) + xfA.p.x;
         final pointAy =
-            (xfAq.s * pLocalPoint.x + xfAq.c * pLocalPoint.y) + xfA.p.y;
+            (xfAq.sin * pLocalPoint.x + xfAq.cos * pLocalPoint.y) + xfA.p.y;
         final pointBx =
-            (xfBq.c * pLocalPoints0.x - xfBq.s * pLocalPoints0.y) + xfB.p.x;
+            (xfBq.cos * pLocalPoints0.x - xfBq.sin * pLocalPoints0.y) + xfB.p.x;
         final pointBy =
-            (xfBq.s * pLocalPoints0.x + xfBq.c * pLocalPoints0.y) + xfB.p.y;
+            (xfBq.sin * pLocalPoints0.x + xfBq.cos * pLocalPoints0.y) + xfB.p.y;
         normal.x = pointBx - pointAx;
         normal.y = pointBy - pointAy;
         normal.normalize();
@@ -938,17 +937,19 @@ class PositionSolverManifold {
       case ManifoldType.faceA:
         final pcLocalNormal = pc.localNormal;
         final pcLocalPoint = pc.localPoint;
-        normal.x = xfAq.c * pcLocalNormal.x - xfAq.s * pcLocalNormal.y;
-        normal.y = xfAq.s * pcLocalNormal.x + xfAq.c * pcLocalNormal.y;
+        normal.x = xfAq.cos * pcLocalNormal.x - xfAq.sin * pcLocalNormal.y;
+        normal.y = xfAq.sin * pcLocalNormal.x + xfAq.cos * pcLocalNormal.y;
         final planePointX =
-            (xfAq.c * pcLocalPoint.x - xfAq.s * pcLocalPoint.y) + xfA.p.x;
+            (xfAq.cos * pcLocalPoint.x - xfAq.sin * pcLocalPoint.y) + xfA.p.x;
         final planePointY =
-            (xfAq.s * pcLocalPoint.x + xfAq.c * pcLocalPoint.y) + xfA.p.y;
+            (xfAq.sin * pcLocalPoint.x + xfAq.cos * pcLocalPoint.y) + xfA.p.y;
 
         final clipPointX =
-            (xfBq.c * pcLocalPointsI.x - xfBq.s * pcLocalPointsI.y) + xfB.p.x;
+            (xfBq.cos * pcLocalPointsI.x - xfBq.sin * pcLocalPointsI.y) +
+                xfB.p.x;
         final clipPointY =
-            (xfBq.s * pcLocalPointsI.x + xfBq.c * pcLocalPointsI.y) + xfB.p.y;
+            (xfBq.sin * pcLocalPointsI.x + xfBq.cos * pcLocalPointsI.y) +
+                xfB.p.y;
         final tempX = clipPointX - planePointX;
         final tempY = clipPointY - planePointY;
         separation =
@@ -960,17 +961,19 @@ class PositionSolverManifold {
       case ManifoldType.faceB:
         final pcLocalNormal = pc.localNormal;
         final pcLocalPoint = pc.localPoint;
-        normal.x = xfBq.c * pcLocalNormal.x - xfBq.s * pcLocalNormal.y;
-        normal.y = xfBq.s * pcLocalNormal.x + xfBq.c * pcLocalNormal.y;
+        normal.x = xfBq.cos * pcLocalNormal.x - xfBq.sin * pcLocalNormal.y;
+        normal.y = xfBq.sin * pcLocalNormal.x + xfBq.cos * pcLocalNormal.y;
         final planePointX =
-            (xfBq.c * pcLocalPoint.x - xfBq.s * pcLocalPoint.y) + xfB.p.x;
+            (xfBq.cos * pcLocalPoint.x - xfBq.sin * pcLocalPoint.y) + xfB.p.x;
         final planePointY =
-            (xfBq.s * pcLocalPoint.x + xfBq.c * pcLocalPoint.y) + xfB.p.y;
+            (xfBq.sin * pcLocalPoint.x + xfBq.cos * pcLocalPoint.y) + xfB.p.y;
 
         final clipPointX =
-            (xfAq.c * pcLocalPointsI.x - xfAq.s * pcLocalPointsI.y) + xfA.p.x;
+            (xfAq.cos * pcLocalPointsI.x - xfAq.sin * pcLocalPointsI.y) +
+                xfA.p.x;
         final clipPointY =
-            (xfAq.s * pcLocalPointsI.x + xfAq.c * pcLocalPointsI.y) + xfA.p.y;
+            (xfAq.sin * pcLocalPointsI.x + xfAq.cos * pcLocalPointsI.y) +
+                xfA.p.y;
         final tempX = clipPointX - planePointX;
         final tempY = clipPointY - planePointY;
         separation =

@@ -42,6 +42,25 @@ void main() {
       });
     });
 
+    group('maxMotorForce', () {
+      test('can change maxMotorForce', () {
+        final joint = PrismaticJoint(jointDef);
+
+        final newMaxMotorForce = joint.maxMotorForce + 1;
+        joint.maxMotorForce = newMaxMotorForce;
+
+        expect(joint.maxMotorForce, equals(newMaxMotorForce));
+      });
+
+      test('wakes up both bodies', () {
+        final joint = PrismaticJoint(jointDef);
+        joint.maxMotorForce = 1;
+
+        verify(() => joint.bodyA.setAwake(true)).called(1);
+        verify(() => joint.bodyB.setAwake(true)).called(1);
+      });
+    });
+
     group('render', () {
       late DebugDraw debugDraw;
 
@@ -49,7 +68,7 @@ void main() {
         debugDraw = _MockDebugDraw();
 
         registerFallbackValue(Vector2.zero());
-        registerFallbackValue(Color3i.black);
+        registerFallbackValue(Color3i.black());
       });
 
       test('draws three segments', () {

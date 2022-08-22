@@ -1,13 +1,14 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// A manifold point is a contact point belonging to a contact
 /// manifold. It holds details related to the geometry and dynamics
 /// of the contact points.
 /// The local point usage depends on the manifold type:
-/// <ul><li>e_circles: the local center of circleB</li>
-/// <li>e_faceA: the local center of cirlceB or the clip point of polygonB</li>
-/// <li>e_faceB: the clip point of polygonA</li></ul>
-/// This structure is stored across time steps, so we keep it small.<br/>
+///  - e_circles: the local center of circleB.
+///  - e_faceA: the local center of cirlceB or the clip point of polygonB.
+///  - e_faceB: the clip point of polygonA.
+///
+/// This structure is stored across time steps, so we keep it small.
 /// Note: the impulses are used for internal caching and may not
 /// provide reliable contact forces, especially for high speed collisions.
 class ManifoldPoint {
@@ -28,20 +29,18 @@ class ManifoldPoint {
       : localPoint = Vector2.zero(),
         id = ContactID();
 
-  /// Creates a manifold point as a copy of the given point
-  /// @param cp point to copy from
-  ManifoldPoint.copy(final ManifoldPoint cp)
-      : localPoint = cp.localPoint.clone(),
-        normalImpulse = cp.normalImpulse,
-        tangentImpulse = cp.tangentImpulse,
-        id = ContactID.copy(cp.id);
+  /// Creates a manifold point as a copy of the given point.
+  ManifoldPoint.copy(final ManifoldPoint manifoldPoint)
+      : localPoint = manifoldPoint.localPoint.clone(),
+        normalImpulse = manifoldPoint.normalImpulse,
+        tangentImpulse = manifoldPoint.tangentImpulse,
+        id = ContactID.copy(manifoldPoint.id);
 
-  /// Sets this manifold point form the given one
-  /// @param cp the point to copy from
-  void set(final ManifoldPoint cp) {
-    localPoint.setFrom(cp.localPoint);
-    normalImpulse = cp.normalImpulse;
-    tangentImpulse = cp.tangentImpulse;
-    id.set(cp.id);
+  /// Sets this manifold point form the given one.
+  void set(final ManifoldPoint manifoldPoint) {
+    localPoint.setFrom(manifoldPoint.localPoint);
+    normalImpulse = manifoldPoint.normalImpulse;
+    tangentImpulse = manifoldPoint.tangentImpulse;
+    id.set(manifoldPoint.id);
   }
 }

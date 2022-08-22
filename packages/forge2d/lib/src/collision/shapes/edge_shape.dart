@@ -1,10 +1,11 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// A line segment (edge) shape. These can be connected in chains or loops to other edge shapes. The
-/// connectivity information is used to ensure correct contact normals.
+/// A line segment (edge) shape. These can be connected in chains or loops to
+/// other edge shapes. The connectivity information is used to ensure correct
+/// contact normals.
 class EdgeShape extends Shape {
   /// edge vertex 1
   final Vector2 vertex1 = Vector2.zero();
@@ -47,8 +48,8 @@ class EdgeShape extends Shape {
     int childIndex,
     Vector2 normalOut,
   ) {
-    final xfqc = xf.q.c;
-    final xfqs = xf.q.s;
+    final xfqc = xf.q.cos;
+    final xfqs = xf.q.sin;
     final xfpx = xf.p.x;
     final xfpy = xf.p.y;
     final v1x = (xfqc * vertex1.x - xfqs * vertex1.y) + xfpx;
@@ -98,13 +99,13 @@ class EdgeShape extends Shape {
     // Put the ray into the edge's frame of reference.
     var tempX = input.p1.x - xfp.x;
     var tempY = input.p1.y - xfp.y;
-    final p1x = xfq.c * tempX + xfq.s * tempY;
-    final p1y = -xfq.s * tempX + xfq.c * tempY;
+    final p1x = xfq.cos * tempX + xfq.sin * tempY;
+    final p1y = -xfq.sin * tempX + xfq.cos * tempY;
 
     tempX = input.p2.x - xfp.x;
     tempY = input.p2.y - xfp.y;
-    final p2x = xfq.c * tempX + xfq.s * tempY;
-    final p2y = -xfq.s * tempX + xfq.c * tempY;
+    final p2x = xfq.cos * tempX + xfq.sin * tempY;
+    final p2y = -xfq.sin * tempX + xfq.cos * tempY;
 
     final dx = p2x - p1x;
     final dy = p2y - p1y;
@@ -144,11 +145,11 @@ class EdgeShape extends Shape {
 
     output.fraction = t;
     if (numerator > 0.0) {
-      output.normal.x = -xfq.c * normal.x + xfq.s * normal.y;
-      output.normal.y = -xfq.s * normal.x - xfq.c * normal.y;
+      output.normal.x = -xfq.cos * normal.x + xfq.sin * normal.y;
+      output.normal.y = -xfq.sin * normal.x - xfq.cos * normal.y;
     } else {
-      output.normal.x = xfq.c * normal.x - xfq.s * normal.y;
-      output.normal.y = xfq.s * normal.x + xfq.c * normal.y;
+      output.normal.x = xfq.cos * normal.x - xfq.sin * normal.y;
+      output.normal.y = xfq.sin * normal.x + xfq.cos * normal.y;
     }
     return true;
   }
@@ -159,10 +160,10 @@ class EdgeShape extends Shape {
     final upperBound = aabb.upperBound;
     final xfq = xf.q;
 
-    final v1x = (xfq.c * vertex1.x - xfq.s * vertex1.y) + xf.p.x;
-    final v1y = (xfq.s * vertex1.x + xfq.c * vertex1.y) + xf.p.y;
-    final v2x = (xfq.c * vertex2.x - xfq.s * vertex2.y) + xf.p.x;
-    final v2y = (xfq.s * vertex2.x + xfq.c * vertex2.y) + xf.p.y;
+    final v1x = (xfq.cos * vertex1.x - xfq.sin * vertex1.y) + xf.p.x;
+    final v1y = (xfq.sin * vertex1.x + xfq.cos * vertex1.y) + xf.p.y;
+    final v2x = (xfq.cos * vertex2.x - xfq.sin * vertex2.y) + xf.p.x;
+    final v2y = (xfq.sin * vertex2.x + xfq.cos * vertex2.y) + xf.p.y;
 
     lowerBound.x = v1x < v2x ? v1x : v2x;
     lowerBound.y = v1y < v2y ? v1y : v2y;

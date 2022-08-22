@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// An axis-aligned bounding box.
 class AABB {
@@ -16,21 +16,19 @@ class AABB {
       : lowerBound = Vector2.zero(),
         upperBound = Vector2.zero();
 
-  /// Copies from the given object
-  /// @param copy the object to copy from
+  /// Copies from the given object.
   AABB.copy(final AABB copy)
       : lowerBound = Vector2.copy(copy.lowerBound),
         upperBound = Vector2.copy(copy.upperBound);
 
   /// Creates an AABB object using the given bounding vertices.
-  /// @param lowerVertex the bottom left vertex of the bounding box
-  /// @param maxVertex the top right vertex of the bounding box
+  /// [lowerVertex] should be the bottom left vertex of the bounding box.
+  /// [upperVertex] should be the top right vertex of the bounding box.
   AABB.withVec2(final Vector2 lowerVertex, final Vector2 upperVertex)
       : lowerBound = Vector2.copy(lowerVertex),
         upperBound = Vector2.copy(upperVertex);
 
-  /// Sets this object from the given object
-  /// @param aabb the object to copy from
+  /// Sets this object from the given object.
   void set(final AABB aabb) {
     final v = aabb.lowerBound;
     lowerBound.x = v.x;
@@ -115,18 +113,11 @@ class AABB {
 
   /// Does this aabb contain the provided AABB.
   bool contains(final AABB aabb) {
-    // djm: faster putting all of them together, as if one is false we leave the logic
-    // early
     return lowerBound.x <= aabb.lowerBound.x &&
         lowerBound.y <= aabb.lowerBound.y &&
         aabb.upperBound.x <= upperBound.x &&
         aabb.upperBound.y <= upperBound.y;
   }
-
-  /// @deprecated please use {@link #raycast(RayCastOutput, RayCastInput, IWorldPool)} for better performance
-  //bool raycast(final RayCastOutput output, final RayCastInput input) {
-  //  return raycastWithPool(output, input, DefaultWorldPool(4, 4));
-  //}
 
   /// From Real-time Collision Detection, p179.
   bool raycastWithPool(
