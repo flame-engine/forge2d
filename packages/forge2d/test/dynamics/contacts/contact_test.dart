@@ -7,16 +7,11 @@ class _MockFixture extends Mock implements Fixture {}
 
 class _TestContact extends Contact {
   _TestContact(
-    Fixture fixtureA,
-    int indexA,
-    Fixture fixtureB,
-    int indexB,
-  ) : super(
-          fixtureA,
-          indexA,
-          fixtureB,
-          indexB,
-        );
+    super.fixtureA,
+    super.indexA,
+    super.fixtureB,
+    super.indexB,
+  );
 
   @override
   void evaluate(_, __, ___) => throw UnimplementedError();
