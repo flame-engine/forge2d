@@ -68,10 +68,10 @@ void mian() {
           indexB,
         );
 
-        final newEnabled = !contact.isEnabled;
-        contact.isEnabled = newEnabled;
+        final newIsEnabled = !contact.isEnabled;
+        contact.isEnabled = newIsEnabled;
 
-        expect(contact.isEnabled, equals(newEnabled));
+        expect(contact.isEnabled, equals(newIsEnabled));
       });
     });
   });
