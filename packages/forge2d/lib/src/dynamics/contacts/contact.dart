@@ -167,8 +167,8 @@ abstract class Contact {
   /// This can be used inside [ContactListener.preSolve]. The contact is
   /// only disabled for the current time step (or sub-step in continuous
   /// collisions).
-  set enabled(bool enable) {
-    if (enable) {
+  set isEnabled(bool value) {
+    if (value) {
       flags |= enabledFlag;
     } else {
       flags &= ~enabledFlag;
@@ -176,7 +176,7 @@ abstract class Contact {
   }
 
   /// Whether this contact is enabled.
-  bool get enabled => (flags & enabledFlag) == enabledFlag;
+  bool get isEnabled => (flags & enabledFlag) == enabledFlag;
 
   void resetFriction() {
     _friction = Contact.mixFriction(fixtureA.friction, fixtureB.friction);

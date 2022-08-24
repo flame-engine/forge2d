@@ -48,8 +48,8 @@ void mian() {
       );
     });
 
-    group('enabled', () {
-      test('enabled by default', () {
+    group('isEnabled', () {
+      test('true by default', () {
         final contact = _TestContact(
           fixtureA,
           indexA,
@@ -57,7 +57,7 @@ void mian() {
           indexB,
         );
 
-        expect(contact.enabled, isTrue);
+        expect(contact.isEnabled, isTrue);
       });
 
       test('can change', () {
@@ -68,10 +68,10 @@ void mian() {
           indexB,
         );
 
-        final newEnabled = !contact.enabled;
-        contact.enabled = newEnabled;
+        final newEnabled = !contact.isEnabled;
+        contact.isEnabled = newEnabled;
 
-        expect(contact.enabled, equals(newEnabled));
+        expect(contact.isEnabled, equals(newEnabled));
       });
     });
   });
