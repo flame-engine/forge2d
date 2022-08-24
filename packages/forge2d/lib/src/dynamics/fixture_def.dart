@@ -1,4 +1,4 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Used to create a [Fixture].
 ///
@@ -9,7 +9,7 @@ class FixtureDef {
     this.userData,
     this.friction = 0,
     this.restitution = 0,
-    this.density = 0,
+    this.density = 1,
     this.isSensor = false,
     Filter? filter,
   }) : filter = filter ?? Filter();

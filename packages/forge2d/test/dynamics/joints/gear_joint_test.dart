@@ -7,7 +7,7 @@ import '../../helpers/helpers.dart';
 class UnknownJointDef extends JointDef {}
 
 class UnknownJoint extends Joint {
-  UnknownJoint(UnknownJointDef unknownJointDef) : super(unknownJointDef);
+  UnknownJoint(UnknownJointDef super.unknownJointDef);
 
   @override
   void noSuchMethod(_) {}
@@ -224,7 +224,7 @@ void main() {
         debugDraw = MockDebugDraw();
 
         registerFallbackValue(Vector2.zero());
-        registerFallbackValue(Color3i.black);
+        registerFallbackValue(Color3i.black());
       });
 
       test(

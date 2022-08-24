@@ -91,7 +91,7 @@ class Particles extends Demo {
     final particleGroup = ParticleGroupDef()
       ..position.setFrom(fixture.renderCenter)
       ..destroyAutomatically = true
-      ..color = Color3i.blue
+      ..color = Color3i.blue()
       ..flags = ParticleType.waterParticle
       ..shape = shape;
     world.particleSystem.createParticleGroup(particleGroup);

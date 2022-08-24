@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 abstract class VoronoiDiagramCallback {
   void call(Particle particleA, Particle particleB, Particle particleC);
@@ -57,10 +57,7 @@ class VoronoiDiagram {
 
   void generate(double radius) {
     if (generators.isEmpty) {
-      print('We do return');
       return;
-    } else {
-      print('We do go here');
     }
     _diagram.clear();
     _queue.clear();

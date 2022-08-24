@@ -1,4 +1,4 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// {@template dynamics.joints.joint_def}
 /// [JointDef]s are used to construct [Joint]s.

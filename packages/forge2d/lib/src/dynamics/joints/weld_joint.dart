@@ -1,24 +1,24 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-//Point-to-point constraint
-//C = p2 - p1
-//Cdot = v2 - v1
-//   = v2 + cross(w2, r2) - v1 - cross(w1, r1)
-//J = [-I -r1_skew I r2_skew ]
-//Identity used:
-//w k % (rx i + ry j) = w * (-ry i + rx j)
+// Point-to-point constraint
+// C = p2 - p1
+// Cdot = v2 - v1
+//    = v2 + cross(w2, r2) - v1 - cross(w1, r1)
+// J = [-I -r1_skew I r2_skew ]
+// Identity used:
+// w k % (rx i + ry j) = w * (-ry i + rx j)
 
-//Angle constraint
-//C = angle2 - angle1 - referenceAngle
-//Cdot = w2 - w1
-//J = [0 0 -1 0 0 1]
-//K = invI1 + invI2
+// Angle constraint
+// C = angle2 - angle1 - referenceAngle
+// Cdot = w2 - w1
+// J = [0 0 -1 0 0 1]
+// K = invI1 + invI2
 
-/// A weld joint essentially glues two bodies together. A weld joint may distort somewhat because the
-/// island constraint solver is approximate.
+/// A weld joint essentially glues two bodies together. A weld joint may distort
+/// somewhat because the island constraint solver is approximate.
 class WeldJoint extends Joint {
   double _frequencyHz = 0.0;
   double _dampingRatio = 0.0;
