@@ -161,19 +161,21 @@ abstract class Contact {
             this.indexB == indexA);
   }
 
-  /// Enable/disable this contact. This can be used inside the pre-solve contact
-  /// listener. The contact is only disabled for the current time step
-  /// (or sub-step in continuous collisions).
-  void setEnabled(bool enable) {
-    if (enable) {
+  /// Enable or disable this contact.
+  ///
+  /// This can be used inside [ContactListener.preSolve]. The contact is
+  /// only disabled for the current time step (or sub-step in continuous
+  /// collisions).
+  set isEnabled(bool value) {
+    if (value) {
       flags |= enabledFlag;
     } else {
       flags &= ~enabledFlag;
     }
   }
 
-  /// Has this contact been disabled?
-  bool isEnabled() => (flags & enabledFlag) == enabledFlag;
+  /// Whether this contact is enabled.
+  bool get isEnabled => (flags & enabledFlag) == enabledFlag;
 
   void resetFriction() {
     _friction = Contact.mixFriction(fixtureA.friction, fixtureB.friction);
