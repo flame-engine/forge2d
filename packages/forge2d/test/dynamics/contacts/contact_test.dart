@@ -16,7 +16,7 @@ class _TestContact extends Contact {
   void evaluate(_, __, ___) => throw UnimplementedError();
 }
 
-void mian() {
+void main() {
   group('Contact', () {
     late Fixture fixtureA;
     late int indexA;
