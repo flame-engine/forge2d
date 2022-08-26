@@ -25,8 +25,14 @@ void main() {
 
     setUp(() {
       fixtureA = _MockFixture();
-      indexA = 0;
+      when(() => fixtureA.friction).thenReturn(0);
+      when(() => fixtureA.restitution).thenReturn(0);
+
       fixtureB = _MockFixture();
+      when(() => fixtureB.friction).thenReturn(0);
+      when(() => fixtureB.restitution).thenReturn(0);
+
+      indexA = 0;
       indexB = 0;
     });
 
