@@ -230,7 +230,6 @@ class ParticleSystem {
           if (shape.testPoint(identity, p)) {
             p.setFrom(Transform.mulVec2(transform, p));
             final particle = seedParticle.clone();
-            p.sub(groupDef.position);
             particle.position.setFrom(p);
             p.scaleOrthogonalInto(
               groupDef.angularVelocity,
