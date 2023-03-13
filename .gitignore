@@ -24,3 +24,4 @@ coverage
 Makefile
 !doc/_sphinx/Makefile
 .bak
+**/pubspec_overrides.yaml

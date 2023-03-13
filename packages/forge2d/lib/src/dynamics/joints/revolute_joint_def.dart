@@ -34,7 +34,7 @@ class RevoluteJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
 
   /// Initialize the bodies, anchors, and reference angle using the world
   /// anchor.
-  void initialize(final A body1, final B body2, final Vector2 anchor) {
+  void initialize(A body1, B body2, Vector2 anchor) {
     bodyA = body1;
     bodyB = body2;
     localAnchorA.setFrom(bodyA.localPoint(anchor));

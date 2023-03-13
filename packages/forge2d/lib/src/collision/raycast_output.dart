@@ -7,7 +7,7 @@ class RayCastOutput {
   final Vector2 normal = Vector2.zero();
   double fraction = 0.0;
 
-  void set(final RayCastOutput rco) {
+  void set(RayCastOutput rco) {
     normal.setFrom(rco.normal);
     fraction = rco.fraction;
   }

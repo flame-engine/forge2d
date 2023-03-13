@@ -155,7 +155,7 @@ class ConstantVolumeJoint extends Joint {
   }
 
   @override
-  void initVelocityConstraints(final SolverData step) {
+  void initVelocityConstraints(SolverData step) {
     final velocities = step.velocities;
     final positions = step.positions;
     final d = List<Vector2>.generate(
@@ -187,7 +187,7 @@ class ConstantVolumeJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData step) {
+  void solveVelocityConstraints(SolverData step) {
     var crossMassSum = 0.0;
     var dotMassSum = 0.0;
 

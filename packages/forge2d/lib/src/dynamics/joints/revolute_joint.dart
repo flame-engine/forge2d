@@ -75,7 +75,7 @@ class RevoluteJoint extends Joint {
   }
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
     _localCenterA.setFrom(bodyA.sweep.localCenter);
@@ -189,7 +189,7 @@ class RevoluteJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vA = data.velocities[_indexA].v;
     var wA = data.velocities[_indexA].w;
     final vB = data.velocities[_indexB].v;
@@ -321,7 +321,7 @@ class RevoluteJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     final qA = Rot();
     final qB = Rot();
     final cA = data.positions[_indexA].c;
@@ -465,13 +465,13 @@ class RevoluteJoint extends Joint {
 
   double motorTorque(double invDt) => _motorImpulse * invDt;
 
-  void setMaxMotorTorque(final double torque) {
+  void setMaxMotorTorque(double torque) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _maxMotorTorque = torque;
   }
 
-  void enableLimit(final bool flag) {
+  void enableLimit(bool flag) {
     if (flag != _enableLimit) {
       bodyA.setAwake(true);
       bodyB.setAwake(true);
@@ -480,7 +480,7 @@ class RevoluteJoint extends Joint {
     }
   }
 
-  void setLimits(final double lower, final double upper) {
+  void setLimits(double lower, double upper) {
     assert(lower <= upper);
     if (lower != _lowerAngle || upper != _upperAngle) {
       bodyA.setAwake(true);

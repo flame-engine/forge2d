@@ -50,7 +50,7 @@ class Fixture {
   /// not be called frequently. This will not update contacts until the next
   /// time step when either parent body is awake. This automatically calls
   /// [refilter].
-  set filterData(final Filter filter) {
+  set filterData(Filter filter) {
     _filter.set(filter);
     refilter();
   }
@@ -88,7 +88,7 @@ class Fixture {
   /// shapes.
   ///
   /// [point] should be in world coordinates.
-  bool testPoint(final Vector2 point) {
+  bool testPoint(Vector2 point) {
     return shape.testPoint(body.transform, point);
   }
 
@@ -153,7 +153,7 @@ class Fixture {
   }
 
   // These support body activation/deactivation.
-  void createProxies(BroadPhase broadPhase, final Transform xf) {
+  void createProxies(BroadPhase broadPhase, Transform xf) {
     assert(_proxyCount == 0);
 
     // Create proxies in the broad-phase.
@@ -186,8 +186,8 @@ class Fixture {
   @internal
   void synchronize(
     BroadPhase broadPhase,
-    final Transform transform1,
-    final Transform transform2,
+    Transform transform1,
+    Transform transform2,
   ) {
     if (_proxyCount == 0) {
       return;

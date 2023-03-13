@@ -23,10 +23,10 @@ class WorldManifold {
   final Vector2 _pool4 = Vector2.zero();
 
   void initialize(
-    final Manifold manifold,
-    final Transform xfA,
+    Manifold manifold,
+    Transform xfA,
     double radiusA,
-    final Transform xfB,
+    Transform xfB,
     double radiusB,
   ) {
     if (manifold.pointCount == 0) {

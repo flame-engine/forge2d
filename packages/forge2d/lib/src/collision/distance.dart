@@ -127,7 +127,7 @@ class _Simplex {
 
   final Vector2 _e12 = Vector2.zero();
 
-  void getSearchDirection(final Vector2 out) {
+  void getSearchDirection(Vector2 out) {
     switch (count) {
       case 1:
         out
@@ -164,7 +164,7 @@ class _Simplex {
   final Vector2 _case22 = Vector2.zero();
 
   /// This returns pooled objects. don't keep or modify them
-  void getClosestPoint(final Vector2 out) {
+  void getClosestPoint(Vector2 out) {
     switch (count) {
       case 0:
         assert(false);
@@ -461,7 +461,7 @@ class DistanceProxy {
 
   /// Initialize the proxy using the given shape. The shape must remain in scope
   /// while the proxy is in use.
-  void set(final Shape shape, int index) {
+  void set(Shape shape, int index) {
     switch (shape.shapeType) {
       case ShapeType.circle:
         final circle = shape as CircleShape;
@@ -507,7 +507,7 @@ class DistanceProxy {
   }
 
   /// Get the supporting vertex index in the given direction.
-  int getSupport(final Vector2 d) {
+  int getSupport(Vector2 d) {
     var bestIndex = 0;
     var bestValue = vertices[0].dot(d);
     for (var i = 1; i < _count; i++) {
@@ -522,7 +522,7 @@ class DistanceProxy {
   }
 
   /// Get the supporting vertex in the given direction.
-  Vector2 getSupportVertex(final Vector2 d) {
+  Vector2 getSupportVertex(Vector2 d) {
     var bestIndex = 0;
     var bestValue = vertices[0].dot(d);
     for (var i = 1; i < _count; i++) {
@@ -567,9 +567,9 @@ class Distance {
   /// of: CircleShape and PolygonShape. The simplex cache is input/output.
   /// On the first call set [SimplexCache.count] to zero.
   void compute(
-    final DistanceOutput output,
-    final SimplexCache cache,
-    final DistanceInput input,
+    DistanceOutput output,
+    SimplexCache cache,
+    DistanceInput input,
   ) {
     gjkCalls++;
 

@@ -29,7 +29,7 @@ class DistanceJoint extends Joint {
   double _invIB = 0.0;
   double _mass = 0.0;
 
-  DistanceJoint(final DistanceJointDef def) : super(def) {
+  DistanceJoint(DistanceJointDef def) : super(def) {
     _length = def.length;
     _frequencyHz = def.frequencyHz;
     _dampingRatio = def.dampingRatio;
@@ -50,7 +50,7 @@ class DistanceJoint extends Joint {
   double reactionTorque(double invDt) => 0.0;
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
     _localCenterA.setFrom(bodyA.sweep.localCenter);
@@ -153,7 +153,7 @@ class DistanceJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vA = data.velocities[_indexA].v;
     var wA = data.velocities[_indexA].w;
     final vB = data.velocities[_indexB].v;
@@ -187,7 +187,7 @@ class DistanceJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     if (_frequencyHz > 0.0) {
       return true;
     }

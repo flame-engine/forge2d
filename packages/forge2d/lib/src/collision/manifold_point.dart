@@ -30,14 +30,14 @@ class ManifoldPoint {
         id = ContactID();
 
   /// Creates a manifold point as a copy of the given point.
-  ManifoldPoint.copy(final ManifoldPoint manifoldPoint)
+  ManifoldPoint.copy(ManifoldPoint manifoldPoint)
       : localPoint = manifoldPoint.localPoint.clone(),
         normalImpulse = manifoldPoint.normalImpulse,
         tangentImpulse = manifoldPoint.tangentImpulse,
         id = ContactID.copy(manifoldPoint.id);
 
   /// Sets this manifold point form the given one.
-  void set(final ManifoldPoint manifoldPoint) {
+  void set(ManifoldPoint manifoldPoint) {
     localPoint.setFrom(manifoldPoint.localPoint);
     normalImpulse = manifoldPoint.normalImpulse;
     tangentImpulse = manifoldPoint.tangentImpulse;
