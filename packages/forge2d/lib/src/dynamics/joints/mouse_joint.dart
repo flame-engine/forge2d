@@ -72,7 +72,7 @@ class MouseJoint extends Joint {
   }
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexB = bodyB.islandIndex;
     _localCenterB.setFrom(bodyB.sweep.localCenter);
     _invMassB = bodyB.inverseMass;
@@ -148,12 +148,12 @@ class MouseJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     return true;
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 

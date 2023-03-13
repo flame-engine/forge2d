@@ -14,7 +14,7 @@ class ClipVertex {
   final Vector2 v = Vector2.zero();
   final ContactID id = ContactID();
 
-  void set(final ClipVertex cv) {
+  void set(ClipVertex cv) {
     final v1 = cv.v;
     v.x = v1.x;
     v.y = v1.y;
@@ -115,10 +115,10 @@ class Collision {
   /// transition from manifold1 to manifold2. So state1 is either persist or
   /// remove while state2 is either add or persist.
   static void computePointStates(
-    final List<PointState> state1,
-    final List<PointState> state2,
-    final Manifold manifold1,
-    final Manifold manifold2,
+    List<PointState> state1,
+    List<PointState> state2,
+    Manifold manifold1,
+    Manifold manifold2,
   ) {
     for (var i = 0; i < settings.maxManifoldPoints; i++) {
       state1[i] = PointState.nullState;
@@ -156,9 +156,9 @@ class Collision {
 
   /// Clipping for contact manifolds. Sutherland-Hodgman clipping.
   static int clipSegmentToLine(
-    final List<ClipVertex> vOut,
-    final List<ClipVertex> vIn,
-    final Vector2 normal,
+    List<ClipVertex> vOut,
+    List<ClipVertex> vIn,
+    Vector2 normal,
     double offset,
     int vertexIndexA,
   ) {
@@ -210,10 +210,10 @@ class Collision {
   /// Compute the collision manifold between two circles.
   void collideCircles(
     Manifold manifold,
-    final CircleShape circle1,
-    final Transform xfA,
-    final CircleShape circle2,
-    final Transform xfB,
+    CircleShape circle1,
+    Transform xfA,
+    CircleShape circle2,
+    Transform xfB,
   ) {
     manifold.pointCount = 0;
 
@@ -248,10 +248,10 @@ class Collision {
   /// Compute the collision manifold between a polygon and a circle.
   void collidePolygonAndCircle(
     Manifold manifold,
-    final PolygonShape polygon,
-    final Transform xfA,
-    final CircleShape circle,
-    final Transform xfB,
+    PolygonShape polygon,
+    Transform xfA,
+    CircleShape circle,
+    Transform xfB,
   ) {
     manifold.pointCount = 0;
     // Vec2 v = circle.p;
@@ -403,10 +403,10 @@ class Collision {
   /// poly1.
   void findMaxSeparation(
     _EdgeResults results,
-    final PolygonShape poly1,
-    final Transform xf1,
-    final PolygonShape poly2,
-    final Transform xf2,
+    PolygonShape poly1,
+    Transform xf1,
+    PolygonShape poly2,
+    Transform xf2,
   ) {
     final count1 = poly1.vertices.length;
     final count2 = poly2.vertices.length;
@@ -445,12 +445,12 @@ class Collision {
   }
 
   void findIncidentEdge(
-    final List<ClipVertex> c,
-    final PolygonShape poly1,
-    final Transform xf1,
+    List<ClipVertex> c,
+    PolygonShape poly1,
+    Transform xf1,
     int edge1,
-    final PolygonShape poly2,
-    final Transform xf2,
+    PolygonShape poly2,
+    Transform xf2,
   ) {
     final count1 = poly1.vertices.length;
     final normals1 = poly1.normals;
@@ -523,10 +523,10 @@ class Collision {
   /// Compute the collision manifold between two polygons.
   void collidePolygons(
     Manifold manifold,
-    final PolygonShape polyA,
-    final Transform xfA,
-    final PolygonShape polyB,
-    final Transform xfB,
+    PolygonShape polyA,
+    Transform xfA,
+    PolygonShape polyB,
+    Transform xfB,
   ) {
     // - Find edge normal of max separation on A - return if separating axis is
     // found
@@ -678,10 +678,10 @@ class Collision {
   // This accounts for edge connectivity.
   void collideEdgeAndCircle(
     Manifold manifold,
-    final EdgeShape edgeA,
-    final Transform xfA,
-    final CircleShape circleB,
-    final Transform xfB,
+    EdgeShape edgeA,
+    Transform xfA,
+    CircleShape circleB,
+    Transform xfB,
   ) {
     manifold.pointCount = 0;
 
@@ -846,10 +846,10 @@ class Collision {
 
   void collideEdgeAndPolygon(
     Manifold manifold,
-    final EdgeShape edgeA,
-    final Transform xfA,
-    final PolygonShape polygonB,
-    final Transform xfB,
+    EdgeShape edgeA,
+    Transform xfA,
+    PolygonShape polygonB,
+    Transform xfB,
   ) {
     _collider.collide(manifold, edgeA, xfA, polygonB, xfB);
   }
@@ -893,10 +893,10 @@ class EdgePolygonCollider {
 
   void collide(
     Manifold manifold,
-    final EdgeShape edgeA,
-    final Transform xfA,
-    final PolygonShape polygonB2,
-    final Transform xfB,
+    EdgeShape edgeA,
+    Transform xfA,
+    PolygonShape polygonB2,
+    Transform xfB,
   ) {
     xf.set(Transform.mulTrans(xfA, xfB));
     centroidB.setFrom(Transform.mulVec2(xf, polygonB2.centroid));

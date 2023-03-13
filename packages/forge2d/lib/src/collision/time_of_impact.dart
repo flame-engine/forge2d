@@ -262,11 +262,11 @@ class SeparationFunction {
   // TODO_ERIN might not need to return the separation
 
   double initialize(
-    final SimplexCache cache,
-    final DistanceProxy proxyA,
-    final Sweep sweepA,
-    final DistanceProxy proxyB,
-    final Sweep sweepB,
+    SimplexCache cache,
+    DistanceProxy proxyA,
+    Sweep sweepA,
+    DistanceProxy proxyB,
+    Sweep sweepB,
     double t1,
   ) {
     this.proxyA = proxyA;

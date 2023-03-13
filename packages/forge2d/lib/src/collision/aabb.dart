@@ -17,19 +17,19 @@ class AABB {
         upperBound = Vector2.zero();
 
   /// Copies from the given object.
-  AABB.copy(final AABB copy)
+  AABB.copy(AABB copy)
       : lowerBound = Vector2.copy(copy.lowerBound),
         upperBound = Vector2.copy(copy.upperBound);
 
   /// Creates an AABB object using the given bounding vertices.
   /// [lowerVertex] should be the bottom left vertex of the bounding box.
   /// [upperVertex] should be the top right vertex of the bounding box.
-  AABB.withVec2(final Vector2 lowerVertex, final Vector2 upperVertex)
+  AABB.withVec2(Vector2 lowerVertex, Vector2 upperVertex)
       : lowerBound = Vector2.copy(lowerVertex),
         upperBound = Vector2.copy(upperVertex);
 
   /// Sets this object from the given object.
-  void set(final AABB aabb) {
+  void set(AABB aabb) {
     final v = aabb.lowerBound;
     lowerBound.x = v.x;
     lowerBound.y = v.y;
@@ -64,7 +64,7 @@ class AABB {
       ..scale(.5);
   }
 
-  void extentsToOut(final Vector2 out) {
+  void extentsToOut(Vector2 out) {
     out.x = (upperBound.x - lowerBound.x) * .5;
     out.y = (upperBound.y - lowerBound.y) * .5; // thanks FDN1
   }
@@ -79,7 +79,7 @@ class AABB {
   }
 
   /// Combine two AABBs into this one.
-  void combine2(final AABB aabb1, final AABB aab) {
+  void combine2(AABB aabb1, AABB aab) {
     lowerBound.x = aabb1.lowerBound.x < aab.lowerBound.x
         ? aabb1.lowerBound.x
         : aab.lowerBound.x;
@@ -100,7 +100,7 @@ class AABB {
   }
 
   /// Combines another aabb with this one
-  void combine(final AABB aabb) {
+  void combine(AABB aabb) {
     lowerBound.x =
         lowerBound.x < aabb.lowerBound.x ? lowerBound.x : aabb.lowerBound.x;
     lowerBound.y =
@@ -112,7 +112,7 @@ class AABB {
   }
 
   /// Does this aabb contain the provided AABB.
-  bool contains(final AABB aabb) {
+  bool contains(AABB aabb) {
     return lowerBound.x <= aabb.lowerBound.x &&
         lowerBound.y <= aabb.lowerBound.y &&
         aabb.upperBound.x <= upperBound.x &&
@@ -120,10 +120,7 @@ class AABB {
   }
 
   /// From Real-time Collision Detection, p179.
-  bool raycastWithPool(
-    final RayCastOutput output,
-    final RayCastInput input,
-  ) {
+  bool raycastWithPool(RayCastOutput output, RayCastInput input) {
     var tMix = -double.maxFinite;
     var tMax = double.maxFinite;
 
@@ -224,7 +221,7 @@ class AABB {
     return true;
   }
 
-  static bool testOverlap(final AABB a, final AABB b) {
+  static bool testOverlap(AABB a, AABB b) {
     if (b.lowerBound.x - a.upperBound.x > 0.0 ||
         b.lowerBound.y - a.upperBound.y > 0.0) {
       return false;

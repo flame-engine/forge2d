@@ -50,7 +50,7 @@ class Sweep {
   ///
   /// The result is placed in [xf].
   /// [beta] should be the normalized time in [0,1].
-  void getTransform(final Transform xf, final double beta) {
+  void getTransform(Transform xf, double beta) {
     // xf->p = (1.0f - beta) * c0 + beta * c;
     // float32 angle = (1.0f - beta) * a0 + beta * a;
     // xf->q.Set(angle);

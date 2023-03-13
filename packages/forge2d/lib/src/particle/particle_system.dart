@@ -47,7 +47,7 @@ class PsProxy implements Comparable<PsProxy> {
 class NewIndices {
   int start = 0, mid = 0, end = 0;
 
-  int getIndex(final int i) {
+  int getIndex(int i) {
     if (i < start) {
       return i;
     } else if (i < mid) {
@@ -692,7 +692,7 @@ class ParticleSystem {
   final Transform _tempXf = Transform.zero();
   final Transform _tempXf2 = Transform.zero();
 
-  void solveRigid(final TimeStep step) {
+  void solveRigid(TimeStep step) {
     for (final group in groupBuffer) {
       if ((group.groupFlags & ParticleGroupType.rigidParticleGroup) != 0) {
         group.updateStatistics();
@@ -722,7 +722,7 @@ class ParticleSystem {
     }
   }
 
-  void solveElastic(final TimeStep step) {
+  void solveElastic(TimeStep step) {
     final elasticStrength = step.invDt * this.elasticStrength;
     for (final triad in triadBuffer) {
       if ((triad.flags & ParticleType.elasticParticle) != 0) {
@@ -763,7 +763,7 @@ class ParticleSystem {
     }
   }
 
-  void solveSpring(final TimeStep step) {
+  void solveSpring(TimeStep step) {
     final springStrength = step.invDt * this.springStrength;
     for (final pair in pairBuffer) {
       if ((pair.flags & ParticleType.springParticle) != 0) {
@@ -789,7 +789,7 @@ class ParticleSystem {
     }
   }
 
-  void solveTensile(final TimeStep step) {
+  void solveTensile(TimeStep step) {
     for (final particle in _particles) {
       particle.accumulation = 0.0;
       particle.accumulationVector.setZero();
@@ -838,7 +838,7 @@ class ParticleSystem {
     }
   }
 
-  void solveViscous(final TimeStep step) {
+  void solveViscous(TimeStep step) {
     for (final contact in bodyContactBuffer) {
       final particle = contact.particle;
       if ((particle.flags & ParticleType.viscousParticle) != 0) {
@@ -881,7 +881,7 @@ class ParticleSystem {
     }
   }
 
-  void solvePowder(final TimeStep step) {
+  void solvePowder(TimeStep step) {
     final powderStrength = this.powderStrength * getCriticalVelocity(step);
     final minWeight = 1.0 - settings.particleStride;
     for (final contact in bodyContactBuffer) {
@@ -926,7 +926,7 @@ class ParticleSystem {
     }
   }
 
-  void solveSolid(final TimeStep step) {
+  void solveSolid(TimeStep step) {
     // applies extra repulsive force from solid particle groups
     // TODO(spydon): Why was this separate depth buffer used?
     //final depthBuffer = Float64List(_particleCount);
@@ -951,7 +951,7 @@ class ParticleSystem {
     }
   }
 
-  void solveColorMixing(final TimeStep step) {
+  void solveColorMixing(TimeStep step) {
     // mixes color between contacting particles
     final colorMixing256 = (256 * colorMixingStrength).toInt();
     for (final contact in contactBuffer) {
@@ -1032,16 +1032,16 @@ class ParticleSystem {
 
   double get particleDensity => _particleDensity;
 
-  double getCriticalVelocity(final TimeStep step) {
+  double getCriticalVelocity(TimeStep step) {
     return particleDiameter * step.invDt;
   }
 
-  double getCriticalVelocitySquared(final TimeStep step) {
+  double getCriticalVelocitySquared(TimeStep step) {
     final velocity = getCriticalVelocity(step);
     return velocity * velocity;
   }
 
-  double getCriticalPressure(final TimeStep step) {
+  double getCriticalPressure(TimeStep step) {
     return particleDensity * getCriticalVelocitySquared(step);
   }
 
@@ -1083,7 +1083,7 @@ class ParticleSystem {
     return left;
   }
 
-  void queryAABB(ParticleQueryCallback callback, final AABB aabb) {
+  void queryAABB(ParticleQueryCallback callback, AABB aabb) {
     if (proxyBuffer.isEmpty) {
       return;
     }
@@ -1124,8 +1124,8 @@ class ParticleSystem {
 
   void raycast(
     ParticleRaycastCallback callback,
-    final Vector2 point1,
-    final Vector2 point2,
+    Vector2 point1,
+    Vector2 point2,
   ) {
     if (proxyBuffer.isEmpty) {
       return;

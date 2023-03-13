@@ -69,7 +69,7 @@ class Body {
   /// Use this to store your application specific data.
   Object? userData;
 
-  Body(final BodyDef bd, this.world)
+  Body(BodyDef bd, this.world)
       : assert(!bd.position.isInfinite && !bd.position.isNaN),
         assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
         assert(bd.angularDamping >= 0.0),

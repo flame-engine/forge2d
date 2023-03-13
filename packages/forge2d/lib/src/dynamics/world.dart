@@ -657,7 +657,7 @@ class World {
   final Sweep _backup1 = Sweep();
   final Sweep _backup2 = Sweep();
 
-  void solveTOI(final TimeStep step) {
+  void solveTOI(TimeStep step) {
     final island = _toiIsland..init(contactManager.contactListener);
     if (_stepComplete) {
       for (final b in bodies) {
