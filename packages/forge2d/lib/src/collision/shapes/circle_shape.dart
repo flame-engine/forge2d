@@ -24,22 +24,22 @@ class CircleShape extends Shape {
   int get childCount => 1;
 
   /// Get the supporting vertex index in the given direction.
-  int getSupport(final Vector2 d) => 0;
+  int getSupport(Vector2 d) => 0;
 
   /// Get the supporting vertex in the given direction.
-  Vector2 getSupportVertex(final Vector2 d) => position;
+  Vector2 getSupportVertex(Vector2 d) => position;
 
   /// Get the vertex count.
   int getVertexCount() => 1;
 
   /// Get a vertex by index.
-  Vector2 getVertex(final int index) {
+  Vector2 getVertex(int index) {
     assert(index == 0);
     return position;
   }
 
   @override
-  bool testPoint(final Transform transform, final Vector2 point) {
+  bool testPoint(Transform transform, Vector2 point) {
     final q = transform.q;
     final tp = transform.p;
     final centerX = -(q.cos * position.x - q.sin * position.y + tp.x - point.x);
@@ -118,7 +118,7 @@ class CircleShape extends Shape {
   }
 
   @override
-  void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
+  void computeAABB(AABB aabb, Transform transform, int childIndex) {
     final tq = transform.q;
     final tp = transform.p;
     final px = tq.cos * position.x - tq.sin * position.y + tp.x;
@@ -131,7 +131,7 @@ class CircleShape extends Shape {
   }
 
   @override
-  void computeMass(final MassData massData, final double density) {
+  void computeMass(MassData massData, double density) {
     massData.mass = density * pi * radius * radius;
     massData.center.x = position.x;
     massData.center.y = position.y;

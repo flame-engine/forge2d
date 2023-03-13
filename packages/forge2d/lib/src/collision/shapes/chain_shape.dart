@@ -162,7 +162,7 @@ class ChainShape extends Shape {
   /// Create a loop. This automatically adjusts connectivity.
   ///
   /// The [vertices] are copied.
-  void createLoop(final List<Vector2> vertices) {
+  void createLoop(List<Vector2> vertices) {
     assert(vertexCount == 0);
     assert(
       vertices.length >= 3,
@@ -180,7 +180,7 @@ class ChainShape extends Shape {
   /// Create a chain with isolated end vertices.
   ///
   /// [vertices] are copied.
-  void createChain(final List<Vector2> vertices) {
+  void createChain(List<Vector2> vertices) {
     assert(vertexCount == 0);
     assert(vertices.length >= 2);
     this.vertices.addAll(vertices.map((Vector2 v) => v.clone()));
@@ -205,7 +205,7 @@ class ChainShape extends Shape {
     _hasNextVertex = true;
   }
 
-  void _validateDistances(final List<Vector2> vertices) {
+  void _validateDistances(List<Vector2> vertices) {
     for (var i = 1; i < vertices.length; i++) {
       final v1 = vertices[i - 1];
       final v2 = vertices[i];

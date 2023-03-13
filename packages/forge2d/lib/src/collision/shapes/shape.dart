@@ -17,7 +17,7 @@ abstract class Shape {
   ///
   /// [xf] should be the shape world transform.
   /// [point] should be in world coordinates.
-  bool testPoint(final Transform xf, final Vector2 point);
+  bool testPoint(Transform xf, Vector2 point);
 
   /// Cast a ray against a child shape.
   ///
@@ -35,12 +35,12 @@ abstract class Shape {
 
   /// Given a transform, compute the associated axis aligned bounding box for a
   /// child shape.
-  void computeAABB(final AABB aabb, final Transform xf, int childIndex);
+  void computeAABB(AABB aabb, Transform xf, int childIndex);
 
   /// Compute the mass properties of this shape using its dimensions and
   /// density. The inertia tensor is computed about the local origin.
   /// [density] should be in kilograms per meter squared.
-  void computeMass(final MassData massData, final double density);
+  void computeMass(MassData massData, double density);
 
   /// Compute the distance from the current shape to the specified point.
   /// This only works for convex shapes.

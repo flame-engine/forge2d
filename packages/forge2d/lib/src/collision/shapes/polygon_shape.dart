@@ -36,7 +36,7 @@ class PolygonShape extends Shape {
   /// list must be in the range [3, Settings.maxPolygonVertices].
   /// Warning: the points may be re-ordered, even if they form a convex polygon.
   /// Warning: collinear points are removed.
-  void set(final List<Vector2> updatedVertices) {
+  void set(List<Vector2> updatedVertices) {
     final updatedCount = updatedVertices.length;
     assert(updatedCount >= 3, 'Too few vertices to form polygon');
     assert(updatedCount <= settings.maxPolygonVertices, 'Too many vertices');
@@ -152,7 +152,7 @@ class PolygonShape extends Shape {
   }
 
   /// Build vertices to represent an axis-aligned box.
-  void setAsBoxXY(final double halfWidth, final double halfHeight) {
+  void setAsBoxXY(double halfWidth, double halfHeight) {
     vertices.clear();
     vertices.addAll([
       Vector2(-halfWidth, -halfHeight),
@@ -173,10 +173,10 @@ class PolygonShape extends Shape {
   /// Build vertices to represent an oriented box.
   /// [center] and [angle] should be in local coordinates.
   void setAsBox(
-    final double halfWidth,
-    final double halfHeight,
-    final Vector2 center,
-    final double angle,
+    double halfWidth,
+    double halfHeight,
+    Vector2 center,
+    double angle,
   ) {
     setAsBoxXY(halfWidth, halfHeight);
     centroid.setFrom(center);
@@ -214,7 +214,7 @@ class PolygonShape extends Shape {
   }
 
   @override
-  bool testPoint(final Transform xf, final Vector2 p) {
+  bool testPoint(Transform xf, Vector2 p) {
     final xfq = xf.q;
 
     var tempX = p.x - xf.p.x;
@@ -237,7 +237,7 @@ class PolygonShape extends Shape {
   }
 
   @override
-  void computeAABB(final AABB aabb, final Transform xf, int childIndex) {
+  void computeAABB(AABB aabb, Transform xf, int childIndex) {
     final lower = aabb.lowerBound;
     final upper = aabb.upperBound;
     final v1 = vertices[0];
@@ -404,7 +404,7 @@ class PolygonShape extends Shape {
     return false;
   }
 
-  void computeCentroid(final List<Vector2> vs, final int count) {
+  void computeCentroid(List<Vector2> vs, int count) {
     assert(count >= 3);
 
     centroid.setZero();
@@ -452,7 +452,7 @@ class PolygonShape extends Shape {
   }
 
   @override
-  void computeMass(final MassData massData, double density) {
+  void computeMass(MassData massData, double density) {
     // Polygon mass, centroid, and inertia.
     // Let rho be the polygon density in mass per unit area.
     // Then:
@@ -569,7 +569,7 @@ class PolygonShape extends Shape {
   }
 
   /// Get the centroid and apply the supplied transform.
-  Vector2 applyToCentroid(final Transform xf) {
+  Vector2 applyToCentroid(Transform xf) {
     return Transform.mulVec2(xf, centroid);
   }
 }

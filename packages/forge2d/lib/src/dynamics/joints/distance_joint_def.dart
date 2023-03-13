@@ -17,12 +17,7 @@ class DistanceJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   double dampingRatio = 0.0;
 
   /// Initialize the bodies, anchors, and length using the world anchors.
-  void initialize(
-    final A body1,
-    final B body2,
-    final Vector2 anchor1,
-    final Vector2 anchor2,
-  ) {
+  void initialize(A body1, B body2, Vector2 anchor1, Vector2 anchor2) {
     bodyA = body1;
     bodyB = body2;
     localAnchorA.setFrom(bodyA.localPoint(anchor1));

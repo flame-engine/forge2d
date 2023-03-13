@@ -6,7 +6,7 @@ class RayCastInput {
   final Vector2 p1 = Vector2.zero(), p2 = Vector2.zero();
   double maxFraction = 0.0;
 
-  void set(final RayCastInput rci) {
+  void set(RayCastInput rci) {
     p1.setFrom(rci.p1);
     p2.setFrom(rci.p2);
     maxFraction = rci.maxFraction;

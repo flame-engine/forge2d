@@ -46,7 +46,7 @@ class DynamicTree implements BroadPhaseStrategy {
   }
 
   @override
-  int createProxy(final AABB aabb, Object? userData) {
+  int createProxy(AABB aabb, Object? userData) {
     assert(aabb.isValid());
     final node = _allocateNode();
     final proxyId = node.id;
@@ -74,7 +74,7 @@ class DynamicTree implements BroadPhaseStrategy {
   }
 
   @override
-  bool moveProxy(int proxyId, final AABB aabb, Vector2 displacement) {
+  bool moveProxy(int proxyId, AABB aabb, Vector2 displacement) {
     assert(aabb.isValid());
     assert(0 <= proxyId && proxyId < _nodeCapacity);
     final node = _nodes[proxyId];
