@@ -1,3 +1,6 @@
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
@@ -59,8 +62,10 @@ class WheelJoint extends Joint {
 
   final Vector2 _ax = Vector2.zero();
   final Vector2 _ay = Vector2.zero();
-  double _sAx = 0.0, _sBx = 0.0;
-  double _sAy = 0.0, _sBy = 0.0;
+  double _sAx = 0.0;
+  double _sBx = 0.0;
+  double _sAy = 0.0;
+  double _sBy = 0.0;
 
   double _mass = 0.0;
   double _motorMass = 0.0;

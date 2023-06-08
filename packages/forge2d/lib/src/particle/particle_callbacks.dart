@@ -19,7 +19,10 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   @override
   bool reportParticle(Particle particle) {
     if (shape.testPoint(xf, particle.position)) {
-      system.destroyParticle(particle, callDestructionListener);
+      system.destroyParticle(
+        particle,
+        callDestructionListener: callDestructionListener,
+      );
     }
     return true;
   }

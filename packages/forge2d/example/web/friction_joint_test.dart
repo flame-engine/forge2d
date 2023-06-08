@@ -16,10 +16,11 @@ class FrictionJointTest extends Demo {
     test.runAnimation();
   }
 
+  late Body _ground;
+  late FixtureDef _boxFixture;
+
   @override
   void initialize() {
-    assert(null != world);
-
     _createGround();
     _createBoxShapeAndFixture();
     _createBox();
@@ -96,9 +97,6 @@ class FrictionJointTest extends Demo {
     // Add to list
     bodies.add(fallingBox);
   }
-
-  Body _ground;
-  FixtureDef _boxFixture;
 }
 
 void main() {

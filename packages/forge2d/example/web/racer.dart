@@ -16,11 +16,16 @@ class Racer extends Demo implements ContactListener {
     racer.initializeAnimation();
     final paragraph = ParagraphElement()
       ..innerText = 'Use the arrow keys to drive the car';
-    document.body.nodes.add(paragraph);
+    document.body?.nodes.add(paragraph);
     racer.runAnimation();
   }
 
   Racer() : super('Racer', Vector2.zero(), 2.5);
+
+  late int _controlState;
+  late Body _groundBody;
+  late final Car _car;
+  num _lastTime = 0;
 
   @override
   void initialize() {
@@ -73,10 +78,10 @@ class Racer extends Demo implements ContactListener {
 
     final fixtureDef = FixtureDef(shape)
       ..isSensor = true
-      ..userData = GroundArea(0.001, false);
+      ..userData = GroundArea(0.001, outOfCourse: false);
     _groundBody.createFixture(fixtureDef);
 
-    fixtureDef.userData = GroundArea(0.2, false);
+    fixtureDef.userData = GroundArea(0.2, outOfCourse: false);
     shape.setAsBox(27.0, 15.0, Vector2(20.0, 40.0), radians(-40.0));
     _groundBody.createFixture(fixtureDef);
   }
@@ -176,11 +181,6 @@ class Racer extends Demo implements ContactListener {
       tire.removeGroundArea(groundArea);
     }
   }
-
-  int _controlState;
-  Body _groundBody;
-  Car _car;
-  num _lastTime = 0;
 }
 
 void main() {

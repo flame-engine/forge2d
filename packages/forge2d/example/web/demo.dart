@@ -31,34 +31,34 @@ abstract class Demo {
   final double _viewportScale;
 
   /// The drawing canvas.
-  CanvasElement canvas;
+  late final CanvasElement canvas;
 
   /// The canvas rendering context.
-  CanvasRenderingContext2D ctx;
+  late final CanvasRenderingContext2D ctx;
 
   /// The transform abstraction layer between the world and drawing canvas.
-  ViewportTransform viewport;
+  late final ViewportTransform viewport;
 
   /// The debug drawing tool.
-  DebugDraw debugDraw;
+  late final DebugDraw debugDraw;
 
   /// Frame count for fps
-  int frameCount;
+  late final int frameCount;
 
   /// HTML element used to display the FPS counter
-  Element fpsCounter;
+  late final Element fpsCounter;
 
   /// Microseconds for world step update
-  int elapsedUs;
+  int? elapsedUs;
 
   /// HTML element used to display the world step time
-  Element worldStepTime;
+  late final Element worldStepTime;
 
-  Demo(String name, [Vector2 gravity, this._viewportScale = viewportScale])
+  Demo(String name, [Vector2? gravity, this._viewportScale = viewportScale])
       : world = World(gravity ?? Vector2(0.0, _gravity)),
         _stopwatch = Stopwatch()..start() {
     world.setAllowSleep(true);
-    querySelector('#title').innerHtml = name;
+    querySelector('#title')?.innerHtml = name;
   }
 
   /// Advances the world forward by timestep seconds.
@@ -82,7 +82,7 @@ abstract class Demo {
     canvas = (Element.tag('canvas') as CanvasElement)
       ..width = canvasWidth
       ..height = canvasHeight;
-    document.body.nodes.add(canvas);
+    document.body?.nodes.add(canvas);
     ctx = canvas.context2D;
 
     // Create the viewport transform with the center at extents.
@@ -97,8 +97,8 @@ abstract class Demo {
     world.debugDraw = debugDraw;
 
     frameCount = 0;
-    fpsCounter = querySelector('#fps-counter');
-    worldStepTime = querySelector('#world-step-time');
+    fpsCounter = querySelector('#fps-counter')!;
+    worldStepTime = querySelector('#world-step-time')!;
     Timer.periodic(const Duration(seconds: 1), (Timer t) {
       fpsCounter.innerHtml = frameCount.toString();
       frameCount = 0;
@@ -107,7 +107,7 @@ abstract class Demo {
       if (elapsedUs == null) {
         return;
       }
-      worldStepTime.innerHtml = '${elapsedUs / 1000} ms';
+      worldStepTime.innerHtml = '${elapsedUs! / 1000} ms';
     });
   }
 

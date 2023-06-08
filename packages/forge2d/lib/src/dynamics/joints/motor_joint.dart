@@ -172,8 +172,10 @@ class MotorJoint extends Joint {
     // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
     final a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
@@ -223,8 +225,10 @@ class MotorJoint extends Joint {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final dt = data.step.dt;
     final invDt = data.step.invDt;

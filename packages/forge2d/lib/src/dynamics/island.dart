@@ -136,7 +136,7 @@ class BodyMeta {
 
 /// This is an internal class.
 class Island {
-  ContactListener? _listener;
+  ContactListener? listener;
 
   final List<BodyMeta> bodies = <BodyMeta>[];
   late List<Contact> _contacts;
@@ -156,10 +156,6 @@ class Island {
     _joints = <Joint>[];
   }
 
-  void init(ContactListener? listener) {
-    _listener = listener;
-  }
-
   void clear() {
     bodies.clear();
     _contacts.clear();
@@ -170,7 +166,12 @@ class Island {
   final SolverData _solverData = SolverData();
   final ContactSolverDef _solverDef = ContactSolverDef();
 
-  void solve(Profile profile, TimeStep step, Vector2 gravity, bool allowSleep) {
+  void solve(
+    Profile profile,
+    TimeStep step,
+    Vector2 gravity, {
+    required bool allowSleep,
+  }) {
     final dt = step.dt;
 
     // Integrate velocities and apply damping. Initialize the body state.
@@ -472,7 +473,7 @@ class Island {
   final ContactImpulse _impulse = ContactImpulse();
 
   void reportVelocityConstraints() {
-    if (_listener == null) {
+    if (listener == null) {
       return;
     }
 
@@ -484,7 +485,7 @@ class Island {
         _impulse.tangentImpulses[j] = vc.points[j].tangentImpulse;
       }
 
-      _listener!.postSolve(contact, _impulse);
+      listener!.postSolve(contact, _impulse);
     }
   }
 }

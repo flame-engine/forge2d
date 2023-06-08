@@ -16,7 +16,7 @@ class RopeJoint extends Joint {
   final Vector2 localAnchorA = Vector2.zero();
   @override
   final Vector2 localAnchorB = Vector2.zero();
-  double _maxLength = 0.0;
+  double maxLength = 0.0;
   double _length = 0.0;
   double _impulse = 0.0;
 
@@ -39,7 +39,7 @@ class RopeJoint extends Joint {
     localAnchorA.setFrom(def.localAnchorA);
     localAnchorB.setFrom(def.localAnchorB);
 
-    _maxLength = def.maxLength;
+    maxLength = def.maxLength;
   }
 
   @override
@@ -88,7 +88,7 @@ class RopeJoint extends Joint {
 
     _length = _u.length;
 
-    final c = _length - _maxLength;
+    final c = _length - maxLength;
     if (c > 0.0) {
       _state = LimitState.atUpper;
     } else {
@@ -149,7 +149,7 @@ class RopeJoint extends Joint {
     _rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
 
-    final c = _length - _maxLength;
+    final c = _length - maxLength;
     var cDot = _u.dot(
       temp
         ..setFrom(vpB)
@@ -215,7 +215,7 @@ class RopeJoint extends Joint {
       ..sub(rA);
 
     final length = u.normalize();
-    var c = length - _maxLength;
+    var c = length - maxLength;
 
     c = c.clamp(0.0, settings.maxLinearCorrection);
 
@@ -233,7 +233,7 @@ class RopeJoint extends Joint {
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return length - _maxLength < settings.linearSlop;
+    return length - maxLength < settings.linearSlop;
   }
 
   @override
@@ -246,15 +246,6 @@ class RopeJoint extends Joint {
   @override
   double reactionTorque(double invDt) {
     return 0.0;
-  }
-
-  // TODO(spydon): Remove these old style getters and setters.
-  double getMaxLength() {
-    return _maxLength;
-  }
-
-  void setMaxLength(double maxLength) {
-    _maxLength = maxLength;
   }
 
   LimitState getLimitState() {

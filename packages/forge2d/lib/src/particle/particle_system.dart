@@ -26,7 +26,10 @@ class PsTriad {
   final Vector2 pa = Vector2.zero();
   final pb = Vector2.zero();
   final pc = Vector2.zero();
-  double ka = 0.0, kb = 0.0, kc = 0.0, s = 0.0;
+  double ka = 0.0;
+  double kb = 0.0;
+  double kc = 0.0;
+  double s = 0.0;
 
   PsTriad(this.particleA, this.particleB, this.particleC);
 }
@@ -45,7 +48,9 @@ class PsProxy implements Comparable<PsProxy> {
 }
 
 class NewIndices {
-  int start = 0, mid = 0, end = 0;
+  int start = 0;
+  int mid = 0;
+  int end = 0;
 
   int getIndex(int i) {
     if (i < start) {
@@ -148,7 +153,10 @@ class ParticleSystem {
     _particles.add(particle);
   }
 
-  void destroyParticle(Particle particle, bool callDestructionListener) {
+  void destroyParticle(
+    Particle particle, {
+    required bool callDestructionListener,
+  }) {
     var flags = ParticleType.zombieParticle;
     if (callDestructionListener) {
       flags |= ParticleType.destroyListener;
@@ -180,7 +188,12 @@ class ParticleSystem {
     ParticleGroup group, {
     bool callDestructionListener = false,
   }) {
-    group.particles.forEach((p) => destroyParticle(p, callDestructionListener));
+    group.particles.forEach(
+      (p) => destroyParticle(
+        p,
+        callDestructionListener: callDestructionListener,
+      ),
+    );
   }
 
   final AABB _temp2 = AABB();
@@ -197,7 +210,7 @@ class ParticleSystem {
       ..groupFlags = groupDef.groupFlags
       ..strength = groupDef.strength
       ..userData = groupDef.userData
-      ..transform.set(transform)
+      ..transform.setFrom(transform)
       ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
@@ -243,7 +256,7 @@ class ParticleSystem {
       groupBuffer.add(group);
     }
 
-    updateContacts(true);
+    updateContacts();
     if ((groupDef.flags & pairFlags) != 0) {
       for (final contact in contactBuffer) {
         final particleA = contact.particleA;
@@ -264,9 +277,9 @@ class ParticleSystem {
         diagram.addGenerator(particle.position, particle);
       }
       diagram.generate(stride / 2);
-      final _createParticleGroupCallback =
+      final createParticleGroupCallback =
           CreateParticleGroupCallback(this, groupDef);
-      diagram.nodes(_createParticleGroupCallback);
+      diagram.nodes(createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
       computeDepthForGroup(group);
@@ -282,7 +295,7 @@ class ParticleSystem {
       particleFlags |= particle.flags;
     }
 
-    updateContacts(true);
+    updateContacts();
     if ((particleFlags & pairFlags) != 0) {
       for (final contact in contactBuffer) {
         final particleA = contact.particleA;
@@ -392,7 +405,7 @@ class ParticleSystem {
     }
   }
 
-  void updateContacts(bool exceptZombie) {
+  void updateContacts({bool excludeZombies = true}) {
     for (final proxy in proxyBuffer) {
       final pos = proxy.particle.position;
       proxy.tag = computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
@@ -427,7 +440,7 @@ class ParticleSystem {
         addContact(proxyA.particle, proxyB.particle);
       }
     }
-    if (exceptZombie) {
+    if (excludeZombies) {
       var j = contactBuffer.length;
       for (var i = 0; i < j; i++) {
         if ((contactBuffer[i].flags & ParticleType.zombieParticle) != 0) {
@@ -538,7 +551,7 @@ class ParticleSystem {
       );
     }
     updateBodyContacts();
-    updateContacts(false);
+    updateContacts(excludeZombies: false);
     if ((allParticleFlags & ParticleType.viscousParticle) != 0) {
       solveViscous(step);
     }
@@ -707,7 +720,7 @@ class ParticleSystem {
           ..sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.setFrom(rotation);
-        group.transform.set(Transform.mul(_tempXf, group.transform));
+        group.transform.setFrom(Transform.mul(_tempXf, group.transform));
         final velocityTransform = _tempXf2
           ..p.x = step.invDt * _tempXf.p.x
           ..p.y = step.invDt * _tempXf.p.y
@@ -1067,7 +1080,8 @@ class ParticleSystem {
     bool Function(int a, int b) compare,
   ) {
     var left = 0;
-    int step, current;
+    int step;
+    int current;
     var length = ray.length;
     final rayList = ray.toList(growable: false);
     while (length > 0) {
