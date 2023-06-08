@@ -264,9 +264,9 @@ class ParticleSystem {
         diagram.addGenerator(particle.position, particle);
       }
       diagram.generate(stride / 2);
-      final _createParticleGroupCallback =
+      final createParticleGroupCallback =
           CreateParticleGroupCallback(this, groupDef);
-      diagram.nodes(_createParticleGroupCallback);
+      diagram.nodes(createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
       computeDepthForGroup(group);
