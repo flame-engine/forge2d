@@ -11,7 +11,8 @@ class Sweep {
   final Vector2 localCenter = Vector2.zero();
 
   /// Center world positions
-  final Vector2 c0 = Vector2.zero(), c = Vector2.zero();
+  final Vector2 c0 = Vector2.zero();
+  final Vector2 c = Vector2.zero();
 
   /// World angles
   double a0 = 0.0;
@@ -36,14 +37,13 @@ class Sweep {
     a -= d;
   }
 
-  Sweep set(Sweep other) {
+  void setFrom(Sweep other) {
     localCenter.setFrom(other.localCenter);
     c0.setFrom(other.c0);
     c.setFrom(other.c);
     a0 = other.a0;
     a = other.a;
     alpha0 = other.alpha0;
-    return this;
   }
 
   /// Get the interpolated transform at a specific time.

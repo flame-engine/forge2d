@@ -65,8 +65,8 @@ class TimeOfImpact {
     final proxyA = input.proxyA;
     final proxyB = input.proxyB;
 
-    _sweepA.set(input.sweepA);
-    _sweepB.set(input.sweepB);
+    _sweepA.setFrom(input.sweepA);
+    _sweepB.setFrom(input.sweepB);
 
     // Large rotations can make the root finder fail, so we normalize the
     // sweep angles.

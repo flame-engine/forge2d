@@ -15,7 +15,9 @@ class VoronoiGenerator {
 }
 
 class VoronoiDiagramTask {
-  final int x, y, i;
+  final int x;
+  final int y;
+  final int i;
   final VoronoiGenerator generator;
 
   VoronoiDiagramTask(this.x, this.y, this.i, this.generator);
@@ -23,7 +25,8 @@ class VoronoiDiagramTask {
 
 class VoronoiDiagram {
   final List<VoronoiGenerator> generators = [];
-  int _countX = 0, _countY = 0;
+  int _countX = 0;
+  int _countY = 0;
   final Map<int, VoronoiGenerator> _diagram = {};
 
   void nodes(VoronoiDiagramCallback callback) {

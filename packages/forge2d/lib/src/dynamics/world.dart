@@ -1,3 +1,8 @@
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
+// ignore_for_file: use_setters_to_change_properties
+//
+
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
@@ -301,7 +306,7 @@ class World {
 
     if ((flags & DebugDraw.shapeBit) != 0) {
       for (final body in bodies) {
-        xf.set(body.transform);
+        xf.setFrom(body.transform);
         for (final fixture in body.fixtures) {
           if (!body.isActive) {
             color.setFromRGBd(0.5, 0.5, 0.3);
@@ -366,7 +371,7 @@ class World {
     if ((flags & DebugDraw.centerOfMassBit) != 0) {
       final xfColor = Color3i(255, 0, 0);
       for (final b in bodies) {
-        xf.set(b.transform);
+        xf.setFrom(b.transform);
         xf.p.setFrom(b.worldCenter);
         debugDraw!.drawTransform(xf, xfColor);
       }
@@ -504,11 +509,11 @@ class World {
 
     // update previous transforms
     for (final b in bodies) {
-      b.previousTransform.set(b.transform);
+      b.previousTransform.setFrom(b.transform);
     }
 
     // Size the island for the worst case.
-    island.init(contactManager.contactListener);
+    island.listener = contactManager.contactListener;
 
     // Clear all the island flags.
     for (final b in bodies) {
@@ -614,7 +619,7 @@ class World {
           other.flags |= Body.islandFlag;
         }
       }
-      island.solve(_profile, step, _gravity, _allowSleep);
+      island.solve(_profile, step, _gravity, allowSleep: _allowSleep);
 
       // Post solve cleanup.
       for (final bodyMeta in island.bodies) {
@@ -658,7 +663,7 @@ class World {
   final Sweep _backup2 = Sweep();
 
   void solveTOI(TimeStep step) {
-    final island = _toiIsland..init(contactManager.contactListener);
+    final island = _toiIsland..listener = contactManager.contactListener;
     if (_stepComplete) {
       for (final b in bodies) {
         b.flags &= ~Body.islandFlag;
@@ -751,8 +756,8 @@ class World {
           final input = _toiInput;
           input.proxyA.set(fixtureA.shape, indexA);
           input.proxyB.set(fixtureB.shape, indexB);
-          input.sweepA.set(bodyA.sweep);
-          input.sweepB.set(bodyB.sweep);
+          input.sweepA.setFrom(bodyA.sweep);
+          input.sweepB.setFrom(bodyB.sweep);
           input.tMax = 1.0;
 
           toi.timeOfImpact(_toiOutput, input);
@@ -785,8 +790,8 @@ class World {
       final bodyA = minContact.fixtureA.body;
       final bodyB = minContact.fixtureB.body;
 
-      _backup1.set(bodyA.sweep);
-      _backup2.set(bodyB.sweep);
+      _backup1.setFrom(bodyA.sweep);
+      _backup2.setFrom(bodyB.sweep);
 
       // Advance the bodies to the TOI.
       bodyA.advance(minAlpha);
@@ -801,8 +806,8 @@ class World {
       if (minContact.isEnabled == false || minContact.isTouching() == false) {
         // Restore the sweeps.
         minContact.isEnabled = false;
-        bodyA.sweep.set(_backup1);
-        bodyB.sweep.set(_backup2);
+        bodyA.sweep.setFrom(_backup1);
+        bodyB.sweep.setFrom(_backup2);
         bodyA.synchronizeTransform();
         bodyB.synchronizeTransform();
         continue;
@@ -846,7 +851,7 @@ class World {
             }
 
             // Tentatively advance the body to the TOI.
-            _backup1.set(other.sweep);
+            _backup1.setFrom(other.sweep);
             if ((other.flags & Body.islandFlag) == 0) {
               other.advance(minAlpha);
             }
@@ -856,14 +861,14 @@ class World {
 
             // Was the contact disabled by the user?
             if (contact.isEnabled == false) {
-              other.sweep.set(_backup1);
+              other.sweep.setFrom(_backup1);
               other.synchronizeTransform();
               continue;
             }
 
             // Are there contact points?
             if (contact.isTouching() == false) {
-              other.sweep.set(_backup1);
+              other.sweep.setFrom(_backup1);
               other.synchronizeTransform();
               continue;
             }

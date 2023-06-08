@@ -101,8 +101,8 @@ class Collision {
   ) {
     _input.proxyA.set(shapeA, indexA);
     _input.proxyB.set(shapeB, indexB);
-    _input.transformA.set(xfA);
-    _input.transformB.set(xfB);
+    _input.transformA.setFrom(xfA);
+    _input.transformB.setFrom(xfB);
     _input.useRadii = true;
 
     _cache.count = 0;
@@ -415,7 +415,7 @@ class Collision {
     final v1s = poly1.vertices;
     final v2s = poly2.vertices;
 
-    _xf.set(Transform.mulTrans(xf2, xf1));
+    _xf.setFrom(Transform.mulTrans(xf2, xf1));
     final xfq = _xf.q;
 
     var bestIndex = 0;
@@ -901,7 +901,7 @@ class EdgePolygonCollider {
     PolygonShape polygonB2,
     Transform xfB,
   ) {
-    xf.set(Transform.mulTrans(xfA, xfB));
+    xf.setFrom(Transform.mulTrans(xfA, xfB));
     centroidB.setFrom(Transform.mulVec2(xf, polygonB2.centroid));
 
     v0 = edgeA.vertex0;
@@ -924,7 +924,8 @@ class EdgePolygonCollider {
     );
     var offset0 = 0.0;
     var offset2 = 0.0;
-    var convex1 = false, convex2 = false;
+    var convex1 = false;
+    var convex2 = false;
 
     // Is there a preceding edge?
     if (hasVertex0) {

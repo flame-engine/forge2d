@@ -172,13 +172,22 @@ class DynamicTree implements BroadPhaseStrategy {
   void raycast(TreeRayCastCallback callback, RayCastInput input) {
     final p1 = input.p1;
     final p2 = input.p2;
-    final p1x = p1.x, p2x = p2.x, p1y = p1.y, p2y = p2.y;
-    double vx, vy;
-    double rx, ry;
-    double absVx, absVy;
-    double cx, cy;
-    double hx, hy;
-    double tempX, tempY;
+    final p1x = p1.x;
+    final p2x = p2.x;
+    final p1y = p1.y;
+    final p2y = p2.y;
+    double vx;
+    double vy;
+    double rx;
+    double ry;
+    double absVx;
+    double absVy;
+    double cx;
+    double cy;
+    double hx;
+    double hy;
+    double tempX;
+    double tempY;
     _r.x = p2x - p1x;
     _r.y = p2y - p1y;
     assert((_r.x * _r.x + _r.y * _r.y) > 0.0);
@@ -374,7 +383,8 @@ class DynamicTree implements BroadPhaseStrategy {
     final b = AABB();
     while (count > 1) {
       var minCost = double.maxFinite;
-      var iMin = -1, jMin = -1;
+      var iMin = -1;
+      var jMin = -1;
       for (var i = 0; i < count; ++i) {
         final aabbi = _nodes[nodes[i]].aabb;
 

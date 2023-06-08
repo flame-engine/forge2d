@@ -93,8 +93,10 @@ class FrictionJoint extends Joint {
       ..sub(_localCenterB);
     _rB.setFrom(Rot.mulVec2(qB, temp));
 
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final K = Matrix2.zero();
     final a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
@@ -148,8 +150,10 @@ class FrictionJoint extends Joint {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final dt = data.step.dt;
 

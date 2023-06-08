@@ -1,3 +1,6 @@
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
@@ -111,8 +114,10 @@ class PrismaticJoint extends Joint {
   double _invIB = 0.0;
   final Vector2 _axis = Vector2.zero();
   final Vector2 _perp = Vector2.zero();
-  double _s1 = 0.0, _s2 = 0.0;
-  double _a1 = 0.0, _a2 = 0.0;
+  double _s1 = 0.0;
+  double _s2 = 0.0;
+  double _a1 = 0.0;
+  double _a2 = 0.0;
   final Matrix3 _k = Matrix3.zero();
   double _motorMass =
       0.0; // effective mass for motor/limit translational constraint.

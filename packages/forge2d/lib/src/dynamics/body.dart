@@ -1,3 +1,6 @@
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
@@ -53,7 +56,8 @@ class Body {
   double get inverseMass => _inverseMass;
 
   // Rotational inertia about the center of mass.
-  double inertia = 0.0, inverseInertia = 0.0;
+  double inertia = 0.0;
+  double inverseInertia = 0.0;
 
   double linearDamping = 0.0;
   double angularDamping = 0.0;

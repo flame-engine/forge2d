@@ -78,10 +78,10 @@ class Racer extends Demo implements ContactListener {
 
     final fixtureDef = FixtureDef(shape)
       ..isSensor = true
-      ..userData = GroundArea(0.001, false);
+      ..userData = GroundArea(0.001, outOfCourse: false);
     _groundBody.createFixture(fixtureDef);
 
-    fixtureDef.userData = GroundArea(0.2, false);
+    fixtureDef.userData = GroundArea(0.2, outOfCourse: false);
     shape.setAsBox(27.0, 15.0, Vector2(20.0, 40.0), radians(-40.0));
     _groundBody.createFixture(fixtureDef);
   }

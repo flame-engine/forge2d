@@ -1,3 +1,6 @@
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';

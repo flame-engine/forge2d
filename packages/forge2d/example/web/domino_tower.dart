@@ -25,7 +25,7 @@ class DominoTower extends Demo {
     tower.runAnimation();
   }
 
-  void makeDomino(double x, double y, bool horizontal) {
+  void makeDomino(double x, double y, {required bool horizontal}) {
     final shape = PolygonShape()
       ..setAsBoxXY(.5 * dominoWidth, .5 * dominoHeight);
     final fixtureDef = FixtureDef(shape)
@@ -88,8 +88,8 @@ class DominoTower extends Demo {
       // Make base
       for (var i = 0; i < baseCount; ++i) {
         currX = i * 1.5 * dominoHeight - (1.5 * dominoHeight * baseCount / 2);
-        makeDomino(currX, dominoHeight / 2.0, false);
-        makeDomino(currX, dominoHeight + dominoWidth / 2.0, true);
+        makeDomino(currX, dominoHeight / 2.0, horizontal: false);
+        makeDomino(currX, dominoHeight + dominoWidth / 2.0, horizontal: true);
       }
       currX =
           baseCount * 1.5 * dominoHeight - (1.5 * dominoHeight * baseCount / 2);
@@ -112,21 +112,29 @@ class DominoTower extends Demo {
             makeDomino(
               currX - (1.25 * dominoHeight) + .5 * dominoWidth,
               currY - dominoWidth,
-              false,
+              horizontal: false,
             );
           }
           if (i == baseCount - j - 1) {
             makeDomino(
               currX + (1.25 * dominoHeight) - .5 * dominoWidth,
               currY - dominoWidth,
-              false,
+              horizontal: false,
             );
           }
 
           dominoDensity /= 2.5;
-          makeDomino(currX, currY, false);
-          makeDomino(currX, currY + .5 * (dominoWidth + dominoHeight), true);
-          makeDomino(currX, currY - .5 * (dominoWidth + dominoHeight), true);
+          makeDomino(currX, currY, horizontal: false);
+          makeDomino(
+            currX,
+            currY + .5 * (dominoWidth + dominoHeight),
+            horizontal: true,
+          );
+          makeDomino(
+            currX,
+            currY - .5 * (dominoWidth + dominoHeight),
+            horizontal: true,
+          );
         }
       }
     }

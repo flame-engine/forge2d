@@ -56,16 +56,28 @@ class GearJoint extends Joint {
   double _impulse = 0.0;
 
   // Solver temp
-  int _indexA = 0, _indexB = 0, _indexC = 0, _indexD = 0;
-  final Vector2 _lcA = Vector2.zero(),
-      _lcB = Vector2.zero(),
-      _lcC = Vector2.zero(),
-      _lcD = Vector2.zero();
-  double _mA = 0.0, _mB = 0.0, _mC = 0.0, _mD = 0.0;
-  double _iA = 0.0, _iB = 0.0, _iC = 0.0, _iD = 0.0;
+  int _indexA = 0;
+  int _indexB = 0;
+  int _indexC = 0;
+  int _indexD = 0;
+  final Vector2 _lcA = Vector2.zero();
+  final Vector2 _lcB = Vector2.zero();
+  final Vector2 _lcC = Vector2.zero();
+  final Vector2 _lcD = Vector2.zero();
+  double _mA = 0.0;
+  double _mB = 0.0;
+  double _mC = 0.0;
+  double _mD = 0.0;
+  double _iA = 0.0;
+  double _iB = 0.0;
+  double _iC = 0.0;
+  double _iD = 0.0;
   final Vector2 _jvAC = Vector2.zero();
   final Vector2 _jvBD = Vector2.zero();
-  double _jwA = 0.0, _jwB = 0.0, _jwC = 0.0, _jwD = 0.0;
+  double _jwA = 0.0;
+  double _jwB = 0.0;
+  double _jwC = 0.0;
+  double _jwD = 0.0;
   double _mass = 0.0;
 
   GearJoint(GearJointDef def)
@@ -80,7 +92,8 @@ class GearJoint extends Joint {
       'A GearJoint can only be joint with RevoluteJoint and/or PrismaticJoint.',
     );
 
-    double coordinateA, coordinateB;
+    double coordinateA;
+    double coordinateB;
 
     // TODO_ERIN there might be some problem with the joint edges in Joint.
     bodyA = _joint1.bodyB;
@@ -384,12 +397,16 @@ class GearJoint extends Joint {
     // TODO(spydon): Is this really needed?
     const linearError = 0.0;
 
-    double coordinateA, coordinateB;
+    double coordinateA;
+    double coordinateB;
 
     final temp = Vector2.zero();
     final jvBC = Vector2.zero();
     final jvBD = Vector2.zero();
-    double jwA, jwB, jwC, jwD;
+    double jwA;
+    double jwB;
+    double jwC;
+    double jwD;
     var mass = 0.0;
 
     if (_joint1 is RevoluteJoint) {
