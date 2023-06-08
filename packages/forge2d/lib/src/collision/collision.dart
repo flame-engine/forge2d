@@ -4,7 +4,7 @@ import 'package:forge2d/forge2d.dart';
 import 'package:forge2d/src/settings.dart' as settings;
 
 /// Java-specific class for returning edge results
-class _EdgeResults {
+class EdgeResults {
   double separation = 0.0;
   int edgeIndex = 0;
 }
@@ -66,7 +66,8 @@ class TempPolygon {
 
 /// Reference face used for clipping
 class _ReferenceFace {
-  int i1 = 0, i2 = 0;
+  int i1 = 0;
+  int i2 = 0;
   final Vector2 v1 = Vector2.zero();
   final Vector2 v2 = Vector2.zero();
   final Vector2 normal = Vector2.zero();
@@ -100,8 +101,8 @@ class Collision {
   ) {
     _input.proxyA.set(shapeA, indexA);
     _input.proxyB.set(shapeB, indexB);
-    _input.transformA.set(xfA);
-    _input.transformB.set(xfB);
+    _input.transformA.setFrom(xfA);
+    _input.transformB.setFrom(xfB);
     _input.useRadii = true;
 
     _cache.count = 0;
@@ -402,7 +403,7 @@ class Collision {
   /// Find the max separation between poly1 and poly2 using edge normals from
   /// poly1.
   void findMaxSeparation(
-    _EdgeResults results,
+    EdgeResults results,
     PolygonShape poly1,
     Transform xf1,
     PolygonShape poly2,
@@ -414,7 +415,7 @@ class Collision {
     final v1s = poly1.vertices;
     final v2s = poly2.vertices;
 
-    _xf.set(Transform.mulTrans(xf2, xf1));
+    _xf.setFrom(Transform.mulTrans(xf2, xf1));
     final xfq = _xf.q;
 
     var bestIndex = 0;
@@ -508,8 +509,8 @@ class Collision {
     c1.id.typeB = ContactIDType.vertex.index & 0xFF;
   }
 
-  final _EdgeResults _results1 = _EdgeResults();
-  final _EdgeResults results2 = _EdgeResults();
+  final EdgeResults _results1 = EdgeResults();
+  final EdgeResults results2 = EdgeResults();
   final Vector2 _localTangent = Vector2.zero();
   final Vector2 _localNormal = Vector2.zero();
   final Vector2 _planePoint = Vector2.zero();
@@ -553,7 +554,8 @@ class Collision {
 
     PolygonShape poly1; // reference polygon
     PolygonShape poly2; // incident polygon
-    Transform xf1, xf2;
+    Transform xf1;
+    Transform xf2;
     int edge1; // reference edge
     bool flip;
     final kTol = 0.1 * settings.linearSlop;
@@ -873,7 +875,8 @@ class EdgePolygonCollider {
   final Vector2 normal2 = Vector2.zero();
   final Vector2 normal = Vector2.zero();
 
-  VertexType type1 = VertexType.isolated, type2 = VertexType.isolated;
+  VertexType type1 = VertexType.isolated;
+  VertexType type2 = VertexType.isolated;
 
   final Vector2 lowerLimit = Vector2.zero();
   final Vector2 upperLimit = Vector2.zero();
@@ -898,7 +901,7 @@ class EdgePolygonCollider {
     PolygonShape polygonB2,
     Transform xfB,
   ) {
-    xf.set(Transform.mulTrans(xfA, xfB));
+    xf.setFrom(Transform.mulTrans(xfA, xfB));
     centroidB.setFrom(Transform.mulVec2(xf, polygonB2.centroid));
 
     v0 = edgeA.vertex0;
@@ -921,7 +924,8 @@ class EdgePolygonCollider {
     );
     var offset0 = 0.0;
     var offset2 = 0.0;
-    var convex1 = false, convex2 = false;
+    var convex1 = false;
+    var convex2 = false;
 
     // Is there a preceding edge?
     if (hasVertex0) {

@@ -19,7 +19,7 @@ class PulleyJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The pulley ratio, used to simulate a block-and-tackle.
   double ratio = 1.0;
 
-  PulleyJointDef() : super(true);
+  PulleyJointDef() : super(collideConnected: true);
 
   /// Initialize the bodies, anchors, lengths, max lengths, and ratio using the
   /// world anchors.

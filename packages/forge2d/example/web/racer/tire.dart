@@ -20,11 +20,19 @@ class Tire {
 
     final polygonShape = PolygonShape();
     polygonShape.setAsBoxXY(0.5, 1.25);
-    final fixture = body.createFixtureFromShape(polygonShape, density: 1.0);
+    final fixture = body.createFixtureFromShape(polygonShape);
     fixture.userData = this;
 
     _currentTraction = 1.0;
   }
+
+  late Body body;
+  late double _currentTraction;
+  late final double _maxForwardSpeed;
+  late final double _maxBackwardSpeed;
+  late final double _maxDriveForce;
+  late final double _maxLateralImpulse;
+  late final Set<GroundArea> _groundAreas = <GroundArea>{};
 
   void addGroundArea(GroundArea ga) {
     final newlyAdded = _groundAreas.add(ga);
@@ -120,14 +128,6 @@ class Tire {
     return currentForwardNormal
       ..scale(currentForwardNormal.dot(body.linearVelocity));
   }
-
-  Body body;
-  final double _maxForwardSpeed;
-  final double _maxBackwardSpeed;
-  final double _maxDriveForce;
-  final double _maxLateralImpulse;
-  double _currentTraction;
-  final Set<GroundArea> _groundAreas = <GroundArea>{};
 
   // Cached Vectors to reduce unnecessary object creation.
   final Vector2 _worldLeft = Vector2(1.0, 0.0);

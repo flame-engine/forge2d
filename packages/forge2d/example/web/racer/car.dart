@@ -16,9 +16,13 @@ class Car {
   final double _lockAngle = (pi / 180) * 35;
   final double _turnSpeedPerSec = (pi / 180) * 160;
 
-  Body _body;
-  Tire _blTire, _brTire, _flTire, _frTire;
-  RevoluteJoint _flJoint, _frJoint;
+  late final Body _body;
+  late final Tire _backLeftTire;
+  late final Tire _backRightTire;
+  late final Tire _frontLeftTire;
+  late final Tire _frontRightTire;
+  late final RevoluteJoint _frontLeftJoint;
+  late final RevoluteJoint _frontRightJoint;
 
   Car(World world) {
     final def = BodyDef();
@@ -49,68 +53,68 @@ class Car {
     jointDef.upperAngle = 0.0;
     jointDef.localAnchorB.setZero();
 
-    _blTire = Tire(
+    _backLeftTire = Tire(
       world,
       _maxForwardSpeed,
       _maxBackwardSpeed,
       _backTireMaxDriveForce,
       _backTireMaxLateralImpulse,
     );
-    jointDef.bodyB = _blTire.body;
+    jointDef.bodyB = _backLeftTire.body;
     jointDef.localAnchorA.setValues(-3.0, 0.75);
 
     world.createJoint(RevoluteJoint(jointDef));
 
-    _brTire = Tire(
+    _backRightTire = Tire(
       world,
       _maxForwardSpeed,
       _maxBackwardSpeed,
       _backTireMaxDriveForce,
       _backTireMaxLateralImpulse,
     );
-    jointDef.bodyB = _brTire.body;
+    jointDef.bodyB = _backRightTire.body;
     jointDef.localAnchorA.setValues(3.0, 0.75);
 
     world.createJoint(RevoluteJoint(jointDef));
 
-    _flTire = Tire(
+    _frontLeftTire = Tire(
       world,
       _maxForwardSpeed,
       _maxBackwardSpeed,
       _frontTireMaxDriveForce,
       _frontTireMaxLateralImpulse,
     );
-    jointDef.bodyB = _flTire.body;
+    jointDef.bodyB = _frontLeftTire.body;
     jointDef.localAnchorA.setValues(-3.0, 8.5);
 
-    _flJoint = RevoluteJoint(jointDef);
-    world.createJoint(_flJoint);
+    _frontLeftJoint = RevoluteJoint(jointDef);
+    world.createJoint(_frontLeftJoint);
 
-    _frTire = Tire(
+    _frontRightTire = Tire(
       world,
       _maxForwardSpeed,
       _maxBackwardSpeed,
       _frontTireMaxDriveForce,
       _frontTireMaxLateralImpulse,
     );
-    jointDef.bodyB = _frTire.body;
+    jointDef.bodyB = _frontRightTire.body;
     jointDef.localAnchorA.setValues(3.0, 8.5);
-    _frJoint = RevoluteJoint(jointDef);
-    world.createJoint(_frJoint);
+    _frontRightJoint = RevoluteJoint(jointDef);
+    world.createJoint(_frontRightJoint);
   }
 
   void _updateFriction() {
-    _blTire.updateFriction();
-    _brTire.updateFriction();
-    _flTire.updateFriction();
-    _frTire.updateFriction();
+    _backLeftTire.updateFriction();
+    _backRightTire.updateFriction();
+    _frontLeftTire.updateFriction();
+    _frontRightTire.updateFriction();
   }
 
   void _updateDrive(int controlState) {
-    _blTire.updateDrive(controlState);
-    _brTire.updateDrive(controlState);
-    _flTire.updateDrive(controlState);
-    _frTire.updateDrive(controlState);
+    _backLeftTire.updateDrive(controlState);
+    _backRightTire.updateDrive(controlState);
+    _frontLeftTire.updateDrive(controlState);
+    _frontRightTire.updateDrive(controlState);
   }
 
   void _updateSteering(num time, int controlState) {
@@ -124,13 +128,12 @@ class Car {
         break;
     }
     final turnPerTimeStep = _turnSpeedPerSec * 1000 / time;
-    final angleNow = _flJoint.jointAngle();
-    final angleToTurn = (desiredAngle - angleNow)
-        .clamp(-turnPerTimeStep, turnPerTimeStep)
-        .toDouble();
+    final angleNow = _frontLeftJoint.jointAngle();
+    final angleToTurn =
+        (desiredAngle - angleNow).clamp(-turnPerTimeStep, turnPerTimeStep);
     final angle = angleNow + angleToTurn;
-    _flJoint.setLimits(angle, angle);
-    _frJoint.setLimits(angle, angle);
+    _frontLeftJoint.setLimits(angle, angle);
+    _frontRightJoint.setLimits(angle, angle);
   }
 
   void update(num time, int controlState) {

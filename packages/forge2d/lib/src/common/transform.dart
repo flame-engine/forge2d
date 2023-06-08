@@ -25,10 +25,9 @@ class Transform {
         q = r.clone();
 
   /// Set this to equal another transform.
-  Transform set(Transform xf) {
+  void setFrom(Transform xf) {
     p.setFrom(xf.p);
     q.setFrom(xf.q);
-    return this;
   }
 
   /// Set this based on the position and angle.

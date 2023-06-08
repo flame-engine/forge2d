@@ -284,7 +284,8 @@ class WeldJoint extends Joint {
       ..setFrom(localAnchorB)
       ..sub(_localCenterB);
     final rB = Vector2.copy(Rot.mulVec2(qB, temp));
-    double positionError, angularError;
+    double positionError;
+    double angularError;
 
     final k = Matrix3.zero();
     final c1 = Vector2.zero();

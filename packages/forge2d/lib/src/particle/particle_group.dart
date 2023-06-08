@@ -63,18 +63,18 @@ class ParticleGroup {
   void updateStatistics() {
     if (_timestamp != _system.timestamp) {
       final m = _system.particleMass;
-      final _mass = m * particles.length;
+      final mass = m * particles.length;
       _center.setZero();
       _linearVelocity.setZero();
       for (final particle in particles) {
         _center.setFrom(_center + (particle.position * m));
         _linearVelocity.setFrom(_linearVelocity + (particle.velocity * m));
       }
-      if (_mass > 0) {
-        _center.x *= 1 / _mass;
-        _center.y *= 1 / _mass;
-        _linearVelocity.x *= 1 / _mass;
-        _linearVelocity.y *= 1 / _mass;
+      if (mass > 0) {
+        _center.x *= 1 / mass;
+        _center.y *= 1 / mass;
+        _linearVelocity.x *= 1 / mass;
+        _linearVelocity.y *= 1 / mass;
       }
       _inertia = 0.0;
       _angularVelocity = 0.0;

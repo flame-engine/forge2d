@@ -74,7 +74,7 @@ class BlobTest extends Demo {
     psd.setAsBox(3.0, 1.5, Vector2(cx, cy + 15.0), 0.0);
     bd2.position = Vector2(cx, cy + 15.0);
     final fallingBox = world.createBody(bd2);
-    fallingBox.createFixtureFromShape(psd, density: 1.0);
+    fallingBox.createFixtureFromShape(psd);
   }
 }
 

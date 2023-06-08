@@ -16,10 +16,10 @@ class Bench2dWeb extends Bench2d {
   static const int canvasHeight = 600;
   static const double _viewportScale = 10.0;
 
-  CanvasElement canvas;
-  CanvasRenderingContext2D ctx;
-  ViewportTransform viewport;
-  DebugDraw debugDraw;
+  late CanvasElement canvas;
+  late CanvasRenderingContext2D ctx;
+  late ViewportTransform viewport;
+  late DebugDraw debugDraw;
 
   /// Creates the canvas and readies the demo for animation. Must be called
   /// before calling runAnimation.
@@ -29,8 +29,8 @@ class Bench2dWeb extends Bench2d {
       ..width = canvasWidth
       ..height = canvasHeight;
 
-    ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    document.body.append(canvas);
+    ctx = canvas.getContext('2d')! as CanvasRenderingContext2D;
+    document.body?.append(canvas);
 
     // Create the viewport transform with the center at extents.
     final extents = Vector2(canvasWidth / 2, canvasHeight / 2);

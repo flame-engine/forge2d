@@ -14,7 +14,7 @@ import 'package:forge2d/forge2d.dart';
 /// {@endtemplate}
 abstract class JointDef<A extends Body, B extends Body> {
   /// {@macro dynamics.joints.joint_def}
-  JointDef([this.collideConnected = false]);
+  JointDef({this.collideConnected = false});
 
   /// The local anchor point relative to body1's origin.
   final Vector2 localAnchorA = Vector2.zero();
