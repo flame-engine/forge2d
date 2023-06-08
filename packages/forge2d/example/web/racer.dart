@@ -16,11 +16,16 @@ class Racer extends Demo implements ContactListener {
     racer.initializeAnimation();
     final paragraph = ParagraphElement()
       ..innerText = 'Use the arrow keys to drive the car';
-    document.body.nodes.add(paragraph);
+    document.body?.nodes.add(paragraph);
     racer.runAnimation();
   }
 
   Racer() : super('Racer', Vector2.zero(), 2.5);
+
+  late int _controlState;
+  late Body _groundBody;
+  late final Car _car;
+  num _lastTime = 0;
 
   @override
   void initialize() {
@@ -176,11 +181,6 @@ class Racer extends Demo implements ContactListener {
       tire.removeGroundArea(groundArea);
     }
   }
-
-  int _controlState;
-  Body _groundBody;
-  Car _car;
-  num _lastTime = 0;
 }
 
 void main() {

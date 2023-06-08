@@ -12,7 +12,7 @@ class DominoTower extends Demo {
 
   /// The density of the dominos under construction. Varies for different parts
   /// of the tower.
-  double dominoDensity;
+  late double dominoDensity;
 
   /// Construct a DominoTower.
   DominoTower() : super('Domino tower');
