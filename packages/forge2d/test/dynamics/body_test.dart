@@ -75,5 +75,38 @@ void main() {
         expect(bodyInitialPosition.y, isNot(equals(body.position.y)));
       });
     });
+
+    test('constant velocity with BodyType.dynamic', () {
+      final gravity = Vector2.zero();
+      final world = World(gravity);
+
+      final velocity = Vector2(0, 10);
+
+      final body = world.createBody(
+        BodyDef(
+          type: BodyType.dynamic,
+          linearVelocity: velocity.clone(),
+        ),
+      );
+
+      expect(
+        body.linearVelocity.y,
+        equals(velocity.y),
+        reason: 'Velocity should be as specified',
+      );
+      expect(
+        body.linearDamping,
+        equals(0.0),
+        reason: 'No linear damping',
+      );
+
+      world.stepDt(1);
+
+      expect(
+        body.linearVelocity.y,
+        equals(velocity.y),
+        reason: 'Velocity should not slow down with zero linearDamping',
+      );
+    });
   });
 }
