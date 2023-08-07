@@ -86,6 +86,7 @@ void main() {
         BodyDef(
           type: BodyType.dynamic,
           linearVelocity: velocity.clone(),
+          allowSleep: false,
         ),
       );
 
