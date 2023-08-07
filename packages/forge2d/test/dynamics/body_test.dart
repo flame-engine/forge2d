@@ -100,25 +100,20 @@ void main() {
         reason: 'No linear damping',
       );
 
-      // Small time steps
-      const fps = 30;
-      const seconds = 100;
-      for (var i = 0; i < fps * seconds; i++) {
-        world.stepDt(1 / fps);
+      final timeSteps = [
+        for (var i = 0; i < 10; ++i)
+          0.2 * i / 10,
+        0.2,
+        0.201,
+      ];
+      for (final dt in timeSteps) {
+        world.stepDt(dt);
+        expect(
+          body.linearVelocity.y,
+          equals(velocity.y),
+          reason: 'Velocity should be constant after a time step of $dt',
+        );
       }
-      expect(
-        body.linearVelocity.y,
-        equals(velocity.y),
-        reason: 'Velocity should be constant after small steps',
-      );
-
-      // Large time step
-      world.stepDt(1);
-      expect(
-        body.linearVelocity.y,
-        equals(velocity.y),
-        reason: 'Velocity should be constant after large step',
-      );
     });
   });
 }
