@@ -13,6 +13,17 @@ command:
     linkToCommits: true
     # Only allow versioning to happen on main branch.
     branch: main
+  environment:
+    sdk: ">=3.0.0 <4.0.0"
+  bootstrap:
+    dependencies:
+      meta: ^1.11.0
+      vector_math: ^2.1.4
+    dev_dependencies:
+      dartdoc: ^7.0.2
+      flame_lint: ^1.1.1
+      mocktail: ^1.0.1
+      test: ^1.24.9
 
 scripts:
   lint:all:
@@ -54,3 +65,13 @@ scripts:
     packageFilters:
       dirExists: test
     description: Generate coverage for the selected package.
+
+  benchmark:
+    run: melos exec -- dart web/bench2d.dart
+    packageFilters:
+      scope: forge2d_benchmark
+
+  benchmark_serve:
+    run: melos exec -- dart pub global run webdev serve --release
+    packageFilters:
+      scope: forge2d_benchmark
