@@ -5,7 +5,12 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   group('Body', () {
-    group('bullet', () {
+    group('isBullet', () {
+      test('is false by default', () {
+        final body = Body(BodyDef(), World());
+        expect(body.isBullet, equals(false));
+      });
+
       test('can change', () {
         final body = Body(BodyDef(), World());
         const newBulletValue = true;
