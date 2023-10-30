@@ -9,11 +9,11 @@ void main() {
       test('can change', () {
         final body = Body(BodyDef(), World());
         const newBulletValue = true;
-        expect(body.bullet, isNot(equals(newBulletValue)));
+        expect(body.isBullet, isNot(equals(newBulletValue)));
 
-        body.bullet = newBulletValue;
+        body.isBullet = newBulletValue;
 
-        expect(body.bullet, equals(newBulletValue));
+        expect(body.isBullet, equals(newBulletValue));
       });
     });
 
