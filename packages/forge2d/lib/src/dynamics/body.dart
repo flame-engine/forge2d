@@ -611,7 +611,7 @@ class Body {
   /// See also:
   ///
   /// * [Box2D bullets documentation](https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html)
-  /// * [Box2D bullet method definition](https://box2d.org/documentation/structb2_body_def.html#a7c0047c9a98a1d20614eeddcdbce7586)
+  /// * [Box2D bullet member data definition](https://box2d.org/documentation/structb2_body_def.html#a7c0047c9a98a1d20614eeddcdbce7586)
   /// {@endtemplate}
   set isBullet(bool flag) {
     if (flag) {
