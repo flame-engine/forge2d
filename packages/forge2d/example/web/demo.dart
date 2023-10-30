@@ -43,7 +43,7 @@ abstract class Demo {
   late final DebugDraw debugDraw;
 
   /// Frame count for fps
-  late final int frameCount;
+  int frameCount = 0;
 
   /// HTML element used to display the FPS counter
   late final Element fpsCounter;
@@ -96,7 +96,6 @@ abstract class Demo {
     // Have the world draw itself for debugging purposes.
     world.debugDraw = debugDraw;
 
-    frameCount = 0;
     fpsCounter = querySelector('#fps-counter')!;
     worldStepTime = querySelector('#world-step-time')!;
     Timer.periodic(const Duration(seconds: 1), (Timer t) {

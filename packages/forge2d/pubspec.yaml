@@ -4,7 +4,7 @@ description: A 2D physics engine for Dart (based on Box2D), also works with the 
 homepage: https://github.com/flame-engine/forge2d
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   meta: ^1.11.0

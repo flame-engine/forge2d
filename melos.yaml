@@ -16,6 +16,8 @@ command:
   environment:
     sdk: ">=3.0.0 <4.0.0"
   bootstrap:
+    environment:
+      sdk: ">=3.0.0 <4.0.0"
     dependencies:
       meta: ^1.11.0
       vector_math: ^2.1.4
@@ -75,3 +77,8 @@ scripts:
     run: melos exec -- dart pub global run webdev serve --release
     packageFilters:
       scope: forge2d_benchmark
+
+  example:
+    run: melos exec -- dart pub global run webdev serve --release
+    packageFilters:
+      scope: forge2d_examples
