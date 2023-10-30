@@ -1,8 +1,8 @@
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, and a
-/// pulley ratio.
+/// Pulley joint definition. This requires two ground anchors, two dynamic body
+/// anchor points, and a pulley ratio.
 class PulleyJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The first ground anchor in world coordinates. This point never moves.
   Vector2 groundAnchorA = Vector2(-1.0, 1.0);
@@ -19,9 +19,10 @@ class PulleyJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The pulley ratio, used to simulate a block-and-tackle.
   double ratio = 1.0;
 
-  PulleyJointDef() : super(true);
+  PulleyJointDef() : super(collideConnected: true);
 
-  /// Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
+  /// Initialize the bodies, anchors, lengths, max lengths, and ratio using the
+  /// world anchors.
   void initialize(
     A b1,
     B b2,

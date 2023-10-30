@@ -1,11 +1,10 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// The class manages contact between two shapes. A contact exists for each overlapping AABB in the
-/// broad-phase (except if filtered). Therefore a contact object may exist that has no contact
-/// points.
-/// TODO.spydon: Add generics
+/// The class manages contact between two shapes. A contact exists for each
+/// overlapping AABB in the broad-phase (except if filtered). Therefore a
+/// contact object may exist that has no contact points.
 abstract class Contact {
   // Flags stored in _flags
   // Used when crawling contact graph when forming islands.
@@ -71,7 +70,7 @@ abstract class Contact {
     // Remember that we use the order in the enum here to determine in which
     // order the arguments should come in the different contact classes.
     // { CIRCLE, EDGE, POLYGON, CHAIN }
-    /// TODO.spydon: Clean this mess up.
+    // TODO(spydon): Clean this mess up.
     final typeA = fixtureA.type.index < fixtureB.type.index
         ? fixtureA.type
         : fixtureB.type;
@@ -162,18 +161,21 @@ abstract class Contact {
             this.indexB == indexA);
   }
 
-  /// Enable/disable this contact. This can be used inside the pre-solve contact listener. The
-  /// contact is only disabled for the current time step (or sub-step in continuous collisions).
-  void setEnabled(bool enable) {
-    if (enable) {
+  /// Enable or disable this contact.
+  ///
+  /// This can be used inside [ContactListener.preSolve]. The contact is
+  /// only disabled for the current time step (or sub-step in continuous
+  /// collisions).
+  set isEnabled(bool value) {
+    if (value) {
       flags |= enabledFlag;
     } else {
       flags &= ~enabledFlag;
     }
   }
 
-  /// Has this contact been disabled?
-  bool isEnabled() => (flags & enabledFlag) == enabledFlag;
+  /// Whether this contact is enabled.
+  bool get isEnabled => (flags & enabledFlag) == enabledFlag;
 
   void resetFriction() {
     _friction = Contact.mixFriction(fixtureA.friction, fixtureB.friction);
@@ -278,14 +280,14 @@ abstract class Contact {
     }
   }
 
-  /// Friction mixing law. The idea is to allow either fixture to drive the restitution to zero. For
-  /// example, anything slides on ice.
+  /// Friction mixing law. The idea is to allow either fixture to drive the
+  /// restitution to zero. For example, anything slides on ice.
   static double mixFriction(double friction1, double friction2) {
     return sqrt(friction1 * friction2);
   }
 
-  /// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface. For
-  /// example, a super ball bounces on anything.
+  /// Restitution mixing law. The idea is allow for anything to bounce off an
+  /// inelastic surface. For example, a super ball bounces on anything.
   static double mixRestitution(double restitution1, double restitution2) {
     return restitution1 > restitution2 ? restitution1 : restitution2;
   }

@@ -1,24 +1,28 @@
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
 
-//Point-to-point constraint
-//C = p2 - p1
-//Cdot = v2 - v1
-//   = v2 + cross(w2, r2) - v1 - cross(w1, r1)
-//J = [-I -r1_skew I r2_skew ]
-//Identity used:
-//w k % (rx i + ry j) = w * (-ry i + rx j)
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-//Motor constraint
-//Cdot = w2 - w1
-//J = [0 0 -1 0 0 1]
-//K = invI1 + invI2
+// Point-to-point constraint
+// C = p2 - p1
+// Cdot = v2 - v1
+//    = v2 + cross(w2, r2) - v1 - cross(w1, r1)
+// J = [-I -r1_skew I r2_skew ]
+// Identity used:
+// w k % (rx i + ry j) = w * (-ry i + rx j)
 
-/// A revolute joint constrains two bodies to share a common point while they are free to rotate
-/// about the point. The relative rotation about the shared point is the joint angle. You can limit
-/// the relative rotation with a joint limit that specifies a lower and upper angle. You can use a
-/// motor to drive the relative rotation about the shared point. A maximum motor torque is provided
-/// so that infinite forces are not generated.
+// Motor constraint
+// Cdot = w2 - w1
+// J = [0 0 -1 0 0 1]
+// K = invI1 + invI2
+
+/// A revolute joint constrains two bodies to share a common point while they
+/// are free to rotate about the point. The relative rotation about the shared
+/// point is the joint angle. You can limit the relative rotation with a joint
+/// limit that specifies a lower and upper angle. You can use a motor to drive
+/// the relative rotation about the shared point. A maximum motor torque is
+/// provided so that infinite forces are not generated.
 class RevoluteJoint extends Joint {
   // Solver shared
   @override
@@ -74,7 +78,7 @@ class RevoluteJoint extends Joint {
   }
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
     _localCenterA.setFrom(bodyA.sweep.localCenter);
@@ -188,7 +192,7 @@ class RevoluteJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vA = data.velocities[_indexA].v;
     var wA = data.velocities[_indexA].w;
     final vB = data.velocities[_indexB].v;
@@ -209,8 +213,7 @@ class RevoluteJoint extends Joint {
       var impulse = -_motorMass * cDot;
       final oldImpulse = _motorImpulse;
       final maxImpulse = data.step.dt * _maxMotorTorque;
-      _motorImpulse =
-          (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
+      _motorImpulse = (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse);
       impulse = _motorImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -321,7 +324,7 @@ class RevoluteJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     final qA = Rot();
     final qB = Rot();
     final cA = data.positions[_indexA].c;
@@ -346,12 +349,10 @@ class RevoluteJoint extends Joint {
 
       if (_limitState == LimitState.equal) {
         // Prevent large angular corrections
-        final c = (angle - _lowerAngle)
-            .clamp(
-              -settings.maxAngularCorrection,
-              settings.maxAngularCorrection,
-            )
-            .toDouble();
+        final c = (angle - _lowerAngle).clamp(
+          -settings.maxAngularCorrection,
+          settings.maxAngularCorrection,
+        );
         limitImpulse = -_motorMass * c;
         angularError = c.abs();
       } else if (_limitState == LimitState.atLower) {
@@ -360,8 +361,7 @@ class RevoluteJoint extends Joint {
 
         // Prevent large angular corrections and allow some slop.
         C = (C + settings.angularSlop)
-            .clamp(-settings.maxAngularCorrection, 0.0)
-            .toDouble();
+            .clamp(-settings.maxAngularCorrection, 0.0);
         limitImpulse = -_motorMass * C;
       } else if (_limitState == LimitState.atUpper) {
         var C = angle - _upperAngle;
@@ -369,8 +369,7 @@ class RevoluteJoint extends Joint {
 
         // Prevent large angular corrections and allow some slop.
         C = (C - settings.angularSlop)
-            .clamp(0.0, settings.maxAngularCorrection)
-            .toDouble();
+            .clamp(0.0, settings.maxAngularCorrection);
         limitImpulse = -_motorMass * C;
       }
 
@@ -461,7 +460,7 @@ class RevoluteJoint extends Joint {
     _enableMotor = flag;
   }
 
-  void setMotorSpeed(final double speed) {
+  set motorSpeed(double speed) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _motorSpeed = speed;
@@ -469,13 +468,13 @@ class RevoluteJoint extends Joint {
 
   double motorTorque(double invDt) => _motorImpulse * invDt;
 
-  void setMaxMotorTorque(final double torque) {
+  void setMaxMotorTorque(double torque) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _maxMotorTorque = torque;
   }
 
-  void enableLimit(final bool flag) {
+  void enableLimit(bool flag) {
     if (flag != _enableLimit) {
       bodyA.setAwake(true);
       bodyB.setAwake(true);
@@ -484,7 +483,7 @@ class RevoluteJoint extends Joint {
     }
   }
 
-  void setLimits(final double lower, final double upper) {
+  void setLimits(double lower, double upper) {
     assert(lower <= upper);
     if (lower != _lowerAngle || upper != _upperAngle) {
       bodyA.setAwake(true);

@@ -1,7 +1,8 @@
-/// Callback for {@link DynamicTree}
+import 'package:forge2d/forge2d.dart';
+
+/// Callback for [DynamicTree]
 abstract class TreeCallback {
   /// Callback from a query request.
-  /// @param proxyId the id of the proxy
-  /// @return if the query should be continued
+  /// Return true if the query should be continued.
   bool treeCallback(int proxyId);
 }

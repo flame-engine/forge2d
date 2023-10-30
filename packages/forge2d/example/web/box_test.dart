@@ -18,7 +18,6 @@ class BoxTest extends Demo {
 
   @override
   void initialize() {
-    assert(null != world);
     _createGround();
     _createBox();
   }

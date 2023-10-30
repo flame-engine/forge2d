@@ -1,6 +1,6 @@
 import 'dart:html';
 
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 /// Transform for drawing using a canvas context. Y-flip is permanently set
 /// to true.
@@ -14,7 +14,8 @@ class CanvasViewportTransform extends ViewportTransform {
   }
 
   /// Sets the rendering context such that all drawing commands given in terms
-  /// of the world coordinate system will display correctly on the canvas screen.
+  /// of the world coordinate system will display correctly on the canvas
+  /// screen.
   void updateTransformation(CanvasRenderingContext2D ctx) {
     // Clear all previous transformation.
     ctx.setTransform(1, 0, 0, 1, 0, 0);

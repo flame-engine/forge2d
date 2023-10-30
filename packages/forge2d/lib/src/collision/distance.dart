@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
 class _SimplexVertex {
@@ -120,14 +120,14 @@ class _Simplex {
     cache.count = count;
 
     for (var i = 0; i < count; ++i) {
-      cache.indexA[i] = (vertices[i].indexA).toInt();
-      cache.indexB[i] = (vertices[i].indexB).toInt();
+      cache.indexA[i] = vertices[i].indexA;
+      cache.indexB[i] = vertices[i].indexB;
     }
   }
 
   final Vector2 _e12 = Vector2.zero();
 
-  void getSearchDirection(final Vector2 out) {
+  void getSearchDirection(Vector2 out) {
     switch (count) {
       case 1:
         out
@@ -164,7 +164,7 @@ class _Simplex {
   final Vector2 _case22 = Vector2.zero();
 
   /// This returns pooled objects. don't keep or modify them
-  void getClosestPoint(final Vector2 out) {
+  void getClosestPoint(Vector2 out) {
     switch (count) {
       case 0:
         assert(false);
@@ -459,9 +459,9 @@ class DistanceProxy {
   double radius = 0.0;
   final List<Vector2> buffer = List<Vector2>.generate(2, (_) => Vector2.zero());
 
-  /// Initialize the proxy using the given shape. The shape must remain in scope while the proxy is
-  /// in use.
-  void set(final Shape shape, int index) {
+  /// Initialize the proxy using the given shape. The shape must remain in scope
+  /// while the proxy is in use.
+  void set(Shape shape, int index) {
     switch (shape.shapeType) {
       case ShapeType.circle:
         final circle = shape as CircleShape;
@@ -507,7 +507,7 @@ class DistanceProxy {
   }
 
   /// Get the supporting vertex index in the given direction.
-  int getSupport(final Vector2 d) {
+  int getSupport(Vector2 d) {
     var bestIndex = 0;
     var bestValue = vertices[0].dot(d);
     for (var i = 1; i < _count; i++) {
@@ -522,7 +522,7 @@ class DistanceProxy {
   }
 
   /// Get the supporting vertex in the given direction.
-  Vector2 getSupportVertex(final Vector2 d) {
+  Vector2 getSupportVertex(Vector2 d) {
     var bestIndex = 0;
     var bestValue = vertices[0].dot(d);
     for (var i = 1; i < _count; i++) {
@@ -563,13 +563,13 @@ class Distance {
   final Vector2 _temp = Vector2.zero();
   final Vector2 _normal = Vector2.zero();
 
-  /// Compute the closest points between two shapes. Supports any combination of: CircleShape and
-  /// PolygonShape. The simplex cache is input/output. On the first call set SimplexCache.count to
-  /// zero.
+  /// Compute the closest points between two shapes. Supports any combination
+  /// of: CircleShape and PolygonShape. The simplex cache is input/output.
+  /// On the first call set [SimplexCache.count] to zero.
   void compute(
-    final DistanceOutput output,
-    final SimplexCache cache,
-    final DistanceInput input,
+    DistanceOutput output,
+    SimplexCache cache,
+    DistanceInput input,
   ) {
     gjkCalls++;
 
@@ -642,7 +642,8 @@ class Distance {
 
         // We can't return zero here even though there may be overlap.
         // In case the simplex is a point, segment, or triangle it is difficult
-        // to determine if the origin is contained in the CSO or very close to it.
+        // to determine if the origin is contained in the CSO or very close to
+        // it.
         break;
       }
       /*
@@ -673,7 +674,8 @@ class Distance {
       ++iter;
       ++gjkIterations;
 
-      // Check for duplicate support points. This is the main termination criteria.
+      // Check for duplicate support points. This is the main termination
+      // criteria.
       var duplicate = false;
       for (var i = 0; i < saveCount; ++i) {
         if (vertex.indexA == _saveA[i] && vertex.indexB == _saveB[i]) {

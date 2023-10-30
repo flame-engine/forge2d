@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 class ConstantVolumeJoint extends Joint {
   final List<Body> _bodies;
@@ -33,7 +33,7 @@ class ConstantVolumeJoint extends Joint {
         super(def) {
     _world = argWorld;
     if (def.bodies.length <= 2) {
-      throw 'You cannot create a constant volume joint with less than three _bodies.';
+      throw "Can't create a constant volume joint with less than three bodies.";
     }
 
     _targetLengths = Float64List(_bodies.length);
@@ -45,9 +45,8 @@ class ConstantVolumeJoint extends Joint {
     _targetVolume = getBodyArea();
 
     if (def.joints.isNotEmpty && def.joints.length != def.bodies.length) {
-      print(def.joints.length);
-      print(def.bodies.length);
-      throw 'Incorrect joint definition. Joints have to correspond to the _bodies';
+      throw 'Incorrect joint definition. '
+          'Joints have to correspond to the _bodies';
     }
     if (def.joints.isEmpty) {
       final distanceJointDef = DistanceJointDef();
@@ -156,7 +155,7 @@ class ConstantVolumeJoint extends Joint {
   }
 
   @override
-  void initVelocityConstraints(final SolverData step) {
+  void initVelocityConstraints(SolverData step) {
     final velocities = step.velocities;
     final positions = step.positions;
     final d = List<Vector2>.generate(
@@ -188,7 +187,7 @@ class ConstantVolumeJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData step) {
+  void solveVelocityConstraints(SolverData step) {
     var crossMassSum = 0.0;
     var dotMassSum = 0.0;
 

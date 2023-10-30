@@ -1,7 +1,7 @@
-import '../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// A transform contains translation and rotation. It is used to represent the position and
-/// orientation of rigid frames.
+/// A transform contains translation and rotation. It is used to represent the
+/// position and orientation of rigid frames.
 class Transform {
   /// The translation caused by the transform
   final Vector2 p;
@@ -15,20 +15,19 @@ class Transform {
         q = Rot();
 
   /// Initialize as a copy of another transform.
-  Transform.clone(final Transform xf)
+  Transform.clone(Transform xf)
       : p = xf.p.clone(),
         q = xf.q.clone();
 
   /// Initialize using a position vector and a rotation matrix.
-  Transform.from(final Vector2 position, final Rot r)
+  Transform.from(Vector2 position, Rot r)
       : p = position.clone(),
         q = r.clone();
 
   /// Set this to equal another transform.
-  Transform set(final Transform xf) {
+  void setFrom(Transform xf) {
     p.setFrom(xf.p);
     q.setFrom(xf.q);
-    return this;
   }
 
   /// Set this based on the position and angle.
@@ -43,20 +42,20 @@ class Transform {
     q.setIdentity();
   }
 
-  static Vector2 mulVec2(final Transform t, final Vector2 v) {
+  static Vector2 mulVec2(Transform t, Vector2 v) {
     return Vector2(
-      (t.q.c * v.x - t.q.s * v.y) + t.p.x,
-      (t.q.s * v.x + t.q.c * v.y) + t.p.y,
+      (t.q.cos * v.x - t.q.sin * v.y) + t.p.x,
+      (t.q.sin * v.x + t.q.cos * v.y) + t.p.y,
     );
   }
 
-  static Vector2 mulTransVec2(final Transform t, final Vector2 v) {
+  static Vector2 mulTransVec2(Transform t, Vector2 v) {
     final pX = v.x - t.p.x;
     final pY = v.y - t.p.y;
-    return Vector2(t.q.c * pX + t.q.s * pY, -t.q.s * pX + t.q.c * pY);
+    return Vector2(t.q.cos * pX + t.q.sin * pY, -t.q.sin * pX + t.q.cos * pY);
   }
 
-  static Transform mul(final Transform a, final Transform b) {
+  factory Transform.mul(Transform a, Transform b) {
     final c = Transform.zero();
     c.q.setFrom(Rot.mul(a.q, b.q));
     c.p.setFrom(Rot.mulVec2(a.q, b.p));
@@ -64,7 +63,7 @@ class Transform {
     return c;
   }
 
-  static Transform mulTrans(final Transform a, final Transform b) {
+  factory Transform.mulTrans(Transform a, Transform b) {
     final v = b.p - a.p;
     return Transform.from(Rot.mulTransVec2(a.q, v), Rot.mulTrans(a.q, b.q));
   }

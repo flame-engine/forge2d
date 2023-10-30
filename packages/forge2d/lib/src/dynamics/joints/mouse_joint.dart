@@ -1,12 +1,14 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// A mouse joint is used to make a point on a body track a specified world point. This a soft
-/// constraint with a maximum force. This allows the constraint to stretch and without applying huge
-/// forces. NOTE: this joint is not documented in the manual because it was developed to be used in
-/// the testbed. If you want to learn how to use the mouse joint, look at the testbed.
+/// A mouse joint is used to make a point on a body track a specified world
+/// point. This a soft constraint with a maximum force. This allows the
+/// constraint to stretch and without applying huge forces.
+/// NOTE: this joint is not documented in the manual because it was developed to
+/// be used in the testbed. If you want to learn how to use the mouse joint,
+/// look at the testbed.
 class MouseJoint extends Joint {
   final Vector2 _targetA = Vector2.zero();
   double _frequencyHz = 0.0;
@@ -70,7 +72,7 @@ class MouseJoint extends Joint {
   }
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexB = bodyB.islandIndex;
     _localCenterB.setFrom(bodyB.sweep.localCenter);
     _invMassB = bodyB.inverseMass;
@@ -146,12 +148,12 @@ class MouseJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     return true;
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 

@@ -1,10 +1,11 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// Wheel joint definition. This requires defining a line of motion using an axis and an anchor
-/// point. The definition uses local anchor points and a local axis so that the initial configuration
-/// can violate the constraint slightly. The joint translation is zero when the local anchor points
-/// coincide in world space. Using local anchors and a local axis helps when saving and loading a
-/// game.
+/// Wheel joint definition. This requires defining a line of motion using an
+/// axis and an anchor point.
+/// The definition uses local anchor points and a local axis so that the initial
+/// configuration can violate the constraint slightly. The joint translation is
+/// zero when the local anchor points coincide in world space. Using local
+/// anchors and a local axis helps when saving and loading a game.
 class WheelJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
   /// The local translation axis in body1.
   final Vector2 localAxisA = Vector2.zero();

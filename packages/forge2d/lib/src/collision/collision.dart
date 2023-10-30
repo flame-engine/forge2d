@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// Java-specific class for returning edge results
-class _EdgeResults {
+class EdgeResults {
   double separation = 0.0;
   int edgeIndex = 0;
 }
@@ -14,7 +14,7 @@ class ClipVertex {
   final Vector2 v = Vector2.zero();
   final ContactID id = ContactID();
 
-  void set(final ClipVertex cv) {
+  void set(ClipVertex cv) {
     final v1 = cv.v;
     v.x = v1.x;
     v.y = v1.y;
@@ -66,7 +66,8 @@ class TempPolygon {
 
 /// Reference face used for clipping
 class _ReferenceFace {
-  int i1 = 0, i2 = 0;
+  int i1 = 0;
+  int i2 = 0;
   final Vector2 v1 = Vector2.zero();
   final Vector2 v2 = Vector2.zero();
   final Vector2 normal = Vector2.zero();
@@ -78,8 +79,9 @@ class _ReferenceFace {
   double sideOffset2 = 0.0;
 }
 
-/// Functions used for computing contact points, distance queries, and TOI queries. Collision methods
-/// are non-static for pooling speed, retrieve a collision object from the {@link SingletonPool}.
+/// Functions used for computing contact points, distance queries, and TOI
+/// queries. Collision methods are non-static for pooling speed, retrieve a
+/// collision object from the SingletonPool.
 /// Should not be finalructed.
 class Collision {
   static const int nullFeature = 0x3FFFFFFF; // Integer.MAX_VALUE;
@@ -99,8 +101,8 @@ class Collision {
   ) {
     _input.proxyA.set(shapeA, indexA);
     _input.proxyB.set(shapeB, indexB);
-    _input.transformA.set(xfA);
-    _input.transformB.set(xfB);
+    _input.transformA.setFrom(xfA);
+    _input.transformB.setFrom(xfB);
     _input.useRadii = true;
 
     _cache.count = 0;
@@ -110,14 +112,14 @@ class Collision {
     return _output.distance < 10.0 * settings.epsilon;
   }
 
-  /// Compute the point states given two manifolds. The states pertain to the transition from
-  /// manifold1 to manifold2. So state1 is either persist or remove while state2 is either add or
-  /// persist.
+  /// Compute the point states given two manifolds. The states pertain to the
+  /// transition from manifold1 to manifold2. So state1 is either persist or
+  /// remove while state2 is either add or persist.
   static void computePointStates(
-    final List<PointState> state1,
-    final List<PointState> state2,
-    final Manifold manifold1,
-    final Manifold manifold2,
+    List<PointState> state1,
+    List<PointState> state2,
+    Manifold manifold1,
+    Manifold manifold2,
   ) {
     for (var i = 0; i < settings.maxManifoldPoints; i++) {
       state1[i] = PointState.nullState;
@@ -155,9 +157,9 @@ class Collision {
 
   /// Clipping for contact manifolds. Sutherland-Hodgman clipping.
   static int clipSegmentToLine(
-    final List<ClipVertex> vOut,
-    final List<ClipVertex> vIn,
-    final Vector2 normal,
+    List<ClipVertex> vOut,
+    List<ClipVertex> vIn,
+    Vector2 normal,
     double offset,
     int vertexIndexA,
   ) {
@@ -209,20 +211,20 @@ class Collision {
   /// Compute the collision manifold between two circles.
   void collideCircles(
     Manifold manifold,
-    final CircleShape circle1,
-    final Transform xfA,
-    final CircleShape circle2,
-    final Transform xfB,
+    CircleShape circle1,
+    Transform xfA,
+    CircleShape circle2,
+    Transform xfB,
   ) {
     manifold.pointCount = 0;
 
     // after inline:
     final circle1p = circle1.position;
     final circle2p = circle2.position;
-    final pAx = (xfA.q.c * circle1p.x - xfA.q.s * circle1p.y) + xfA.p.x;
-    final pAy = (xfA.q.s * circle1p.x + xfA.q.c * circle1p.y) + xfA.p.y;
-    final pBx = (xfB.q.c * circle2p.x - xfB.q.s * circle2p.y) + xfB.p.x;
-    final pBy = (xfB.q.s * circle2p.x + xfB.q.c * circle2p.y) + xfB.p.y;
+    final pAx = (xfA.q.cos * circle1p.x - xfA.q.sin * circle1p.y) + xfA.p.x;
+    final pAy = (xfA.q.sin * circle1p.x + xfA.q.cos * circle1p.y) + xfA.p.y;
+    final pBx = (xfB.q.cos * circle2p.x - xfB.q.sin * circle2p.y) + xfB.p.x;
+    final pBy = (xfB.q.sin * circle2p.x + xfB.q.cos * circle2p.y) + xfB.p.y;
     final dx = pBx - pAx;
     final dy = pBy - pAy;
     final distSqr = dx * dx + dy * dy;
@@ -247,10 +249,10 @@ class Collision {
   /// Compute the collision manifold between a polygon and a circle.
   void collidePolygonAndCircle(
     Manifold manifold,
-    final PolygonShape polygon,
-    final Transform xfA,
-    final CircleShape circle,
-    final Transform xfB,
+    PolygonShape polygon,
+    Transform xfA,
+    CircleShape circle,
+    Transform xfB,
   ) {
     manifold.pointCount = 0;
     // Vec2 v = circle.p;
@@ -266,12 +268,12 @@ class Collision {
     final circlep = circle.position;
     final xfBq = xfB.q;
     final xfAq = xfA.q;
-    final cx = (xfBq.c * circlep.x - xfBq.s * circlep.y) + xfB.p.x;
-    final cy = (xfBq.s * circlep.x + xfBq.c * circlep.y) + xfB.p.y;
+    final cx = (xfBq.cos * circlep.x - xfBq.sin * circlep.y) + xfB.p.x;
+    final cy = (xfBq.sin * circlep.x + xfBq.cos * circlep.y) + xfB.p.y;
     final px = cx - xfA.p.x;
     final py = cy - xfA.p.y;
-    final cLocalX = xfAq.c * px + xfAq.s * py;
-    final cLocalY = -xfAq.s * px + xfAq.c * py;
+    final cLocalX = xfAq.cos * px + xfAq.sin * py;
+    final cLocalY = -xfAq.sin * px + xfAq.cos * py;
     // end inline
 
     // Find the min separating edge.
@@ -393,19 +395,19 @@ class Collision {
     }
   }
 
-  // djm pooling, and from above
   final Vector2 _temp = Vector2.zero();
   final Transform _xf = Transform.zero();
   final Vector2 _n = Vector2.zero();
   final Vector2 _v1 = Vector2.zero();
 
-  /// Find the max separation between poly1 and poly2 using edge normals from poly1.
+  /// Find the max separation between poly1 and poly2 using edge normals from
+  /// poly1.
   void findMaxSeparation(
-    _EdgeResults results,
-    final PolygonShape poly1,
-    final Transform xf1,
-    final PolygonShape poly2,
-    final Transform xf2,
+    EdgeResults results,
+    PolygonShape poly1,
+    Transform xf1,
+    PolygonShape poly2,
+    Transform xf2,
   ) {
     final count1 = poly1.vertices.length;
     final count2 = poly2.vertices.length;
@@ -413,7 +415,7 @@ class Collision {
     final v1s = poly1.vertices;
     final v2s = poly2.vertices;
 
-    _xf.set(Transform.mulTrans(xf2, xf1));
+    _xf.setFrom(Transform.mulTrans(xf2, xf1));
     final xfq = _xf.q;
 
     var bestIndex = 0;
@@ -444,12 +446,12 @@ class Collision {
   }
 
   void findIncidentEdge(
-    final List<ClipVertex> c,
-    final PolygonShape poly1,
-    final Transform xf1,
+    List<ClipVertex> c,
+    PolygonShape poly1,
+    Transform xf1,
     int edge1,
-    final PolygonShape poly2,
-    final Transform xf2,
+    PolygonShape poly2,
+    Transform xf2,
   ) {
     final count1 = poly1.vertices.length;
     final normals1 = poly1.normals;
@@ -467,10 +469,10 @@ class Collision {
 
     // Get the normal of the reference edge in poly2's frame.
     final v = normals1[edge1];
-    final tempx = xf1q.c * v.x - xf1q.s * v.y;
-    final tempy = xf1q.s * v.x + xf1q.c * v.y;
-    final normal1x = xf2q.c * tempx + xf2q.s * tempy;
-    final normal1y = -xf2q.s * tempx + xf2q.c * tempy;
+    final tempx = xf1q.cos * v.x - xf1q.sin * v.y;
+    final tempy = xf1q.sin * v.x + xf1q.cos * v.y;
+    final normal1x = xf2q.cos * tempx + xf2q.sin * tempy;
+    final normal1y = -xf2q.sin * tempx + xf2q.cos * tempy;
 
     // Find the incident edge on poly2.
     var index = 0;
@@ -490,8 +492,8 @@ class Collision {
 
     final v1 = vertices2[i1];
     final out = c0.v;
-    out.x = (xf2q.c * v1.x - xf2q.s * v1.y) + xf2.p.x;
-    out.y = (xf2q.s * v1.x + xf2q.c * v1.y) + xf2.p.y;
+    out.x = (xf2q.cos * v1.x - xf2q.sin * v1.y) + xf2.p.x;
+    out.y = (xf2q.sin * v1.x + xf2q.cos * v1.y) + xf2.p.y;
     c0.id.indexA = edge1 & 0xFF;
     c0.id.indexB = i1 & 0xFF;
     c0.id.typeA = ContactIDType.face.index & 0xFF;
@@ -499,16 +501,16 @@ class Collision {
 
     final v2 = vertices2[i2];
     final out1 = c1.v;
-    out1.x = (xf2q.c * v2.x - xf2q.s * v2.y) + xf2.p.x;
-    out1.y = (xf2q.s * v2.x + xf2q.c * v2.y) + xf2.p.y;
+    out1.x = (xf2q.cos * v2.x - xf2q.sin * v2.y) + xf2.p.x;
+    out1.y = (xf2q.sin * v2.x + xf2q.cos * v2.y) + xf2.p.y;
     c1.id.indexA = edge1 & 0xFF;
     c1.id.indexB = i2 & 0xFF;
     c1.id.typeA = ContactIDType.face.index & 0xFF;
     c1.id.typeB = ContactIDType.vertex.index & 0xFF;
   }
 
-  final _EdgeResults _results1 = _EdgeResults();
-  final _EdgeResults results2 = _EdgeResults();
+  final EdgeResults _results1 = EdgeResults();
+  final EdgeResults results2 = EdgeResults();
   final Vector2 _localTangent = Vector2.zero();
   final Vector2 _localNormal = Vector2.zero();
   final Vector2 _planePoint = Vector2.zero();
@@ -522,16 +524,18 @@ class Collision {
   /// Compute the collision manifold between two polygons.
   void collidePolygons(
     Manifold manifold,
-    final PolygonShape polyA,
-    final Transform xfA,
-    final PolygonShape polyB,
-    final Transform xfB,
+    PolygonShape polyA,
+    Transform xfA,
+    PolygonShape polyB,
+    Transform xfB,
   ) {
-    // Find edge normal of max separation on A - return if separating axis is found
-    // Find edge normal of max separation on B - return if separation axis is found
-    // Choose reference edge as min(minA, minB)
-    // Find incident edge
-    // Clip
+    // - Find edge normal of max separation on A - return if separating axis is
+    // found
+    // - Find edge normal of max separation on B - return if separation axis is
+    // found
+    // - Choose reference edge as min(minA, minB)
+    // - Find incident edge
+    // - Clip
 
     // The normal points from 1 to 2
 
@@ -550,7 +554,8 @@ class Collision {
 
     PolygonShape poly1; // reference polygon
     PolygonShape poly2; // incident polygon
-    Transform xf1, xf2;
+    Transform xf1;
+    Transform xf2;
     int edge1; // reference edge
     bool flip;
     final kTol = 0.1 * settings.linearSlop;
@@ -593,8 +598,8 @@ class Collision {
     _planePoint.x = (_v11.x + _v12.x) * .5;
     _planePoint.y = (_v11.y + _v12.y) * .5;
 
-    _tangent.x = xf1q.c * _localTangent.x - xf1q.s * _localTangent.y;
-    _tangent.y = xf1q.s * _localTangent.x + xf1q.c * _localTangent.y;
+    _tangent.x = xf1q.cos * _localTangent.x - xf1q.sin * _localTangent.y;
+    _tangent.y = xf1q.sin * _localTangent.x + xf1q.cos * _localTangent.y;
 
     final normalx = 1.0 * _tangent.y;
     final normaly = -1.0 * _tangent.x;
@@ -651,8 +656,8 @@ class Collision {
         final out = cp.localPoint;
         final px = _clipPoints2[i].v.x - xf2.p.x;
         final py = _clipPoints2[i].v.y - xf2.p.y;
-        out.x = xf2.q.c * px + xf2.q.s * py;
-        out.y = -xf2.q.s * px + xf2.q.c * py;
+        out.x = xf2.q.cos * px + xf2.q.sin * py;
+        out.y = -xf2.q.sin * px + xf2.q.cos * py;
         cp.id.set(_clipPoints2[i].id);
         if (flip) {
           // Swap features
@@ -675,10 +680,10 @@ class Collision {
   // This accounts for edge connectivity.
   void collideEdgeAndCircle(
     Manifold manifold,
-    final EdgeShape edgeA,
-    final Transform xfA,
-    final CircleShape circleB,
-    final Transform xfB,
+    EdgeShape edgeA,
+    Transform xfA,
+    CircleShape circleB,
+    Transform xfB,
   ) {
     manifold.pointCount = 0;
 
@@ -843,10 +848,10 @@ class Collision {
 
   void collideEdgeAndPolygon(
     Manifold manifold,
-    final EdgeShape edgeA,
-    final Transform xfA,
-    final PolygonShape polygonB,
-    final Transform xfB,
+    EdgeShape edgeA,
+    Transform xfA,
+    PolygonShape polygonB,
+    Transform xfB,
   ) {
     _collider.collide(manifold, edgeA, xfA, polygonB, xfB);
   }
@@ -854,7 +859,8 @@ class Collision {
 
 enum VertexType { isolated, concave, convex }
 
-/// This class collides an edge and a polygon, taking into account edge adjacency.
+/// This class collides an edge and a polygon, taking into account edge
+/// adjacency.
 class EdgePolygonCollider {
   final TempPolygon polygonB = TempPolygon();
 
@@ -869,7 +875,8 @@ class EdgePolygonCollider {
   final Vector2 normal2 = Vector2.zero();
   final Vector2 normal = Vector2.zero();
 
-  VertexType type1 = VertexType.isolated, type2 = VertexType.isolated;
+  VertexType type1 = VertexType.isolated;
+  VertexType type2 = VertexType.isolated;
 
   final Vector2 lowerLimit = Vector2.zero();
   final Vector2 upperLimit = Vector2.zero();
@@ -889,12 +896,12 @@ class EdgePolygonCollider {
 
   void collide(
     Manifold manifold,
-    final EdgeShape edgeA,
-    final Transform xfA,
-    final PolygonShape polygonB2,
-    final Transform xfB,
+    EdgeShape edgeA,
+    Transform xfA,
+    PolygonShape polygonB2,
+    Transform xfB,
   ) {
-    xf.set(Transform.mulTrans(xfA, xfB));
+    xf.setFrom(Transform.mulTrans(xfA, xfB));
     centroidB.setFrom(Transform.mulVec2(xf, polygonB2.centroid));
 
     v0 = edgeA.vertex0;
@@ -917,7 +924,8 @@ class EdgePolygonCollider {
     );
     var offset0 = 0.0;
     var offset2 = 0.0;
-    var convex1 = false, convex2 = false;
+    var convex1 = false;
+    var convex2 = false;
 
     // Is there a preceding edge?
     if (hasVertex0) {
@@ -1160,7 +1168,8 @@ class EdgePolygonCollider {
     if (primaryAxis.type == EPAxisType.edgeA) {
       manifold.type = ManifoldType.faceA;
 
-      // Search for the polygon normal that is most anti-parallel to the edge normal.
+      // Search for the polygon normal that is most anti-parallel to the edge
+      // normal.
       var bestIndex = 0;
       var bestValue = normal.dot(polygonB.normals[0]);
       for (var i = 1; i < polygonB.count; ++i) {
