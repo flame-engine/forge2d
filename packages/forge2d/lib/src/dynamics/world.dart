@@ -838,8 +838,8 @@ class World {
             // Only add static, kinematic, or bullet bodies.
             final other = contact.getOtherBody(body);
             if (other.bodyType == BodyType.dynamic &&
-                body.isBullet == false &&
-                other.isBullet == false) {
+                !body.isBullet &&
+                !other.isBullet) {
               continue;
             }
 
