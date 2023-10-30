@@ -4,6 +4,23 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   group('Body', () {
+    group('isBullet', () {
+      test('is false by default', () {
+        final body = Body(BodyDef(), World());
+        expect(body.isBullet, equals(false));
+      });
+
+      test('can change', () {
+        final body = Body(BodyDef(), World());
+        const newBulletValue = true;
+        expect(body.isBullet, isNot(equals(newBulletValue)));
+
+        body.isBullet = newBulletValue;
+
+        expect(body.isBullet, equals(newBulletValue));
+      });
+    });
+
     group('gravityOverride', () {
       test("body doesn't move when is zero", () {
         final gravity = Vector2(10, 10);

@@ -598,20 +598,31 @@ class Body {
     }
   }
 
-  /// Is this body treated like a bullet for continuous collision detection?
-  bool isBullet() {
-    return (flags & bulletFlag) == bulletFlag;
-  }
-
+  /// {@template isBullet}
   /// Whether this body should be treated like a bullet for continuous collision
   /// detection.
-  void setBullet(bool flag) {
+  ///
+  /// Fast moving dynamic bodies should be labeled as bullets so that they
+  /// do not tunnel through other moving objects.
+  ///
+  /// **Warning:** You should use this flag sparingly since it increases
+  /// processing time.
+  ///
+  /// See also:
+  ///
+  /// * [Box2D bullets documentation](https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html)
+  /// * [Box2D bullet member data definition](https://box2d.org/documentation/structb2_body_def.html#a7c0047c9a98a1d20614eeddcdbce7586)
+  /// {@endtemplate}
+  set isBullet(bool flag) {
     if (flag) {
       flags |= bulletFlag;
     } else {
       flags &= ~bulletFlag;
     }
   }
+
+  /// {@macro isBullet}
+  bool get isBullet => (flags & bulletFlag) == bulletFlag;
 
   /// You can disable sleeping on this body. If you disable sleeping, the body
   /// will be woken.
