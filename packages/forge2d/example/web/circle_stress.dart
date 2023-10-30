@@ -122,7 +122,7 @@ class CircleStress extends Demo {
         body.createFixture(fixtureDef);
       }
 
-      body.bullet = false;
+      body.isBullet = false;
 
       // Create an empty ground body.
       final bodyDef = BodyDef();
