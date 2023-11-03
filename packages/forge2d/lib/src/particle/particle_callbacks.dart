@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   final ParticleSystem system;
@@ -19,7 +19,10 @@ class DestroyParticlesInShapeCallback implements ParticleQueryCallback {
   @override
   bool reportParticle(Particle particle) {
     if (shape.testPoint(xf, particle.position)) {
-      system.destroyParticle(particle, callDestructionListener);
+      system.destroyParticle(
+        particle,
+        callDestructionListener: callDestructionListener,
+      );
     }
     return true;
   }

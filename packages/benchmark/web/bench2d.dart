@@ -9,6 +9,7 @@ void main() {
 
 void log(String msg) {
   if (debug) {
+    // ignore: avoid_print
     print(msg);
   }
 }
@@ -30,7 +31,8 @@ double meanF(List<double> values) {
   return total / frames;
 }
 
-// Simple nearest-rank %ile (on sorted array). We should have enough samples to make this reasonable.
+// Simple nearest-rank %ile (on sorted array). We should have enough samples to
+// make this reasonable.
 double percentile(List<double> values, double pc) {
   final rank = (pc * values.length) ~/ 100;
   return values[rank];
@@ -65,7 +67,7 @@ class Bench2d {
         final bd = BodyDef()
           ..type = BodyType.dynamic
           ..position.setFrom(y);
-        world.createBody(bd).createFixtureFromShape(shape, 5.0);
+        world.createBody(bd).createFixtureFromShape(shape, density: 5.0);
         y.add(deltaY);
       }
 
@@ -88,7 +90,7 @@ class Bench2d {
     final mean = meanF(times);
     final fifth = percentile(times, 5.0);
     final ninetyFifth = percentile(times, 95.0);
-    print(
+    log(
       'Benchmark complete.\n'
       'ms/frame: $mean\n'
       '5th percentile: ${percentile(times, 5.0)}\n'
@@ -120,9 +122,8 @@ class Bench2d {
       angularVelocitySum += b.angularVelocity;
     }
 
-    print(world.bodies.first);
     world.bodies.forEach(checksum);
-    print(
+    log(
       'pos: $positionSum linVel $linearVelocitySum angVel $angularVelocitySum',
     );
   }

@@ -1,12 +1,15 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
-/// Mouse joint definition. This requires a world target point, tuning parameters, and the time step.
+/// Mouse joint definition. This requires a world target point, tuning
+/// parameters, and the time step.
 class MouseJointDef<A extends Body, B extends Body> extends JointDef<A, B> {
-  /// The initial world target point. This is assumed to coincide with the body anchor initially.
+  /// The initial world target point.
+  /// This is assumed to coincide with the body anchor initially.
   final Vector2 target = Vector2.zero();
 
-  /// The maximum constraint force that can be exerted to move the candidate body. Usually you will
-  /// express as some multiple of the weight (multiplier * mass * gravity).
+  /// The maximum constraint force that can be exerted to move the candidate
+  /// body. Usually you will express as some multiple of the weight
+  /// (multiplier * mass * gravity).
   double maxForce = 0.0;
 
   /// The response speed.

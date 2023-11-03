@@ -1,4 +1,4 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 //Point-to-point constraint
 //Cdot = v2 - v1
@@ -12,8 +12,9 @@ import '../../../forge2d.dart';
 //J = [0 0 -1 0 0 1]
 //K = invI1 + invI2
 
-/// A motor joint is used to control the relative motion between two bodies. A typical usage is to
-/// control the movement of a dynamic body with respect to the ground.
+/// A motor joint is used to control the relative motion between two bodies.
+/// A typical usage is to control the movement of a dynamic body with respect to
+/// the ground.
 class MotorJoint extends Joint {
   // Solver shared
   final Vector2 _linearOffset = Vector2.zero();
@@ -92,8 +93,6 @@ class MotorJoint extends Joint {
   }
 
   /// Set the target angular offset, in radians.
-  ///
-  /// @param angularOffset
   void setAngularOffset(double angularOffset) {
     if (angularOffset != _angularOffset) {
       bodyA.setAwake(true);
@@ -107,8 +106,6 @@ class MotorJoint extends Joint {
   }
 
   /// Set the maximum friction force in N.
-  ///
-  /// @param force
   void setMaxForce(double force) {
     assert(force >= 0.0);
     _maxForce = force;
@@ -162,10 +159,10 @@ class MotorJoint extends Joint {
     // Compute the effective mass matrix.
     // _rA = b2Mul(qA, -_localCenterA);
     // _rB = b2Mul(qB, -_localCenterB);
-    _rA.x = qA.c * -_localCenterA.x - qA.s * -_localCenterA.y;
-    _rA.y = qA.s * -_localCenterA.x + qA.c * -_localCenterA.y;
-    _rB.x = qB.c * -_localCenterB.x - qB.s * -_localCenterB.y;
-    _rB.y = qB.s * -_localCenterB.x + qB.c * -_localCenterB.y;
+    _rA.x = qA.cos * -_localCenterA.x - qA.sin * -_localCenterA.y;
+    _rA.y = qA.sin * -_localCenterA.x + qA.cos * -_localCenterA.y;
+    _rB.x = qB.cos * -_localCenterB.x - qB.sin * -_localCenterB.y;
+    _rB.y = qB.sin * -_localCenterB.x + qB.cos * -_localCenterB.y;
 
     // J = [-I -r1_skew I r2_skew]
     // [ 0 -1 0 1]
@@ -175,8 +172,10 @@ class MotorJoint extends Joint {
     // K = [ mA+r1y^2*iA+mB+r2y^2*iB, -r1y*iA*r1x-r2y*iB*r2x, -r1y*iA-r2y*iB]
     // [ -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB, r1x*iA+r2x*iB]
     // [ -r1y*iA-r2y*iB, r1x*iA+r2x*iB, iA+iB]
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
     final a21 = -iA * _rA.x * _rA.y - iB * _rB.x * _rB.y;
@@ -226,8 +225,10 @@ class MotorJoint extends Joint {
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final dt = data.step.dt;
     final invDt = data.step.invDt;
@@ -242,7 +243,7 @@ class MotorJoint extends Joint {
       final oldImpulse = _angularImpulse;
       final maxImpulse = dt * _maxTorque;
       _angularImpulse =
-          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
+          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse);
       impulse = _angularImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -253,8 +254,8 @@ class MotorJoint extends Joint {
 
     // Solve linear friction
     {
-      // Cdot = vB + b2Cross(wB, _rB) - vA - b2Cross(wA, _rA) + inv_h * _correctionFactor *
-      // _linearError;
+      // Cdot = vB + b2Cross(wB, _rB) - vA - b2Cross(wA, _rA) + inv_h *
+      // _correctionFactor * _linearError;
       cDot.x = vB.x +
           -wB * _rB.y -
           vA.x -

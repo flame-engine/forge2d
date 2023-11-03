@@ -1,13 +1,18 @@
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
+import 'package:meta/meta.dart';
 
-/// A fixture is used to attach a shape to a body for collision detection. A fixture inherits its
-/// transform from its parent. Fixtures hold additional non-geometric data such as friction,
-/// collision filters, etc. Fixtures are created via Body::CreateFixture.
+/// A fixture is used to attach a [Shape] to a [Body] for collision detection. A
+/// fixture inherits its transform from its parent. Fixtures hold additional
+/// non-geometric data such as friction, collision filters, etc. Fixtures are
+/// created via `body.createFixture`.
 ///
-/// @warning you cannot reuse fixtures.
+/// Do note that you cannot reuse fixtures.
 class Fixture {
   double _density = 0.0;
 
@@ -29,17 +34,14 @@ class Fixture {
   /// Use this to store your application specific data.
   Object? userData;
 
-  /// Get the type of the child shape. You can use this to down cast to the concrete shape.
-  ///
-  /// @return the shape type.
+  /// Get the type of the child shape. You can use this to down cast to the
+  /// concrete shape.
   ShapeType get type => shape.shapeType;
 
   /// Is this fixture a sensor (non-solid)?
   bool get isSensor => _isSensor;
 
   /// Set if this fixture is a sensor.
-  ///
-  /// @param sensor
   void setSensor(bool sensor) {
     if (sensor != _isSensor) {
       body.setAwake(true);
@@ -47,12 +49,11 @@ class Fixture {
     }
   }
 
-  /// Set the contact filtering data. This is an expensive operation and should not be called
-  /// frequently. This will not update contacts until the next time step when either parent body is
-  /// awake. This automatically calls refilter.
-  ///
-  /// @param filter
-  set filterData(final Filter filter) {
+  /// Set the contact filtering data. This is an expensive operation and should
+  /// not be called frequently. This will not update contacts until the next
+  /// time step when either parent body is awake. This automatically calls
+  /// [refilter].
+  set filterData(Filter filter) {
     _filter.set(filter);
     refilter();
   }
@@ -60,8 +61,8 @@ class Fixture {
   /// Get the contact filtering data.
   Filter get filterData => _filter;
 
-  /// Call this if you want to establish collision that was previously disabled by
-  /// ContactFilter::ShouldCollide.
+  /// Call this if you want to establish collision that was previously disabled
+  /// by [ContactFilter.shouldCollide].
   void refilter() {
     // Flag associated contacts for filtering.
     for (final contact in body.contacts) {
@@ -86,34 +87,28 @@ class Fixture {
 
   double get density => _density;
 
-  /// Test a point for containment in this fixture. This only works for convex shapes.
+  /// Test a point for containment in this fixture. This only works for convex
+  /// shapes.
   ///
-  /// @param p a point in world coordinates.
-  /// @return
-  bool testPoint(final Vector2 p) {
-    return shape.testPoint(body.transform, p);
+  /// [point] should be in world coordinates.
+  bool testPoint(Vector2 point) {
+    return shape.testPoint(body.transform, point);
   }
 
   /// Cast a ray against this shape.
-  ///
-  /// @param input the ray-cast input parameters.
-  /// @param output the ray-cast results.
   bool raycast(RayCastOutput output, RayCastInput input, int childIndex) {
     return shape.raycast(output, input, body.transform, childIndex);
   }
 
-  /// Get the mass data for this fixture. The mass data is based on the density and the shape. The
-  /// rotational inertia is about the shape's origin.
-  ///
-  /// @return
+  /// Get the mass data for this fixture. The mass data is based on the density
+  /// and the shape. The rotational inertia is about the shape's origin.
   void getMassData(MassData massData) {
     shape.computeMass(massData, _density);
   }
 
-  /// Get the fixture's AABB. This AABB may be enlarge and/or stale. If you need a more accurate
-  /// AABB, compute it using the shape and the body transform.
-  ///
-  /// @return
+  /// Get the fixture's AABB. This AABB may be enlarge and/or stale. If you
+  /// need a more accurate AABB, compute it using the shape and the body
+  /// transform.
   AABB getAABB(int childIndex) {
     assert(childIndex >= 0 && childIndex < _proxyCount);
     return proxies[childIndex].aabb;
@@ -121,18 +116,20 @@ class Fixture {
 
   /// Compute the distance from this fixture.
   ///
-  /// @param p a point in world coordinates.
-  /// @return distance
+  /// [point] should be in world coordinates.
   double computeDistance(
-    Vector2 p,
+    Vector2 point,
     int childIndex,
     Vector2 normalOut,
   ) {
-    return shape.computeDistanceToOut(body.transform, p, childIndex, normalOut);
+    return shape.computeDistanceToOut(
+      body.transform,
+      point,
+      childIndex,
+      normalOut,
+    );
   }
 
-  // We need separation create/destroy functions from the constructor/destructor because
-  // the destructor cannot access the allocator (no destructor arguments allowed by C++).
   Fixture(this.body, FixtureDef def) {
     userData = def.userData;
     friction = def.friction;
@@ -159,7 +156,7 @@ class Fixture {
   }
 
   // These support body activation/deactivation.
-  void createProxies(BroadPhase broadPhase, final Transform xf) {
+  void createProxies(BroadPhase broadPhase, Transform xf) {
     assert(_proxyCount == 0);
 
     // Create proxies in the broad-phase.
@@ -174,8 +171,6 @@ class Fixture {
   }
 
   /// Internal method
-  ///
-  /// @param broadPhase
   void destroyProxies(BroadPhase broadPhase) {
     // Destroy proxies in the broad-phase.
     for (var i = 0; i < _proxyCount; ++i) {
@@ -191,15 +186,11 @@ class Fixture {
   final AABB _pool2 = AABB();
   final Vector2 _displacement = Vector2.zero();
 
-  /// Internal method
-  ///
-  /// @param broadPhase
-  /// @param xf1
-  /// @param xf2
+  @internal
   void synchronize(
     BroadPhase broadPhase,
-    final Transform transform1,
-    final Transform transform2,
+    Transform transform1,
+    Transform transform2,
   ) {
     if (_proxyCount == 0) {
       return;
@@ -208,7 +199,8 @@ class Fixture {
     for (var i = 0; i < _proxyCount; ++i) {
       final proxy = proxies[i];
 
-      // Compute an AABB that covers the swept shape (may miss some rotation effect).
+      // Compute an AABB that covers the swept shape
+      // (may miss some rotation effect).
       final aabb1 = _pool1;
       final aab = _pool2;
       shape.computeAABB(aabb1, transform1, proxy.childIndex);
@@ -260,7 +252,7 @@ class Fixture {
 
           renderCenter.setFrom(Transform.mulVec2(xf, circle.position));
           final radius = circle.radius;
-          xf.q.getXAxis(renderAxis);
+          xf.q.getXAxis(out: renderAxis);
 
           if (userData != null && userData == liquidFlag) {
             _liquidOffset.setFrom(body.linearVelocity);

@@ -1,5 +1,5 @@
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 //Gear Joint:
 //C0 = (coordinate1 + ratio * coordinate2)_initial
@@ -20,14 +20,17 @@ import '../../settings.dart' as settings;
 //J = [ug cross(r, ug)]
 //K = J * invM * JT = invMass + invI * cross(r, ug)^2
 
-/// A gear joint is used to connect two joints together. Either joint can be a revolute or prismatic
-/// joint. You specify a gear ratio to bind the motions together: coordinate1 + ratio * coordinate2 =
-/// constant The ratio can be negative or positive. If one joint is a revolute joint and the other
-/// joint is a prismatic joint, then the ratio will have units of length or units of 1/length.
+/// A gear joint is used to connect two joints together. Either joint can be a
+/// revolute or prismatic joint. You specify a gear ratio to bind the motion
+/// together: coordinate1 + ratio * coordinate2 =
+/// constant The ratio can be negative or positive. If one joint is a revolute
+/// joint and the other joint is a prismatic joint, then the ratio will have
+/// units of length or units of 1/length.
 ///
-/// @warning The revolute and prismatic joints must be attached to fixed bodies (which must be body1
-///          on those joints).
-/// @warning You have to manually destroy the gear joint if joint1 or joint2 is destroyed.
+/// Warning: The revolute and prismatic joints must be attached to fixed bodies
+///          (which must be body1 on those joints).
+/// Warning: You have to manually destroy the gear joint if joint1 or joint2 is
+///          destroyed.
 class GearJoint extends Joint {
   final Joint _joint1;
   final Joint _joint2;
@@ -48,21 +51,33 @@ class GearJoint extends Joint {
   double _referenceAngleB = 0.0;
 
   double _constant = 0.0;
-  double _ratio = 0.0;
+  double ratio = 0.0;
 
   double _impulse = 0.0;
 
   // Solver temp
-  int _indexA = 0, _indexB = 0, _indexC = 0, _indexD = 0;
-  final Vector2 _lcA = Vector2.zero(),
-      _lcB = Vector2.zero(),
-      _lcC = Vector2.zero(),
-      _lcD = Vector2.zero();
-  double _mA = 0.0, _mB = 0.0, _mC = 0.0, _mD = 0.0;
-  double _iA = 0.0, _iB = 0.0, _iC = 0.0, _iD = 0.0;
+  int _indexA = 0;
+  int _indexB = 0;
+  int _indexC = 0;
+  int _indexD = 0;
+  final Vector2 _lcA = Vector2.zero();
+  final Vector2 _lcB = Vector2.zero();
+  final Vector2 _lcC = Vector2.zero();
+  final Vector2 _lcD = Vector2.zero();
+  double _mA = 0.0;
+  double _mB = 0.0;
+  double _mC = 0.0;
+  double _mD = 0.0;
+  double _iA = 0.0;
+  double _iB = 0.0;
+  double _iC = 0.0;
+  double _iD = 0.0;
   final Vector2 _jvAC = Vector2.zero();
   final Vector2 _jvBD = Vector2.zero();
-  double _jwA = 0.0, _jwB = 0.0, _jwC = 0.0, _jwD = 0.0;
+  double _jwA = 0.0;
+  double _jwB = 0.0;
+  double _jwC = 0.0;
+  double _jwD = 0.0;
   double _mass = 0.0;
 
   GearJoint(GearJointDef def)
@@ -77,7 +92,8 @@ class GearJoint extends Joint {
       'A GearJoint can only be joint with RevoluteJoint and/or PrismaticJoint.',
     );
 
-    double coordinateA, coordinateB;
+    double coordinateA;
+    double coordinateB;
 
     // TODO_ERIN there might be some problem with the joint edges in Joint.
     bodyA = _joint1.bodyB;
@@ -148,8 +164,8 @@ class GearJoint extends Joint {
       coordinateB = (pB..sub(pD)).dot(_localAxisD);
     }
 
-    _ratio = def.ratio;
-    _constant = coordinateA + _ratio * coordinateB;
+    ratio = def.ratio;
+    _constant = coordinateA + ratio * coordinateB;
     _impulse = 0.0;
   }
 
@@ -164,14 +180,6 @@ class GearJoint extends Joint {
   @override
   double reactionTorque(double invDt) {
     return invDt * _impulse * _jwA;
-  }
-
-  void setRatio(double argRatio) {
-    _ratio = argRatio;
-  }
-
-  double getRatio() {
-    return _ratio;
   }
 
   @override
@@ -250,9 +258,9 @@ class GearJoint extends Joint {
 
     if (_joint2 is RevoluteJoint) {
       _jvBD.setZero();
-      _jwB = _ratio;
-      _jwD = _ratio;
-      _mass += _ratio * _ratio * (_iB + _iD);
+      _jwB = ratio;
+      _jwD = ratio;
+      _mass += ratio * ratio * (_iB + _iD);
     } else {
       final u = Vector2.zero();
       final rD = Vector2.zero();
@@ -268,11 +276,11 @@ class GearJoint extends Joint {
       rB.setFrom(Rot.mulVec2(qB, temp));
       _jvBD
         ..setFrom(u)
-        ..scale(_ratio);
-      _jwD = _ratio * rD.cross(u);
-      _jwB = _ratio * rB.cross(u);
+        ..scale(ratio);
+      _jwD = ratio * rD.cross(u);
+      _jwB = ratio * rB.cross(u);
       _mass +=
-          _ratio * _ratio * (_mD + _mB) + _iD * _jwD * _jwD + _iB * _jwB * _jwB;
+          ratio * ratio * (_mD + _mB) + _iD * _jwD * _jwD + _iB * _jwB * _jwB;
     }
 
     // Compute effective mass.
@@ -386,15 +394,19 @@ class GearJoint extends Joint {
     qC.setAngle(aC);
     qD.setAngle(aD);
 
-    // TODO: Is this really needed
+    // TODO(spydon): Is this really needed?
     const linearError = 0.0;
 
-    double coordinateA, coordinateB;
+    double coordinateA;
+    double coordinateB;
 
     final temp = Vector2.zero();
     final jvBC = Vector2.zero();
     final jvBD = Vector2.zero();
-    double jwA, jwB, jwC, jwD;
+    double jwA;
+    double jwB;
+    double jwC;
+    double jwD;
     var mass = 0.0;
 
     if (_joint1 is RevoluteJoint) {
@@ -435,9 +447,9 @@ class GearJoint extends Joint {
 
     if (_joint2 is RevoluteJoint) {
       jvBD.setZero();
-      jwB = _ratio;
-      jwD = _ratio;
-      mass += _ratio * _ratio * (_iB + _iD);
+      jwB = ratio;
+      jwD = ratio;
+      mass += ratio * ratio * (_iB + _iD);
 
       coordinateB = aB - aD - _referenceAngleB;
     } else {
@@ -457,10 +469,10 @@ class GearJoint extends Joint {
       rB.setFrom(Rot.mulVec2(qB, temp));
       jvBD
         ..setFrom(u)
-        ..scale(_ratio);
+        ..scale(ratio);
       jwD = rD.cross(u);
       jwB = rB.cross(u);
-      mass += _ratio * _ratio * (_mD + _mB) + _iD * jwD * jwD + _iB * jwB * jwB;
+      mass += ratio * ratio * (_mD + _mB) + _iD * jwD * jwD + _iB * jwB * jwB;
 
       pD
         ..setFrom(_localAnchorD)
@@ -473,7 +485,7 @@ class GearJoint extends Joint {
       coordinateB = (pB..sub(pD)).dot(_localAxisD);
     }
 
-    final c = (coordinateA + _ratio * coordinateB) - _constant;
+    final c = (coordinateA + ratio * coordinateB) - _constant;
 
     var impulse = 0.0;
     if (mass > 0.0) {

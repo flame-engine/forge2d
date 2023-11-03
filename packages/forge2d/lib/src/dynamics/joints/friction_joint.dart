@@ -1,4 +1,4 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
 
 class FrictionJoint extends Joint {
   // Solver shared
@@ -58,7 +58,7 @@ class FrictionJoint extends Joint {
   }
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
     _localCenterA.setFrom(bodyA.sweep.localCenter);
@@ -93,8 +93,10 @@ class FrictionJoint extends Joint {
       ..sub(_localCenterB);
     _rB.setFrom(Rot.mulVec2(qB, temp));
 
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final K = Matrix2.zero();
     final a11 = mA + mB + iA * _rA.y * _rA.y + iB * _rB.y * _rB.y;
@@ -142,14 +144,16 @@ class FrictionJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vA = data.velocities[_indexA].v;
     var wA = data.velocities[_indexA].w;
     final vB = data.velocities[_indexB].v;
     var wB = data.velocities[_indexB].w;
 
-    final mA = _invMassA, mB = _invMassB;
-    final iA = _invIA, iB = _invIB;
+    final mA = _invMassA;
+    final mB = _invMassB;
+    final iA = _invIA;
+    final iB = _invIB;
 
     final dt = data.step.dt;
 
@@ -161,7 +165,7 @@ class FrictionJoint extends Joint {
       final oldImpulse = _angularImpulse;
       final maxImpulse = dt * _maxTorque;
       _angularImpulse =
-          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
+          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse);
       impulse = _angularImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -220,7 +224,7 @@ class FrictionJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     return true;
   }
 

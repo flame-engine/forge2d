@@ -1,30 +1,36 @@
+// TODO(any): Rewrite the setters instead of ignoring this lint.
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-//Linear constraint (point-to-line)
-//d = pB - pA = xB + rB - xA - rA
-//C = dot(ay, d)
-//Cdot = dot(d, cross(wA, ay)) + dot(ay, vB + cross(wB, rB) - vA - cross(wA, rA))
-//   = -dot(ay, vA) - dot(cross(d + rA, ay), wA) + dot(ay, vB) + dot(cross(rB, ay), vB)
-//J = [-ay, -cross(d + rA, ay), ay, cross(rB, ay)]
+// Linear constraint (point-to-line)
+// d = pB - pA = xB + rB - xA - rA
+// C = dot(ay, d)
+// Cdot = dot(d, cross(wA, ay)) + dot(ay, vB + cross(wB, rB) - vA -
+//        cross(wA, rA))
+//    = -dot(ay, vA) - dot(cross(d + rA, ay), wA) + dot(ay, vB) +
+//       dot(cross(rB, ay), vB)
+// J = [-ay, -cross(d + rA, ay), ay, cross(rB, ay)]
 
-//Spring linear constraint
-//C = dot(ax, d)
-//Cdot = = -dot(ax, vA) - dot(cross(d + rA, ax), wA) + dot(ax, vB) + dot(cross(rB, ax), vB)
-//J = [-ax -cross(d+rA, ax) ax cross(rB, ax)]
+// Spring linear constraint
+// C = dot(ax, d)
+// Cdot = -dot(ax, vA) - dot(cross(d + rA, ax), wA) + dot(ax, vB) +
+//        dot(cross(rB, ax), vB)
+// J = [-ax -cross(d+rA, ax) ax cross(rB, ax)]
 
-//Motor rotational constraint
-//Cdot = wB - wA
-//J = [0 0 -1 0 0 1]
+// Motor rotational constraint
+// Cdot = wB - wA
+// J = [0 0 -1 0 0 1]
 
-/// A wheel joint. This joint provides two degrees of freedom: translation along an axis fixed in
-/// bodyA and rotation in the plane. You can use a joint limit to restrict the range of motion and a
-/// joint motor to drive the rotation or to model rotational friction. This joint is designed for
-/// vehicle suspensions.
+/// A wheel joint. This joint provides two degrees of freedom: translation along
+/// an axis fixed in bodyA and rotation in the plane. You can use a joint limit
+/// to restrict the range of motion and a joint motor to drive the rotation or
+/// to model rotational friction. This joint is designed for vehicle
+/// suspensions.
 class WheelJoint extends Joint {
-  // TODO(srdjan): make fields private.
   double _frequencyHz = 0.0;
   double _dampingRatio = 0.0;
 
@@ -56,8 +62,10 @@ class WheelJoint extends Joint {
 
   final Vector2 _ax = Vector2.zero();
   final Vector2 _ay = Vector2.zero();
-  double _sAx = 0.0, _sBx = 0.0;
-  double _sAy = 0.0, _sBy = 0.0;
+  double _sAx = 0.0;
+  double _sBx = 0.0;
+  double _sAy = 0.0;
+  double _sBy = 0.0;
 
   double _mass = 0.0;
   double _motorMass = 0.0;
@@ -137,15 +145,13 @@ class WheelJoint extends Joint {
     _enableMotor = flag;
   }
 
-  void setMotorSpeed(double speed) {
+  set motorSpeed(double speed) {
     bodyA.setAwake(true);
     bodyB.setAwake(true);
     _motorSpeed = speed;
   }
 
-  double getMotorSpeed() {
-    return _motorSpeed;
-  }
+  double get motorSpeed => _motorSpeed;
 
   double getMaxMotorTorque() {
     return _maxMotorTorque;
@@ -366,8 +372,7 @@ class WheelJoint extends Joint {
 
       final oldImpulse = _motorImpulse;
       final maxImpulse = data.step.dt * _maxMotorTorque;
-      _motorImpulse =
-          (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse).toDouble();
+      _motorImpulse = (_motorImpulse + impulse).clamp(-maxImpulse, maxImpulse);
       impulse = _motorImpulse - oldImpulse;
 
       wA -= iA * impulse;

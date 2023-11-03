@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// A circle shape.
 class CircleShape extends Shape {
@@ -24,26 +24,26 @@ class CircleShape extends Shape {
   int get childCount => 1;
 
   /// Get the supporting vertex index in the given direction.
-  int getSupport(final Vector2 d) => 0;
+  int getSupport(Vector2 d) => 0;
 
   /// Get the supporting vertex in the given direction.
-  Vector2 getSupportVertex(final Vector2 d) => position;
+  Vector2 getSupportVertex(Vector2 d) => position;
 
   /// Get the vertex count.
   int getVertexCount() => 1;
 
   /// Get a vertex by index.
-  Vector2 getVertex(final int index) {
+  Vector2 getVertex(int index) {
     assert(index == 0);
     return position;
   }
 
   @override
-  bool testPoint(final Transform transform, final Vector2 point) {
+  bool testPoint(Transform transform, Vector2 point) {
     final q = transform.q;
     final tp = transform.p;
-    final centerX = -(q.c * position.x - q.s * position.y + tp.x - point.x);
-    final centerY = -(q.s * position.x + q.c * position.y + tp.y - point.y);
+    final centerX = -(q.cos * position.x - q.sin * position.y + tp.x - point.x);
+    final centerY = -(q.sin * position.x + q.cos * position.y + tp.y - point.y);
 
     return centerX * centerX + centerY * centerY <= radius * radius;
   }
@@ -56,8 +56,8 @@ class CircleShape extends Shape {
     Vector2 normalOut,
   ) {
     final xfq = xf.q;
-    final centerX = xfq.c * p.x - xfq.s * p.y + xf.p.x;
-    final centerY = xfq.s * p.x + xfq.c * p.y + xf.p.y;
+    final centerX = xfq.cos * p.x - xfq.sin * p.y + xf.p.x;
+    final centerY = xfq.sin * p.x + xfq.cos * p.y + xf.p.y;
     final dx = p.x - centerX;
     final dy = p.y - centerY;
     final d1 = sqrt(dx * dx + dy * dy);
@@ -82,8 +82,8 @@ class CircleShape extends Shape {
     final tq = transform.q;
     final tp = transform.p;
 
-    final positionX = tq.c * position.x - tq.s * position.y + tp.x;
-    final positionY = tq.s * position.x + tq.c * position.y + tp.y;
+    final positionX = tq.cos * position.x - tq.sin * position.y + tp.x;
+    final positionY = tq.sin * position.x + tq.cos * position.y + tp.y;
 
     final sx = inputP1.x - positionX;
     final sy = inputP1.y - positionY;
@@ -118,11 +118,11 @@ class CircleShape extends Shape {
   }
 
   @override
-  void computeAABB(final AABB aabb, final Transform transform, int childIndex) {
+  void computeAABB(AABB aabb, Transform transform, int childIndex) {
     final tq = transform.q;
     final tp = transform.p;
-    final px = tq.c * position.x - tq.s * position.y + tp.x;
-    final py = tq.s * position.x + tq.c * position.y + tp.y;
+    final px = tq.cos * position.x - tq.sin * position.y + tp.x;
+    final py = tq.sin * position.x + tq.cos * position.y + tp.y;
 
     aabb.lowerBound.x = px - radius;
     aabb.lowerBound.y = py - radius;
@@ -131,7 +131,7 @@ class CircleShape extends Shape {
   }
 
   @override
-  void computeMass(final MassData massData, final double density) {
+  void computeMass(MassData massData, double density) {
     massData.mass = density * pi * radius * radius;
     massData.center.x = position.x;
     massData.center.y = position.y;

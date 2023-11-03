@@ -3,7 +3,7 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 class AnotherRevoluteJoint extends RevoluteJoint {
-  AnotherRevoluteJoint(RevoluteJointDef<Body, Body> def) : super(def);
+  AnotherRevoluteJoint(super.def);
 }
 
 void main() {

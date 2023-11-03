@@ -11,7 +11,7 @@ class DominoTest extends Demo {
     {
       // Floor
       final shape = PolygonShape()..setAsBoxXY(50.0, 10.0);
-      final fixtureDef = FixtureDef(shape);
+      final fixtureDef = FixtureDef(shape)..friction = 0.1;
 
       final bd = BodyDef();
       bd.position = Vector2(0.0, -10.0);
@@ -24,7 +24,7 @@ class DominoTest extends Demo {
       // Platforms
       for (var i = 0; i < 4; i++) {
         final shape = PolygonShape()..setAsBoxXY(15.0, 0.125);
-        final fixtureDef = FixtureDef(shape);
+        final fixtureDef = FixtureDef(shape)..friction = 0.1;
 
         final bodyDef = BodyDef()..position = Vector2(0.0, 5.0 + 5 * i);
         final body = world.createBody(bodyDef);

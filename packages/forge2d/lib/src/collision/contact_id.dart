@@ -30,17 +30,17 @@ class ContactID implements Comparable<ContactID> {
     return (indexA << 24) | (indexB << 16) | (typeA << 8) | typeB;
   }
 
-  bool isEqual(final ContactID cid) {
+  bool isEqual(ContactID cid) {
     return getKey() == cid.getKey();
   }
 
   ContactID();
 
-  ContactID.copy(final ContactID c) {
+  ContactID.copy(ContactID c) {
     set(c);
   }
 
-  void set(final ContactID c) {
+  void set(ContactID c) {
     indexA = c.indexA;
     indexB = c.indexB;
     typeA = c.typeA;

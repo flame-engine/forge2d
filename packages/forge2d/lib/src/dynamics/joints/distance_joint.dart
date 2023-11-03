@@ -1,11 +1,10 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// A distance joint constrains two points on two bodies to remain at a fixed distance from each
-/// other. You can view this as a massless, rigid rod.
-
+/// A distance joint constrains two points on two bodies to remain at a fixed
+/// distance from each other. You can view this as a massless, rigid rod.
 class DistanceJoint extends Joint {
   double _frequencyHz = 0.0;
   double _dampingRatio = 0.0;
@@ -30,7 +29,7 @@ class DistanceJoint extends Joint {
   double _invIB = 0.0;
   double _mass = 0.0;
 
-  DistanceJoint(final DistanceJointDef def) : super(def) {
+  DistanceJoint(DistanceJointDef def) : super(def) {
     _length = def.length;
     _frequencyHz = def.frequencyHz;
     _dampingRatio = def.dampingRatio;
@@ -45,13 +44,13 @@ class DistanceJoint extends Joint {
     );
   }
 
-  /// Get the reaction torque given the inverse time step. Unit is N*m. This is always zero for a
-  /// distance joint.
+  /// Get the reaction torque given the inverse time step. Unit is N*m. This is
+  /// always zero for a distance joint.
   @override
   double reactionTorque(double invDt) => 0.0;
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
     _localCenterA.setFrom(bodyA.sweep.localCenter);
@@ -154,7 +153,7 @@ class DistanceJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vA = data.velocities[_indexA].v;
     var wA = data.velocities[_indexA].w;
     final vB = data.velocities[_indexB].v;
@@ -188,7 +187,7 @@ class DistanceJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     if (_frequencyHz > 0.0) {
       return true;
     }

@@ -1,7 +1,8 @@
-import '../../../forge2d.dart';
+import 'package:forge2d/forge2d.dart';
+import 'package:meta/meta.dart';
 
-/// The base joint class. Joints are used to constrain two bodies together in various fashions. Some
-/// joints also feature limits and motors.
+/// The base joint class. Joints are used to constrain two bodies together in
+/// various fashions. Some joints also feature limits and motors.
 abstract class Joint {
   static void destroy(Joint joint) {
     joint.destructor();
@@ -36,42 +37,31 @@ abstract class Joint {
   }
 
   /// Get the anchor point on bodyA in world coordinates.
-  ///
-  /// @return
   Vector2 get anchorA => bodyA.worldPoint(localAnchorA);
 
   /// Get the anchor point on bodyB in world coordinates.
-  ///
-  /// @return
   Vector2 get anchorB => bodyB.worldPoint(localAnchorB);
 
   /// Get the reaction force on body2 at the joint anchor in Newtons.
-  ///
-  /// @param invDt
-  /// @return
   Vector2 reactionForce(double invDt);
 
-  /// get the reaction torque on body2 in N*m.
-  ///
-  /// @param invDt
-  /// @return
+  /// Get the reaction torque on body2 in N*m.
   double reactionTorque(double invDt);
 
-  /// Get collide connected. Note: modifying the collide connect flag won't work correctly because
-  /// the flag is only checked when fixture AABBs begin to overlap.
+  /// Get collide connected. Note: modifying the collide connect flag won't work
+  /// correctly because the flag is only checked when fixture AABBs begin to
+  /// overlap.
   bool get collideConnected => _collideConnected;
 
   /// Short-cut function to determine if either body is inactive.
-  ///
-  /// @return
   bool get isActive {
     return bodyA.isActive && bodyB.isActive;
   }
 
-  /// Internal
+  @internal
   void initVelocityConstraints(SolverData data);
 
-  /// Internal
+  @internal
   void solveVelocityConstraints(SolverData data);
 
   /// This returns true if the position errors are within tolerance. Internal.

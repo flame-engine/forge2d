@@ -1,20 +1,22 @@
 import 'dart:math';
 
-import '../../../forge2d.dart';
-import '../../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
-/// A rope joint enforces a maximum distance between two points on two bodies. It has no other
-/// effect. Warning: if you attempt to change the maximum length during the simulation you will get
-/// some non-physical behavior. A model that would allow you to dynamically modify the length would
-/// have some sponginess, so I chose not to implement it that way. See DistanceJoint if you want to
-/// dynamically control length.
+/// A rope joint enforces a maximum distance between two points on two bodies.
+/// It has no other effect.
+/// Warning: if you attempt to change the maximum length during the simulation
+/// you will get some non-physical behavior. A model that would allow you to
+/// dynamically modify the length would have some sponginess, so I chose not to
+/// implement it that way. See DistanceJoint if you want to dynamically control
+/// length.
 class RopeJoint extends Joint {
   // Solver shared
   @override
   final Vector2 localAnchorA = Vector2.zero();
   @override
   final Vector2 localAnchorB = Vector2.zero();
-  double _maxLength = 0.0;
+  double maxLength = 0.0;
   double _length = 0.0;
   double _impulse = 0.0;
 
@@ -37,11 +39,11 @@ class RopeJoint extends Joint {
     localAnchorA.setFrom(def.localAnchorA);
     localAnchorB.setFrom(def.localAnchorB);
 
-    _maxLength = def.maxLength;
+    maxLength = def.maxLength;
   }
 
   @override
-  void initVelocityConstraints(final SolverData data) {
+  void initVelocityConstraints(SolverData data) {
     _indexA = bodyA.islandIndex;
     _indexB = bodyB.islandIndex;
     _localCenterA.setFrom(bodyA.sweep.localCenter);
@@ -86,7 +88,7 @@ class RopeJoint extends Joint {
 
     _length = _u.length;
 
-    final c = _length - _maxLength;
+    final c = _length - maxLength;
     if (c > 0.0) {
       _state = LimitState.atUpper;
     } else {
@@ -132,7 +134,7 @@ class RopeJoint extends Joint {
   }
 
   @override
-  void solveVelocityConstraints(final SolverData data) {
+  void solveVelocityConstraints(SolverData data) {
     final vA = data.velocities[_indexA].v;
     var wA = data.velocities[_indexA].w;
     final vB = data.velocities[_indexB].v;
@@ -147,7 +149,7 @@ class RopeJoint extends Joint {
     _rB.scaleOrthogonalInto(wB, vpB);
     vpB.add(vB);
 
-    final c = _length - _maxLength;
+    final c = _length - maxLength;
     var cDot = _u.dot(
       temp
         ..setFrom(vpB)
@@ -180,7 +182,7 @@ class RopeJoint extends Joint {
   }
 
   @override
-  bool solvePositionConstraints(final SolverData data) {
+  bool solvePositionConstraints(SolverData data) {
     final cA = data.positions[_indexA].c;
     var aA = data.positions[_indexA].a;
     final cB = data.positions[_indexB].c;
@@ -213,9 +215,9 @@ class RopeJoint extends Joint {
       ..sub(rA);
 
     final length = u.normalize();
-    var c = length - _maxLength;
+    var c = length - maxLength;
 
-    c = c.clamp(0.0, settings.maxLinearCorrection).toDouble();
+    c = c.clamp(0.0, settings.maxLinearCorrection);
 
     final impulse = -_mass * c;
     final pX = impulse * u.x;
@@ -231,7 +233,7 @@ class RopeJoint extends Joint {
     data.positions[_indexA].a = aA;
     data.positions[_indexB].a = aB;
 
-    return length - _maxLength < settings.linearSlop;
+    return length - maxLength < settings.linearSlop;
   }
 
   @override
@@ -244,15 +246,6 @@ class RopeJoint extends Joint {
   @override
   double reactionTorque(double invDt) {
     return 0.0;
-  }
-
-  // TODO: remove these getters and setters
-  double getMaxLength() {
-    return _maxLength;
-  }
-
-  void setMaxLength(double maxLength) {
-    _maxLength = maxLength;
   }
 
   LimitState getLimitState() {

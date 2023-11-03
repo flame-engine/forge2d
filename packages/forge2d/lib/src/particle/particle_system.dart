@@ -1,8 +1,8 @@
 import 'dart:collection';
 import 'dart:math';
 
-import '../../forge2d.dart';
-import '../settings.dart' as settings;
+import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/settings.dart' as settings;
 
 /// Connection between two particles
 class PsPair {
@@ -22,9 +22,14 @@ class PsTriad {
   final Particle particleC;
   int flags = 0;
   double strength = 0.0;
-  // TODO.spydon: Give these better names
-  final Vector2 pa = Vector2.zero(), pb = Vector2.zero(), pc = Vector2.zero();
-  double ka = 0.0, kb = 0.0, kc = 0.0, s = 0.0;
+  // TODO(spydon): Give these better names
+  final Vector2 pa = Vector2.zero();
+  final pb = Vector2.zero();
+  final pc = Vector2.zero();
+  double ka = 0.0;
+  double kb = 0.0;
+  double kc = 0.0;
+  double s = 0.0;
 
   PsTriad(this.particleA, this.particleB, this.particleC);
 }
@@ -32,7 +37,7 @@ class PsTriad {
 /// Used for detecting particle contacts
 class PsProxy implements Comparable<PsProxy> {
   final Particle particle;
-  // TODO.spydon what is a tag?
+  // TODO(spydon): what is a tag?
   int tag = 0;
 
   PsProxy(this.particle);
@@ -43,9 +48,11 @@ class PsProxy implements Comparable<PsProxy> {
 }
 
 class NewIndices {
-  int start = 0, mid = 0, end = 0;
+  int start = 0;
+  int mid = 0;
+  int end = 0;
 
-  int getIndex(final int i) {
+  int getIndex(int i) {
     if (i < start) {
       return i;
     } else if (i < mid) {
@@ -146,7 +153,10 @@ class ParticleSystem {
     _particles.add(particle);
   }
 
-  void destroyParticle(Particle particle, bool callDestructionListener) {
+  void destroyParticle(
+    Particle particle, {
+    required bool callDestructionListener,
+  }) {
     var flags = ParticleType.zombieParticle;
     if (callDestructionListener) {
       flags |= ParticleType.destroyListener;
@@ -178,7 +188,12 @@ class ParticleSystem {
     ParticleGroup group, {
     bool callDestructionListener = false,
   }) {
-    group.particles.forEach((p) => destroyParticle(p, callDestructionListener));
+    group.particles.forEach(
+      (p) => destroyParticle(
+        p,
+        callDestructionListener: callDestructionListener,
+      ),
+    );
   }
 
   final AABB _temp2 = AABB();
@@ -195,7 +210,7 @@ class ParticleSystem {
       ..groupFlags = groupDef.groupFlags
       ..strength = groupDef.strength
       ..userData = groupDef.userData
-      ..transform.set(transform)
+      ..transform.setFrom(transform)
       ..destroyAutomatically = groupDef.destroyAutomatically;
 
     if (groupDef.shape != null) {
@@ -228,7 +243,6 @@ class ParticleSystem {
           if (shape.testPoint(identity, p)) {
             p.setFrom(Transform.mulVec2(transform, p));
             final particle = seedParticle.clone();
-            p.sub(groupDef.position);
             particle.position.setFrom(p);
             p.scaleOrthogonalInto(
               groupDef.angularVelocity,
@@ -242,7 +256,7 @@ class ParticleSystem {
       groupBuffer.add(group);
     }
 
-    updateContacts(true);
+    updateContacts();
     if ((groupDef.flags & pairFlags) != 0) {
       for (final contact in contactBuffer) {
         final particleA = contact.particleA;
@@ -259,14 +273,13 @@ class ParticleSystem {
     }
     if ((groupDef.flags & triadFlags) != 0) {
       final diagram = VoronoiDiagram();
-      print('group: ${group.particles.length}');
       for (final particle in group.particles) {
         diagram.addGenerator(particle.position, particle);
       }
       diagram.generate(stride / 2);
-      final _createParticleGroupCallback =
+      final createParticleGroupCallback =
           CreateParticleGroupCallback(this, groupDef);
-      diagram.nodes(_createParticleGroupCallback);
+      diagram.nodes(createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
       computeDepthForGroup(group);
@@ -282,7 +295,7 @@ class ParticleSystem {
       particleFlags |= particle.flags;
     }
 
-    updateContacts(true);
+    updateContacts();
     if ((particleFlags & pairFlags) != 0) {
       for (final contact in contactBuffer) {
         final particleA = contact.particleA;
@@ -363,7 +376,7 @@ class ParticleSystem {
     }
     for (final particle in group.particles) {
       if (particle.depth < double.maxFinite) {
-        // TODO.spydon: it will always go into this case?
+        // TODO(spydon): it will always go into this case?
         particle.depth *= particleDiameter;
       } else {
         particle.depth = 0.0;
@@ -392,7 +405,7 @@ class ParticleSystem {
     }
   }
 
-  void updateContacts(bool exceptZombie) {
+  void updateContacts({bool excludeZombies = true}) {
     for (final proxy in proxyBuffer) {
       final pos = proxy.particle.position;
       proxy.tag = computeTag(inverseDiameter * pos.x, inverseDiameter * pos.y);
@@ -427,7 +440,7 @@ class ParticleSystem {
         addContact(proxyA.particle, proxyB.particle);
       }
     }
-    if (exceptZombie) {
+    if (excludeZombies) {
       var j = contactBuffer.length;
       for (var i = 0; i < j; i++) {
         if ((contactBuffer[i].flags & ParticleType.zombieParticle) != 0) {
@@ -538,7 +551,7 @@ class ParticleSystem {
       );
     }
     updateBodyContacts();
-    updateContacts(false);
+    updateContacts(excludeZombies: false);
     if ((allParticleFlags & ParticleType.viscousParticle) != 0) {
       solveViscous(step);
     }
@@ -692,7 +705,7 @@ class ParticleSystem {
   final Transform _tempXf = Transform.zero();
   final Transform _tempXf2 = Transform.zero();
 
-  void solveRigid(final TimeStep step) {
+  void solveRigid(TimeStep step) {
     for (final group in groupBuffer) {
       if ((group.groupFlags & ParticleGroupType.rigidParticleGroup) != 0) {
         group.updateStatistics();
@@ -707,12 +720,12 @@ class ParticleSystem {
           ..sub(cross);
         _tempXf.p.setFrom(temp);
         _tempXf.q.setFrom(rotation);
-        group.transform.set(Transform.mul(_tempXf, group.transform));
+        group.transform.setFrom(Transform.mul(_tempXf, group.transform));
         final velocityTransform = _tempXf2
           ..p.x = step.invDt * _tempXf.p.x
           ..p.y = step.invDt * _tempXf.p.y
-          ..q.s = step.invDt * _tempXf.q.s
-          ..q.c = step.invDt * (_tempXf.q.c - 1);
+          ..q.sin = step.invDt * _tempXf.q.sin
+          ..q.cos = step.invDt * (_tempXf.q.cos - 1);
         for (final particle in group.particles) {
           particle.velocity.setFrom(
             Transform.mulVec2(velocityTransform, particle.position),
@@ -722,7 +735,7 @@ class ParticleSystem {
     }
   }
 
-  void solveElastic(final TimeStep step) {
+  void solveElastic(TimeStep step) {
     final elasticStrength = step.invDt * this.elasticStrength;
     for (final triad in triadBuffer) {
       if ((triad.flags & ParticleType.elasticParticle) != 0) {
@@ -763,7 +776,7 @@ class ParticleSystem {
     }
   }
 
-  void solveSpring(final TimeStep step) {
+  void solveSpring(TimeStep step) {
     final springStrength = step.invDt * this.springStrength;
     for (final pair in pairBuffer) {
       if ((pair.flags & ParticleType.springParticle) != 0) {
@@ -789,7 +802,7 @@ class ParticleSystem {
     }
   }
 
-  void solveTensile(final TimeStep step) {
+  void solveTensile(TimeStep step) {
     for (final particle in _particles) {
       particle.accumulation = 0.0;
       particle.accumulationVector.setZero();
@@ -838,7 +851,7 @@ class ParticleSystem {
     }
   }
 
-  void solveViscous(final TimeStep step) {
+  void solveViscous(TimeStep step) {
     for (final contact in bodyContactBuffer) {
       final particle = contact.particle;
       if ((particle.flags & ParticleType.viscousParticle) != 0) {
@@ -881,7 +894,7 @@ class ParticleSystem {
     }
   }
 
-  void solvePowder(final TimeStep step) {
+  void solvePowder(TimeStep step) {
     final powderStrength = this.powderStrength * getCriticalVelocity(step);
     final minWeight = 1.0 - settings.particleStride;
     for (final contact in bodyContactBuffer) {
@@ -926,9 +939,9 @@ class ParticleSystem {
     }
   }
 
-  void solveSolid(final TimeStep step) {
+  void solveSolid(TimeStep step) {
     // applies extra repulsive force from solid particle groups
-    // TODO.spydon: Why was this separate depth buffer used?
+    // TODO(spydon): Why was this separate depth buffer used?
     //final depthBuffer = Float64List(_particleCount);
     final ejectionStrength = step.invDt * this.ejectionStrength;
     for (final contact in contactBuffer) {
@@ -951,7 +964,7 @@ class ParticleSystem {
     }
   }
 
-  void solveColorMixing(final TimeStep step) {
+  void solveColorMixing(TimeStep step) {
     // mixes color between contacting particles
     final colorMixing256 = (256 * colorMixingStrength).toInt();
     for (final contact in contactBuffer) {
@@ -963,9 +976,9 @@ class ParticleSystem {
           0) {
         final colorA = particleA.color;
         final colorB = particleB.color;
-        final dr = (colorMixing256 * (colorB.r - colorA.r)).toInt() >> 8;
-        final dg = (colorMixing256 * (colorB.g - colorA.g)).toInt() >> 8;
-        final db = (colorMixing256 * (colorB.b - colorA.b)).toInt() >> 8;
+        final dr = (colorMixing256 * (colorB.r - colorA.r)) >> 8;
+        final dg = (colorMixing256 * (colorB.g - colorA.g)) >> 8;
+        final db = (colorMixing256 * (colorB.b - colorA.b)) >> 8;
         final da = (colorMixing256 * (colorB.a - colorA.a)).toInt() >> 8;
         colorA.r += dr;
         colorA.g += dg;
@@ -1012,7 +1025,7 @@ class ParticleSystem {
       return toBeRemoved;
     });
 
-    // TODO: split the groups sometimes if they are rigid?
+    // TODO(spydon): split the groups sometimes if they are rigid?
   }
 
   double get particleRadius => particleDiameter / 2;
@@ -1032,16 +1045,16 @@ class ParticleSystem {
 
   double get particleDensity => _particleDensity;
 
-  double getCriticalVelocity(final TimeStep step) {
+  double getCriticalVelocity(TimeStep step) {
     return particleDiameter * step.invDt;
   }
 
-  double getCriticalVelocitySquared(final TimeStep step) {
+  double getCriticalVelocitySquared(TimeStep step) {
     final velocity = getCriticalVelocity(step);
     return velocity * velocity;
   }
 
-  double getCriticalPressure(final TimeStep step) {
+  double getCriticalPressure(TimeStep step) {
     return particleDensity * getCriticalVelocitySquared(step);
   }
 
@@ -1067,7 +1080,8 @@ class ParticleSystem {
     bool Function(int a, int b) compare,
   ) {
     var left = 0;
-    int step, current;
+    int step;
+    int current;
     var length = ray.length;
     final rayList = ray.toList(growable: false);
     while (length > 0) {
@@ -1083,7 +1097,7 @@ class ParticleSystem {
     return left;
   }
 
-  void queryAABB(ParticleQueryCallback callback, final AABB aabb) {
+  void queryAABB(ParticleQueryCallback callback, AABB aabb) {
     if (proxyBuffer.isEmpty) {
       return;
     }
@@ -1107,7 +1121,8 @@ class ParticleSystem {
       ),
     );
     for (var i = firstProxy; i < lastProxy; ++i) {
-      // TODO: Does this still work now when we don't rotate the buffers?
+      // TODO(spydon): Does this still work now when we don't rotate the
+      // buffers?
       final particle = proxyBuffer[i].particle;
       final p = particle.position;
       if (lowerBoundX < p.x &&
@@ -1123,8 +1138,8 @@ class ParticleSystem {
 
   void raycast(
     ParticleRaycastCallback callback,
-    final Vector2 point1,
-    final Vector2 point2,
+    Vector2 point1,
+    Vector2 point2,
   ) {
     if (proxyBuffer.isEmpty) {
       return;
@@ -1152,7 +1167,7 @@ class ParticleSystem {
     var v2 = vx * vx + vy * vy;
     v2 = v2 == 0 ? double.maxFinite : v2;
     for (var i = firstProxy; i < lastProxy; ++i) {
-      // TODO: Is this correct now when we are not rotating the buffers?
+      // TODO(spydon): Is this correct now when we are not rotating the buffers?
       final positionI = proxyBuffer[i].particle.position;
       final px = point1.x - positionI.x;
       final py = point1.y - positionI.y;
