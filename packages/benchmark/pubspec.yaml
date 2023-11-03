@@ -11,7 +11,7 @@ environment:
 dependencies:
   build_runner: ^2.4.5
   build_web_compilers: ^4.0.3
-  forge2d: ^0.11.0
+  forge2d: ^0.12.0
 
 dev_dependencies:
   flame_lint: ^1.1.1
