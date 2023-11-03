@@ -11,6 +11,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`forge2d` - `v0.12.1`](#forge2d---v0121)
+
+---
+
+#### `forge2d` - `v0.12.1`
+
+ - **FIX**: Lower meta bounds. ([39987d8d](https://github.com/flame-engine/forge2d/commit/39987d8d1a6b88f286d0e0cae109bba55be1159e))
+
+
+## 2023-11-03
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`forge2d` - `v0.12.0`](#forge2d---v0120)
 
 Packages with other changes:

@@ -1,3 +1,7 @@
+## 0.12.1
+
+ - **FIX**: Lower meta bounds. ([39987d8d](https://github.com/flame-engine/forge2d/commit/39987d8d1a6b88f286d0e0cae109bba55be1159e))
+
 ## 0.12.0
 
 > Note: This release has breaking changes.
