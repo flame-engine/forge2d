@@ -28,7 +28,27 @@ class World {
   final List<Joint> joints = <Joint>[];
 
   final Vector2 _gravity;
+
+  /// The current [World]'s [gravity].
+  ///
+  /// {@template World.gravity}
+  /// All [bodies] are affected by [gravity]; unless the [Body] has a specified
+  /// [Body.gravityOverride]. If so, [Body.gravityOverride] is used instead of
+  /// [gravity].
+  ///
+  /// See also:
+  ///
+  /// * [Body.gravityScale], to multipy [gravity] for a [Body].
+  /// * [Body.gravityOverride], to change how the world treats the gravity for
+  /// a [Body].
+  /// {@endtemplate}
   Vector2 get gravity => _gravity;
+
+  /// Changes the [World]'s gravity.
+  ///
+  /// {@macro World.gravity}
+  set gravity(Vector2 gravity) => this.gravity.setFrom(gravity);
+
   bool _allowSleep = false;
 
   DestroyListener? destroyListener;
@@ -476,11 +496,6 @@ class World {
 
   /// Gets the quality of the dynamic tree
   double getTreeQuality() => contactManager.broadPhase.getTreeQuality();
-
-  /// Change the global gravity vector.
-  void setGravity(Vector2 gravity) {
-    _gravity.setFrom(gravity);
-  }
 
   /// Is the world locked (in the middle of a time step).
   bool get isLocked => (flags & locked) == locked;
