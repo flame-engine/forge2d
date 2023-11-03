@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`forge2d` - `v0.12.2`](#forge2d---v0122)
+
+---
+
+#### `forge2d` - `v0.12.2`
+
+ - **FIX**: Depend on any test version. ([1f80bf35](https://github.com/flame-engine/forge2d/commit/1f80bf35c84cec53a35bbf308c29810086597771))
+
+
+## 2023-11-03
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`forge2d` - `v0.12.1`](#forge2d---v0121)
 
 ---
