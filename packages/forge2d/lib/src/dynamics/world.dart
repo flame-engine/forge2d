@@ -1,7 +1,6 @@
 // TODO(any): Rewrite the setters instead of ignoring this lint.
 // ignore_for_file: avoid_positional_boolean_parameters
 // ignore_for_file: use_setters_to_change_properties
-//
 
 import 'dart:math';
 
