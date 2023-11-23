@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a title="Pub" href="https://pub.dartlang.org/packages/forge2d" ><img src="https://img.shields.io/pub/v/forge2d.svg?style=popout" /></a> <img src="https://github.com/flame-engine/forge2d/workflows/Test/badge.svg?branch=master&event=push" alt="Test" /> <a title="Discord" href="https://discord.gg/pxrBmy4" ><img src="https://img.shields.io/discord/509714518008528896.svg" /></a>
+  <a title="Pub" href="https://pub.dartlang.org/packages/forge2d" ><img src="https://img.shields.io/pub/v/forge2d.svg?style=popout" /></a> <img src="https://github.com/flame-engine/forge2d/workflows/cicd/badge.svg?branch=main&event=push" alt="Test" /> <a title="Discord" href="https://discord.gg/pxrBmy4" ><img src="https://img.shields.io/discord/509714518008528896.svg" /></a>
 </p>
 
 The Box2D physics engine is a fairly famous open source physics engine and this is our Dart port of
@@ -21,7 +21,7 @@ You can use it independently in Dart or in your [Flame](https://github.com/flame
 project with the help of [flame_forge2d](https://github.com/flame-engine/flame/tree/main/packages/flame_forge2d).
 
 Some documentation of how to use it together with flame can be found
-[here](https://flame-engine.org/docs/#/forge2d).
+[here](https://docs.flame-engine.org/latest/bridge_packages/flame_forge2d/flame_forge2d).
 
 
 ## Timeline
