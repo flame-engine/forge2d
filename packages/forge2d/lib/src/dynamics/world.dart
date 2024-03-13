@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/common/timer.dart';
 import 'package:forge2d/src/settings.dart' as settings;
 
 /// The world class manages all physics entities, dynamic simulation, and
