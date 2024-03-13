@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
+import 'package:forge2d/src/common/timer.dart';
 import 'package:forge2d/src/settings.dart' as settings;
 
 /// The world class manages all physics entities, dynamic simulation, and
@@ -514,7 +515,7 @@ class World {
 
   final Island island = Island();
   final List<Body> stack = [];
-  final Timer broadphaseTimer = Timer();
+  final Timer _broadphaseTimer = Timer();
 
   void solve(TimeStep step) {
     _profile.solveInit.startAccum();
@@ -648,7 +649,7 @@ class World {
     _profile.solveVelocity.endAccum();
     _profile.solvePosition.endAccum();
 
-    broadphaseTimer.reset();
+    _broadphaseTimer.reset();
     // Synchronize fixtures, check for out of range bodies.
     for (final b in bodies) {
       // If a body was not in an island then it did not move.
@@ -666,7 +667,7 @@ class World {
 
     // Look for new contacts.
     contactManager.findNewContacts();
-    _profile.broadphase.record(broadphaseTimer.getMilliseconds());
+    _profile.broadphase.record(_broadphaseTimer.getMilliseconds());
   }
 
   final Island _toiIsland = Island();

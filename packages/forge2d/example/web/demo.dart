@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:html' hide Body;
 
-import 'package:forge2d/forge2d_browser.dart' hide Timer;
+import 'package:forge2d/forge2d_browser.dart';
 
 /// An abstract class for any Demo of the Forge2D library.
 abstract class Demo {
