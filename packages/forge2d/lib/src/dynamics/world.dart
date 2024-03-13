@@ -515,7 +515,7 @@ class World {
 
   final Island island = Island();
   final List<Body> stack = [];
-  final Timer _broadphaseTimer = Timer();
+  final Timer broadphaseTimer = Timer();
 
   void solve(TimeStep step) {
     _profile.solveInit.startAccum();
@@ -649,7 +649,7 @@ class World {
     _profile.solveVelocity.endAccum();
     _profile.solvePosition.endAccum();
 
-    _broadphaseTimer.reset();
+    broadphaseTimer.reset();
     // Synchronize fixtures, check for out of range bodies.
     for (final b in bodies) {
       // If a body was not in an island then it did not move.
@@ -667,7 +667,7 @@ class World {
 
     // Look for new contacts.
     contactManager.findNewContacts();
-    _profile.broadphase.record(_broadphaseTimer.getMilliseconds());
+    _profile.broadphase.record(broadphaseTimer.getMilliseconds());
   }
 
   final Island _toiIsland = Island();
