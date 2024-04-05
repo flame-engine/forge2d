@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-04-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`forge2d` - `v0.13.0`](#forge2d---v0130)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `forge2d` - `v0.13.0`
+
+ - **BREAKING** **REFACTOR**: Un-export `Timer` ([#90](https://github.com/flame-engine/forge2d/issues/90)). ([abf23783](https://github.com/flame-engine/forge2d/commit/abf23783c1d5dc3de6db2751f0d080816f76df20))
+
+
 ## 2023-11-03
 
 ### Changes
