@@ -1,3 +1,9 @@
+## 0.13.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **REFACTOR**: Un-export `Timer` ([#90](https://github.com/flame-engine/forge2d/issues/90)). ([abf23783](https://github.com/flame-engine/forge2d/commit/abf23783c1d5dc3de6db2751f0d080816f76df20))
+
 ## 0.12.2
 
  - **FIX**: Depend on any test version. ([1f80bf35](https://github.com/flame-engine/forge2d/commit/1f80bf35c84cec53a35bbf308c29810086597771))
