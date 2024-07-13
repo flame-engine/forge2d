@@ -7,18 +7,18 @@ import 'package:forge2d/src/settings.dart' as settings;
 class CircleShape extends Shape {
   final Vector2 position = Vector2.zero();
 
-  CircleShape() : super(ShapeType.circle) {
-    radius = 0.0;
+  CircleShape({
+    double radius = 0.0,
+    Vector2? position,
+  }) : super(ShapeType.circle) {
+    this.radius = radius;
+    if (position != null) {
+      this.position.setFrom(position);
+    }
   }
 
   @override
-  Shape clone() {
-    final shape = CircleShape();
-    shape.position.x = position.x;
-    shape.position.y = position.y;
-    shape.radius = radius;
-    return shape;
-  }
+  Shape clone() => CircleShape(radius: radius, position: position);
 
   @override
   int get childCount => 1;
