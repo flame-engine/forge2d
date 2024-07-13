@@ -53,7 +53,7 @@ class BlobTest extends Demo {
       bd.type = BodyType.dynamic;
       final body = world.createBody(bd);
 
-      final shape = CircleShape()..radius = bodyRadius;
+      final shape = CircleShape(radius: bodyRadius);
       final fixtureDef = FixtureDef(shape)
         ..density = 1.0
         ..filter.groupIndex = -2;

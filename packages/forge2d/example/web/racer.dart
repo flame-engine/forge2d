@@ -76,9 +76,11 @@ class Racer extends Demo implements ContactListener {
     final shape = PolygonShape()
       ..setAsBox(27.0, 21.0, Vector2(-30.0, 30.0), radians(20.0));
 
-    final fixtureDef = FixtureDef(shape)
-      ..isSensor = true
-      ..userData = GroundArea(0.001, outOfCourse: false);
+    final fixtureDef = FixtureDef(
+      shape,
+      isSensor: true,
+      userData: GroundArea(0.001, outOfCourse: false),
+    );
     _groundBody.createFixture(fixtureDef);
 
     fixtureDef.userData = GroundArea(0.2, outOfCourse: false);

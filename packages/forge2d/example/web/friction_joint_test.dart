@@ -55,16 +55,15 @@ class FrictionJointTest extends Demo {
     boxShape.setAsBox(3.0, 1.5, Vector2.zero(), pi / 2);
 
     // Define fixture (links body and shape)
-    _boxFixture = FixtureDef(boxShape)
-      ..restitution = 0.5
-      ..density = 0.10;
+    _boxFixture = FixtureDef(boxShape, restitution: 0.5, density: 0.10);
   }
 
   void _createBox() {
     // Define body
-    final bodyDef = BodyDef();
-    bodyDef.type = BodyType.dynamic;
-    bodyDef.position = Vector2(-10.0, 30.0);
+    final bodyDef = BodyDef(
+      type: BodyType.dynamic,
+      position: Vector2(-10.0, 30.0),
+    );
 
     // Create body and fixture from definitions
     final fallingBox = world.createBody(bodyDef);
@@ -76,9 +75,10 @@ class FrictionJointTest extends Demo {
 
   void _createFrictionBox() {
     // Define body
-    final bodyDef = BodyDef();
-    bodyDef.type = BodyType.dynamic;
-    bodyDef.position = Vector2(10.0, 30.0);
+    final bodyDef = BodyDef(
+      type: BodyType.dynamic,
+      position: Vector2(10.0, 30.0),
+    );
 
     // Create body and fixture from definitions
     final fallingBox = world.createBody(bodyDef);

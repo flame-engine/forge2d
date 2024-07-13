@@ -177,10 +177,12 @@ class Body {
     double restitution = 0.0,
   }) {
     return createFixture(
-      FixtureDef(shape)
-        ..density = density
-        ..friction = friction
-        ..restitution = restitution,
+      FixtureDef(
+        shape,
+        density: density,
+        friction: friction,
+        restitution: restitution,
+      ),
     );
   }
 

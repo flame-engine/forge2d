@@ -27,12 +27,14 @@ class BallCage extends Demo {
   @override
   void initialize() {
     // Define the circle shape.
-    final circleShape = CircleShape()..radius = wallBallRadius;
+    final circleShape = CircleShape(radius: wallBallRadius);
 
     // Create fixture using the circle shape.
-    final circleFixtureDef = FixtureDef(circleShape)
-      ..friction = .9
-      ..restitution = 1.0;
+    final circleFixtureDef = FixtureDef(
+      circleShape,
+      friction: .9,
+      restitution: 1.0,
+    );
 
     // Create a body def.
     final circleBodyDef = BodyDef();
@@ -67,12 +69,14 @@ class BallCage extends Demo {
     }
 
     // Create a bouncing ball.
-    final bouncingCircle = CircleShape()..radius = activeBallRadius;
+    final bouncingCircle = CircleShape(radius: activeBallRadius);
 
     // Create fixture for that ball shape.
-    final activeFixtureDef = FixtureDef(bouncingCircle)
-      ..restitution = 1.0
-      ..density = 0.05;
+    final activeFixtureDef = FixtureDef(
+      bouncingCircle,
+      restitution: 1.0,
+      density: 0.05,
+    );
 
     // Create the active ball body.
     final activeBodyDef = BodyDef();

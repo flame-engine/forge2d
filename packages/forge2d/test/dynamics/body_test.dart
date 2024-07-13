@@ -27,9 +27,7 @@ void main() {
         final world = World(gravity);
 
         final body = world.createBody(
-          BodyDef()
-            ..type = BodyType.dynamic
-            ..gravityOverride = Vector2.zero(),
+          BodyDef(type: BodyType.dynamic, gravityOverride: Vector2.zero()),
         );
 
         final bodyInitialPosition = body.position.clone();
@@ -45,9 +43,7 @@ void main() {
           'when gravityOverride is not specfied', () {
         final gravity = Vector2(10, 10);
         final world = World(gravity);
-
-        final body = world.createBody(BodyDef()..type = BodyType.dynamic);
-
+        final body = world.createBody(BodyDef(type: BodyType.dynamic));
         final bodyInitialPosition = body.position.clone();
 
         world.stepDt(1);
@@ -63,9 +59,7 @@ void main() {
         final world = World(gravity);
 
         final body = world.createBody(
-          BodyDef()
-            ..type = BodyType.dynamic
-            ..gravityScale = Vector2.zero(),
+          BodyDef(type: BodyType.dynamic, gravityScale: Vector2.zero()),
         );
 
         final bodyInitialPosition = body.position.clone();
@@ -82,8 +76,7 @@ void main() {
         final gravity = Vector2(10, 10);
         final world = World(gravity);
 
-        final body = world.createBody(BodyDef()..type = BodyType.dynamic);
-
+        final body = world.createBody(BodyDef(type: BodyType.dynamic));
         final bodyInitialPosition = body.position.clone();
 
         world.stepDt(1);
