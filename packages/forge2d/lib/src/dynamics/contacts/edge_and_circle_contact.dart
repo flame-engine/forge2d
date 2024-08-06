@@ -6,12 +6,14 @@ class EdgeAndCircleContact extends Contact {
     super.indexA,
     super.fixtureB,
     super.indexB,
+    super.collision,
+    super.distance,
   )   : assert(fixtureA.type == ShapeType.edge),
         assert(fixtureB.type == ShapeType.circle);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    World.collision.collideEdgeAndCircle(
+    collision.collideEdgeAndCircle(
       manifold,
       fixtureA.shape as EdgeShape,
       xfA,

@@ -10,6 +10,8 @@ class _TestContact extends Contact {
     super.indexA,
     super.fixtureB,
     super.indexB,
+    super.collision,
+    super.distance,
   );
 
   @override
@@ -22,6 +24,8 @@ void main() {
     late int indexA;
     late Fixture fixtureB;
     late int indexB;
+    final collision = Collision();
+    final distance = Distance();
 
     setUp(() {
       fixtureA = _MockFixture();
@@ -43,6 +47,8 @@ void main() {
           indexA,
           fixtureB,
           indexB,
+          collision,
+          distance,
         ),
         isA<Contact>(),
       );
@@ -55,6 +61,8 @@ void main() {
           indexA,
           fixtureB,
           indexB,
+          collision,
+          distance,
         );
 
         expect(contact.isEnabled, isTrue);
@@ -66,6 +74,8 @@ void main() {
           indexA,
           fixtureB,
           indexB,
+          collision,
+          distance,
         );
 
         final newIsEnabled = !contact.isEnabled;

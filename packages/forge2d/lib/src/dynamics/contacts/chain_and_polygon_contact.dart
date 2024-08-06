@@ -6,6 +6,8 @@ class ChainAndPolygonContact extends Contact {
     super.indexA,
     super.fixtureB,
     super.indexB,
+    super.collision,
+    super.distance,
   )   : assert(fixtureA.type == ShapeType.chain),
         assert(fixtureB.type == ShapeType.polygon);
 
@@ -13,7 +15,7 @@ class ChainAndPolygonContact extends Contact {
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
     final chain = fixtureA.shape as ChainShape;
     final edge = chain.childEdge(indexA);
-    World.collision.collideEdgeAndPolygon(
+    collision.collideEdgeAndPolygon(
       manifold,
       edge,
       xfA,

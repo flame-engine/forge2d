@@ -7,15 +7,6 @@ import 'demo.dart';
 class FrictionJointTest extends Demo {
   FrictionJointTest() : super('FrictionJoint test');
 
-  /// Entrypoint.
-  static void main() {
-    final test = FrictionJointTest();
-    test.initialize();
-    test.initializeAnimation();
-    test.debugDraw.appendFlags(DebugDraw.jointBit);
-    test.runAnimation();
-  }
-
   late Body _ground;
   late FixtureDef _boxFixture;
 
@@ -100,5 +91,9 @@ class FrictionJointTest extends Demo {
 }
 
 void main() {
-  FrictionJointTest.main();
+  final test = FrictionJointTest();
+  test.initialize();
+  test.initializeAnimation();
+  test.debugDraw.appendFlags(DebugDraw.jointBit);
+  test.runAnimation();
 }

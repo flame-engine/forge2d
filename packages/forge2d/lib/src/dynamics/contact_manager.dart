@@ -3,11 +3,13 @@ import 'package:forge2d/forge2d.dart';
 /// Delegate of World.
 class ContactManager implements PairCallback {
   BroadPhase broadPhase;
+  final Collision collision;
+  final Distance distance;
   final List<Contact> contacts = [];
   ContactFilter? contactFilter;
   ContactListener? contactListener;
 
-  ContactManager(this.broadPhase) {
+  ContactManager(this.broadPhase, this.collision, this.distance) {
     contactFilter = ContactFilter();
   }
 
@@ -51,7 +53,14 @@ class ContactManager implements PairCallback {
       return;
     }
 
-    final contact = Contact.init(fixtureA, indexA, fixtureB, indexB);
+    final contact = Contact.fromPair(
+      fixtureA,
+      indexA,
+      fixtureB,
+      indexB,
+      collision,
+      distance,
+    );
 
     // Insert into the world.
     contacts.add(contact);

@@ -53,7 +53,7 @@ class TimeOfImpact {
   /// If you change the time interval, you should call this function again.
   /// Note: use Distance to compute the contact point and normal at the time of
   /// impact.
-  void timeOfImpact(TOIOutput output, TOIInput input) {
+  void timeOfImpact(TOIOutput output, TOIInput input, Distance distance) {
     // CCD via the local separating axis method. This seeks progression
     // by computing the largest time at which separation is maintained.
 
@@ -100,7 +100,7 @@ class TimeOfImpact {
       // to get a separating axis
       _distanceInput.transformA = _xfA;
       _distanceInput.transformB = _xfB;
-      World.distance.compute(_distanceOutput, _cache, _distanceInput);
+      distance.compute(_distanceOutput, _cache, _distanceInput);
 
       // If the shapes are overlapped, we give up on continuous collision.
       if (_distanceOutput.distance <= 0.0) {

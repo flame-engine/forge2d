@@ -16,14 +16,6 @@ class BallCage extends Demo {
   /// Constructs a new BallCage.
   BallCage() : super('Ball cage');
 
-  /// Entrypoint.
-  static void main() {
-    final cage = BallCage();
-    cage.initialize();
-    cage.initializeAnimation();
-    cage.runAnimation();
-  }
-
   @override
   void initialize() {
     // Define the circle shape.
@@ -91,5 +83,8 @@ class BallCage extends Demo {
 }
 
 void main() {
-  BallCage.main();
+  final cage = BallCage();
+  cage.initialize();
+  cage.initializeAnimation();
+  cage.runAnimation();
 }
