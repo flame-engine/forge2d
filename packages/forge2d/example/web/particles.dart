@@ -16,7 +16,7 @@ class Particles extends Demo {
   /// Constructs a new Particles example.
   Particles() : super('Particles');
 
-  static void main() {
+  void main() {
     Particles()
       ..initialize()
       ..initializeAnimation()

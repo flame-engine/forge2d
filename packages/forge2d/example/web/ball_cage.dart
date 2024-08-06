@@ -17,7 +17,7 @@ class BallCage extends Demo {
   BallCage() : super('Ball cage');
 
   /// Entrypoint.
-  static void main() {
+  void main() {
     final cage = BallCage();
     cage.initialize();
     cage.initializeAnimation();

@@ -9,7 +9,7 @@ class BoxTest extends Demo {
   BoxTest() : super('Box test');
 
   /// Entrypoint.
-  static void main() {
+  void main() {
     final boxTest = BoxTest();
     boxTest.initialize();
     boxTest.initializeAnimation();

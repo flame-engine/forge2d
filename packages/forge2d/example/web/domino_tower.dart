@@ -18,7 +18,7 @@ class DominoTower extends Demo {
   DominoTower() : super('Domino tower');
 
   /// Entrypoint.
-  static void main() {
+  void main() {
     final tower = DominoTower();
     tower.initialize();
     tower.initializeAnimation();

@@ -8,7 +8,7 @@ class FrictionJointTest extends Demo {
   FrictionJointTest() : super('FrictionJoint test');
 
   /// Entrypoint.
-  static void main() {
+  void main() {
     final test = FrictionJointTest();
     test.initialize();
     test.initializeAnimation();

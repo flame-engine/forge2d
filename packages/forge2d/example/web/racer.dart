@@ -10,7 +10,7 @@ import 'racer/ground_area.dart';
 import 'racer/tire.dart';
 
 class Racer extends Demo implements ContactListener {
-  static void main() {
+  void main() {
     final racer = Racer();
     racer.initialize();
     racer.initializeAnimation();

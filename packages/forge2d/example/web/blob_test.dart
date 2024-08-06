@@ -9,7 +9,7 @@ class BlobTest extends Demo {
   BlobTest() : super('Blob test');
 
   /// Entrypoint.
-  static void main() {
+  void main() {
     final blob = BlobTest();
     blob.initialize();
     blob.initializeAnimation();
