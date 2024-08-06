@@ -98,6 +98,7 @@ class Collision {
     int indexB,
     Transform xfA,
     Transform xfB,
+    Distance distance,
   ) {
     _input.proxyA.set(shapeA, indexA);
     _input.proxyB.set(shapeB, indexB);
@@ -107,7 +108,7 @@ class Collision {
 
     _cache.count = 0;
 
-    World.distance.compute(_output, _cache, _input);
+    distance.compute(_output, _cache, _input);
     // djm note: anything significant about 10.0f?
     return _output.distance < 10.0 * settings.epsilon;
   }

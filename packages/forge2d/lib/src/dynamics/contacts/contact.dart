@@ -21,6 +21,8 @@ abstract class Contact {
   static const int toiFlag = 0x0020;
 
   int flags = 0;
+  final Collision collision;
+  final Distance distance;
 
   final Fixture fixtureA;
   final Fixture fixtureB;
@@ -48,7 +50,14 @@ abstract class Contact {
 
   double tangentSpeed = 0.0;
 
-  Contact(this.fixtureA, this.indexA, this.fixtureB, this.indexB) {
+  Contact(
+    this.fixtureA,
+    this.indexA,
+    this.fixtureB,
+    this.indexB,
+    this.collision,
+    this.distance,
+  ) {
     flags = enabledFlag;
     manifold.pointCount = 0;
     _friction = Contact.mixFriction(
@@ -61,11 +70,13 @@ abstract class Contact {
     );
   }
 
-  static Contact init(
+  factory Contact.fromPair(
     Fixture fixtureA,
     int indexA,
     Fixture fixtureB,
     int indexB,
+    Collision collision,
+    Distance distance,
   ) {
     // Remember that we use the order in the enum here to determine in which
     // order the arguments should come in the different contact classes.
@@ -83,17 +94,24 @@ abstract class Contact {
     final secondFixture = fixtureB.type == typeB ? fixtureB : temp;
 
     if (typeA == ShapeType.circle && typeB == ShapeType.circle) {
-      return CircleContact(firstFixture, secondFixture);
+      return CircleContact(firstFixture, secondFixture, collision, distance);
     } else if (typeA == ShapeType.polygon && typeB == ShapeType.polygon) {
-      return PolygonContact(firstFixture, secondFixture);
+      return PolygonContact(firstFixture, secondFixture, collision, distance);
     } else if (typeA == ShapeType.circle && typeB == ShapeType.polygon) {
-      return PolygonAndCircleContact(secondFixture, firstFixture);
+      return PolygonAndCircleContact(
+        secondFixture,
+        firstFixture,
+        collision,
+        distance,
+      );
     } else if (typeA == ShapeType.circle && typeB == ShapeType.edge) {
       return EdgeAndCircleContact(
         secondFixture,
         secondIndex,
         firstFixture,
         firstIndex,
+        collision,
+        distance,
       );
     } else if (typeA == ShapeType.edge && typeB == ShapeType.polygon) {
       return EdgeAndPolygonContact(
@@ -101,6 +119,8 @@ abstract class Contact {
         firstIndex,
         secondFixture,
         secondIndex,
+        collision,
+        distance,
       );
     } else if (typeA == ShapeType.circle && typeB == ShapeType.chain) {
       return ChainAndCircleContact(
@@ -108,6 +128,8 @@ abstract class Contact {
         secondIndex,
         firstFixture,
         firstIndex,
+        collision,
+        distance,
       );
     } else if (typeA == ShapeType.polygon && typeB == ShapeType.chain) {
       return ChainAndPolygonContact(
@@ -115,10 +137,17 @@ abstract class Contact {
         secondIndex,
         firstFixture,
         firstIndex,
+        collision,
+        distance,
       );
     } else {
       assert(false, 'Not compatible contact type');
-      return CircleContact(firstFixture, secondFixture);
+      return CircleContact(
+        firstFixture,
+        secondFixture,
+        collision,
+        distance,
+      );
     }
   }
 
@@ -217,13 +246,14 @@ abstract class Contact {
     if (sensor) {
       final shapeA = fixtureA.shape;
       final shapeB = fixtureB.shape;
-      touching = World.collision.testOverlap(
+      touching = collision.testOverlap(
         shapeA,
         indexA,
         shapeB,
         indexB,
         xfA,
         xfB,
+        distance,
       );
 
       // Sensors don't generate manifolds.

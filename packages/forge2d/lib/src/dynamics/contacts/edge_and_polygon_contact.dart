@@ -6,12 +6,14 @@ class EdgeAndPolygonContact extends Contact {
     super.indexA,
     super.fixtureB,
     super.indexB,
+    super.collision,
+    super.distance,
   )   : assert(fixtureA.type == ShapeType.edge),
         assert(fixtureB.type == ShapeType.polygon);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {
-    World.collision.collideEdgeAndPolygon(
+    collision.collideEdgeAndPolygon(
       manifold,
       fixtureA.shape as EdgeShape,
       xfA,

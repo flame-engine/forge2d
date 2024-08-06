@@ -16,10 +16,9 @@ class World {
   static const int locked = 0x0002;
   static const int clearForcesBit = 0x0004;
 
-  // TODO(spydon): Don't have these fields as static
-  static final Distance distance = Distance();
-  static final Collision collision = Collision();
-  static final TimeOfImpact toi = TimeOfImpact();
+  final Distance distance = Distance();
+  final Collision collision = Collision();
+  final TimeOfImpact toi = TimeOfImpact();
 
   int flags = 0;
 
@@ -85,7 +84,7 @@ class World {
 
     _invDt0 = 0.0;
 
-    contactManager = ContactManager(broadPhase);
+    contactManager = ContactManager(broadPhase, collision, distance);
     _profile = Profile();
 
     particleSystem = ParticleSystem(this);
@@ -775,7 +774,7 @@ class World {
           input.sweepB.setFrom(bodyB.sweep);
           input.tMax = 1.0;
 
-          toi.timeOfImpact(_toiOutput, input);
+          toi.timeOfImpact(_toiOutput, input, distance);
 
           // Beta is the fraction of the remaining portion of the .
           final beta = _toiOutput.t;
