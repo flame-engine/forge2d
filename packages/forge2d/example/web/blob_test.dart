@@ -8,14 +8,6 @@ class BlobTest extends Demo {
   /// Constructs a new BlobTest.
   BlobTest() : super('Blob test');
 
-  /// Entrypoint.
-  void main() {
-    final blob = BlobTest();
-    blob.initialize();
-    blob.initializeAnimation();
-    blob.runAnimation();
-  }
-
   @override
   void initialize() {
     Body ground;
@@ -79,5 +71,8 @@ class BlobTest extends Demo {
 }
 
 void main() {
-  BlobTest.main();
+  final blob = BlobTest();
+  blob.initialize();
+  blob.initializeAnimation();
+  blob.runAnimation();
 }

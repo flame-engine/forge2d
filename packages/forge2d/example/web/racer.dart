@@ -10,16 +10,6 @@ import 'racer/ground_area.dart';
 import 'racer/tire.dart';
 
 class Racer extends Demo implements ContactListener {
-  void main() {
-    final racer = Racer();
-    racer.initialize();
-    racer.initializeAnimation();
-    final paragraph = ParagraphElement()
-      ..innerText = 'Use the arrow keys to drive the car';
-    document.body?.nodes.add(paragraph);
-    racer.runAnimation();
-  }
-
   Racer() : super('Racer', Vector2.zero(), 2.5);
 
   late int _controlState;
@@ -186,5 +176,11 @@ class Racer extends Demo implements ContactListener {
 }
 
 void main() {
-  Racer.main();
+  final racer = Racer();
+  racer.initialize();
+  racer.initializeAnimation();
+  final paragraph = ParagraphElement()
+    ..innerText = 'Use the arrow keys to drive the car';
+  document.body?.nodes.add(paragraph);
+  racer.runAnimation();
 }

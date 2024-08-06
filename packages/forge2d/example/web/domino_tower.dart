@@ -17,14 +17,6 @@ class DominoTower extends Demo {
   /// Construct a DominoTower.
   DominoTower() : super('Domino tower');
 
-  /// Entrypoint.
-  void main() {
-    final tower = DominoTower();
-    tower.initialize();
-    tower.initializeAnimation();
-    tower.runAnimation();
-  }
-
   void makeDomino(double x, double y, {required bool horizontal}) {
     final shape = PolygonShape()
       ..setAsBoxXY(.5 * dominoWidth, .5 * dominoHeight);
@@ -142,5 +134,8 @@ class DominoTower extends Demo {
 }
 
 void main() {
-  DominoTower.main();
+  final tower = DominoTower();
+  tower.initialize();
+  tower.initializeAnimation();
+  tower.runAnimation();
 }

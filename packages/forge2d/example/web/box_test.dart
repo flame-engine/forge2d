@@ -8,14 +8,6 @@ class BoxTest extends Demo {
   /// Constructs a new BoxTest.
   BoxTest() : super('Box test');
 
-  /// Entrypoint.
-  void main() {
-    final boxTest = BoxTest();
-    boxTest.initialize();
-    boxTest.initializeAnimation();
-    boxTest.runAnimation();
-  }
-
   @override
   void initialize() {
     _createGround();
@@ -69,5 +61,8 @@ class BoxTest extends Demo {
 }
 
 void main() {
-  BoxTest.main();
+  final boxTest = BoxTest();
+  boxTest.initialize();
+  boxTest.initializeAnimation();
+  boxTest.runAnimation();
 }

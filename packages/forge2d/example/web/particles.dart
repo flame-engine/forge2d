@@ -15,14 +15,6 @@ class Particles extends Demo {
 
   /// Constructs a new Particles example.
   Particles() : super('Particles');
-
-  void main() {
-    Particles()
-      ..initialize()
-      ..initializeAnimation()
-      ..runAnimation();
-  }
-
   @override
   void initialize() {
     // Define the circle shape.
@@ -103,5 +95,8 @@ class Particles extends Demo {
 }
 
 void main() {
-  Particles.main();
+  Particles()
+    ..initialize()
+    ..initializeAnimation()
+    ..runAnimation();
 }
