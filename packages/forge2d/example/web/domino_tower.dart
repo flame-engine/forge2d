@@ -28,13 +28,17 @@ class DominoTower extends Demo {
   void makeDomino(double x, double y, {required bool horizontal}) {
     final shape = PolygonShape()
       ..setAsBoxXY(.5 * dominoWidth, .5 * dominoHeight);
-    final fixtureDef = FixtureDef(shape)
-      ..density = dominoDensity
-      ..friction = dominoFriction
-      ..restitution = 0.65;
-    final bodyDef = BodyDef()..type = BodyType.dynamic;
-    bodyDef.position = Vector2(x, y);
-    bodyDef.angle = horizontal ? (pi / 2.0) : 0.0;
+    final fixtureDef = FixtureDef(
+      shape,
+      density: dominoDensity,
+      friction: dominoFriction,
+      restitution: 0.65,
+    );
+    final bodyDef = BodyDef(
+      type: BodyType.dynamic,
+      position: Vector2(x, y),
+      angle: horizontal ? (pi / 2.0) : 0.0,
+    );
     final body = world.createBody(bodyDef);
     body.createFixture(fixtureDef);
     bodies.add(body);
@@ -48,8 +52,7 @@ class DominoTower extends Demo {
       final sd = PolygonShape();
       sd.setAsBoxXY(50.0, 10.0);
 
-      final bd = BodyDef();
-      bd.position = Vector2(0.0, -10.0);
+      final bd = BodyDef(position: Vector2(0.0, -10.0));
       final body = world.createBody(bd);
       body.createFixtureFromShape(sd);
       bodies.add(body);
@@ -59,15 +62,12 @@ class DominoTower extends Demo {
       dominoDensity = 10.0;
       // Make bullet
       final shape = PolygonShape()..setAsBoxXY(.7, .7);
-      final fixtureDef = FixtureDef(shape)
-        ..density = 35.0
-        ..shape = shape
-        ..friction = 0.0
-        ..restitution = 0.85;
-      final bodyDef = BodyDef()
-        ..type = BodyType.dynamic
-        ..bullet = true
-        ..position = Vector2(30.0, 5.00);
+      final fixtureDef = FixtureDef(shape, density: 35.0, restitution: 0.85);
+      final bodyDef = BodyDef(
+        type: BodyType.dynamic,
+        bullet: true,
+        position: Vector2(30.0, 5.00),
+      );
       var body = world.createBody(bodyDef);
       bodies.add(body);
       body.createFixture(fixtureDef);

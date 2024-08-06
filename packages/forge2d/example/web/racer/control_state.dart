@@ -1,5 +1,4 @@
 /// Used to track keyboard state. Entries are masked bitwise.
-
 class ControlState {
   static const int up = 1;
   static const int down = 2;

@@ -26,12 +26,14 @@ class Particles extends Demo {
   @override
   void initialize() {
     // Define the circle shape.
-    final circleShape = CircleShape()..radius = wallBallRadius;
+    final circleShape = CircleShape(radius: wallBallRadius);
 
     // Create fixture using the circle shape.
-    final circleFixtureDef = FixtureDef(circleShape)
-      ..friction = .9
-      ..restitution = 1.0;
+    final circleFixtureDef = FixtureDef(
+      circleShape,
+      friction: 0.9,
+      restitution: 1.0,
+    );
 
     // Create a body def.
     final circleBodyDef = BodyDef();
@@ -70,9 +72,11 @@ class Particles extends Demo {
     bouncingCircle.radius = activeBallRadius;
 
     // Create fixture for that ball shape.
-    final activeFixtureDef = FixtureDef(bouncingCircle)
-      ..restitution = 1.0
-      ..density = 0.05;
+    final activeFixtureDef = FixtureDef(
+      bouncingCircle,
+      restitution: 1.0,
+      density: 0.05,
+    );
 
     // Create the active ball body.
     final activeBodyDef = BodyDef();
@@ -87,7 +91,7 @@ class Particles extends Demo {
     world.particleSystem.particleRadius = 0.35;
     world.particleSystem.dampingStrength = 0.2;
 
-    final shape = CircleShape()..radius = 5;
+    final shape = CircleShape(radius: 5);
     final particleGroup = ParticleGroupDef()
       ..position.setFrom(fixture.renderCenter)
       ..destroyAutomatically = true

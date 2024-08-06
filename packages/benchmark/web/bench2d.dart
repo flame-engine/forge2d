@@ -64,9 +64,7 @@ class Bench2d {
       y.setFrom(x);
 
       for (var j = i; j < pyramidSize; ++j) {
-        final bd = BodyDef()
-          ..type = BodyType.dynamic
-          ..position.setFrom(y);
+        final bd = BodyDef(type: BodyType.dynamic, position: y.clone());
         world.createBody(bd).createFixtureFromShape(shape, density: 5.0);
         y.add(deltaY);
       }

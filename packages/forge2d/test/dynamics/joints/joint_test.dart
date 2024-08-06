@@ -17,14 +17,13 @@ void main() {
       final bodyDef = BodyDef();
       final body1 = world.createBody(bodyDef);
       final body2 = world.createBody(bodyDef..position = Vector2.all(2));
-      final shape = CircleShape()
-        ..radius = 1.2
-        ..position.setValues(10, 10);
-
-      final fixtureDef = FixtureDef(shape)
-        ..density = 50.0
-        ..friction = .1
-        ..restitution = .9;
+      final shape = CircleShape(radius: 1.2, position: Vector2.all(10));
+      final fixtureDef = FixtureDef(
+        shape,
+        density: 50.0,
+        friction: 0.1,
+        restitution: 0.9,
+      );
 
       body1.createFixture(fixtureDef);
       body2.createFixture(fixtureDef);
