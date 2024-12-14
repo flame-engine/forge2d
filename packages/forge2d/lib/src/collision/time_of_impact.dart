@@ -411,12 +411,7 @@ class SeparationFunction {
         _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
 
         return (_pointA..sub(_pointB)).dot(_normal);
-      default:
-        assert(false);
-        indexes[0] = -1;
-        indexes[1] = -1;
-        return 0.0;
-    }
+      }
   }
 
   double evaluate(int indexA, int indexB, double t) {
@@ -447,9 +442,6 @@ class SeparationFunction {
         _pointA.setFrom(Transform.mulVec2(_xfa, _localPointA));
 
         return (_pointA..sub(_pointB)).dot(_normal);
-      default:
-        assert(false);
-        return 0.0;
-    }
+      }
   }
 }

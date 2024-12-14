@@ -501,8 +501,6 @@ class DistanceProxy {
         _count = 2;
         radius = edge.radius;
         break;
-      default:
-        assert(false);
     }
   }
 
