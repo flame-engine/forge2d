@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-12-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`forge2d` - `v0.14.0`](#forge2d---v0140)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `forge2d` - `v0.14.0`
+
+ - **REFACTOR**: remove dead code ([#97](https://github.com/flame-engine/forge2d/issues/97)). ([6a75e0d2](https://github.com/flame-engine/forge2d/commit/6a75e0d2d4452bed3bfe6dbe35f84af9acebff76))
+ - **BREAKING** **REFACTOR**: Use vector_math 32 instead of 64 ([#96](https://github.com/flame-engine/forge2d/issues/96)). ([2d726279](https://github.com/flame-engine/forge2d/commit/2d72627937e6b8dca672ed4dbc2de16577400623))
+
+
 ## 2024-08-06
 
 ### Changes
