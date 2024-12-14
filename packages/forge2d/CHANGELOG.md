@@ -1,3 +1,10 @@
+## 0.14.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: remove dead code ([#97](https://github.com/flame-engine/forge2d/issues/97)). ([6a75e0d2](https://github.com/flame-engine/forge2d/commit/6a75e0d2d4452bed3bfe6dbe35f84af9acebff76))
+ - **BREAKING** **REFACTOR**: Use vector_math 32 instead of 64 ([#96](https://github.com/flame-engine/forge2d/issues/96)). ([2d726279](https://github.com/flame-engine/forge2d/commit/2d72627937e6b8dca672ed4dbc2de16577400623))
+
 ## 0.13.1
 
  - **REFACTOR**: Don't use static for Distance and Collision  ([#92](https://github.com/flame-engine/forge2d/issues/92)). ([130994e1](https://github.com/flame-engine/forge2d/commit/130994e1f109071c690d4a8a970b28e106d9625e))
