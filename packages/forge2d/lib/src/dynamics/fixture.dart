@@ -321,8 +321,6 @@ class Fixture {
           }
         }
         break;
-      default:
-        break;
     }
   }
 }
