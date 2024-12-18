@@ -55,11 +55,10 @@ class CircleShape extends Shape {
     int childIndex,
     Vector2 normalOut,
   ) {
-    final xfq = xf.q;
-    final centerX = xfq.cos * p.x - xfq.sin * p.y + xf.p.x;
-    final centerY = xfq.sin * p.x + xfq.cos * p.y + xf.p.y;
-    final dx = p.x - centerX;
-    final dy = p.y - centerY;
+    final q = xf.q;
+    final tp = xf.p;
+    final dx = -(q.cos * position.x - q.sin * position.y + tp.x - p.x);
+    final dy = -(q.sin * position.x + q.cos * position.y + tp.y - p.y);
     final d1 = sqrt(dx * dx + dy * dy);
     normalOut.x = dx * 1 / d1;
     normalOut.y = dy * 1 / d1;
