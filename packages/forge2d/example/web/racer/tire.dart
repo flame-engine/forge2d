@@ -71,10 +71,8 @@ class Tire {
     switch (controlState & (ControlState.up | ControlState.down)) {
       case ControlState.up:
         desiredSpeed = _maxForwardSpeed;
-        break;
       case ControlState.down:
         desiredSpeed = _maxBackwardSpeed;
-        break;
       default:
         return;
     }
@@ -98,10 +96,8 @@ class Tire {
     switch (controlState & (ControlState.left | ControlState.right)) {
       case ControlState.left:
         desiredTorque = 15.0;
-        break;
       case ControlState.right:
         desiredTorque = -15.0;
-        break;
     }
     body.applyTorque(desiredTorque);
   }

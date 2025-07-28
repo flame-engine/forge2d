@@ -120,16 +120,12 @@ class Racer extends Demo implements ContactListener {
     switch (event.keyCode) {
       case 37:
         _controlState |= ControlState.left;
-        break;
       case 38:
         _controlState |= ControlState.up;
-        break;
       case 39:
         _controlState |= ControlState.right;
-        break;
       case 40:
         _controlState |= ControlState.down;
-        break;
     }
   }
 
@@ -137,16 +133,12 @@ class Racer extends Demo implements ContactListener {
     switch (event.keyCode) {
       case 37:
         _controlState &= ~ControlState.left;
-        break;
       case 38:
         _controlState &= ~ControlState.up;
-        break;
       case 39:
         _controlState &= ~ControlState.right;
-        break;
       case 40:
         _controlState &= ~ControlState.down;
-        break;
     }
   }
 

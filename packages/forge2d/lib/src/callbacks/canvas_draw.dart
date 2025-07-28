@@ -1,8 +1,9 @@
-import 'dart:html';
+import 'dart:js_interop';
 import 'dart:math';
 
 import 'package:forge2d/forge2d.dart';
 import 'package:forge2d/forge2d_browser.dart';
+import 'package:web/web.dart';
 
 class CanvasDraw extends DebugDraw {
   /// The canvas rendering context with which to draw.
@@ -27,25 +28,35 @@ class CanvasDraw extends DebugDraw {
   }
 
   void _pathPolygon(List<Vector2> vertices, Color3i color) {
-    // Set the color and convert to screen coordinates.
     _setColor(color);
-    // TODO(gregbglw): Do a single ctx transform rather than convert all of
-    // these vectors.
-    final screenVertices = vertices.map(worldToScreen).toList();
 
+    // Save the current canvas state
+    ctx.save();
+
+    // Apply the transformation matrix for world-to-screen conversion
+    ctx.transform(
+      viewport.scale,
+      0,
+      0,
+      -viewport.scale,
+      viewport.extents.x + viewport.translation.x,
+      viewport.extents.y - viewport.translation.y,
+    );
+
+    // Begin the path and move to the first vertex
     ctx.beginPath();
-    ctx.moveTo(screenVertices[0].x, screenVertices[0].y);
+    ctx.moveTo(vertices[0].x, vertices[0].y);
 
-    // Draw lines to all of the remaining points.
-    for (final vertex in screenVertices) {
+    // Draw lines to the remaining vertices
+    for (final vertex in vertices) {
       ctx.lineTo(vertex.x, vertex.y);
     }
 
-    // Draw a line back to the starting point.
-    ctx.lineTo(screenVertices[0].x, screenVertices[0].y);
-
-    // Close the drawn polygon ready for fill/stroke
+    // Close the polygon
     ctx.closePath();
+
+    // Restore the canvas state
+    ctx.restore();
   }
 
   /// Draw a line segment. WARNING: This mutates [p1] and [p2].
@@ -114,8 +125,8 @@ class CanvasDraw extends DebugDraw {
 
   /// Sets the rendering context stroke and fill color to [color].
   void _setColor(Color3i color) {
-    ctx.setStrokeColorRgb(color.r, color.g, color.b, color.a);
-    ctx.setFillColorRgb(color.r, color.g, color.b, color.a);
+    ctx.strokeStyle = color.toHex().toJS;
+    ctx.fillStyle = color.toHex().toJS;
   }
 
   @override

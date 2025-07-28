@@ -122,15 +122,15 @@ class Car {
     switch (controlState & (ControlState.left | ControlState.right)) {
       case ControlState.left:
         desiredAngle = _lockAngle;
-        break;
       case ControlState.right:
         desiredAngle = -_lockAngle;
-        break;
     }
     final turnPerTimeStep = _turnSpeedPerSec * 1000 / time;
     final angleNow = _frontLeftJoint.jointAngle();
-    final angleToTurn =
-        (desiredAngle - angleNow).clamp(-turnPerTimeStep, turnPerTimeStep);
+    final angleToTurn = (desiredAngle - angleNow).clamp(
+      -turnPerTimeStep,
+      turnPerTimeStep,
+    );
     final angle = angleNow + angleToTurn;
     _frontLeftJoint.setLimits(angle, angle);
     _frontRightJoint.setLimits(angle, angle);

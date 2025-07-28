@@ -15,10 +15,10 @@ class Color3i {
   Color3i.zero();
 
   Color3i.fromRGBd(double red, double green, double blue, {double alpha = 1.0})
-      : r = (red * 255).floor(),
-        g = (green * 255).floor(),
-        b = (blue * 255).floor(),
-        a = alpha;
+    : r = (red * 255).floor(),
+      g = (green * 255).floor(),
+      b = (blue * 255).floor(),
+      a = alpha;
 
   void setRGB(int red, int green, int blue, {double? alpha}) {
     r = red;
@@ -42,6 +42,12 @@ class Color3i {
   }
 
   Color3i clone() => Color3i(r, g, b, a: a);
+
+  String toHex() =>
+      '#${r.toRadixString(16).padLeft(2, '0')}'
+      '${g.toRadixString(16).padLeft(2, '0')}'
+      '${b.toRadixString(16).padLeft(2, '0')}'
+      '${(a * 255).toInt().toRadixString(16).padLeft(2, '0')}';
 
   @override
   String toString() => 'Color3i($r, $g, $b, $a)';

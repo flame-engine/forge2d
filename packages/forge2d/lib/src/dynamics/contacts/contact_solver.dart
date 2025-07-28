@@ -290,8 +290,10 @@ class ContactSolver {
 
         // Clamp the accumulated force
         final maxFriction = (friction * vcp.normalImpulse).abs();
-        final newImpulse =
-            (vcp.tangentImpulse + lambda).clamp(-maxFriction, maxFriction);
+        final newImpulse = (vcp.tangentImpulse + lambda).clamp(
+          -maxFriction,
+          maxFriction,
+        );
         lambda = newImpulse - vcp.tangentImpulse;
         vcp.tangentImpulse = newImpulse;
 
@@ -459,11 +461,13 @@ class ContactSolver {
             vB.x += mB * (p1x + p2x);
             vB.y += mB * (p1y + p2y);
 
-            wA -= iA *
+            wA -=
+                iA *
                 (cp1rA.x * p1y -
                     cp1rA.y * p1x +
                     (cp2rA.x * p2y - cp2rA.y * p2x));
-            wB += iB *
+            wB +=
+                iB *
                 (cp1rB.x * p1y -
                     cp1rB.y * p1x +
                     (cp2rB.x * p2y - cp2rB.y * p2x));
@@ -530,11 +534,13 @@ class ContactSolver {
             vB.x += mB * (p1x + p2x);
             vB.y += mB * (p1y + p2y);
 
-            wA -= iA *
+            wA -=
+                iA *
                 (cp1rA.x * p1y -
                     cp1rA.y * p1x +
                     (cp2rA.x * p2y - cp2rA.y * p2x));
-            wB += iB *
+            wB +=
+                iB *
                 (cp1rB.x * p1y -
                     cp1rB.y * p1x +
                     (cp2rB.x * p2y - cp2rB.y * p2x));
@@ -599,11 +605,13 @@ class ContactSolver {
             vB.x += mB * (p1x + p2x);
             vB.y += mB * (p1y + p2y);
 
-            wA -= iA *
+            wA -=
+                iA *
                 (cp1rA.x * p1y -
                     cp1rA.y * p1x +
                     (cp2rA.x * p2y - cp2rA.y * p2x));
-            wB += iB *
+            wB +=
+                iB *
                 (cp1rB.x * p1y -
                     cp1rB.y * p1x +
                     (cp2rB.x * p2y - cp2rB.y * p2x));
@@ -666,11 +674,13 @@ class ContactSolver {
             vB.x += mB * (p1x + p2x);
             vB.y += mB * (p1y + p2y);
 
-            wA -= iA *
+            wA -=
+                iA *
                 (cp1rA.x * p1y -
                     cp1rA.y * p1x +
                     (cp2rA.x * p2y - cp2rA.y * p2x));
-            wB += iB *
+            wB +=
+                iB *
                 (cp1rB.x * p1y -
                     cp1rB.y * p1x +
                     (cp2rB.x * p2y - cp2rB.y * p2x));
@@ -932,7 +942,6 @@ class PositionSolverManifold {
         final tempY = pointBy - pointAy;
         separation =
             tempX * normal.x + tempY * normal.y - pc.radiusA - pc.radiusB;
-        break;
 
       case ManifoldType.faceA:
         final pcLocalNormal = pc.localNormal;
@@ -946,17 +955,16 @@ class PositionSolverManifold {
 
         final clipPointX =
             (xfBq.cos * pcLocalPointsI.x - xfBq.sin * pcLocalPointsI.y) +
-                xfB.p.x;
+            xfB.p.x;
         final clipPointY =
             (xfBq.sin * pcLocalPointsI.x + xfBq.cos * pcLocalPointsI.y) +
-                xfB.p.y;
+            xfB.p.y;
         final tempX = clipPointX - planePointX;
         final tempY = clipPointY - planePointY;
         separation =
             tempX * normal.x + tempY * normal.y - pc.radiusA - pc.radiusB;
         point.x = clipPointX;
         point.y = clipPointY;
-        break;
 
       case ManifoldType.faceB:
         final pcLocalNormal = pc.localNormal;
@@ -970,10 +978,10 @@ class PositionSolverManifold {
 
         final clipPointX =
             (xfAq.cos * pcLocalPointsI.x - xfAq.sin * pcLocalPointsI.y) +
-                xfA.p.x;
+            xfA.p.x;
         final clipPointY =
             (xfAq.sin * pcLocalPointsI.x + xfAq.cos * pcLocalPointsI.y) +
-                xfA.p.y;
+            xfA.p.y;
         final tempX = clipPointX - planePointX;
         final tempY = clipPointY - planePointY;
         separation =
@@ -982,7 +990,6 @@ class PositionSolverManifold {
         point.y = clipPointY;
         normal.x *= -1;
         normal.y *= -1;
-        break;
     }
   }
 }
