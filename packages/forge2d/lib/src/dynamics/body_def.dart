@@ -23,8 +23,8 @@ class BodyDef {
     this.active = true,
     this.gravityOverride,
     this.gravityScale,
-  })  : position = position ?? Vector2.zero(),
-        linearVelocity = linearVelocity ?? Vector2.zero();
+  }) : position = position ?? Vector2.zero(),
+       linearVelocity = linearVelocity ?? Vector2.zero();
 
   /// The body type: static, kinematic, or dynamic.
   ///

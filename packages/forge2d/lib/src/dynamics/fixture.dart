@@ -280,7 +280,6 @@ class Fixture {
             debugDraw.drawSolidCircle(renderCenter, radius, color);
           }
         }
-        break;
       case ShapeType.polygon:
         {
           final poly = shape as PolygonShape;
@@ -297,7 +296,6 @@ class Fixture {
             debugDraw.drawSolidPolygon(vertices, color);
           }
         }
-        break;
       case ShapeType.edge:
         {
           final edge = shape as EdgeShape;
@@ -305,7 +303,6 @@ class Fixture {
           _v2.setFrom(Transform.mulVec2(xf, edge.vertex2));
           debugDraw.drawSegment(_v1, _v2, color);
         }
-        break;
       case ShapeType.chain:
         {
           final chain = shape as ChainShape;
@@ -320,7 +317,6 @@ class Fixture {
             _v1.setFrom(_v2);
           }
         }
-        break;
     }
   }
 }

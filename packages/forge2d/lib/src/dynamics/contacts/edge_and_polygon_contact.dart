@@ -8,8 +8,8 @@ class EdgeAndPolygonContact extends Contact {
     super.indexB,
     super.collision,
     super.distance,
-  )   : assert(fixtureA.type == ShapeType.edge),
-        assert(fixtureB.type == ShapeType.polygon);
+  ) : assert(fixtureA.type == ShapeType.edge),
+      assert(fixtureB.type == ShapeType.polygon);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {

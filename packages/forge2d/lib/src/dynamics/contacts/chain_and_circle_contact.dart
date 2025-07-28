@@ -8,8 +8,8 @@ class ChainAndCircleContact extends Contact {
     super.indexB,
     super.collision,
     super.distance,
-  )   : assert(fixtureA.type == ShapeType.chain),
-        assert(fixtureB.type == ShapeType.circle);
+  ) : assert(fixtureA.type == ShapeType.chain),
+      assert(fixtureB.type == ShapeType.circle);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {

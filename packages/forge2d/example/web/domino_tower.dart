@@ -97,7 +97,8 @@ class DominoTower extends Demo {
             dominoHeight * .5 + (dominoHeight + 2 * dominoWidth) * .99 * j;
 
         for (var i = 0; i < baseCount - j; ++i) {
-          currX = i * 1.5 * dominoHeight -
+          currX =
+              i * 1.5 * dominoHeight -
               (1.5 * dominoHeight * (baseCount - j) / 2);
           dominoDensity *= 2.5;
           if (i == 0) {

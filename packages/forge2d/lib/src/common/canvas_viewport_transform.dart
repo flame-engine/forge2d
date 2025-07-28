@@ -1,6 +1,7 @@
-import 'dart:html';
+import 'dart:js_interop';
 
 import 'package:forge2d/forge2d.dart';
+import 'package:web/web.dart';
 
 /// Transform for drawing using a canvas context. Y-flip is permanently set
 /// to true.
@@ -9,7 +10,7 @@ class CanvasViewportTransform extends ViewportTransform {
 
   /// Constructs a new viewport transform with the default scale.
   CanvasViewportTransform(Vector2 extents, Vector2 center)
-      : super(extents, center, defaultDrawingScale) {
+    : super(extents, center, defaultDrawingScale) {
     yFlip = true;
   }
 
@@ -18,7 +19,7 @@ class CanvasViewportTransform extends ViewportTransform {
   /// screen.
   void updateTransformation(CanvasRenderingContext2D ctx) {
     // Clear all previous transformation.
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(1.toJS, 0, 0, 1, 0, 0);
 
     // Translate to the center of the canvas screen. This will be considered the
     // actual origin.

@@ -190,10 +190,12 @@ class Island {
       if (b.bodyType == BodyType.dynamic) {
         // Integrate velocities.
         final bodyGravity = b.gravityOverride ?? gravity;
-        v.x += dt *
+        v.x +=
+            dt *
             ((b.gravityScale?.x ?? 1) * bodyGravity.x +
                 b.inverseMass * b.force.x);
-        v.y += dt *
+        v.y +=
+            dt *
             ((b.gravityScale?.y ?? 1) * bodyGravity.y +
                 b.inverseMass * b.force.y);
         w += dt * b.inverseInertia * b.torque;
@@ -267,7 +269,8 @@ class Island {
 
       if (translationX * translationX + translationY * translationY >
           settings.maxTranslationSquared) {
-        final ratio = settings.maxTranslation /
+        final ratio =
+            settings.maxTranslation /
             sqrt(translationX * translationX + translationY * translationY);
         v.x *= ratio;
         v.y *= ratio;
@@ -378,8 +381,10 @@ class Island {
 
     // Solve position constraints.
     for (var i = 0; i < subStep.positionIterations; ++i) {
-      final contactsOkay =
-          _toiContactSolver.solveTOIPositionConstraints(toiIndexA, toiIndexB);
+      final contactsOkay = _toiContactSolver.solveTOIPositionConstraints(
+        toiIndexA,
+        toiIndexB,
+      );
       if (contactsOkay) {
         break;
       }
@@ -420,7 +425,8 @@ class Island {
       final translationY = v.y * dt;
       if (translationX * translationX + translationY * translationY >
           settings.maxTranslationSquared) {
-        final ratio = settings.maxTranslation /
+        final ratio =
+            settings.maxTranslation /
             sqrt(translationX * translationX + translationY * translationY);
         v.scale(ratio);
       }

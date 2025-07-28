@@ -22,8 +22,8 @@ class FrictionJoint extends Joint {
   double _angularMass = 0.0;
 
   FrictionJoint(FrictionJointDef def)
-      : _linearImpulse = Vector2.zero(),
-        super(def) {
+    : _linearImpulse = Vector2.zero(),
+      super(def) {
     _maxForce = def.maxForce;
     _maxTorque = def.maxTorque;
   }
@@ -164,8 +164,10 @@ class FrictionJoint extends Joint {
 
       final oldImpulse = _angularImpulse;
       final maxImpulse = dt * _maxTorque;
-      _angularImpulse =
-          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse);
+      _angularImpulse = (_angularImpulse + impulse).clamp(
+        -maxImpulse,
+        maxImpulse,
+      );
       impulse = _angularImpulse - oldImpulse;
 
       wA -= iA * impulse;

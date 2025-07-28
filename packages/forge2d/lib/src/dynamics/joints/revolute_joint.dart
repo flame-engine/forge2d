@@ -360,16 +360,20 @@ class RevoluteJoint extends Joint {
         angularError = -C;
 
         // Prevent large angular corrections and allow some slop.
-        C = (C + settings.angularSlop)
-            .clamp(-settings.maxAngularCorrection, 0.0);
+        C = (C + settings.angularSlop).clamp(
+          -settings.maxAngularCorrection,
+          0.0,
+        );
         limitImpulse = -_motorMass * C;
       } else if (_limitState == LimitState.atUpper) {
         var C = angle - _upperAngle;
         angularError = C;
 
         // Prevent large angular corrections and allow some slop.
-        C = (C - settings.angularSlop)
-            .clamp(0.0, settings.maxAngularCorrection);
+        C = (C - settings.angularSlop).clamp(
+          0.0,
+          settings.maxAngularCorrection,
+        );
         limitImpulse = -_motorMass * C;
       }
 

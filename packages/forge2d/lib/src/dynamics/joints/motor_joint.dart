@@ -242,8 +242,10 @@ class MotorJoint extends Joint {
 
       final oldImpulse = _angularImpulse;
       final maxImpulse = dt * _maxTorque;
-      _angularImpulse =
-          (_angularImpulse + impulse).clamp(-maxImpulse, maxImpulse);
+      _angularImpulse = (_angularImpulse + impulse).clamp(
+        -maxImpulse,
+        maxImpulse,
+      );
       impulse = _angularImpulse - oldImpulse;
 
       wA -= iA * impulse;
@@ -256,12 +258,14 @@ class MotorJoint extends Joint {
     {
       // Cdot = vB + b2Cross(wB, _rB) - vA - b2Cross(wA, _rA) + inv_h *
       // _correctionFactor * _linearError;
-      cDot.x = vB.x +
+      cDot.x =
+          vB.x +
           -wB * _rB.y -
           vA.x -
           -wA * _rA.y +
           invDt * _correctionFactor * _linearError.x;
-      cDot.y = vB.y +
+      cDot.y =
+          vB.y +
           wB * _rB.x -
           vA.y -
           wA * _rA.x +

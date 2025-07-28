@@ -77,8 +77,10 @@ class TimeOfImpact {
 
     final totalRadius = proxyA.radius + proxyB.radius;
     // djm: whats with all these constants?
-    final target =
-        max(settings.linearSlop, totalRadius - 3.0 * settings.linearSlop);
+    final target = max(
+      settings.linearSlop,
+      totalRadius - 3.0 * settings.linearSlop,
+    );
     final tolerance = 0.25 * settings.linearSlop;
 
     assert(target > tolerance);

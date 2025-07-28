@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:html' hide Body;
+import 'dart:js_interop';
 
 import 'package:forge2d/forge2d_browser.dart';
+import 'package:web/web.dart';
 
 /// An abstract class for any Demo of the Forge2D library.
 abstract class Demo {
@@ -31,7 +32,7 @@ abstract class Demo {
   final double _viewportScale;
 
   /// The drawing canvas.
-  late final CanvasElement canvas;
+  late final HTMLCanvasElement canvas;
 
   /// The canvas rendering context.
   late final CanvasRenderingContext2D ctx;
@@ -55,10 +56,10 @@ abstract class Demo {
   late final Element worldStepTime;
 
   Demo(String name, [Vector2? gravity, this._viewportScale = viewportScale])
-      : world = World(gravity ?? Vector2(0.0, _gravity)),
-        _stopwatch = Stopwatch()..start() {
+    : world = World(gravity ?? Vector2(0.0, _gravity)),
+      _stopwatch = Stopwatch()..start() {
     world.setAllowSleep(true);
-    querySelector('#title')?.innerHtml = name;
+    document.querySelector('#title')?.innerHTML = name.toJS;
   }
 
   /// Advances the world forward by timestep seconds.
@@ -72,17 +73,17 @@ abstract class Demo {
     world.drawDebugData();
     frameCount++;
 
-    window.requestAnimationFrame(step);
+    window.requestAnimationFrame(step.toJS);
   }
 
   /// Creates the canvas and readies the demo for animation. Must be called
   /// before calling runAnimation.
   void initializeAnimation() {
     // Setup the canvas.
-    canvas = (Element.tag('canvas') as CanvasElement)
+    canvas = HTMLCanvasElement()
       ..width = canvasWidth
       ..height = canvasHeight;
-    document.body?.nodes.add(canvas);
+    document.body?.appendChild(canvas);
     ctx = canvas.context2D;
 
     // Create the viewport transform with the center at extents.
@@ -96,17 +97,17 @@ abstract class Demo {
     // Have the world draw itself for debugging purposes.
     world.debugDraw = debugDraw;
 
-    fpsCounter = querySelector('#fps-counter')!;
-    worldStepTime = querySelector('#world-step-time')!;
+    fpsCounter = document.querySelector('#fps-counter')!;
+    worldStepTime = document.querySelector('#world-step-time')!;
     Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      fpsCounter.innerHtml = frameCount.toString();
+      fpsCounter.innerHTML = frameCount.toJS;
       frameCount = 0;
     });
     Timer.periodic(const Duration(milliseconds: 200), (Timer t) {
       if (elapsedUs == null) {
         return;
       }
-      worldStepTime.innerHtml = '${elapsedUs! / 1000} ms';
+      worldStepTime.innerHTML = '${elapsedUs! / 1000} ms'.toJS;
     });
   }
 
@@ -114,6 +115,6 @@ abstract class Demo {
 
   /// Starts running the demo as an animation using an animation scheduler.
   void runAnimation() {
-    window.requestAnimationFrame(step);
+    window.requestAnimationFrame(step.toJS);
   }
 }

@@ -1,17 +1,19 @@
 name: forge2d_benchmark
 description: Simple benchmark for Forge2D
+resolution: workspace
 
 version: 1.0.0+1
 
 publish_to: 'none'
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.8.0 <4.0.0"
 
 dependencies:
   build_runner: ^2.4.5
   build_web_compilers: ^4.0.3
   forge2d: ^0.14.0
+  web: ^1.1.1
 
 dev_dependencies:
-  flame_lint: ^1.1.1
+  flame_lint: ^1.4.1

@@ -29,8 +29,8 @@ class ConstantVolumeJoint extends Joint {
   }
 
   ConstantVolumeJoint(World argWorld, ConstantVolumeJointDef def)
-      : _bodies = def.bodies.toList(growable: false),
-        super(def) {
+    : _bodies = def.bodies.toList(growable: false),
+      super(def) {
     _world = argWorld;
     if (def.bodies.length <= 2) {
       throw "Can't create a constant volume joint with less than three bodies.";
@@ -92,7 +92,8 @@ class ConstantVolumeJoint extends Joint {
     var area = 0.0;
     for (var i = 0; i < _bodies.length; ++i) {
       final next = (i == _bodies.length - 1) ? 0 : i + 1;
-      area += _bodies[i].worldCenter.x * _bodies[next].worldCenter.y -
+      area +=
+          _bodies[i].worldCenter.x * _bodies[next].worldCenter.y -
           _bodies[next].worldCenter.x * _bodies[i].worldCenter.y;
     }
     return area *= .5;
@@ -102,7 +103,8 @@ class ConstantVolumeJoint extends Joint {
     var area = 0.0;
     for (var i = 0; i < _bodies.length; ++i) {
       final next = (i == _bodies.length - 1) ? 0 : i + 1;
-      area += positions[_bodies[i].islandIndex].c.x *
+      area +=
+          positions[_bodies[i].islandIndex].c.x *
               positions[_bodies[next].islandIndex].c.y -
           positions[_bodies[next].islandIndex].c.x *
               positions[_bodies[i].islandIndex].c.y;
@@ -114,9 +116,11 @@ class ConstantVolumeJoint extends Joint {
     var perimeter = 0.0;
     for (var i = 0; i < _bodies.length; ++i) {
       final next = (i == _bodies.length - 1) ? 0 : i + 1;
-      final dx = positions[_bodies[next].islandIndex].c.x -
+      final dx =
+          positions[_bodies[next].islandIndex].c.x -
           positions[_bodies[i].islandIndex].c.x;
-      final dy = positions[_bodies[next].islandIndex].c.y -
+      final dy =
+          positions[_bodies[next].islandIndex].c.y -
           positions[_bodies[i].islandIndex].c.y;
       var dist = sqrt(dx * dx + dy * dy);
       if (dist < settings.epsilon) {
@@ -198,7 +202,8 @@ class ConstantVolumeJoint extends Joint {
       (i) {
         final prev = (i == 0) ? _bodies.length - 1 : i - 1;
         final next = (i == _bodies.length - 1) ? 0 : i + 1;
-        final v = positions[_bodies[next].islandIndex].c -
+        final v =
+            positions[_bodies[next].islandIndex].c -
             positions[_bodies[prev].islandIndex].c;
         dotMassSum += (v.length2) / _bodies[i].mass;
         crossMassSum += velocities[_bodies[i].islandIndex].v.cross(v);

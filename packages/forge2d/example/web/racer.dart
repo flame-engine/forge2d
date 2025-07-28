@@ -1,7 +1,8 @@
-import 'dart:html' hide Body;
+import 'dart:js_interop';
 import 'dart:math';
 
 import 'package:forge2d/forge2d_browser.dart';
+import 'package:web/web.dart';
 
 import 'demo.dart';
 import 'racer/car.dart';
@@ -26,8 +27,8 @@ class Racer extends Demo implements ContactListener {
     _controlState = 0;
 
     // Bind to keyboard events.
-    document.onKeyDown.listen(_handleKeyDown);
-    document.onKeyUp.listen(_handleKeyUp);
+    document.onkeydown = _handleKeyDown.toJS;
+    document.onkeyup = _handleKeyUp.toJS;
 
     // Add ourselves as a collision listener.
     world.setContactListener(this);
@@ -120,16 +121,12 @@ class Racer extends Demo implements ContactListener {
     switch (event.keyCode) {
       case 37:
         _controlState |= ControlState.left;
-        break;
       case 38:
         _controlState |= ControlState.up;
-        break;
       case 39:
         _controlState |= ControlState.right;
-        break;
       case 40:
         _controlState |= ControlState.down;
-        break;
     }
   }
 
@@ -137,16 +134,12 @@ class Racer extends Demo implements ContactListener {
     switch (event.keyCode) {
       case 37:
         _controlState &= ~ControlState.left;
-        break;
       case 38:
         _controlState &= ~ControlState.up;
-        break;
       case 39:
         _controlState &= ~ControlState.right;
-        break;
       case 40:
         _controlState &= ~ControlState.down;
-        break;
     }
   }
 
@@ -179,8 +172,8 @@ void main() {
   final racer = Racer();
   racer.initialize();
   racer.initializeAnimation();
-  final paragraph = ParagraphElement()
+  final paragraph = HTMLParagraphElement()
     ..innerText = 'Use the arrow keys to drive the car';
-  document.body?.nodes.add(paragraph);
+  document.body?.append(paragraph);
   racer.runAnimation();
 }

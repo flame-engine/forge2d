@@ -8,9 +8,7 @@ class Rot {
 
   Rot({this.sin = 0.0, this.cos = 1.0});
 
-  Rot.withAngle(double angle)
-      : sin = math.sin(angle),
-        cos = math.cos(angle);
+  Rot.withAngle(double angle) : sin = math.sin(angle), cos = math.cos(angle);
 
   void setAngle(double angle) {
     sin = math.sin(angle);
@@ -49,16 +47,16 @@ class Rot {
   Rot clone() => Rot(sin: sin, cos: cos);
 
   Rot.mul(Rot q, Rot r)
-      : this(
-          sin: q.sin * r.cos + q.cos * r.sin,
-          cos: q.cos * r.cos - q.sin * r.sin,
-        );
+    : this(
+        sin: q.sin * r.cos + q.cos * r.sin,
+        cos: q.cos * r.cos - q.sin * r.sin,
+      );
 
   Rot.mulTrans(Rot q, Rot r)
-      : this(
-          sin: q.cos * r.sin - q.sin * r.cos,
-          cos: q.cos * r.cos + q.sin * r.sin,
-        );
+    : this(
+        sin: q.cos * r.sin - q.sin * r.cos,
+        cos: q.cos * r.cos + q.sin * r.sin,
+      );
 
   static Vector2 mulVec2(Rot q, Vector2 v) {
     return Vector2(q.cos * v.x - q.sin * v.y, q.sin * v.x + q.cos * v.y);

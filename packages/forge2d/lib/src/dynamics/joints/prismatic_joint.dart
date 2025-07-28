@@ -123,11 +123,11 @@ class PrismaticJoint extends Joint {
       0.0; // effective mass for motor/limit translational constraint.
 
   PrismaticJoint(PrismaticJointDef def)
-      : localAnchorA = Vector2.copy(def.localAnchorA),
-        localAnchorB = Vector2.copy(def.localAnchorB),
-        localXAxisA = Vector2.copy(def.localAxisA)..normalize(),
-        _localYAxisA = Vector2.zero(),
-        super(def) {
+    : localAnchorA = Vector2.copy(def.localAnchorA),
+      localAnchorB = Vector2.copy(def.localAnchorB),
+      localXAxisA = Vector2.copy(def.localAxisA)..normalize(),
+      _localYAxisA = Vector2.zero(),
+      super(def) {
     localXAxisA.scaleOrthogonalInto(1.0, _localYAxisA);
     _referenceAngle = def.referenceAngle;
 
@@ -642,17 +642,19 @@ class PrismaticJoint extends Joint {
       ..sub(rA);
 
     axis.setFrom(Rot.mulVec2(qA, localXAxisA));
-    final a1 = (temp
-          ..setFrom(d)
-          ..add(rA))
-        .cross(axis);
+    final a1 =
+        (temp
+              ..setFrom(d)
+              ..add(rA))
+            .cross(axis);
     final a2 = rB.cross(axis);
     perp.setFrom(Rot.mulVec2(qA, _localYAxisA));
 
-    final s1 = (temp
-          ..setFrom(d)
-          ..add(rA))
-        .cross(perp);
+    final s1 =
+        (temp
+              ..setFrom(d)
+              ..add(rA))
+            .cross(perp);
     final s2 = rB.cross(perp);
 
     c1.x = perp.dot(d);
@@ -676,14 +678,18 @@ class PrismaticJoint extends Joint {
         active = true;
       } else if (translation <= _lowerTranslation) {
         // Prevent large linear corrections and allow some slop.
-        c2 = (translation - _lowerTranslation + settings.linearSlop)
-            .clamp(-settings.maxLinearCorrection, 0.0);
+        c2 = (translation - _lowerTranslation + settings.linearSlop).clamp(
+          -settings.maxLinearCorrection,
+          0.0,
+        );
         linearError = max(linearError, _lowerTranslation - translation);
         active = true;
       } else if (translation >= _upperTranslation) {
         // Prevent large linear corrections and allow some slop.
-        c2 = (translation - _upperTranslation - settings.linearSlop)
-            .clamp(0.0, settings.maxLinearCorrection);
+        c2 = (translation - _upperTranslation - settings.linearSlop).clamp(
+          0.0,
+          settings.maxLinearCorrection,
+        );
         linearError = max(linearError, translation - _upperTranslation);
         active = true;
       }

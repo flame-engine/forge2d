@@ -42,8 +42,10 @@ class DominoTest extends Demo {
 
       for (var i = 0; i < 4; ++i) {
         for (var j = 0; j < numPerRow; j++) {
-          bodyDef.position =
-              Vector2(-14.75 + j * (29.5 / (numPerRow - 1)), 7.3 + 5 * i);
+          bodyDef.position = Vector2(
+            -14.75 + j * (29.5 / (numPerRow - 1)),
+            7.3 + 5 * i,
+          );
           if (i == 2 && j == 0) {
             bodyDef.angle = -.1;
             bodyDef.position.x += .1;

@@ -47,10 +47,10 @@ class WeldJoint extends Joint {
   final Matrix3 _mass = Matrix3.zero();
 
   WeldJoint(WeldJointDef def)
-      : localAnchorA = Vector2.copy(def.localAnchorA),
-        localAnchorB = Vector2.copy(def.localAnchorB),
-        _impulse = Vector3.zero(),
-        super(def) {
+    : localAnchorA = Vector2.copy(def.localAnchorA),
+      localAnchorB = Vector2.copy(def.localAnchorB),
+      _impulse = Vector3.zero(),
+      super(def) {
     _referenceAngle = def.referenceAngle;
     _frequencyHz = def.frequencyHz;
     _dampingRatio = def.dampingRatio;

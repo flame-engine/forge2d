@@ -1,6 +1,7 @@
-import 'dart:html';
+import 'dart:js_interop';
 
 import 'package:forge2d/forge2d_browser.dart';
+import 'package:web/web.dart';
 
 import 'bench2d.dart';
 
@@ -16,7 +17,7 @@ class Bench2dWeb extends Bench2d {
   static const int canvasHeight = 600;
   static const double _viewportScale = 10.0;
 
-  late CanvasElement canvas;
+  late HTMLCanvasElement canvas;
   late CanvasRenderingContext2D ctx;
   late ViewportTransform viewport;
   late DebugDraw debugDraw;
@@ -25,7 +26,7 @@ class Bench2dWeb extends Bench2d {
   /// before calling runAnimation.
   void initializeAnimation() {
     // Setup the canvas.
-    canvas = CanvasElement()
+    canvas = HTMLCanvasElement()
       ..width = canvasWidth
       ..height = canvasHeight;
 
@@ -51,10 +52,10 @@ class Bench2dWeb extends Bench2d {
 
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     world.drawDebugData();
-    window.animationFrame.then(render);
+    window.requestAnimationFrame(render.toJS);
   }
 
   void runAnimation() {
-    window.animationFrame.then(render);
+    window.requestAnimationFrame(render.toJS);
   }
 }

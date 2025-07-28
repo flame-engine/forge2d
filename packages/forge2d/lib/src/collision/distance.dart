@@ -201,11 +201,9 @@ class _Simplex {
     switch (count) {
       case 0:
         assert(false);
-        break;
       case 1:
         pA.setFrom(vertex1.wA);
         pB.setFrom(vertex1.wB);
-        break;
       case 2:
         _case2
           ..setFrom(vertex1.wA)
@@ -224,7 +222,6 @@ class _Simplex {
           ..scale(vertex2.a)
           ..add(_case2);
 
-        break;
       case 3:
         pA
           ..setFrom(vertex1.wA)
@@ -239,10 +236,8 @@ class _Simplex {
           ..add(_case3)
           ..add(_case33);
         pB.setFrom(pA);
-        break;
       default:
         assert(false);
-        break;
     }
   }
 
@@ -469,7 +464,6 @@ class DistanceProxy {
         _count = 1;
         radius = circle.radius;
 
-        break;
       case ShapeType.polygon:
         final poly = shape as PolygonShape;
         _count = poly.vertices.length;
@@ -477,7 +471,6 @@ class DistanceProxy {
         for (var i = 0; i < _count; i++) {
           vertices[i].setFrom(poly.vertices[i]);
         }
-        break;
       case ShapeType.chain:
         final chain = shape as ChainShape;
         assert(0 <= index && index < chain.vertexCount);
@@ -493,14 +486,12 @@ class DistanceProxy {
         vertices[1].setFrom(buffer[1]);
         _count = 2;
         radius = chain.radius;
-        break;
       case ShapeType.edge:
         final edge = shape as EdgeShape;
         vertices[0].setFrom(edge.vertex1);
         vertices[1].setFrom(edge.vertex2);
         _count = 2;
         radius = edge.radius;
-        break;
     }
   }
 
@@ -607,10 +598,8 @@ class Distance {
           break;
         case 2:
           _simplex.solve2();
-          break;
         case 3:
           _simplex.solve3();
-          break;
         default:
           assert(false);
       }
