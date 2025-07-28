@@ -12,21 +12,19 @@ class AABB {
   final Vector2 upperBound;
 
   /// Creates the default object, with vertices at 0,0 and 0,0.
-  AABB()
-      : lowerBound = Vector2.zero(),
-        upperBound = Vector2.zero();
+  AABB() : lowerBound = Vector2.zero(), upperBound = Vector2.zero();
 
   /// Copies from the given object.
   AABB.copy(AABB copy)
-      : lowerBound = Vector2.copy(copy.lowerBound),
-        upperBound = Vector2.copy(copy.upperBound);
+    : lowerBound = Vector2.copy(copy.lowerBound),
+      upperBound = Vector2.copy(copy.upperBound);
 
   /// Creates an AABB object using the given bounding vertices.
   /// [lowerVertex] should be the bottom left vertex of the bounding box.
   /// [upperVertex] should be the top right vertex of the bounding box.
   AABB.withVec2(Vector2 lowerVertex, Vector2 upperVertex)
-      : lowerBound = Vector2.copy(lowerVertex),
-        upperBound = Vector2.copy(upperVertex);
+    : lowerBound = Vector2.copy(lowerVertex),
+      upperBound = Vector2.copy(upperVertex);
 
   /// Sets this object from the given object.
   void set(AABB aabb) {
@@ -101,14 +99,18 @@ class AABB {
 
   /// Combines another aabb with this one
   void combine(AABB aabb) {
-    lowerBound.x =
-        lowerBound.x < aabb.lowerBound.x ? lowerBound.x : aabb.lowerBound.x;
-    lowerBound.y =
-        lowerBound.y < aabb.lowerBound.y ? lowerBound.y : aabb.lowerBound.y;
-    upperBound.x =
-        upperBound.x > aabb.upperBound.x ? upperBound.x : aabb.upperBound.x;
-    upperBound.y =
-        upperBound.y > aabb.upperBound.y ? upperBound.y : aabb.upperBound.y;
+    lowerBound.x = lowerBound.x < aabb.lowerBound.x
+        ? lowerBound.x
+        : aabb.lowerBound.x;
+    lowerBound.y = lowerBound.y < aabb.lowerBound.y
+        ? lowerBound.y
+        : aabb.lowerBound.y;
+    upperBound.x = upperBound.x > aabb.upperBound.x
+        ? upperBound.x
+        : aabb.upperBound.x;
+    upperBound.y = upperBound.y > aabb.upperBound.y
+        ? upperBound.y
+        : aabb.upperBound.y;
   }
 
   /// Does this aabb contain the provided AABB.

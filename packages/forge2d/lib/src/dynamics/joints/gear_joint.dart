@@ -81,11 +81,11 @@ class GearJoint extends Joint {
   double _mass = 0.0;
 
   GearJoint(GearJointDef def)
-      : _joint1 = def.joint1,
-        _joint2 = def.joint2,
-        _bodyC = def.joint1.bodyA,
-        _bodyD = def.joint2.bodyA,
-        super(def) {
+    : _joint1 = def.joint1,
+      _joint2 = def.joint2,
+      _bodyC = def.joint1.bodyA,
+      _bodyD = def.joint2.bodyA,
+      super(def) {
     assert(
       (_joint1 is RevoluteJoint || _joint1 is PrismaticJoint) &&
           (_joint2 is RevoluteJoint || _joint2 is PrismaticJoint),
@@ -325,7 +325,8 @@ class GearJoint extends Joint {
 
     final temp1 = Vector2.zero();
     final temp2 = Vector2.zero();
-    var cDot = _jvAC.dot(
+    var cDot =
+        _jvAC.dot(
           temp1
             ..setFrom(vA)
             ..sub(vC),

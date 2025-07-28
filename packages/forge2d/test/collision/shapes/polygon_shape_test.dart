@@ -42,8 +42,12 @@ void main() {
       ) {
         final polygonShape = PolygonShape()..setAsBoxXY(3, 4);
         final normal = Vector2.zero();
-        final distance =
-            polygonShape.computeDistanceToOut(tf, testPoint, 0, normal);
+        final distance = polygonShape.computeDistanceToOut(
+          tf,
+          testPoint,
+          0,
+          normal,
+        );
         expect(distance, closeTo(expectedDistance, 0.01));
         expect(normal.x, closeTo(expectedNormal.x, 0.01));
         expect(normal.y, closeTo(expectedNormal.y, 0.01));

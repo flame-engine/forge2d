@@ -6,9 +6,9 @@ class PolygonContact extends Contact {
     Fixture fixtureB,
     Collision collision,
     Distance distance,
-  )   : assert(fixtureA.type == ShapeType.polygon),
-        assert(fixtureB.type == ShapeType.polygon),
-        super(fixtureA, 0, fixtureB, 0, collision, distance);
+  ) : assert(fixtureA.type == ShapeType.polygon),
+      assert(fixtureB.type == ShapeType.polygon),
+      super(fixtureA, 0, fixtureB, 0, collision, distance);
 
   @override
   void evaluate(Manifold manifold, Transform xfA, Transform xfB) {

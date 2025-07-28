@@ -648,7 +648,8 @@ class Collision {
 
     var pointCount = 0;
     for (var i = 0; i < settings.maxManifoldPoints; ++i) {
-      final separation = normalx * _clipPoints2[i].v.x +
+      final separation =
+          normalx * _clipPoints2[i].v.x +
           normaly * _clipPoints2[i].v.y -
           frontOffset;
 
@@ -1123,8 +1124,9 @@ class EdgePolygonCollider {
     // Get polygonB in frameA
     polygonB.count = polygonB2.vertices.length;
     for (var i = 0; i < polygonB2.vertices.length; ++i) {
-      polygonB.vertices[i]
-          .setFrom(Transform.mulVec2(xf, polygonB2.vertices[i]));
+      polygonB.vertices[i].setFrom(
+        Transform.mulVec2(xf, polygonB2.vertices[i]),
+      );
       polygonB.normals[i].setFrom(Rot.mulVec2(xf.q, polygonB2.normals[i]));
     }
 

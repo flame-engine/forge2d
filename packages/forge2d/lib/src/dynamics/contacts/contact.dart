@@ -211,8 +211,10 @@ abstract class Contact {
   }
 
   void resetRestitution() {
-    _restitution =
-        Contact.mixRestitution(fixtureA.restitution, fixtureB.restitution);
+    _restitution = Contact.mixRestitution(
+      fixtureA.restitution,
+      fixtureB.restitution,
+    );
   }
 
   void evaluate(Manifold manifold, Transform xfA, Transform xfB);

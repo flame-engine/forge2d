@@ -38,8 +38,7 @@ void main() {
         expect(bodyInitialPosition.y, equals(body.position.y));
       });
 
-      test(
-          "body moves with world's gravity "
+      test("body moves with world's gravity "
           'when gravityOverride is not specfied', () {
         final gravity = Vector2(10, 10);
         final world = World(gravity);
@@ -70,8 +69,7 @@ void main() {
         expect(bodyInitialPosition.y, equals(body.position.y));
       });
 
-      test(
-          "body moves with world's gravity "
+      test("body moves with world's gravity "
           'when gravityScale is not specfied', () {
         final gravity = Vector2(10, 10);
         final world = World(gravity);

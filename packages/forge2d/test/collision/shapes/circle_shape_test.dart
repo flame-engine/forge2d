@@ -35,8 +35,12 @@ void main() {
         final position = Vector2(1.0, 2.0);
         final circleShape = CircleShape(radius: radius, position: position);
         final normal = Vector2.zero();
-        final distance =
-            circleShape.computeDistanceToOut(tf, testPoint, 0, normal);
+        final distance = circleShape.computeDistanceToOut(
+          tf,
+          testPoint,
+          0,
+          normal,
+        );
         expect(distance, closeTo(expectedDistance, 0.01));
         expect(normal.x, closeTo(expectedNormal.x, 0.01));
         expect(normal.y, closeTo(expectedNormal.y, 0.01));

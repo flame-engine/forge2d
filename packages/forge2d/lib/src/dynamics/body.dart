@@ -74,10 +74,10 @@ class Body {
   Object? userData;
 
   Body(BodyDef bd, this.world)
-      : assert(!bd.position.isInfinite && !bd.position.isNaN),
-        assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
-        assert(bd.angularDamping >= 0.0),
-        assert(bd.linearDamping >= 0.0) {
+    : assert(!bd.position.isInfinite && !bd.position.isNaN),
+      assert(!bd.linearVelocity.isInfinite && !bd.linearVelocity.isNaN),
+      assert(bd.angularDamping >= 0.0),
+      assert(bd.linearDamping >= 0.0) {
     flags = 0;
 
     if (bd.bullet) {
@@ -364,7 +364,8 @@ class Body {
     }
 
     linearVelocity += impulse * _inverseMass;
-    _angularVelocity += inverseInertia *
+    _angularVelocity +=
+        inverseInertia *
         ((point.x - sweep.c.x) * impulse.y - (point.y - sweep.c.y) * impulse.x);
   }
 
@@ -731,10 +732,12 @@ class Body {
     final xf1 = _pxf;
     xf1.q.sin = sin(sweep.a0);
     xf1.q.cos = cos(sweep.a0);
-    xf1.p.x = sweep.c0.x -
+    xf1.p.x =
+        sweep.c0.x -
         xf1.q.cos * sweep.localCenter.x +
         xf1.q.sin * sweep.localCenter.y;
-    xf1.p.y = sweep.c0.y -
+    xf1.p.y =
+        sweep.c0.y -
         xf1.q.sin * sweep.localCenter.x -
         xf1.q.cos * sweep.localCenter.y;
 

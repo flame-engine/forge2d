@@ -10,19 +10,13 @@ class Transform {
   final Rot q;
 
   /// The default constructor.
-  Transform.zero()
-      : p = Vector2.zero(),
-        q = Rot();
+  Transform.zero() : p = Vector2.zero(), q = Rot();
 
   /// Initialize as a copy of another transform.
-  Transform.clone(Transform xf)
-      : p = xf.p.clone(),
-        q = xf.q.clone();
+  Transform.clone(Transform xf) : p = xf.p.clone(), q = xf.q.clone();
 
   /// Initialize using a position vector and a rotation matrix.
-  Transform.from(Vector2 position, Rot r)
-      : p = position.clone(),
-        q = r.clone();
+  Transform.from(Vector2 position, Rot r) : p = position.clone(), q = r.clone();
 
   /// Set this to equal another transform.
   void setFrom(Transform xf) {

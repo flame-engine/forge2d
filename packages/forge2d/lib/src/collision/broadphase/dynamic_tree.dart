@@ -151,7 +151,8 @@ class DynamicTree implements BroadPhaseStrategy {
         } else {
           if (_nodeStack.length - nodeStackIndex - 2 <= 0) {
             final previousSize = _nodeStack.length;
-            _nodeStack = _nodeStack +
+            _nodeStack =
+                _nodeStack +
                 List.generate(
                   previousSize,
                   (i) => DynamicTreeNode(previousSize + i),
@@ -269,7 +270,8 @@ class DynamicTree implements BroadPhaseStrategy {
       } else {
         if (_nodeStack.length - nodeStackIndex - 2 <= 0) {
           final previousSize = _nodeStack.length;
-          _nodeStack = _nodeStack +
+          _nodeStack =
+              _nodeStack +
               List.generate(
                 previousSize,
                 (i) => DynamicTreeNode(previousSize + i),
@@ -429,7 +431,8 @@ class DynamicTree implements BroadPhaseStrategy {
     if (_freeList == nullNode) {
       assert(_nodeCount == _nodeCapacity);
 
-      _nodes = _nodes +
+      _nodes =
+          _nodes +
           List<DynamicTreeNode>.generate(
             _nodeCapacity,
             (i) => DynamicTreeNode(_nodeCapacity + i),

@@ -220,8 +220,10 @@ class DistanceJoint extends Joint {
       ..sub(rA);
 
     final length = u.normalize();
-    final C = (length - _length)
-        .clamp(-settings.maxLinearCorrection, settings.maxLinearCorrection);
+    final C = (length - _length).clamp(
+      -settings.maxLinearCorrection,
+      settings.maxLinearCorrection,
+    );
 
     final impulse = -_mass * C;
     final pX = impulse * u.x;

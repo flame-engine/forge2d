@@ -70,7 +70,7 @@ class World {
   late ParticleSystem particleSystem;
 
   World([Vector2? gravity, BroadPhase? broadPhase])
-      : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
+    : _gravity = Vector2.copy(gravity ?? Vector2.zero()) {
     broadPhase ??= DefaultBroadPhaseBuffer(DynamicTree());
 
     _warmStarting = true;

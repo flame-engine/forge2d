@@ -25,16 +25,14 @@ class ManifoldPoint {
   final ContactID id;
 
   /// Blank manifold point with everything zeroed out.
-  ManifoldPoint()
-      : localPoint = Vector2.zero(),
-        id = ContactID();
+  ManifoldPoint() : localPoint = Vector2.zero(), id = ContactID();
 
   /// Creates a manifold point as a copy of the given point.
   ManifoldPoint.copy(ManifoldPoint manifoldPoint)
-      : localPoint = manifoldPoint.localPoint.clone(),
-        normalImpulse = manifoldPoint.normalImpulse,
-        tangentImpulse = manifoldPoint.tangentImpulse,
-        id = ContactID.copy(manifoldPoint.id);
+    : localPoint = manifoldPoint.localPoint.clone(),
+      normalImpulse = manifoldPoint.normalImpulse,
+      tangentImpulse = manifoldPoint.tangentImpulse,
+      id = ContactID.copy(manifoldPoint.id);
 
   /// Sets this manifold point form the given one.
   void set(ManifoldPoint manifoldPoint) {

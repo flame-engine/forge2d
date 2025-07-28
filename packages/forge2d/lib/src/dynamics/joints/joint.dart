@@ -18,9 +18,9 @@ abstract class Joint {
   final Vector2 localAnchorB;
 
   Joint(JointDef def)
-      : assert(def.bodyA != def.bodyB),
-        localAnchorA = def.localAnchorA,
-        localAnchorB = def.localAnchorB {
+    : assert(def.bodyA != def.bodyB),
+      localAnchorA = def.localAnchorA,
+      localAnchorB = def.localAnchorB {
     bodyA = def.bodyA;
     bodyB = def.bodyB;
     _collideConnected = def.collideConnected;

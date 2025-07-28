@@ -233,12 +233,16 @@ class ParticleSystem {
       }
       final upperBoundY = aabb.upperBound.y;
       final upperBoundX = aabb.upperBound.x;
-      for (var y = (aabb.lowerBound.y / stride).floor() * stride;
-          y < upperBoundY;
-          y += stride) {
-        for (var x = (aabb.lowerBound.x / stride).floor() * stride;
-            x < upperBoundX;
-            x += stride) {
+      for (
+        var y = (aabb.lowerBound.y / stride).floor() * stride;
+        y < upperBoundY;
+        y += stride
+      ) {
+        for (
+          var x = (aabb.lowerBound.x / stride).floor() * stride;
+          x < upperBoundX;
+          x += stride
+        ) {
           final p = _tempVec..setValues(x, y);
           if (shape.testPoint(identity, p)) {
             p.setFrom(Transform.mulVec2(transform, p));
@@ -277,8 +281,10 @@ class ParticleSystem {
         diagram.addGenerator(particle.position, particle);
       }
       diagram.generate(stride / 2);
-      final createParticleGroupCallback =
-          CreateParticleGroupCallback(this, groupDef);
+      final createParticleGroupCallback = CreateParticleGroupCallback(
+        this,
+        groupDef,
+      );
       diagram.nodes(createParticleGroupCallback);
     }
     if ((groupDef.groupFlags & ParticleGroupType.solidParticleGroup) != 0) {
@@ -532,8 +538,9 @@ class ParticleSystem {
       v.y += gravityY;
       final v2 = v.x * v.x + v.y * v.y;
       if (v2 > criticalVelocitySquared) {
-        final a =
-            v2 == 0 ? double.maxFinite : sqrt(criticalVelocitySquared / v2);
+        final a = v2 == 0
+            ? double.maxFinite
+            : sqrt(criticalVelocitySquared / v2);
         v.x *= a;
         v.y *= a;
       }
@@ -602,7 +609,8 @@ class ParticleSystem {
     final pressurePerWeight = pressureStrength * getCriticalPressure(step);
     for (final particle in _particles) {
       final w = particle.accumulation;
-      final h = pressurePerWeight *
+      final h =
+          pressurePerWeight *
           max(
             0.0,
             min(w, settings.maxParticleWeight) - settings.minParticleWeight,

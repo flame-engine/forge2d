@@ -225,10 +225,11 @@ class WheelJoint extends Joint {
     // Point to line constraint
     {
       _ay.setFrom(Rot.mulVec2(qA, _localYAxisA));
-      _sAy = (temp
-            ..setFrom(d)
-            ..add(rA))
-          .cross(_ay);
+      _sAy =
+          (temp
+                ..setFrom(d)
+                ..add(rA))
+              .cross(_ay);
       _sBy = rB.cross(_ay);
 
       _mass = mA + mB + iA * _sAy * _sAy + iB * _sBy * _sBy;
@@ -244,10 +245,11 @@ class WheelJoint extends Joint {
     _gamma = 0.0;
     if (_frequencyHz > 0.0) {
       _ax.setFrom(Rot.mulVec2(qA, _localXAxisA));
-      _sAx = (temp
-            ..setFrom(d)
-            ..add(rA))
-          .cross(_ax);
+      _sAx =
+          (temp
+                ..setFrom(d)
+                ..add(rA))
+              .cross(_ax);
       _sBx = rB.cross(_ax);
 
       final invMass = mA + mB + iA * _sAx * _sAx + iB * _sBx * _sBx;
@@ -341,7 +343,8 @@ class WheelJoint extends Joint {
 
     // Solve spring constraint
     {
-      final cDot = _ax.dot(
+      final cDot =
+          _ax.dot(
             temp
               ..setFrom(vB)
               ..sub(vA),
@@ -381,7 +384,8 @@ class WheelJoint extends Joint {
 
     // Solve point to line constraint
     {
-      final cDot = _ay.dot(
+      final cDot =
+          _ay.dot(
             temp
               ..setFrom(vB)
               ..sub(vA),
@@ -441,10 +445,11 @@ class WheelJoint extends Joint {
       ..sub(rA);
 
     final ay = Vector2.copy(Rot.mulVec2(qA, _localYAxisA));
-    final sAy = (temp
-          ..setFrom(d)
-          ..add(rA))
-        .cross(ay);
+    final sAy =
+        (temp
+              ..setFrom(d)
+              ..add(rA))
+            .cross(ay);
     final sBy = rB.cross(ay);
 
     final c = d.dot(ay);

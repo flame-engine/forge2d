@@ -18,9 +18,9 @@ class MassData {
 
   /// Copies from the given mass data.
   MassData.copy(MassData md)
-      : mass = md.mass,
-        center = md.center.clone(),
-        I = md.I;
+    : mass = md.mass,
+      center = md.center.clone(),
+      I = md.I;
 
   void set(MassData md) {
     mass = md.mass;
