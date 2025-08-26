@@ -15,6 +15,10 @@ class DistanceJoint extends Joint {
   double _impulse = 0.0;
   double _length = 0.0;
 
+  set length(double value) {
+    _length = value;
+  }
+
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
