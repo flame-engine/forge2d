@@ -19,6 +19,8 @@ class DistanceJoint extends Joint {
     _length = value;
   }
 
+  double get length => _length;
+
   // Solver temp
   int _indexA = 0;
   int _indexB = 0;
