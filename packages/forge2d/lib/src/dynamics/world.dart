@@ -25,6 +25,10 @@ class World {
   late ContactManager contactManager;
   final List<Body> bodies = <Body>[];
   final List<Joint> joints = <Joint>[];
+  final List<Body> bodiesToCreate = <Body>[];
+  final List<Body> bodiesToDestroy = <Body>[];
+  final List<Joint> jointsToCreate = <Joint>[];
+  final List<Joint> jointsToDestroy = <Joint>[];
 
   final Vector2 _gravity;
 
@@ -37,7 +41,7 @@ class World {
   ///
   /// See also:
   ///
-  /// * [Body.gravityScale], to multipy [gravity] for a [Body].
+  /// * [Body.gravityScale], to multiply [gravity] for a [Body].
   /// * [Body.gravityOverride], to change how the world treats the gravity for
   /// a [Body].
   /// {@endtemplate}
@@ -133,8 +137,11 @@ class World {
   ///
   /// Warning: This function is locked during callbacks.
   Body createBody(BodyDef def) {
-    assert(!isLocked);
     final body = Body(def, this);
+    if (isLocked) {
+      bodiesToCreate.add(body);
+      return body;
+    }
     bodies.add(body);
     return body;
   }
@@ -145,8 +152,10 @@ class World {
   /// Warning: This automatically deletes all associated shapes and joints.
   /// Warning: This function is locked during callbacks.
   void destroyBody(Body body) {
-    assert(bodies.isNotEmpty);
-    assert(!isLocked);
+    if (isLocked) {
+      bodiesToDestroy.add(body);
+      return;
+    }
 
     // Delete the attached joints.
     while (body.joints.isNotEmpty) {
@@ -173,10 +182,11 @@ class World {
   /// This may cause the connected bodies to cease colliding.
   ///
   /// Adding a joint doesn't wake up the bodies.
-  ///
-  /// Warning: This function is locked during callbacks.
   void createJoint(Joint joint) {
-    assert(!isLocked);
+    if (isLocked) {
+      jointsToCreate.add(joint);
+      return;
+    }
     joints.add(joint);
 
     final bodyA = joint.bodyA;
@@ -197,10 +207,11 @@ class World {
   }
 
   /// Destroys a joint. This may cause the connected bodies to begin colliding.
-  ///
-  /// Warning: This function is locked during callbacks.
   void destroyJoint(Joint joint) {
-    assert(!isLocked);
+    if (isLocked) {
+      jointsToDestroy.add(joint);
+      return;
+    }
 
     final collideConnected = joint.collideConnected;
     joints.remove(joint);
@@ -296,6 +307,16 @@ class World {
     }
 
     flags &= ~locked;
+
+    for (final body in bodiesToCreate) {
+      bodies.add(body);
+    }
+    bodiesToCreate.clear();
+
+    for (final body in bodiesToDestroy) {
+      destroyBody(body);
+    }
+    bodiesToDestroy.clear();
 
     _profile.step.record(_stepTimer.getMilliseconds());
   }

@@ -6,12 +6,11 @@ class ContactManager implements PairCallback {
   final Collision collision;
   final Distance distance;
   final List<Contact> contacts = [];
-  ContactFilter? contactFilter;
+  ContactFilter contactFilter;
   ContactListener? contactListener;
 
-  ContactManager(this.broadPhase, this.collision, this.distance) {
-    contactFilter = ContactFilter();
-  }
+  ContactManager(this.broadPhase, this.collision, this.distance)
+    : contactFilter = ContactFilter();
 
   /// Broad-phase callback.
   @override
@@ -49,7 +48,7 @@ class ContactManager implements PairCallback {
     }
 
     // Check user filtering.
-    if (contactFilter?.shouldCollide(fixtureA, fixtureB) == false) {
+    if (contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
       return;
     }
 
@@ -122,7 +121,7 @@ class ContactManager implements PairCallback {
         }
 
         // Check user filtering.
-        if (contactFilter?.shouldCollide(fixtureA, fixtureB) == false) {
+        if (contactFilter.shouldCollide(fixtureA, fixtureB) == false) {
           contactRemovals.add(c);
           continue;
         }
