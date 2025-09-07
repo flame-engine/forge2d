@@ -1,3 +1,8 @@
+## 0.14.1
+
+ - **FIX**: Destroy and create bodies after step is done ([#106](https://github.com/flame-engine/forge2d/issues/106)). ([92c7ccb8](https://github.com/flame-engine/forge2d/commit/92c7ccb85774a86a1f0656226e06a2504cdd47a6))
+ - **FIX**: Fix CircleShape.computeDistanceToOut and add some tests. ([#100](https://github.com/flame-engine/forge2d/issues/100)). ([584a07e2](https://github.com/flame-engine/forge2d/commit/584a07e261573fbc2d9e39590b0d20eea74d733a))
+
 ## 0.14.0
 
 > Note: This release has breaking changes.
