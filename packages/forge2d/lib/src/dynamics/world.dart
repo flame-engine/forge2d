@@ -27,6 +27,8 @@ class World {
   final List<Joint> joints = <Joint>[];
   final List<Body> bodiesToCreate = <Body>[];
   final List<Body> bodiesToDestroy = <Body>[];
+  final List<Joint> jointsToCreate = <Joint>[];
+  final List<Joint> jointsToDestroy = <Joint>[];
 
   final Vector2 _gravity;
 
@@ -39,7 +41,7 @@ class World {
   ///
   /// See also:
   ///
-  /// * [Body.gravityScale], to multipy [gravity] for a [Body].
+  /// * [Body.gravityScale], to multiply [gravity] for a [Body].
   /// * [Body.gravityOverride], to change how the world treats the gravity for
   /// a [Body].
   /// {@endtemplate}
@@ -180,10 +182,11 @@ class World {
   /// This may cause the connected bodies to cease colliding.
   ///
   /// Adding a joint doesn't wake up the bodies.
-  ///
-  /// Warning: This function is locked during callbacks.
   void createJoint(Joint joint) {
-    assert(!isLocked);
+    if (isLocked) {
+      jointsToCreate.add(joint);
+      return;
+    }
     joints.add(joint);
 
     final bodyA = joint.bodyA;
@@ -204,10 +207,11 @@ class World {
   }
 
   /// Destroys a joint. This may cause the connected bodies to begin colliding.
-  ///
-  /// Warning: This function is locked during callbacks.
   void destroyJoint(Joint joint) {
-    assert(!isLocked);
+    if (isLocked) {
+      jointsToDestroy.add(joint);
+      return;
+    }
 
     final collideConnected = joint.collideConnected;
     joints.remove(joint);

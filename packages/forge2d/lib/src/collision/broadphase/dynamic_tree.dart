@@ -461,7 +461,7 @@ class DynamicTree implements BroadPhaseStrategy {
 
   /// returns a node to the pool
   void _freeNode(DynamicTreeNode node) {
-    assert(0 < _nodeCount);
+    assert(_nodeCount > 0);
     node.parent = _freeList != nullNode ? _nodes[_freeList] : null;
     node.height = -1;
     _freeList = node.id;
