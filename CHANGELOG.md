@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-07
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`forge2d` - `v0.14.1`](#forge2d---v0141)
+
+---
+
+#### `forge2d` - `v0.14.1`
+
+ - **FIX**: Destroy and create bodies after step is done ([#106](https://github.com/flame-engine/forge2d/issues/106)). ([92c7ccb8](https://github.com/flame-engine/forge2d/commit/92c7ccb85774a86a1f0656226e06a2504cdd47a6))
+ - **FIX**: Fix CircleShape.computeDistanceToOut and add some tests. ([#100](https://github.com/flame-engine/forge2d/issues/100)). ([584a07e2](https://github.com/flame-engine/forge2d/commit/584a07e261573fbc2d9e39590b0d20eea74d733a))
+
+
 ## 2024-12-14
 
 ### Changes
