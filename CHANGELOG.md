@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`forge2d` - `v0.14.2`](#forge2d---v0142)
+
+---
+
+#### `forge2d` - `v0.14.2`
+
+ - **FIX**: Loosen constraints on vector_math to ^2.1.4 ([#108](https://github.com/flame-engine/forge2d/issues/108)). ([c2ca6157](https://github.com/flame-engine/forge2d/commit/c2ca61574a3701cc4cd53372124c773b6b1d9333))
+
+
+## 2025-09-07
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`forge2d` - `v0.14.1`](#forge2d---v0141)
 
 ---
