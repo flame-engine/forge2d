@@ -25,10 +25,10 @@ class World {
   late ContactManager contactManager;
   final List<Body> bodies = <Body>[];
   final List<Joint> joints = <Joint>[];
-  final List<Body> bodiesToCreate = <Body>[];
-  final List<Body> bodiesToDestroy = <Body>[];
-  final List<Joint> jointsToCreate = <Joint>[];
-  final List<Joint> jointsToDestroy = <Joint>[];
+  final List<Body> _bodiesToCreate = <Body>[];
+  final List<Body> _bodiesToDestroy = <Body>[];
+  final List<Joint> _jointsToCreate = <Joint>[];
+  final List<Joint> _jointsToDestroy = <Joint>[];
 
   final Vector2 _gravity;
 
@@ -139,7 +139,7 @@ class World {
   Body createBody(BodyDef def) {
     final body = Body(def, this);
     if (isLocked) {
-      bodiesToCreate.add(body);
+      _bodiesToCreate.add(body);
       return body;
     }
     bodies.add(body);
@@ -153,7 +153,7 @@ class World {
   /// Warning: This function is locked during callbacks.
   void destroyBody(Body body) {
     if (isLocked) {
-      bodiesToDestroy.add(body);
+      _bodiesToDestroy.add(body);
       return;
     }
 
@@ -184,7 +184,7 @@ class World {
   /// Adding a joint doesn't wake up the bodies.
   void createJoint(Joint joint) {
     if (isLocked) {
-      jointsToCreate.add(joint);
+      _jointsToCreate.add(joint);
       return;
     }
     joints.add(joint);
@@ -209,7 +209,7 @@ class World {
   /// Destroys a joint. This may cause the connected bodies to begin colliding.
   void destroyJoint(Joint joint) {
     if (isLocked) {
-      jointsToDestroy.add(joint);
+      _jointsToDestroy.add(joint);
       return;
     }
 
@@ -308,15 +308,25 @@ class World {
 
     flags &= ~locked;
 
-    for (final body in bodiesToCreate) {
+    for (final body in _bodiesToCreate) {
       bodies.add(body);
     }
-    bodiesToCreate.clear();
+    _bodiesToCreate.clear();
 
-    for (final body in bodiesToDestroy) {
+    for (final body in _bodiesToDestroy) {
       destroyBody(body);
     }
-    bodiesToDestroy.clear();
+    _bodiesToDestroy.clear();
+
+    for (final joint in _jointsToCreate) {
+      createJoint(joint);
+    }
+    _jointsToCreate.clear();
+
+    for (final joint in _jointsToDestroy) {
+      destroyJoint(joint);
+    }
+    _jointsToDestroy.clear();
 
     _profile.step.record(_stepTimer.getMilliseconds());
   }

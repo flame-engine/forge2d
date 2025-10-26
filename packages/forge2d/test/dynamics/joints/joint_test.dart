@@ -39,5 +39,52 @@ void main() {
       expect(body1.joints.length, 0);
       expect(body2.joints.length, 0);
     });
+
+    test('destruction of body with joint while world is locked', () {
+      final world = World(Vector2(0.0, -10.0));
+      final bodyDef = BodyDef();
+      final body1 = world.createBody(bodyDef);
+      final body2 = world.createBody(bodyDef..position = Vector2.all(2));
+      final shape = CircleShape(radius: 1.2, position: Vector2.all(10));
+      final fixtureDef = FixtureDef(
+        shape,
+        density: 50.0,
+        friction: 0.1,
+        restitution: 0.9,
+      );
+
+      body1.createFixture(fixtureDef);
+      body2.createFixture(fixtureDef);
+
+      world.flags = World.locked;
+
+      final revoluteJointDef = RevoluteJointDef()
+        ..initialize(body1, body2, body1.position);
+      final revoluteJoint = RevoluteJoint(revoluteJointDef);
+      world.createJoint(revoluteJoint);
+
+      expect(body1.joints.length, 0);
+      expect(body2.joints.length, 0);
+
+      world.flags = 0;
+      world.stepDt(1 / 60);
+
+      expect(body1.joints.length, 1);
+      expect(body2.joints.length, 1);
+
+      world.flags = World.locked;
+
+      // Attempt to destroy the body while the world is locked
+      world.destroyBody(body1);
+      expect(body1.joints.length, 1);
+      expect(body2.joints.length, 1);
+
+      // Step the world again to process the destruction
+      world.flags = 0;
+      world.stepDt(1 / 60);
+
+      expect(body1.joints.length, 0);
+      expect(body2.joints.length, 0);
+    });
   });
 }

@@ -83,5 +83,34 @@ void main() {
         expect(bodyInitialPosition.y, isNot(equals(body.position.y)));
       });
     });
+
+    test('creation and destruction of body while world is locked', () {
+      final world = World(Vector2(0.0, -10.0));
+      final bodyDef = BodyDef();
+
+      world.flags = World.locked;
+
+      // Attempt to create a body while the world is locked
+      final body = world.createBody(bodyDef);
+      expect(world.bodies.contains(body), isFalse);
+
+      world.flags = 0;
+      world.stepDt(1 / 60);
+
+      // Verify the body is created after unlocking the world
+      expect(world.bodies.contains(body), isTrue);
+
+      world.flags = World.locked;
+
+      // Attempt to destroy the body while the world is locked
+      world.destroyBody(body);
+      expect(world.bodies.contains(body), isTrue);
+
+      world.flags = 0;
+      world.stepDt(1 / 60);
+
+      // Verify the body is destroyed after unlocking the world
+      expect(world.bodies.contains(body), isFalse);
+    });
   });
 }
