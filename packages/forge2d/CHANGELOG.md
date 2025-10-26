@@ -1,3 +1,7 @@
+## 0.14.2+1
+
+ - **FIX**: Create and destroy joints after world has been locked ([#110](https://github.com/flame-engine/forge2d/issues/110)). ([0704959f](https://github.com/flame-engine/forge2d/commit/0704959fa0ef904a056228846c006498d9361520))
+
 ## 0.14.2
 
  - **FIX**: Loosen constraints on vector_math to ^2.1.4 ([#108](https://github.com/flame-engine/forge2d/issues/108)). ([c2ca6157](https://github.com/flame-engine/forge2d/commit/c2ca61574a3701cc4cd53372124c773b6b1d9333))

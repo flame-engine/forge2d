@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-10-26
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`forge2d` - `v0.14.2+1`](#forge2d---v01421)
+
+---
+
+#### `forge2d` - `v0.14.2+1`
+
+ - **FIX**: Create and destroy joints after world has been locked ([#110](https://github.com/flame-engine/forge2d/issues/110)). ([0704959f](https://github.com/flame-engine/forge2d/commit/0704959fa0ef904a056228846c006498d9361520))
+
+
 ## 2025-09-07
 
 ### Changes
