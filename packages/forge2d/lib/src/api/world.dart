@@ -1,5 +1,6 @@
 import 'package:forge2d/src/api/body.dart';
 import 'package:forge2d/src/api/defs.dart';
+import 'package:forge2d/src/api/events.dart';
 import 'package:forge2d/src/api/joints/distance_joint.dart';
 import 'package:forge2d/src/api/joints/filter_joint.dart';
 import 'package:forge2d/src/api/joints/joint.dart';
@@ -9,6 +10,9 @@ import 'package:forge2d/src/api/joints/prismatic_joint.dart';
 import 'package:forge2d/src/api/joints/revolute_joint.dart';
 import 'package:forge2d/src/api/joints/weld_joint.dart';
 import 'package:forge2d/src/api/joints/wheel_joint.dart';
+import 'package:forge2d/src/api/math.dart';
+import 'package:forge2d/src/api/shape.dart';
+import 'package:forge2d/src/backend/raw_box2d.dart';
 import 'package:forge2d/src/initialize.dart';
 import 'package:meta/meta.dart';
 import 'package:vector_math/vector_math.dart';
@@ -24,23 +28,23 @@ class World {
   /// Creates a world.
   ///
   /// [gravity] is a convenience override for the most commonly changed
-  /// setting; use [def] for full control over the remaining `b2WorldDef`
+  /// setting; use [definition] for full control over the remaining `b2WorldDef`
   /// fields.
-  World({Vector2? gravity, WorldDef? def})
-    : this._(gravity: gravity, def: def ?? WorldDef());
+  World({Vector2? gravity, WorldDef? definition})
+    : this._(gravity: gravity, definition: definition ?? WorldDef());
 
-  World._({required WorldDef def, Vector2? gravity})
+  World._({required WorldDef definition, Vector2? gravity})
     : id = rawBox2D.createWorld(
-        gravityX: (gravity ?? def.gravity).x,
-        gravityY: (gravity ?? def.gravity).y,
-        restitutionThreshold: def.restitutionThreshold,
-        hitEventThreshold: def.hitEventThreshold,
-        contactHertz: def.contactHertz,
-        contactDampingRatio: def.contactDampingRatio,
-        maxContactPushSpeed: def.maxContactPushSpeed,
-        maximumLinearSpeed: def.maximumLinearSpeed,
-        enableSleep: def.enableSleep,
-        enableContinuous: def.enableContinuous,
+        gravityX: (gravity ?? definition.gravity).x,
+        gravityY: (gravity ?? definition.gravity).y,
+        restitutionThreshold: definition.restitutionThreshold,
+        hitEventThreshold: definition.hitEventThreshold,
+        contactHertz: definition.contactHertz,
+        contactDampingRatio: definition.contactDampingRatio,
+        maxContactPushSpeed: definition.maxContactPushSpeed,
+        maximumLinearSpeed: definition.maximumLinearSpeed,
+        enableSleep: definition.enableSleep,
+        enableContinuous: definition.enableContinuous,
       );
 
   /// The packed native world id.
@@ -98,204 +102,494 @@ class World {
       rawBox2D.worldEnableContinuous(id, enabled: value);
 
   /// Creates a body in this world.
-  Body createBody([BodyDef? def]) {
+  Body createBody([BodyDef? definition]) {
     assert(isValid, 'World has been destroyed');
-    final bodyDef = def ?? BodyDef();
-    final (index1, wg) = rawBox2D.createBody(
+    final bodyDefinition = definition ?? BodyDef();
+    final (index1, worldAndGeneration) = rawBox2D.createBody(
       id,
-      type: bodyDef.type.index,
-      positionX: bodyDef.position.x,
-      positionY: bodyDef.position.y,
-      rotationCos: bodyDef.rotation.cos,
-      rotationSin: bodyDef.rotation.sin,
-      linearVelocityX: bodyDef.linearVelocity.x,
-      linearVelocityY: bodyDef.linearVelocity.y,
-      angularVelocity: bodyDef.angularVelocity,
-      linearDamping: bodyDef.linearDamping,
-      angularDamping: bodyDef.angularDamping,
-      gravityScale: bodyDef.gravityScale,
-      sleepThreshold: bodyDef.sleepThreshold,
-      name: bodyDef.name,
-      enableSleep: bodyDef.enableSleep,
-      isAwake: bodyDef.isAwake,
-      fixedRotation: bodyDef.fixedRotation,
-      isBullet: bodyDef.isBullet,
-      isEnabled: bodyDef.isEnabled,
-      allowFastRotation: bodyDef.allowFastRotation,
+      type: bodyDefinition.type.index,
+      positionX: bodyDefinition.position.x,
+      positionY: bodyDefinition.position.y,
+      rotationCos: bodyDefinition.rotation.cos,
+      rotationSin: bodyDefinition.rotation.sin,
+      linearVelocityX: bodyDefinition.linearVelocity.x,
+      linearVelocityY: bodyDefinition.linearVelocity.y,
+      angularVelocity: bodyDefinition.angularVelocity,
+      linearDamping: bodyDefinition.linearDamping,
+      angularDamping: bodyDefinition.angularDamping,
+      gravityScale: bodyDefinition.gravityScale,
+      sleepThreshold: bodyDefinition.sleepThreshold,
+      name: bodyDefinition.name,
+      enableSleep: bodyDefinition.enableSleep,
+      isAwake: bodyDefinition.isAwake,
+      fixedRotation: bodyDefinition.fixedRotation,
+      isBullet: bodyDefinition.isBullet,
+      isEnabled: bodyDefinition.isEnabled,
+      allowFastRotation: bodyDefinition.allowFastRotation,
     );
-    if (bodyDef.userData != null) {
-      bodyUserData[(index1, wg)] = bodyDef.userData;
+    if (bodyDefinition.userData != null) {
+      bodyUserData[(index1, worldAndGeneration)] = bodyDefinition.userData;
     }
-    return Body.internal(this, index1, wg);
+    return Body.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a distance joint from [def].
-  DistanceJoint createDistanceJoint(DistanceJointDef def) {
-    final (index1, wg) = rawBox2D.createDistanceJoint(
+  /// Creates a distance joint from [definition].
+  DistanceJoint createDistanceJoint(DistanceJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createDistanceJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
-      localAnchorA: (def.localAnchorA.x, def.localAnchorA.y),
-      localAnchorB: (def.localAnchorB.x, def.localAnchorB.y),
-      length: def.length,
-      enableSpring: def.enableSpring,
-      hertz: def.hertz,
-      dampingRatio: def.dampingRatio,
-      enableLimit: def.enableLimit,
-      minLength: def.minLength,
-      maxLength: def.maxLength,
-      enableMotor: def.enableMotor,
-      maxMotorForce: def.maxMotorForce,
-      motorSpeed: def.motorSpeed,
-      collideConnected: def.collideConnected,
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
+      localAnchorA: (definition.localAnchorA.x, definition.localAnchorA.y),
+      localAnchorB: (definition.localAnchorB.x, definition.localAnchorB.y),
+      length: definition.length,
+      enableSpring: definition.enableSpring,
+      hertz: definition.hertz,
+      dampingRatio: definition.dampingRatio,
+      enableLimit: definition.enableLimit,
+      minLength: definition.minLength,
+      maxLength: definition.maxLength,
+      enableMotor: definition.enableMotor,
+      maxMotorForce: definition.maxMotorForce,
+      motorSpeed: definition.motorSpeed,
+      collideConnected: definition.collideConnected,
     );
-    _storeJointUserData(index1, wg, def);
-    return DistanceJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return DistanceJoint.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a filter joint from [def], disabling collision between the two
-  /// bodies.
-  FilterJoint createFilterJoint(FilterJointDef def) {
-    final (index1, wg) = rawBox2D.createFilterJoint(
+  /// Creates a filter joint from [definition], disabling collision between
+  /// the two bodies.
+  FilterJoint createFilterJoint(FilterJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createFilterJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
     );
-    _storeJointUserData(index1, wg, def);
-    return FilterJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return FilterJoint.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a motor joint from [def].
-  MotorJoint createMotorJoint(MotorJointDef def) {
-    final (index1, wg) = rawBox2D.createMotorJoint(
+  /// Creates a motor joint from [definition].
+  MotorJoint createMotorJoint(MotorJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createMotorJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
-      linearOffset: (def.linearOffset.x, def.linearOffset.y),
-      angularOffset: def.angularOffset,
-      maxForce: def.maxForce,
-      maxTorque: def.maxTorque,
-      correctionFactor: def.correctionFactor,
-      collideConnected: def.collideConnected,
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
+      linearOffset: (definition.linearOffset.x, definition.linearOffset.y),
+      angularOffset: definition.angularOffset,
+      maxForce: definition.maxForce,
+      maxTorque: definition.maxTorque,
+      correctionFactor: definition.correctionFactor,
+      collideConnected: definition.collideConnected,
     );
-    _storeJointUserData(index1, wg, def);
-    return MotorJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return MotorJoint.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a mouse joint from [def].
-  MouseJoint createMouseJoint(MouseJointDef def) {
-    final (index1, wg) = rawBox2D.createMouseJoint(
+  /// Creates a mouse joint from [definition].
+  MouseJoint createMouseJoint(MouseJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createMouseJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
-      target: (def.target.x, def.target.y),
-      hertz: def.hertz,
-      dampingRatio: def.dampingRatio,
-      maxForce: def.maxForce,
-      collideConnected: def.collideConnected,
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
+      target: (definition.target.x, definition.target.y),
+      hertz: definition.hertz,
+      dampingRatio: definition.dampingRatio,
+      maxForce: definition.maxForce,
+      collideConnected: definition.collideConnected,
     );
-    _storeJointUserData(index1, wg, def);
-    return MouseJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return MouseJoint.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a prismatic joint from [def].
-  PrismaticJoint createPrismaticJoint(PrismaticJointDef def) {
-    final (index1, wg) = rawBox2D.createPrismaticJoint(
+  /// Creates a prismatic joint from [definition].
+  PrismaticJoint createPrismaticJoint(PrismaticJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createPrismaticJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
-      localAnchorA: (def.localAnchorA.x, def.localAnchorA.y),
-      localAnchorB: (def.localAnchorB.x, def.localAnchorB.y),
-      localAxisA: (def.localAxisA.x, def.localAxisA.y),
-      referenceAngle: def.referenceAngle,
-      targetTranslation: def.targetTranslation,
-      enableSpring: def.enableSpring,
-      hertz: def.hertz,
-      dampingRatio: def.dampingRatio,
-      enableLimit: def.enableLimit,
-      lowerTranslation: def.lowerTranslation,
-      upperTranslation: def.upperTranslation,
-      enableMotor: def.enableMotor,
-      maxMotorForce: def.maxMotorForce,
-      motorSpeed: def.motorSpeed,
-      collideConnected: def.collideConnected,
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
+      localAnchorA: (definition.localAnchorA.x, definition.localAnchorA.y),
+      localAnchorB: (definition.localAnchorB.x, definition.localAnchorB.y),
+      localAxisA: (definition.localAxisA.x, definition.localAxisA.y),
+      referenceAngle: definition.referenceAngle,
+      targetTranslation: definition.targetTranslation,
+      enableSpring: definition.enableSpring,
+      hertz: definition.hertz,
+      dampingRatio: definition.dampingRatio,
+      enableLimit: definition.enableLimit,
+      lowerTranslation: definition.lowerTranslation,
+      upperTranslation: definition.upperTranslation,
+      enableMotor: definition.enableMotor,
+      maxMotorForce: definition.maxMotorForce,
+      motorSpeed: definition.motorSpeed,
+      collideConnected: definition.collideConnected,
     );
-    _storeJointUserData(index1, wg, def);
-    return PrismaticJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return PrismaticJoint.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a revolute joint from [def].
-  RevoluteJoint createRevoluteJoint(RevoluteJointDef def) {
-    final (index1, wg) = rawBox2D.createRevoluteJoint(
+  /// Creates a revolute joint from [definition].
+  RevoluteJoint createRevoluteJoint(RevoluteJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createRevoluteJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
-      localAnchorA: (def.localAnchorA.x, def.localAnchorA.y),
-      localAnchorB: (def.localAnchorB.x, def.localAnchorB.y),
-      referenceAngle: def.referenceAngle,
-      targetAngle: def.targetAngle,
-      enableSpring: def.enableSpring,
-      hertz: def.hertz,
-      dampingRatio: def.dampingRatio,
-      enableLimit: def.enableLimit,
-      lowerAngle: def.lowerAngle,
-      upperAngle: def.upperAngle,
-      enableMotor: def.enableMotor,
-      maxMotorTorque: def.maxMotorTorque,
-      motorSpeed: def.motorSpeed,
-      drawSize: def.drawSize,
-      collideConnected: def.collideConnected,
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
+      localAnchorA: (definition.localAnchorA.x, definition.localAnchorA.y),
+      localAnchorB: (definition.localAnchorB.x, definition.localAnchorB.y),
+      referenceAngle: definition.referenceAngle,
+      targetAngle: definition.targetAngle,
+      enableSpring: definition.enableSpring,
+      hertz: definition.hertz,
+      dampingRatio: definition.dampingRatio,
+      enableLimit: definition.enableLimit,
+      lowerAngle: definition.lowerAngle,
+      upperAngle: definition.upperAngle,
+      enableMotor: definition.enableMotor,
+      maxMotorTorque: definition.maxMotorTorque,
+      motorSpeed: definition.motorSpeed,
+      drawSize: definition.drawSize,
+      collideConnected: definition.collideConnected,
     );
-    _storeJointUserData(index1, wg, def);
-    return RevoluteJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return RevoluteJoint.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a weld joint from [def].
-  WeldJoint createWeldJoint(WeldJointDef def) {
-    final (index1, wg) = rawBox2D.createWeldJoint(
+  /// Creates a weld joint from [definition].
+  WeldJoint createWeldJoint(WeldJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createWeldJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
-      localAnchorA: (def.localAnchorA.x, def.localAnchorA.y),
-      localAnchorB: (def.localAnchorB.x, def.localAnchorB.y),
-      referenceAngle: def.referenceAngle,
-      linearHertz: def.linearHertz,
-      angularHertz: def.angularHertz,
-      linearDampingRatio: def.linearDampingRatio,
-      angularDampingRatio: def.angularDampingRatio,
-      collideConnected: def.collideConnected,
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
+      localAnchorA: (definition.localAnchorA.x, definition.localAnchorA.y),
+      localAnchorB: (definition.localAnchorB.x, definition.localAnchorB.y),
+      referenceAngle: definition.referenceAngle,
+      linearHertz: definition.linearHertz,
+      angularHertz: definition.angularHertz,
+      linearDampingRatio: definition.linearDampingRatio,
+      angularDampingRatio: definition.angularDampingRatio,
+      collideConnected: definition.collideConnected,
     );
-    _storeJointUserData(index1, wg, def);
-    return WeldJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return WeldJoint.internal(this, index1, worldAndGeneration);
   }
 
-  /// Creates a wheel joint from [def].
-  WheelJoint createWheelJoint(WheelJointDef def) {
-    final (index1, wg) = rawBox2D.createWheelJoint(
+  /// Creates a wheel joint from [definition].
+  WheelJoint createWheelJoint(WheelJointDef definition) {
+    final (index1, worldAndGeneration) = rawBox2D.createWheelJoint(
       id,
-      bodyA: (def.bodyA.index1, def.bodyA.wg),
-      bodyB: (def.bodyB.index1, def.bodyB.wg),
-      localAnchorA: (def.localAnchorA.x, def.localAnchorA.y),
-      localAnchorB: (def.localAnchorB.x, def.localAnchorB.y),
-      localAxisA: (def.localAxisA.x, def.localAxisA.y),
-      enableSpring: def.enableSpring,
-      hertz: def.hertz,
-      dampingRatio: def.dampingRatio,
-      enableLimit: def.enableLimit,
-      lowerTranslation: def.lowerTranslation,
-      upperTranslation: def.upperTranslation,
-      enableMotor: def.enableMotor,
-      maxMotorTorque: def.maxMotorTorque,
-      motorSpeed: def.motorSpeed,
-      collideConnected: def.collideConnected,
+      bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
+      bodyB: (definition.bodyB.index1, definition.bodyB.worldAndGeneration),
+      localAnchorA: (definition.localAnchorA.x, definition.localAnchorA.y),
+      localAnchorB: (definition.localAnchorB.x, definition.localAnchorB.y),
+      localAxisA: (definition.localAxisA.x, definition.localAxisA.y),
+      enableSpring: definition.enableSpring,
+      hertz: definition.hertz,
+      dampingRatio: definition.dampingRatio,
+      enableLimit: definition.enableLimit,
+      lowerTranslation: definition.lowerTranslation,
+      upperTranslation: definition.upperTranslation,
+      enableMotor: definition.enableMotor,
+      maxMotorTorque: definition.maxMotorTorque,
+      motorSpeed: definition.motorSpeed,
+      collideConnected: definition.collideConnected,
     );
-    _storeJointUserData(index1, wg, def);
-    return WheelJoint.internal(this, index1, wg);
+    _storeJointUserData(index1, worldAndGeneration, definition);
+    return WheelJoint.internal(this, index1, worldAndGeneration);
   }
 
-  void _storeJointUserData(int index1, int wg, JointDef def) {
-    if (def.userData != null) {
-      jointUserData[(index1, wg)] = def.userData;
+  void _storeJointUserData(
+    int index1,
+    int worldAndGeneration,
+    JointDef definition,
+  ) {
+    if (definition.userData != null) {
+      jointUserData[(index1, worldAndGeneration)] = definition.userData;
+    }
+  }
+
+  // Events. Poll these after each call to [step]; the returned collections
+  // are Dart-side copies and stay usable afterwards.
+
+  /// The contact events of the last step.
+  ///
+  /// Only shapes with [ShapeDef.enableContactEvents] generate begin and end
+  /// events, and hit events additionally require
+  /// [ShapeDef.enableHitEvents].
+  ContactEvents get contactEvents {
+    final events = rawBox2D.worldGetContactEvents(id);
+    return ContactEvents(
+      begin: [
+        for (final event in events.begin)
+          ContactBeginEvent(
+            shapeA: Shape.internal(
+              this,
+              event.shapeAIndex1,
+              event.shapeAWorldAndGeneration,
+            ),
+            shapeB: Shape.internal(
+              this,
+              event.shapeBIndex1,
+              event.shapeBWorldAndGeneration,
+            ),
+            normal: Vector2(event.normalX, event.normalY),
+            points: [
+              for (final point in event.points)
+                ContactPoint(
+                  point: Vector2(point.x, point.y),
+                  separation: point.separation,
+                ),
+            ],
+          ),
+      ],
+      end: [
+        for (final event in events.end)
+          ContactEndEvent(
+            shapeA: Shape.internal(
+              this,
+              event.shapeAIndex1,
+              event.shapeAWorldAndGeneration,
+            ),
+            shapeB: Shape.internal(
+              this,
+              event.shapeBIndex1,
+              event.shapeBWorldAndGeneration,
+            ),
+          ),
+      ],
+      hit: [
+        for (final event in events.hit)
+          ContactHitEvent(
+            shapeA: Shape.internal(
+              this,
+              event.shapeAIndex1,
+              event.shapeAWorldAndGeneration,
+            ),
+            shapeB: Shape.internal(
+              this,
+              event.shapeBIndex1,
+              event.shapeBWorldAndGeneration,
+            ),
+            point: Vector2(event.pointX, event.pointY),
+            normal: Vector2(event.normalX, event.normalY),
+            approachSpeed: event.approachSpeed,
+          ),
+      ],
+    );
+  }
+
+  /// The sensor overlap events of the last step.
+  ///
+  /// Sensor shapes need [ShapeDef.isSensor], and visiting shapes need
+  /// [ShapeDef.enableSensorEvents].
+  SensorEvents get sensorEvents {
+    final events = rawBox2D.worldGetSensorEvents(id);
+    return SensorEvents(
+      begin: [
+        for (final event in events.begin)
+          SensorEvent(
+            sensor: Shape.internal(
+              this,
+              event.sensorIndex1,
+              event.sensorWorldAndGeneration,
+            ),
+            visitor: Shape.internal(
+              this,
+              event.visitorIndex1,
+              event.visitorWorldAndGeneration,
+            ),
+          ),
+      ],
+      end: [
+        for (final event in events.end)
+          SensorEvent(
+            sensor: Shape.internal(
+              this,
+              event.sensorIndex1,
+              event.sensorWorldAndGeneration,
+            ),
+            visitor: Shape.internal(
+              this,
+              event.visitorIndex1,
+              event.visitorWorldAndGeneration,
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// The bodies that moved during the last step, with their new transforms.
+  ///
+  /// Use this to sync game objects to the simulation without touching every
+  /// body.
+  List<BodyMoveEvent> get bodyMoveEvents => [
+    for (final event in rawBox2D.worldGetBodyEvents(id))
+      BodyMoveEvent(
+        body: Body.internal(
+          this,
+          event.bodyIndex1,
+          event.bodyWorldAndGeneration,
+        ),
+        transform: Transform(
+          Vector2(event.x, event.y),
+          Rot(event.rotationCos, event.rotationSin),
+        ),
+        fellAsleep: event.fellAsleep,
+      ),
+  ];
+
+  // Queries.
+
+  /// Casts a ray from [origin] along [translation] and returns the closest
+  /// hit, or null when nothing is hit.
+  RayHit? castRayClosest(
+    Vector2 origin,
+    Vector2 translation, {
+    QueryFilter? filter,
+  }) {
+    final queryFilter = filter ?? QueryFilter();
+    final hit = rawBox2D.worldCastRayClosest(
+      id,
+      origin.x,
+      origin.y,
+      translation.x,
+      translation.y,
+      queryFilter.categoryBits,
+      queryFilter.maskBits,
+    );
+    if (hit == null) {
+      return null;
+    }
+    return _rayHit(hit);
+  }
+
+  /// Casts a ray from [origin] along [translation], invoking [callback] for
+  /// every candidate hit in an arbitrary order.
+  ///
+  /// The callback controls the rest of the cast with its return value:
+  /// -1 to ignore the hit, 0 to stop, the hit's fraction to clip the ray to
+  /// the hit, or 1 to continue looking without clipping.
+  void castRay(
+    Vector2 origin,
+    Vector2 translation,
+    double Function(RayHit hit) callback, {
+    QueryFilter? filter,
+  }) {
+    final queryFilter = filter ?? QueryFilter();
+    rawBox2D.worldCastRay(
+      id,
+      origin.x,
+      origin.y,
+      translation.x,
+      translation.y,
+      queryFilter.categoryBits,
+      queryFilter.maskBits,
+      (hit) => callback(_rayHit(hit)),
+    );
+  }
+
+  /// Casts a ray from [origin] along [translation] and returns every hit,
+  /// sorted from nearest to farthest.
+  List<RayHit> castRayAll(
+    Vector2 origin,
+    Vector2 translation, {
+    QueryFilter? filter,
+  }) {
+    final hits = <RayHit>[];
+    castRay(origin, translation, filter: filter, (hit) {
+      hits.add(hit);
+      return 1;
+    });
+    return hits..sort((a, b) => a.fraction.compareTo(b.fraction));
+  }
+
+  RayHit _rayHit(RawRayHit hit) => RayHit(
+    shape: Shape.internal(this, hit.shapeIndex1, hit.shapeWorldAndGeneration),
+    point: Vector2(hit.pointX, hit.pointY),
+    normal: Vector2(hit.normalX, hit.normalY),
+    fraction: hit.fraction,
+  );
+
+  /// Returns all shapes whose bounding boxes overlap [aabb].
+  List<Shape> overlapAabb(Aabb aabb, {QueryFilter? filter}) {
+    final queryFilter = filter ?? QueryFilter();
+    final ids = rawBox2D.worldOverlapAabb(
+      id,
+      aabb.lowerBound.x,
+      aabb.lowerBound.y,
+      aabb.upperBound.x,
+      aabb.upperBound.y,
+      queryFilter.categoryBits,
+      queryFilter.maskBits,
+    );
+    return [
+      for (var i = 0; i < ids.length; i += 2)
+        Shape.internal(this, ids[i], ids[i + 1]),
+    ];
+  }
+
+  /// Applies a radial explosion impulse to all shapes within reach.
+  void explode(ExplosionDef definition) => rawBox2D.worldExplode(
+    id,
+    maskBits: definition.maskBits,
+    positionX: definition.position.x,
+    positionY: definition.position.y,
+    radius: definition.radius,
+    falloff: definition.falloff,
+    impulsePerLength: definition.impulsePerLength,
+  );
+
+  // Simulation callbacks.
+
+  /// Sets or clears a custom collision filter, consulted for shape pairs
+  /// that pass the regular category and group filtering. It returns whether
+  /// the shapes may collide.
+  ///
+  /// The callback runs during [step] and must not access the world.
+  set customFilterCallback(
+    bool Function(Shape shapeA, Shape shapeB)? callback,
+  ) {
+    if (callback == null) {
+      rawBox2D.worldSetCustomFilterCallback(id, null);
+    } else {
+      rawBox2D.worldSetCustomFilterCallback(
+        id,
+        (aIndex1, aWorldAndGeneration, bIndex1, bWorldAndGeneration) =>
+            callback(
+              Shape.internal(this, aIndex1, aWorldAndGeneration),
+              Shape.internal(this, bIndex1, bWorldAndGeneration),
+            ),
+      );
+    }
+  }
+
+  /// Sets or clears the pre-solve callback, invoked during [step] after a
+  /// contact manifold is computed but before the solver runs. Returning
+  /// false disables the contact for the step, enabling one-sided platforms
+  /// and similar tricks.
+  ///
+  /// Only shapes with [ShapeDef.enablePreSolveEvents] participate. The
+  /// callback must be fast and must not access the world.
+  set preSolveCallback(
+    bool Function(Shape shapeA, Shape shapeB, Vector2 normal)? callback,
+  ) {
+    if (callback == null) {
+      rawBox2D.worldSetPreSolveCallback(id, null);
+    } else {
+      rawBox2D.worldSetPreSolveCallback(
+        id,
+        (
+          aIndex1,
+          aWorldAndGeneration,
+          bIndex1,
+          bWorldAndGeneration,
+          normalX,
+          normalY,
+        ) => callback(
+          Shape.internal(this, aIndex1, aWorldAndGeneration),
+          Shape.internal(this, bIndex1, bWorldAndGeneration),
+          Vector2(normalX, normalY),
+        ),
+      );
     }
   }
 

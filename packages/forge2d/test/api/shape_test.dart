@@ -57,7 +57,7 @@ void main() {
       );
     });
 
-    test('reflects the def it was created from', () {
+    test('reflects the definition it was created from', () {
       final shape = body.createShape(
         Circle(radius: 1),
         ShapeDef(

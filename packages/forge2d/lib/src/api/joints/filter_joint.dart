@@ -14,6 +14,9 @@ class FilterJointDef extends JointDef {
 final class FilterJoint extends Joint {
   /// Wraps an existing native joint id. Internal to forge2d.
   @internal
-  const FilterJoint.internal(super.world, super.index1, super.wg)
-    : super.internal();
+  const FilterJoint.internal(
+    super.world,
+    super.index1,
+    super.worldAndGeneration,
+  ) : super.internal();
 }

@@ -79,72 +79,97 @@ class RevoluteJointDef extends JointDef {
 final class RevoluteJoint extends Joint {
   /// Wraps an existing native joint id. Internal to forge2d.
   @internal
-  const RevoluteJoint.internal(super.world, super.index1, super.wg)
-    : super.internal();
+  const RevoluteJoint.internal(
+    super.world,
+    super.index1,
+    super.worldAndGeneration,
+  ) : super.internal();
 
   /// The current joint angle relative to the reference angle, in radians.
-  double get angle => rawBox2D.revoluteJointGetAngle(index1, wg);
+  double get angle =>
+      rawBox2D.revoluteJointGetAngle(index1, worldAndGeneration);
 
   /// Whether the spring is enabled.
-  bool get springEnabled => rawBox2D.revoluteJointIsSpringEnabled(index1, wg);
+  bool get springEnabled =>
+      rawBox2D.revoluteJointIsSpringEnabled(index1, worldAndGeneration);
 
-  set springEnabled(bool value) =>
-      rawBox2D.revoluteJointEnableSpring(index1, wg, enabled: value);
+  set springEnabled(bool value) => rawBox2D.revoluteJointEnableSpring(
+    index1,
+    worldAndGeneration,
+    enabled: value,
+  );
 
   /// The spring stiffness in hertz.
-  double get springHertz => rawBox2D.revoluteJointGetSpringHertz(index1, wg);
+  double get springHertz =>
+      rawBox2D.revoluteJointGetSpringHertz(index1, worldAndGeneration);
 
   set springHertz(double value) =>
-      rawBox2D.revoluteJointSetSpringHertz(index1, wg, value);
+      rawBox2D.revoluteJointSetSpringHertz(index1, worldAndGeneration, value);
 
   /// The spring damping ratio.
   double get springDampingRatio =>
-      rawBox2D.revoluteJointGetSpringDampingRatio(index1, wg);
+      rawBox2D.revoluteJointGetSpringDampingRatio(index1, worldAndGeneration);
 
-  set springDampingRatio(double value) =>
-      rawBox2D.revoluteJointSetSpringDampingRatio(index1, wg, value);
+  set springDampingRatio(double value) => rawBox2D
+      .revoluteJointSetSpringDampingRatio(index1, worldAndGeneration, value);
 
   /// The target angle for the spring, in radians.
-  double get targetAngle => rawBox2D.revoluteJointGetTargetAngle(index1, wg);
+  double get targetAngle =>
+      rawBox2D.revoluteJointGetTargetAngle(index1, worldAndGeneration);
 
   set targetAngle(double value) =>
-      rawBox2D.revoluteJointSetTargetAngle(index1, wg, value);
+      rawBox2D.revoluteJointSetTargetAngle(index1, worldAndGeneration, value);
 
   /// Whether the angle limit is enabled.
-  bool get limitEnabled => rawBox2D.revoluteJointIsLimitEnabled(index1, wg);
+  bool get limitEnabled =>
+      rawBox2D.revoluteJointIsLimitEnabled(index1, worldAndGeneration);
 
-  set limitEnabled(bool value) =>
-      rawBox2D.revoluteJointEnableLimit(index1, wg, enabled: value);
+  set limitEnabled(bool value) => rawBox2D.revoluteJointEnableLimit(
+    index1,
+    worldAndGeneration,
+    enabled: value,
+  );
 
   /// The lower angle limit, in radians.
-  double get lowerLimit => rawBox2D.revoluteJointGetLowerLimit(index1, wg);
+  double get lowerLimit =>
+      rawBox2D.revoluteJointGetLowerLimit(index1, worldAndGeneration);
 
   /// The upper angle limit, in radians.
-  double get upperLimit => rawBox2D.revoluteJointGetUpperLimit(index1, wg);
+  double get upperLimit =>
+      rawBox2D.revoluteJointGetUpperLimit(index1, worldAndGeneration);
 
   /// Sets the angle limits, in radians.
   void setLimits({required double lower, required double upper}) =>
-      rawBox2D.revoluteJointSetLimits(index1, wg, lower, upper);
+      rawBox2D.revoluteJointSetLimits(index1, worldAndGeneration, lower, upper);
 
   /// Whether the motor is enabled.
-  bool get motorEnabled => rawBox2D.revoluteJointIsMotorEnabled(index1, wg);
+  bool get motorEnabled =>
+      rawBox2D.revoluteJointIsMotorEnabled(index1, worldAndGeneration);
 
-  set motorEnabled(bool value) =>
-      rawBox2D.revoluteJointEnableMotor(index1, wg, enabled: value);
+  set motorEnabled(bool value) => rawBox2D.revoluteJointEnableMotor(
+    index1,
+    worldAndGeneration,
+    enabled: value,
+  );
 
   /// The motor speed, in radians per second.
-  double get motorSpeed => rawBox2D.revoluteJointGetMotorSpeed(index1, wg);
+  double get motorSpeed =>
+      rawBox2D.revoluteJointGetMotorSpeed(index1, worldAndGeneration);
 
   set motorSpeed(double value) =>
-      rawBox2D.revoluteJointSetMotorSpeed(index1, wg, value);
+      rawBox2D.revoluteJointSetMotorSpeed(index1, worldAndGeneration, value);
 
   /// The maximum motor torque, in newton-meters.
   double get maxMotorTorque =>
-      rawBox2D.revoluteJointGetMaxMotorTorque(index1, wg);
+      rawBox2D.revoluteJointGetMaxMotorTorque(index1, worldAndGeneration);
 
-  set maxMotorTorque(double value) =>
-      rawBox2D.revoluteJointSetMaxMotorTorque(index1, wg, value);
+  set maxMotorTorque(double value) => rawBox2D.revoluteJointSetMaxMotorTorque(
+    index1,
+    worldAndGeneration,
+    value,
+  );
 
   /// The current motor torque, in newton-meters.
-  double get motorTorque => rawBox2D.revoluteJointGetMotorTorque(index1, wg);
+  double get motorTorque =>
+      rawBox2D.revoluteJointGetMotorTorque(index1, worldAndGeneration);
 }

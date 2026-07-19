@@ -53,32 +53,34 @@ class WeldJointDef extends JointDef {
 final class WeldJoint extends Joint {
   /// Wraps an existing native joint id. Internal to forge2d.
   @internal
-  const WeldJoint.internal(super.world, super.index1, super.wg)
+  const WeldJoint.internal(super.world, super.index1, super.worldAndGeneration)
     : super.internal();
 
   /// The linear stiffness in hertz; zero for a rigid connection.
-  double get linearHertz => rawBox2D.weldJointGetLinearHertz(index1, wg);
+  double get linearHertz =>
+      rawBox2D.weldJointGetLinearHertz(index1, worldAndGeneration);
 
   set linearHertz(double value) =>
-      rawBox2D.weldJointSetLinearHertz(index1, wg, value);
+      rawBox2D.weldJointSetLinearHertz(index1, worldAndGeneration, value);
 
   /// The angular stiffness in hertz; zero for a rigid connection.
-  double get angularHertz => rawBox2D.weldJointGetAngularHertz(index1, wg);
+  double get angularHertz =>
+      rawBox2D.weldJointGetAngularHertz(index1, worldAndGeneration);
 
   set angularHertz(double value) =>
-      rawBox2D.weldJointSetAngularHertz(index1, wg, value);
+      rawBox2D.weldJointSetAngularHertz(index1, worldAndGeneration, value);
 
   /// The linear damping ratio.
   double get linearDampingRatio =>
-      rawBox2D.weldJointGetLinearDampingRatio(index1, wg);
+      rawBox2D.weldJointGetLinearDampingRatio(index1, worldAndGeneration);
 
-  set linearDampingRatio(double value) =>
-      rawBox2D.weldJointSetLinearDampingRatio(index1, wg, value);
+  set linearDampingRatio(double value) => rawBox2D
+      .weldJointSetLinearDampingRatio(index1, worldAndGeneration, value);
 
   /// The angular damping ratio.
   double get angularDampingRatio =>
-      rawBox2D.weldJointGetAngularDampingRatio(index1, wg);
+      rawBox2D.weldJointGetAngularDampingRatio(index1, worldAndGeneration);
 
-  set angularDampingRatio(double value) =>
-      rawBox2D.weldJointSetAngularDampingRatio(index1, wg, value);
+  set angularDampingRatio(double value) => rawBox2D
+      .weldJointSetAngularDampingRatio(index1, worldAndGeneration, value);
 }

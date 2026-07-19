@@ -11,18 +11,18 @@ void main() {
   late int worldId;
 
   int createDefaultWorld() {
-    final def = WorldDef();
+    final definition = WorldDef();
     return rawBox2D.createWorld(
-      gravityX: def.gravity.x,
-      gravityY: def.gravity.y,
-      restitutionThreshold: def.restitutionThreshold,
-      hitEventThreshold: def.hitEventThreshold,
-      contactHertz: def.contactHertz,
-      contactDampingRatio: def.contactDampingRatio,
-      maxContactPushSpeed: def.maxContactPushSpeed,
-      maximumLinearSpeed: def.maximumLinearSpeed,
-      enableSleep: def.enableSleep,
-      enableContinuous: def.enableContinuous,
+      gravityX: definition.gravity.x,
+      gravityY: definition.gravity.y,
+      restitutionThreshold: definition.restitutionThreshold,
+      hitEventThreshold: definition.hitEventThreshold,
+      contactHertz: definition.contactHertz,
+      contactDampingRatio: definition.contactDampingRatio,
+      maxContactPushSpeed: definition.maxContactPushSpeed,
+      maximumLinearSpeed: definition.maximumLinearSpeed,
+      enableSleep: definition.enableSleep,
+      enableContinuous: definition.enableContinuous,
     );
   }
 

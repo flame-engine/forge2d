@@ -81,7 +81,7 @@ void main() {
   });
 
   group('DistanceJoint', () {
-    test('def values round-trip', () {
+    test('definition values round-trip', () {
       final joint = world.createDistanceJoint(
         DistanceJointDef(
           bodyA: ground,
@@ -145,7 +145,7 @@ void main() {
   });
 
   group('MotorJoint', () {
-    test('def values round-trip and can be updated', () {
+    test('definition values round-trip and can be updated', () {
       final joint = world.createMotorJoint(
         MotorJointDef(
           bodyA: ground,
@@ -265,7 +265,7 @@ void main() {
 
     test('the motor spins the body', () {
       final body = dynamicBox(0, 5);
-      final joint = world.createRevoluteJoint(
+      world.createRevoluteJoint(
         RevoluteJointDef(
           bodyA: ground,
           bodyB: body,

@@ -72,62 +72,80 @@ class WheelJointDef extends JointDef {
 final class WheelJoint extends Joint {
   /// Wraps an existing native joint id. Internal to forge2d.
   @internal
-  const WheelJoint.internal(super.world, super.index1, super.wg)
+  const WheelJoint.internal(super.world, super.index1, super.worldAndGeneration)
     : super.internal();
 
   /// Whether the suspension spring is enabled.
-  bool get springEnabled => rawBox2D.wheelJointIsSpringEnabled(index1, wg);
+  bool get springEnabled =>
+      rawBox2D.wheelJointIsSpringEnabled(index1, worldAndGeneration);
 
-  set springEnabled(bool value) =>
-      rawBox2D.wheelJointEnableSpring(index1, wg, enabled: value);
+  set springEnabled(bool value) => rawBox2D.wheelJointEnableSpring(
+    index1,
+    worldAndGeneration,
+    enabled: value,
+  );
 
   /// The spring stiffness in hertz.
-  double get springHertz => rawBox2D.wheelJointGetSpringHertz(index1, wg);
+  double get springHertz =>
+      rawBox2D.wheelJointGetSpringHertz(index1, worldAndGeneration);
 
   set springHertz(double value) =>
-      rawBox2D.wheelJointSetSpringHertz(index1, wg, value);
+      rawBox2D.wheelJointSetSpringHertz(index1, worldAndGeneration, value);
 
   /// The spring damping ratio.
   double get springDampingRatio =>
-      rawBox2D.wheelJointGetSpringDampingRatio(index1, wg);
+      rawBox2D.wheelJointGetSpringDampingRatio(index1, worldAndGeneration);
 
-  set springDampingRatio(double value) =>
-      rawBox2D.wheelJointSetSpringDampingRatio(index1, wg, value);
+  set springDampingRatio(double value) => rawBox2D
+      .wheelJointSetSpringDampingRatio(index1, worldAndGeneration, value);
 
   /// Whether the translation limit is enabled.
-  bool get limitEnabled => rawBox2D.wheelJointIsLimitEnabled(index1, wg);
+  bool get limitEnabled =>
+      rawBox2D.wheelJointIsLimitEnabled(index1, worldAndGeneration);
 
-  set limitEnabled(bool value) =>
-      rawBox2D.wheelJointEnableLimit(index1, wg, enabled: value);
+  set limitEnabled(bool value) => rawBox2D.wheelJointEnableLimit(
+    index1,
+    worldAndGeneration,
+    enabled: value,
+  );
 
   /// The lower translation limit, in meters.
-  double get lowerLimit => rawBox2D.wheelJointGetLowerLimit(index1, wg);
+  double get lowerLimit =>
+      rawBox2D.wheelJointGetLowerLimit(index1, worldAndGeneration);
 
   /// The upper translation limit, in meters.
-  double get upperLimit => rawBox2D.wheelJointGetUpperLimit(index1, wg);
+  double get upperLimit =>
+      rawBox2D.wheelJointGetUpperLimit(index1, worldAndGeneration);
 
   /// Sets the translation limits, in meters.
   void setLimits({required double lower, required double upper}) =>
-      rawBox2D.wheelJointSetLimits(index1, wg, lower, upper);
+      rawBox2D.wheelJointSetLimits(index1, worldAndGeneration, lower, upper);
 
   /// Whether the motor is enabled.
-  bool get motorEnabled => rawBox2D.wheelJointIsMotorEnabled(index1, wg);
+  bool get motorEnabled =>
+      rawBox2D.wheelJointIsMotorEnabled(index1, worldAndGeneration);
 
-  set motorEnabled(bool value) =>
-      rawBox2D.wheelJointEnableMotor(index1, wg, enabled: value);
+  set motorEnabled(bool value) => rawBox2D.wheelJointEnableMotor(
+    index1,
+    worldAndGeneration,
+    enabled: value,
+  );
 
   /// The motor speed, in radians per second.
-  double get motorSpeed => rawBox2D.wheelJointGetMotorSpeed(index1, wg);
+  double get motorSpeed =>
+      rawBox2D.wheelJointGetMotorSpeed(index1, worldAndGeneration);
 
   set motorSpeed(double value) =>
-      rawBox2D.wheelJointSetMotorSpeed(index1, wg, value);
+      rawBox2D.wheelJointSetMotorSpeed(index1, worldAndGeneration, value);
 
   /// The maximum motor torque, in newton-meters.
-  double get maxMotorTorque => rawBox2D.wheelJointGetMaxMotorTorque(index1, wg);
+  double get maxMotorTorque =>
+      rawBox2D.wheelJointGetMaxMotorTorque(index1, worldAndGeneration);
 
   set maxMotorTorque(double value) =>
-      rawBox2D.wheelJointSetMaxMotorTorque(index1, wg, value);
+      rawBox2D.wheelJointSetMaxMotorTorque(index1, worldAndGeneration, value);
 
   /// The current motor torque, in newton-meters.
-  double get motorTorque => rawBox2D.wheelJointGetMotorTorque(index1, wg);
+  double get motorTorque =>
+      rawBox2D.wheelJointGetMotorTorque(index1, worldAndGeneration);
 }

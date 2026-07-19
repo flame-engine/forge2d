@@ -42,34 +42,40 @@ class MouseJointDef extends JointDef {
 final class MouseJoint extends Joint {
   /// Wraps an existing native joint id. Internal to forge2d.
   @internal
-  const MouseJoint.internal(super.world, super.index1, super.wg)
+  const MouseJoint.internal(super.world, super.index1, super.worldAndGeneration)
     : super.internal();
 
   /// The target point in world coordinates.
   Vector2 get target {
-    final (x, y) = rawBox2D.mouseJointGetTarget(index1, wg);
+    final (x, y) = rawBox2D.mouseJointGetTarget(index1, worldAndGeneration);
     return Vector2(x, y);
   }
 
-  set target(Vector2 value) =>
-      rawBox2D.mouseJointSetTarget(index1, wg, value.x, value.y);
+  set target(Vector2 value) => rawBox2D.mouseJointSetTarget(
+    index1,
+    worldAndGeneration,
+    value.x,
+    value.y,
+  );
 
   /// The spring stiffness in hertz.
-  double get springHertz => rawBox2D.mouseJointGetSpringHertz(index1, wg);
+  double get springHertz =>
+      rawBox2D.mouseJointGetSpringHertz(index1, worldAndGeneration);
 
   set springHertz(double value) =>
-      rawBox2D.mouseJointSetSpringHertz(index1, wg, value);
+      rawBox2D.mouseJointSetSpringHertz(index1, worldAndGeneration, value);
 
   /// The spring damping ratio.
   double get springDampingRatio =>
-      rawBox2D.mouseJointGetSpringDampingRatio(index1, wg);
+      rawBox2D.mouseJointGetSpringDampingRatio(index1, worldAndGeneration);
 
-  set springDampingRatio(double value) =>
-      rawBox2D.mouseJointSetSpringDampingRatio(index1, wg, value);
+  set springDampingRatio(double value) => rawBox2D
+      .mouseJointSetSpringDampingRatio(index1, worldAndGeneration, value);
 
   /// The maximum force the joint can apply, in newtons.
-  double get maxForce => rawBox2D.mouseJointGetMaxForce(index1, wg);
+  double get maxForce =>
+      rawBox2D.mouseJointGetMaxForce(index1, worldAndGeneration);
 
   set maxForce(double value) =>
-      rawBox2D.mouseJointSetMaxForce(index1, wg, value);
+      rawBox2D.mouseJointSetMaxForce(index1, worldAndGeneration, value);
 }

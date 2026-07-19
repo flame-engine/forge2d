@@ -7,6 +7,7 @@ export 'src/api/body.dart';
 export 'src/api/chain.dart';
 export 'src/api/defs.dart';
 export 'src/api/enums.dart';
+export 'src/api/events.dart';
 export 'src/api/geometry.dart';
 export 'src/api/joints/distance_joint.dart';
 export 'src/api/joints/filter_joint.dart';

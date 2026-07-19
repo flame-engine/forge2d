@@ -42,40 +42,50 @@ class MotorJointDef extends JointDef {
 final class MotorJoint extends Joint {
   /// Wraps an existing native joint id. Internal to forge2d.
   @internal
-  const MotorJoint.internal(super.world, super.index1, super.wg)
+  const MotorJoint.internal(super.world, super.index1, super.worldAndGeneration)
     : super.internal();
 
   /// The target position of body B, in the frame of body A.
   Vector2 get linearOffset {
-    final (x, y) = rawBox2D.motorJointGetLinearOffset(index1, wg);
+    final (x, y) = rawBox2D.motorJointGetLinearOffset(
+      index1,
+      worldAndGeneration,
+    );
     return Vector2(x, y);
   }
 
-  set linearOffset(Vector2 value) =>
-      rawBox2D.motorJointSetLinearOffset(index1, wg, value.x, value.y);
+  set linearOffset(Vector2 value) => rawBox2D.motorJointSetLinearOffset(
+    index1,
+    worldAndGeneration,
+    value.x,
+    value.y,
+  );
 
   /// The target angle of body B relative to body A, in radians.
-  double get angularOffset => rawBox2D.motorJointGetAngularOffset(index1, wg);
+  double get angularOffset =>
+      rawBox2D.motorJointGetAngularOffset(index1, worldAndGeneration);
 
   set angularOffset(double value) =>
-      rawBox2D.motorJointSetAngularOffset(index1, wg, value);
+      rawBox2D.motorJointSetAngularOffset(index1, worldAndGeneration, value);
 
   /// The maximum force the motor can apply, in newtons.
-  double get maxForce => rawBox2D.motorJointGetMaxForce(index1, wg);
+  double get maxForce =>
+      rawBox2D.motorJointGetMaxForce(index1, worldAndGeneration);
 
   set maxForce(double value) =>
-      rawBox2D.motorJointSetMaxForce(index1, wg, value);
+      rawBox2D.motorJointSetMaxForce(index1, worldAndGeneration, value);
 
   /// The maximum torque the motor can apply, in newton-meters.
-  double get maxTorque => rawBox2D.motorJointGetMaxTorque(index1, wg);
+  double get maxTorque =>
+      rawBox2D.motorJointGetMaxTorque(index1, worldAndGeneration);
 
   set maxTorque(double value) =>
-      rawBox2D.motorJointSetMaxTorque(index1, wg, value);
+      rawBox2D.motorJointSetMaxTorque(index1, worldAndGeneration, value);
 
   /// The position correction factor, in `[0, 1]`.
   double get correctionFactor =>
-      rawBox2D.motorJointGetCorrectionFactor(index1, wg);
+      rawBox2D.motorJointGetCorrectionFactor(index1, worldAndGeneration);
 
   set correctionFactor(double value) =>
-      rawBox2D.motorJointSetCorrectionFactor(index1, wg, value);
+      rawBox2D.motorJointSetCorrectionFactor(index1, worldAndGeneration, value);
 }

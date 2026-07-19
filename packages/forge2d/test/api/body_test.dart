@@ -15,7 +15,7 @@ void main() {
   tearDown(() => world.destroy());
 
   group('Body', () {
-    test('reflects the def it was created from', () {
+    test('reflects the definition it was created from', () {
       final body = world.createBody(
         BodyDef(
           type: BodyType.dynamic,

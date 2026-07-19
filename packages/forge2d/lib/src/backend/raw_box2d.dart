@@ -59,7 +59,8 @@ abstract interface class RawBox2D {
 
   // Bodies.
   //
-  // A body id crosses the seam as two ints: `index1`, and `wg`, which packs
+  // A body id crosses the seam as two ints: `index1`, and
+  // `worldAndGeneration`, which packs
   // the 16-bit world index and generation as `world0 | (generation << 16)`.
   // Shape, chain, and joint ids use the same encoding.
 
@@ -92,22 +93,22 @@ abstract interface class RawBox2D {
   });
 
   /// Destroys the body and all its shapes and joints.
-  void destroyBody(int index1, int wg);
+  void destroyBody(int index1, int worldAndGeneration);
 
   /// Whether the id refers to a live body.
-  bool bodyIsValid(int index1, int wg);
+  bool bodyIsValid(int index1, int worldAndGeneration);
 
   /// Returns the body position.
-  (double, double) bodyGetPosition(int index1, int wg);
+  (double, double) bodyGetPosition(int index1, int worldAndGeneration);
 
   /// Returns the body rotation as a (cosine, sine) pair.
-  (double, double) bodyGetRotation(int index1, int wg);
+  (double, double) bodyGetRotation(int index1, int worldAndGeneration);
 
   /// Sets the body transform. Avoid moving bodies this way during regular
   /// simulation; create them at the right place instead.
   void bodySetTransform(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double positionX,
     double positionY,
     double rotationCos,
@@ -115,21 +116,26 @@ abstract interface class RawBox2D {
   );
 
   /// Returns the body's linear velocity, in meters per second.
-  (double, double) bodyGetLinearVelocity(int index1, int wg);
+  (double, double) bodyGetLinearVelocity(int index1, int worldAndGeneration);
 
   /// Sets the body's linear velocity, in meters per second.
-  void bodySetLinearVelocity(int index1, int wg, double x, double y);
+  void bodySetLinearVelocity(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  );
 
   /// Returns the body's angular velocity, in radians per second.
-  double bodyGetAngularVelocity(int index1, int wg);
+  double bodyGetAngularVelocity(int index1, int worldAndGeneration);
 
   /// Sets the body's angular velocity, in radians per second.
-  void bodySetAngularVelocity(int index1, int wg, double value);
+  void bodySetAngularVelocity(int index1, int worldAndGeneration, double value);
 
   /// Applies a force at a world point.
   void bodyApplyForce(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double forceX,
     double forceY,
     double pointX,
@@ -140,19 +146,24 @@ abstract interface class RawBox2D {
   /// Applies a force at the center of mass.
   void bodyApplyForceToCenter(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double forceX,
     double forceY, {
     required bool wake,
   });
 
   /// Applies a torque.
-  void bodyApplyTorque(int index1, int wg, double torque, {required bool wake});
+  void bodyApplyTorque(
+    int index1,
+    int worldAndGeneration,
+    double torque, {
+    required bool wake,
+  });
 
   /// Applies an impulse at a world point.
   void bodyApplyLinearImpulse(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double impulseX,
     double impulseY,
     double pointX,
@@ -163,7 +174,7 @@ abstract interface class RawBox2D {
   /// Applies an impulse at the center of mass.
   void bodyApplyLinearImpulseToCenter(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double impulseX,
     double impulseY, {
     required bool wake,
@@ -172,27 +183,27 @@ abstract interface class RawBox2D {
   /// Applies an angular impulse.
   void bodyApplyAngularImpulse(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double impulse, {
     required bool wake,
   });
 
   /// Returns the body mass in kilograms.
-  double bodyGetMass(int index1, int wg);
+  double bodyGetMass(int index1, int worldAndGeneration);
 
   /// Returns the rotational inertia about the center of mass.
-  double bodyGetRotationalInertia(int index1, int wg);
+  double bodyGetRotationalInertia(int index1, int worldAndGeneration);
 
   /// Returns the local center of mass.
-  (double, double) bodyGetLocalCenterOfMass(int index1, int wg);
+  (double, double) bodyGetLocalCenterOfMass(int index1, int worldAndGeneration);
 
   /// Returns the world center of mass.
-  (double, double) bodyGetWorldCenterOfMass(int index1, int wg);
+  (double, double) bodyGetWorldCenterOfMass(int index1, int worldAndGeneration);
 
   /// Overrides the mass properties: mass, rotational inertia, local center.
   void bodySetMassData(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double mass,
     double rotationalInertia,
     double centerX,
@@ -200,127 +211,149 @@ abstract interface class RawBox2D {
   );
 
   /// Recomputes mass properties from the attached shapes.
-  void bodyApplyMassFromShapes(int index1, int wg);
+  void bodyApplyMassFromShapes(int index1, int worldAndGeneration);
 
   /// Returns the `BodyType` index of the body.
-  int bodyGetType(int index1, int wg);
+  int bodyGetType(int index1, int worldAndGeneration);
 
   /// Sets the `BodyType` index of the body.
-  void bodySetType(int index1, int wg, int type);
+  void bodySetType(int index1, int worldAndGeneration, int type);
 
   /// Returns the body name.
-  String bodyGetName(int index1, int wg);
+  String bodyGetName(int index1, int worldAndGeneration);
 
   /// Sets the body name.
-  void bodySetName(int index1, int wg, String? name);
+  void bodySetName(int index1, int worldAndGeneration, String? name);
 
   /// Whether the body is awake.
-  bool bodyIsAwake(int index1, int wg);
+  bool bodyIsAwake(int index1, int worldAndGeneration);
 
   /// Wakes or puts the body to sleep.
-  void bodySetAwake(int index1, int wg, {required bool awake});
+  void bodySetAwake(int index1, int worldAndGeneration, {required bool awake});
 
   /// Whether the body may fall asleep.
-  bool bodyIsSleepEnabled(int index1, int wg);
+  bool bodyIsSleepEnabled(int index1, int worldAndGeneration);
 
   /// Allows or prevents the body falling asleep.
-  void bodyEnableSleep(int index1, int wg, {required bool enabled});
+  void bodyEnableSleep(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the sleep velocity threshold, in meters per second.
-  double bodyGetSleepThreshold(int index1, int wg);
+  double bodyGetSleepThreshold(int index1, int worldAndGeneration);
 
   /// Sets the sleep velocity threshold, in meters per second.
-  void bodySetSleepThreshold(int index1, int wg, double value);
+  void bodySetSleepThreshold(int index1, int worldAndGeneration, double value);
 
   /// Whether the body participates in the simulation.
-  bool bodyIsEnabled(int index1, int wg);
+  bool bodyIsEnabled(int index1, int worldAndGeneration);
 
   /// Removes the body from the simulation without destroying it.
-  void bodyDisable(int index1, int wg);
+  void bodyDisable(int index1, int worldAndGeneration);
 
   /// Puts a disabled body back into the simulation.
-  void bodyEnable(int index1, int wg);
+  void bodyEnable(int index1, int worldAndGeneration);
 
   /// Whether the body's rotation is fixed.
-  bool bodyIsFixedRotation(int index1, int wg);
+  bool bodyIsFixedRotation(int index1, int worldAndGeneration);
 
   /// Fixes or frees the body's rotation.
-  void bodySetFixedRotation(int index1, int wg, {required bool flag});
+  void bodySetFixedRotation(
+    int index1,
+    int worldAndGeneration, {
+    required bool flag,
+  });
 
   /// Whether the body is a bullet.
-  bool bodyIsBullet(int index1, int wg);
+  bool bodyIsBullet(int index1, int worldAndGeneration);
 
   /// Marks the body as a bullet for continuous collision detection.
-  void bodySetBullet(int index1, int wg, {required bool flag});
+  void bodySetBullet(int index1, int worldAndGeneration, {required bool flag});
 
   /// Returns the gravity scale of the body.
-  double bodyGetGravityScale(int index1, int wg);
+  double bodyGetGravityScale(int index1, int worldAndGeneration);
 
   /// Sets the gravity scale of the body.
-  void bodySetGravityScale(int index1, int wg, double scale);
+  void bodySetGravityScale(int index1, int worldAndGeneration, double scale);
 
   /// Returns the linear damping of the body.
-  double bodyGetLinearDamping(int index1, int wg);
+  double bodyGetLinearDamping(int index1, int worldAndGeneration);
 
   /// Sets the linear damping of the body.
-  void bodySetLinearDamping(int index1, int wg, double damping);
+  void bodySetLinearDamping(int index1, int worldAndGeneration, double damping);
 
   /// Returns the angular damping of the body.
-  double bodyGetAngularDamping(int index1, int wg);
+  double bodyGetAngularDamping(int index1, int worldAndGeneration);
 
   /// Sets the angular damping of the body.
-  void bodySetAngularDamping(int index1, int wg, double damping);
+  void bodySetAngularDamping(
+    int index1,
+    int worldAndGeneration,
+    double damping,
+  );
 
   /// Converts a local point on the body to world coordinates.
-  (double, double) bodyGetWorldPoint(int index1, int wg, double x, double y);
+  (double, double) bodyGetWorldPoint(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  );
 
   /// Converts a world point to the body's local coordinates.
-  (double, double) bodyGetLocalPoint(int index1, int wg, double x, double y);
+  (double, double) bodyGetLocalPoint(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  );
 
   /// Returns the ids of the shapes attached to the body, as
-  /// `[index1, wg, index1, wg, ...]`.
-  List<int> bodyGetShapes(int index1, int wg);
+  /// `[index1, worldAndGeneration, index1, worldAndGeneration, ...]`.
+  List<int> bodyGetShapes(int index1, int worldAndGeneration);
 
   /// Returns the ids of the joints attached to the body, as
-  /// `[index1, wg, index1, wg, ...]`.
-  List<int> bodyGetJoints(int index1, int wg);
+  /// `[index1, worldAndGeneration, index1, worldAndGeneration, ...]`.
+  List<int> bodyGetJoints(int index1, int worldAndGeneration);
 
   // Shapes.
 
   /// Creates a circle shape on the body. Returns the shape id pair.
   ///
-  /// The def parameters mirror `b2ShapeDef`; implementations start from
+  /// The definition parameters mirror `b2ShapeDef`; implementations start from
   /// `b2DefaultShapeDef` and overwrite every field given here.
   (int, int) createCircleShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double centerX,
     required double centerY,
     required double radius,
-    required RawShapeDef def,
+    required RawShapeDef definition,
   });
 
   /// Creates a capsule shape on the body. Returns the shape id pair.
   (int, int) createCapsuleShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double center1X,
     required double center1Y,
     required double center2X,
     required double center2Y,
     required double radius,
-    required RawShapeDef def,
+    required RawShapeDef definition,
   });
 
   /// Creates a segment shape on the body. Returns the shape id pair.
   (int, int) createSegmentShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double point1X,
     required double point1Y,
     required double point2X,
     required double point2Y,
-    required RawShapeDef def,
+    required RawShapeDef definition,
   });
 
   /// Creates a box polygon shape on the body. Returns the shape id pair.
@@ -329,7 +362,7 @@ abstract interface class RawBox2D {
   /// ([centerX], [centerY]) and rotated by the given rotation.
   (int, int) createBoxShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double halfWidth,
     required double halfHeight,
     required double centerX,
@@ -337,7 +370,7 @@ abstract interface class RawBox2D {
     required double rotationCos,
     required double rotationSin,
     required double radius,
-    required RawShapeDef def,
+    required RawShapeDef definition,
   });
 
   /// Creates a polygon shape from the convex hull of the given points, with
@@ -346,93 +379,120 @@ abstract interface class RawBox2D {
   /// Throws [ArgumentError] if the hull is degenerate.
   (int, int) createPolygonShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required List<double> points,
     required double radius,
-    required RawShapeDef def,
+    required RawShapeDef definition,
   });
 
   /// Destroys the shape. When [updateBodyMass] is true the body's mass is
   /// recomputed.
-  void destroyShape(int index1, int wg, {required bool updateBodyMass});
+  void destroyShape(
+    int index1,
+    int worldAndGeneration, {
+    required bool updateBodyMass,
+  });
 
   /// Whether the id refers to a live shape.
-  bool shapeIsValid(int index1, int wg);
+  bool shapeIsValid(int index1, int worldAndGeneration);
 
   /// Returns the `ShapeType` index of the shape.
-  int shapeGetType(int index1, int wg);
+  int shapeGetType(int index1, int worldAndGeneration);
 
   /// Returns the id pair of the body owning the shape.
-  (int, int) shapeGetBody(int index1, int wg);
+  (int, int) shapeGetBody(int index1, int worldAndGeneration);
 
   /// Whether the shape is a sensor.
-  bool shapeIsSensor(int index1, int wg);
+  bool shapeIsSensor(int index1, int worldAndGeneration);
 
   /// Returns the density of the shape.
-  double shapeGetDensity(int index1, int wg);
+  double shapeGetDensity(int index1, int worldAndGeneration);
 
   /// Sets the density of the shape, optionally updating the body mass.
   void shapeSetDensity(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double density, {
     required bool updateBodyMass,
   });
 
   /// Returns the friction of the shape.
-  double shapeGetFriction(int index1, int wg);
+  double shapeGetFriction(int index1, int worldAndGeneration);
 
   /// Sets the friction of the shape.
-  void shapeSetFriction(int index1, int wg, double friction);
+  void shapeSetFriction(int index1, int worldAndGeneration, double friction);
 
   /// Returns the restitution of the shape.
-  double shapeGetRestitution(int index1, int wg);
+  double shapeGetRestitution(int index1, int worldAndGeneration);
 
   /// Sets the restitution of the shape.
-  void shapeSetRestitution(int index1, int wg, double restitution);
+  void shapeSetRestitution(
+    int index1,
+    int worldAndGeneration,
+    double restitution,
+  );
 
   /// Returns the filter of the shape as (categoryBits, maskBits, groupIndex).
-  (int, int, int) shapeGetFilter(int index1, int wg);
+  (int, int, int) shapeGetFilter(int index1, int worldAndGeneration);
 
   /// Sets the filter of the shape.
   void shapeSetFilter(
     int index1,
-    int wg,
+    int worldAndGeneration,
     int categoryBits,
     int maskBits,
     int groupIndex,
   );
 
   /// Whether the shape reports sensor events.
-  bool shapeAreSensorEventsEnabled(int index1, int wg);
+  bool shapeAreSensorEventsEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables sensor events for the shape.
-  void shapeEnableSensorEvents(int index1, int wg, {required bool enabled});
+  void shapeEnableSensorEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Whether the shape reports contact events.
-  bool shapeAreContactEventsEnabled(int index1, int wg);
+  bool shapeAreContactEventsEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables contact events for the shape.
-  void shapeEnableContactEvents(int index1, int wg, {required bool enabled});
+  void shapeEnableContactEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Whether the shape reports hit events.
-  bool shapeAreHitEventsEnabled(int index1, int wg);
+  bool shapeAreHitEventsEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables hit events for the shape.
-  void shapeEnableHitEvents(int index1, int wg, {required bool enabled});
+  void shapeEnableHitEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Whether the shape reports pre-solve events.
-  bool shapeArePreSolveEventsEnabled(int index1, int wg);
+  bool shapeArePreSolveEventsEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables pre-solve events for the shape.
-  void shapeEnablePreSolveEvents(int index1, int wg, {required bool enabled});
+  void shapeEnablePreSolveEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Whether the given world point is inside the shape.
-  bool shapeTestPoint(int index1, int wg, double x, double y);
+  bool shapeTestPoint(int index1, int worldAndGeneration, double x, double y);
 
   /// Returns the current world axis-aligned bounding box of the shape as
   /// (lowerX, lowerY, upperX, upperY).
-  (double, double, double, double) shapeGetAabb(int index1, int wg);
+  (double, double, double, double) shapeGetAabb(
+    int index1,
+    int worldAndGeneration,
+  );
 
   // Chains.
 
@@ -444,7 +504,7 @@ abstract interface class RawBox2D {
   /// userMaterialId, customColor]`; either one material, or one per segment.
   (int, int) createChain(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required List<double> points,
     required List<double> materials,
     required int categoryBits,
@@ -455,32 +515,36 @@ abstract interface class RawBox2D {
   });
 
   /// Destroys the chain and its segments.
-  void destroyChain(int index1, int wg);
+  void destroyChain(int index1, int worldAndGeneration);
 
   /// Whether the id refers to a live chain.
-  bool chainIsValid(int index1, int wg);
+  bool chainIsValid(int index1, int worldAndGeneration);
 
   /// Sets the friction of all chain segments.
-  void chainSetFriction(int index1, int wg, double friction);
+  void chainSetFriction(int index1, int worldAndGeneration, double friction);
 
   /// Returns the friction of the chain.
-  double chainGetFriction(int index1, int wg);
+  double chainGetFriction(int index1, int worldAndGeneration);
 
   /// Sets the restitution of all chain segments.
-  void chainSetRestitution(int index1, int wg, double restitution);
+  void chainSetRestitution(
+    int index1,
+    int worldAndGeneration,
+    double restitution,
+  );
 
   /// Returns the restitution of the chain.
-  double chainGetRestitution(int index1, int wg);
+  double chainGetRestitution(int index1, int worldAndGeneration);
 
   /// Returns the ids of the segment shapes owned by the chain, as
-  /// `[index1, wg, index1, wg, ...]`.
-  List<int> chainGetSegments(int index1, int wg);
+  /// `[index1, worldAndGeneration, index1, worldAndGeneration, ...]`.
+  List<int> chainGetSegments(int index1, int worldAndGeneration);
 
   // Joints.
   //
   // The create methods mirror the `b2*JointDef` structs; implementations
   // start from the native defaults and overwrite every field given here.
-  // [bodyA] and [bodyB] are (index1, wg) id pairs.
+  // [bodyA] and [bodyB] are (index1, worldAndGeneration) id pairs.
 
   /// Creates a distance joint. Returns the joint id pair.
   (int, int) createDistanceJoint(
@@ -615,384 +679,758 @@ abstract interface class RawBox2D {
   });
 
   /// Destroys the joint.
-  void destroyJoint(int index1, int wg);
+  void destroyJoint(int index1, int worldAndGeneration);
 
   /// Whether the id refers to a live joint.
-  bool jointIsValid(int index1, int wg);
+  bool jointIsValid(int index1, int worldAndGeneration);
 
   /// Returns the `JointType` index of the joint.
-  int jointGetType(int index1, int wg);
+  int jointGetType(int index1, int worldAndGeneration);
 
   /// Returns the id pair of the first attached body.
-  (int, int) jointGetBodyA(int index1, int wg);
+  (int, int) jointGetBodyA(int index1, int worldAndGeneration);
 
   /// Returns the id pair of the second attached body.
-  (int, int) jointGetBodyB(int index1, int wg);
+  (int, int) jointGetBodyB(int index1, int worldAndGeneration);
 
   /// Returns the local anchor on the first body.
-  (double, double) jointGetLocalAnchorA(int index1, int wg);
+  (double, double) jointGetLocalAnchorA(int index1, int worldAndGeneration);
 
   /// Returns the local anchor on the second body.
-  (double, double) jointGetLocalAnchorB(int index1, int wg);
+  (double, double) jointGetLocalAnchorB(int index1, int worldAndGeneration);
 
   /// Whether the connected bodies can collide.
-  bool jointGetCollideConnected(int index1, int wg);
+  bool jointGetCollideConnected(int index1, int worldAndGeneration);
 
   /// Sets whether the connected bodies can collide.
-  void jointSetCollideConnected(int index1, int wg, {required bool value});
+  void jointSetCollideConnected(
+    int index1,
+    int worldAndGeneration, {
+    required bool value,
+  });
 
   /// Wakes the connected bodies.
-  void jointWakeBodies(int index1, int wg);
+  void jointWakeBodies(int index1, int worldAndGeneration);
 
   /// Returns the constraint force on the joint, in newtons.
-  (double, double) jointGetConstraintForce(int index1, int wg);
+  (double, double) jointGetConstraintForce(int index1, int worldAndGeneration);
 
   /// Returns the constraint torque on the joint, in newton-meters.
-  double jointGetConstraintTorque(int index1, int wg);
+  double jointGetConstraintTorque(int index1, int worldAndGeneration);
 
   // Distance joint.
 
   /// Returns the rest length.
-  double distanceJointGetLength(int index1, int wg);
+  double distanceJointGetLength(int index1, int worldAndGeneration);
 
   /// Sets the rest length.
-  void distanceJointSetLength(int index1, int wg, double length);
+  void distanceJointSetLength(
+    int index1,
+    int worldAndGeneration,
+    double length,
+  );
 
   /// Returns the current distance between the anchors.
-  double distanceJointGetCurrentLength(int index1, int wg);
+  double distanceJointGetCurrentLength(int index1, int worldAndGeneration);
 
   /// Whether the spring is enabled.
-  bool distanceJointIsSpringEnabled(int index1, int wg);
+  bool distanceJointIsSpringEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the spring.
-  void distanceJointEnableSpring(int index1, int wg, {required bool enabled});
+  void distanceJointEnableSpring(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the spring stiffness in hertz.
-  double distanceJointGetSpringHertz(int index1, int wg);
+  double distanceJointGetSpringHertz(int index1, int worldAndGeneration);
 
   /// Sets the spring stiffness in hertz.
-  void distanceJointSetSpringHertz(int index1, int wg, double hertz);
+  void distanceJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  );
 
   /// Returns the spring damping ratio.
-  double distanceJointGetSpringDampingRatio(int index1, int wg);
+  double distanceJointGetSpringDampingRatio(int index1, int worldAndGeneration);
 
   /// Sets the spring damping ratio.
-  void distanceJointSetSpringDampingRatio(int index1, int wg, double ratio);
+  void distanceJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  );
 
   /// Whether the length limit is enabled.
-  bool distanceJointIsLimitEnabled(int index1, int wg);
+  bool distanceJointIsLimitEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the length limit.
-  void distanceJointEnableLimit(int index1, int wg, {required bool enabled});
+  void distanceJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the minimum length.
-  double distanceJointGetMinLength(int index1, int wg);
+  double distanceJointGetMinLength(int index1, int worldAndGeneration);
 
   /// Returns the maximum length.
-  double distanceJointGetMaxLength(int index1, int wg);
+  double distanceJointGetMaxLength(int index1, int worldAndGeneration);
 
   /// Sets the length limit range.
   void distanceJointSetLengthRange(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double minLength,
     double maxLength,
   );
 
   /// Whether the motor is enabled.
-  bool distanceJointIsMotorEnabled(int index1, int wg);
+  bool distanceJointIsMotorEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the motor.
-  void distanceJointEnableMotor(int index1, int wg, {required bool enabled});
+  void distanceJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the motor speed, in meters per second.
-  double distanceJointGetMotorSpeed(int index1, int wg);
+  double distanceJointGetMotorSpeed(int index1, int worldAndGeneration);
 
   /// Sets the motor speed, in meters per second.
-  void distanceJointSetMotorSpeed(int index1, int wg, double speed);
+  void distanceJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  );
 
   /// Returns the maximum motor force, in newtons.
-  double distanceJointGetMaxMotorForce(int index1, int wg);
+  double distanceJointGetMaxMotorForce(int index1, int worldAndGeneration);
 
   /// Sets the maximum motor force, in newtons.
-  void distanceJointSetMaxMotorForce(int index1, int wg, double force);
+  void distanceJointSetMaxMotorForce(
+    int index1,
+    int worldAndGeneration,
+    double force,
+  );
 
   /// Returns the current motor force, in newtons.
-  double distanceJointGetMotorForce(int index1, int wg);
+  double distanceJointGetMotorForce(int index1, int worldAndGeneration);
 
   // Motor joint.
 
   /// Returns the target linear offset in the frame of body A.
-  (double, double) motorJointGetLinearOffset(int index1, int wg);
+  (double, double) motorJointGetLinearOffset(
+    int index1,
+    int worldAndGeneration,
+  );
 
   /// Sets the target linear offset in the frame of body A.
-  void motorJointSetLinearOffset(int index1, int wg, double x, double y);
+  void motorJointSetLinearOffset(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  );
 
   /// Returns the target angular offset.
-  double motorJointGetAngularOffset(int index1, int wg);
+  double motorJointGetAngularOffset(int index1, int worldAndGeneration);
 
   /// Sets the target angular offset.
-  void motorJointSetAngularOffset(int index1, int wg, double offset);
+  void motorJointSetAngularOffset(
+    int index1,
+    int worldAndGeneration,
+    double offset,
+  );
 
   /// Returns the maximum force, in newtons.
-  double motorJointGetMaxForce(int index1, int wg);
+  double motorJointGetMaxForce(int index1, int worldAndGeneration);
 
   /// Sets the maximum force, in newtons.
-  void motorJointSetMaxForce(int index1, int wg, double force);
+  void motorJointSetMaxForce(int index1, int worldAndGeneration, double force);
 
   /// Returns the maximum torque, in newton-meters.
-  double motorJointGetMaxTorque(int index1, int wg);
+  double motorJointGetMaxTorque(int index1, int worldAndGeneration);
 
   /// Sets the maximum torque, in newton-meters.
-  void motorJointSetMaxTorque(int index1, int wg, double torque);
+  void motorJointSetMaxTorque(
+    int index1,
+    int worldAndGeneration,
+    double torque,
+  );
 
   /// Returns the position correction factor, in `[0, 1]`.
-  double motorJointGetCorrectionFactor(int index1, int wg);
+  double motorJointGetCorrectionFactor(int index1, int worldAndGeneration);
 
   /// Sets the position correction factor, in `[0, 1]`.
-  void motorJointSetCorrectionFactor(int index1, int wg, double factor);
+  void motorJointSetCorrectionFactor(
+    int index1,
+    int worldAndGeneration,
+    double factor,
+  );
 
   // Mouse joint.
 
   /// Returns the target point.
-  (double, double) mouseJointGetTarget(int index1, int wg);
+  (double, double) mouseJointGetTarget(int index1, int worldAndGeneration);
 
   /// Sets the target point.
-  void mouseJointSetTarget(int index1, int wg, double x, double y);
+  void mouseJointSetTarget(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  );
 
   /// Returns the spring stiffness in hertz.
-  double mouseJointGetSpringHertz(int index1, int wg);
+  double mouseJointGetSpringHertz(int index1, int worldAndGeneration);
 
   /// Sets the spring stiffness in hertz.
-  void mouseJointSetSpringHertz(int index1, int wg, double hertz);
+  void mouseJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  );
 
   /// Returns the spring damping ratio.
-  double mouseJointGetSpringDampingRatio(int index1, int wg);
+  double mouseJointGetSpringDampingRatio(int index1, int worldAndGeneration);
 
   /// Sets the spring damping ratio.
-  void mouseJointSetSpringDampingRatio(int index1, int wg, double ratio);
+  void mouseJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  );
 
   /// Returns the maximum force, in newtons.
-  double mouseJointGetMaxForce(int index1, int wg);
+  double mouseJointGetMaxForce(int index1, int worldAndGeneration);
 
   /// Sets the maximum force, in newtons.
-  void mouseJointSetMaxForce(int index1, int wg, double force);
+  void mouseJointSetMaxForce(int index1, int worldAndGeneration, double force);
 
   // Prismatic joint.
 
   /// Whether the spring is enabled.
-  bool prismaticJointIsSpringEnabled(int index1, int wg);
+  bool prismaticJointIsSpringEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the spring.
-  void prismaticJointEnableSpring(int index1, int wg, {required bool enabled});
+  void prismaticJointEnableSpring(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the spring stiffness in hertz.
-  double prismaticJointGetSpringHertz(int index1, int wg);
+  double prismaticJointGetSpringHertz(int index1, int worldAndGeneration);
 
   /// Sets the spring stiffness in hertz.
-  void prismaticJointSetSpringHertz(int index1, int wg, double hertz);
+  void prismaticJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  );
 
   /// Returns the spring damping ratio.
-  double prismaticJointGetSpringDampingRatio(int index1, int wg);
+  double prismaticJointGetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+  );
 
   /// Sets the spring damping ratio.
-  void prismaticJointSetSpringDampingRatio(int index1, int wg, double ratio);
+  void prismaticJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  );
 
   /// Returns the target translation, in meters.
-  double prismaticJointGetTargetTranslation(int index1, int wg);
+  double prismaticJointGetTargetTranslation(int index1, int worldAndGeneration);
 
   /// Sets the target translation, in meters.
-  void prismaticJointSetTargetTranslation(int index1, int wg, double value);
+  void prismaticJointSetTargetTranslation(
+    int index1,
+    int worldAndGeneration,
+    double value,
+  );
 
   /// Whether the translation limit is enabled.
-  bool prismaticJointIsLimitEnabled(int index1, int wg);
+  bool prismaticJointIsLimitEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the translation limit.
-  void prismaticJointEnableLimit(int index1, int wg, {required bool enabled});
+  void prismaticJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the lower translation limit.
-  double prismaticJointGetLowerLimit(int index1, int wg);
+  double prismaticJointGetLowerLimit(int index1, int worldAndGeneration);
 
   /// Returns the upper translation limit.
-  double prismaticJointGetUpperLimit(int index1, int wg);
+  double prismaticJointGetUpperLimit(int index1, int worldAndGeneration);
 
   /// Sets the translation limits.
-  void prismaticJointSetLimits(int index1, int wg, double lower, double upper);
+  void prismaticJointSetLimits(
+    int index1,
+    int worldAndGeneration,
+    double lower,
+    double upper,
+  );
 
   /// Whether the motor is enabled.
-  bool prismaticJointIsMotorEnabled(int index1, int wg);
+  bool prismaticJointIsMotorEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the motor.
-  void prismaticJointEnableMotor(int index1, int wg, {required bool enabled});
+  void prismaticJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the motor speed, in meters per second.
-  double prismaticJointGetMotorSpeed(int index1, int wg);
+  double prismaticJointGetMotorSpeed(int index1, int worldAndGeneration);
 
   /// Sets the motor speed, in meters per second.
-  void prismaticJointSetMotorSpeed(int index1, int wg, double speed);
+  void prismaticJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  );
 
   /// Returns the maximum motor force, in newtons.
-  double prismaticJointGetMaxMotorForce(int index1, int wg);
+  double prismaticJointGetMaxMotorForce(int index1, int worldAndGeneration);
 
   /// Sets the maximum motor force, in newtons.
-  void prismaticJointSetMaxMotorForce(int index1, int wg, double force);
+  void prismaticJointSetMaxMotorForce(
+    int index1,
+    int worldAndGeneration,
+    double force,
+  );
 
   /// Returns the current motor force, in newtons.
-  double prismaticJointGetMotorForce(int index1, int wg);
+  double prismaticJointGetMotorForce(int index1, int worldAndGeneration);
 
   /// Returns the current translation, in meters.
-  double prismaticJointGetTranslation(int index1, int wg);
+  double prismaticJointGetTranslation(int index1, int worldAndGeneration);
 
   /// Returns the current translation speed, in meters per second.
-  double prismaticJointGetSpeed(int index1, int wg);
+  double prismaticJointGetSpeed(int index1, int worldAndGeneration);
 
   // Revolute joint.
 
   /// Whether the spring is enabled.
-  bool revoluteJointIsSpringEnabled(int index1, int wg);
+  bool revoluteJointIsSpringEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the spring.
-  void revoluteJointEnableSpring(int index1, int wg, {required bool enabled});
+  void revoluteJointEnableSpring(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the spring stiffness in hertz.
-  double revoluteJointGetSpringHertz(int index1, int wg);
+  double revoluteJointGetSpringHertz(int index1, int worldAndGeneration);
 
   /// Sets the spring stiffness in hertz.
-  void revoluteJointSetSpringHertz(int index1, int wg, double hertz);
+  void revoluteJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  );
 
   /// Returns the spring damping ratio.
-  double revoluteJointGetSpringDampingRatio(int index1, int wg);
+  double revoluteJointGetSpringDampingRatio(int index1, int worldAndGeneration);
 
   /// Sets the spring damping ratio.
-  void revoluteJointSetSpringDampingRatio(int index1, int wg, double ratio);
+  void revoluteJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  );
 
   /// Returns the target angle, in radians.
-  double revoluteJointGetTargetAngle(int index1, int wg);
+  double revoluteJointGetTargetAngle(int index1, int worldAndGeneration);
 
   /// Sets the target angle, in radians.
-  void revoluteJointSetTargetAngle(int index1, int wg, double angle);
+  void revoluteJointSetTargetAngle(
+    int index1,
+    int worldAndGeneration,
+    double angle,
+  );
 
   /// Returns the current joint angle, in radians.
-  double revoluteJointGetAngle(int index1, int wg);
+  double revoluteJointGetAngle(int index1, int worldAndGeneration);
 
   /// Whether the angle limit is enabled.
-  bool revoluteJointIsLimitEnabled(int index1, int wg);
+  bool revoluteJointIsLimitEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the angle limit.
-  void revoluteJointEnableLimit(int index1, int wg, {required bool enabled});
+  void revoluteJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the lower angle limit, in radians.
-  double revoluteJointGetLowerLimit(int index1, int wg);
+  double revoluteJointGetLowerLimit(int index1, int worldAndGeneration);
 
   /// Returns the upper angle limit, in radians.
-  double revoluteJointGetUpperLimit(int index1, int wg);
+  double revoluteJointGetUpperLimit(int index1, int worldAndGeneration);
 
   /// Sets the angle limits, in radians.
-  void revoluteJointSetLimits(int index1, int wg, double lower, double upper);
+  void revoluteJointSetLimits(
+    int index1,
+    int worldAndGeneration,
+    double lower,
+    double upper,
+  );
 
   /// Whether the motor is enabled.
-  bool revoluteJointIsMotorEnabled(int index1, int wg);
+  bool revoluteJointIsMotorEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the motor.
-  void revoluteJointEnableMotor(int index1, int wg, {required bool enabled});
+  void revoluteJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the motor speed, in radians per second.
-  double revoluteJointGetMotorSpeed(int index1, int wg);
+  double revoluteJointGetMotorSpeed(int index1, int worldAndGeneration);
 
   /// Sets the motor speed, in radians per second.
-  void revoluteJointSetMotorSpeed(int index1, int wg, double speed);
+  void revoluteJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  );
 
   /// Returns the maximum motor torque, in newton-meters.
-  double revoluteJointGetMaxMotorTorque(int index1, int wg);
+  double revoluteJointGetMaxMotorTorque(int index1, int worldAndGeneration);
 
   /// Sets the maximum motor torque, in newton-meters.
-  void revoluteJointSetMaxMotorTorque(int index1, int wg, double torque);
+  void revoluteJointSetMaxMotorTorque(
+    int index1,
+    int worldAndGeneration,
+    double torque,
+  );
 
   /// Returns the current motor torque, in newton-meters.
-  double revoluteJointGetMotorTorque(int index1, int wg);
+  double revoluteJointGetMotorTorque(int index1, int worldAndGeneration);
 
   // Weld joint.
 
   /// Returns the linear stiffness in hertz.
-  double weldJointGetLinearHertz(int index1, int wg);
+  double weldJointGetLinearHertz(int index1, int worldAndGeneration);
 
   /// Sets the linear stiffness in hertz (zero for rigid).
-  void weldJointSetLinearHertz(int index1, int wg, double hertz);
+  void weldJointSetLinearHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  );
 
   /// Returns the angular stiffness in hertz.
-  double weldJointGetAngularHertz(int index1, int wg);
+  double weldJointGetAngularHertz(int index1, int worldAndGeneration);
 
   /// Sets the angular stiffness in hertz (zero for rigid).
-  void weldJointSetAngularHertz(int index1, int wg, double hertz);
+  void weldJointSetAngularHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  );
 
   /// Returns the linear damping ratio.
-  double weldJointGetLinearDampingRatio(int index1, int wg);
+  double weldJointGetLinearDampingRatio(int index1, int worldAndGeneration);
 
   /// Sets the linear damping ratio.
-  void weldJointSetLinearDampingRatio(int index1, int wg, double ratio);
+  void weldJointSetLinearDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  );
 
   /// Returns the angular damping ratio.
-  double weldJointGetAngularDampingRatio(int index1, int wg);
+  double weldJointGetAngularDampingRatio(int index1, int worldAndGeneration);
 
   /// Sets the angular damping ratio.
-  void weldJointSetAngularDampingRatio(int index1, int wg, double ratio);
+  void weldJointSetAngularDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  );
 
   // Wheel joint.
 
   /// Whether the spring is enabled.
-  bool wheelJointIsSpringEnabled(int index1, int wg);
+  bool wheelJointIsSpringEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the spring.
-  void wheelJointEnableSpring(int index1, int wg, {required bool enabled});
+  void wheelJointEnableSpring(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the spring stiffness in hertz.
-  double wheelJointGetSpringHertz(int index1, int wg);
+  double wheelJointGetSpringHertz(int index1, int worldAndGeneration);
 
   /// Sets the spring stiffness in hertz.
-  void wheelJointSetSpringHertz(int index1, int wg, double hertz);
+  void wheelJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  );
 
   /// Returns the spring damping ratio.
-  double wheelJointGetSpringDampingRatio(int index1, int wg);
+  double wheelJointGetSpringDampingRatio(int index1, int worldAndGeneration);
 
   /// Sets the spring damping ratio.
-  void wheelJointSetSpringDampingRatio(int index1, int wg, double ratio);
+  void wheelJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  );
 
   /// Whether the translation limit is enabled.
-  bool wheelJointIsLimitEnabled(int index1, int wg);
+  bool wheelJointIsLimitEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the translation limit.
-  void wheelJointEnableLimit(int index1, int wg, {required bool enabled});
+  void wheelJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the lower translation limit.
-  double wheelJointGetLowerLimit(int index1, int wg);
+  double wheelJointGetLowerLimit(int index1, int worldAndGeneration);
 
   /// Returns the upper translation limit.
-  double wheelJointGetUpperLimit(int index1, int wg);
+  double wheelJointGetUpperLimit(int index1, int worldAndGeneration);
 
   /// Sets the translation limits.
-  void wheelJointSetLimits(int index1, int wg, double lower, double upper);
+  void wheelJointSetLimits(
+    int index1,
+    int worldAndGeneration,
+    double lower,
+    double upper,
+  );
 
   /// Whether the motor is enabled.
-  bool wheelJointIsMotorEnabled(int index1, int wg);
+  bool wheelJointIsMotorEnabled(int index1, int worldAndGeneration);
 
   /// Enables or disables the motor.
-  void wheelJointEnableMotor(int index1, int wg, {required bool enabled});
+  void wheelJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  });
 
   /// Returns the motor speed, in radians per second.
-  double wheelJointGetMotorSpeed(int index1, int wg);
+  double wheelJointGetMotorSpeed(int index1, int worldAndGeneration);
 
   /// Sets the motor speed, in radians per second.
-  void wheelJointSetMotorSpeed(int index1, int wg, double speed);
+  void wheelJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  );
 
   /// Returns the maximum motor torque, in newton-meters.
-  double wheelJointGetMaxMotorTorque(int index1, int wg);
+  double wheelJointGetMaxMotorTorque(int index1, int worldAndGeneration);
 
   /// Sets the maximum motor torque, in newton-meters.
-  void wheelJointSetMaxMotorTorque(int index1, int wg, double torque);
+  void wheelJointSetMaxMotorTorque(
+    int index1,
+    int worldAndGeneration,
+    double torque,
+  );
 
   /// Returns the current motor torque, in newton-meters.
-  double wheelJointGetMotorTorque(int index1, int wg);
+  double wheelJointGetMotorTorque(int index1, int worldAndGeneration);
+
+  // Events (polled after each step). Implementations copy the native event
+  // arrays into Dart lists, so the returned data stays usable after later
+  // steps.
+
+  /// Returns the contact events of the last step.
+  RawContactEvents worldGetContactEvents(int worldId);
+
+  /// Returns the sensor events of the last step.
+  RawSensorEvents worldGetSensorEvents(int worldId);
+
+  /// Returns the body move events of the last step.
+  List<RawBodyMoveEvent> worldGetBodyEvents(int worldId);
+
+  // Queries.
+
+  /// Casts a ray and returns the closest hit, or null when nothing is hit.
+  RawRayHit? worldCastRayClosest(
+    int worldId,
+    double originX,
+    double originY,
+    double translationX,
+    double translationY,
+    int categoryBits,
+    int maskBits,
+  );
+
+  /// Casts a ray, invoking [callback] for every candidate hit.
+  ///
+  /// The callback controls the continuation of the cast with its return
+  /// value: -1 ignores the hit, 0 terminates, the fraction clips the ray,
+  /// and 1 continues unclipped.
+  void worldCastRay(
+    int worldId,
+    double originX,
+    double originY,
+    double translationX,
+    double translationY,
+    int categoryBits,
+    int maskBits,
+    double Function(RawRayHit hit) callback,
+  );
+
+  /// Returns the ids of all shapes whose bounding boxes overlap the given
+  /// box, as `[index1, worldAndGeneration, index1, worldAndGeneration, ...]`.
+  List<int> worldOverlapAabb(
+    int worldId,
+    double lowerX,
+    double lowerY,
+    double upperX,
+    double upperY,
+    int categoryBits,
+    int maskBits,
+  );
+
+  /// Applies a radial explosion impulse.
+  void worldExplode(
+    int worldId, {
+    required int maskBits,
+    required double positionX,
+    required double positionY,
+    required double radius,
+    required double falloff,
+    required double impulsePerLength,
+  });
+
+  // Simulation callbacks. Single-threaded worlds only.
+
+  /// Sets or clears the custom collision filter callback.
+  ///
+  /// The callback receives both shape id pairs and returns whether the
+  /// shapes should collide.
+  void worldSetCustomFilterCallback(
+    int worldId,
+    bool Function(
+      int shapeAIndex1,
+      int shapeAWorldAndGeneration,
+      int shapeBIndex1,
+      int shapeBWorldAndGeneration,
+    )?
+    callback,
+  );
+
+  /// Sets or clears the pre-solve callback, invoked during the step after
+  /// contact points are found but before the solver runs.
+  ///
+  /// The callback returns whether the contact should be solved.
+  void worldSetPreSolveCallback(
+    int worldId,
+    bool Function(
+      int shapeAIndex1,
+      int shapeAWorldAndGeneration,
+      int shapeBIndex1,
+      int shapeBWorldAndGeneration,
+      double normalX,
+      double normalY,
+    )?
+    callback,
+  );
 }
+
+/// A contact manifold point: the contact position and the separation
+/// (negative when overlapping).
+typedef RawManifoldPoint = ({double x, double y, double separation});
+
+/// A begin-touch contact event with its initial manifold.
+typedef RawContactBeginEvent = ({
+  int shapeAIndex1,
+  int shapeAWorldAndGeneration,
+  int shapeBIndex1,
+  int shapeBWorldAndGeneration,
+  double normalX,
+  double normalY,
+  List<RawManifoldPoint> points,
+});
+
+/// An end-touch contact event. The shapes may already be destroyed.
+typedef RawContactEndEvent = ({
+  int shapeAIndex1,
+  int shapeAWorldAndGeneration,
+  int shapeBIndex1,
+  int shapeBWorldAndGeneration,
+});
+
+/// A contact hit event, reported for impacts above the world's hit event
+/// threshold.
+typedef RawContactHitEvent = ({
+  int shapeAIndex1,
+  int shapeAWorldAndGeneration,
+  int shapeBIndex1,
+  int shapeBWorldAndGeneration,
+  double pointX,
+  double pointY,
+  double normalX,
+  double normalY,
+  double approachSpeed,
+});
+
+/// The contact events of one step.
+typedef RawContactEvents = ({
+  List<RawContactBeginEvent> begin,
+  List<RawContactEndEvent> end,
+  List<RawContactHitEvent> hit,
+});
+
+/// A sensor overlap event. On end events the shapes may be destroyed.
+typedef RawSensorEvent = ({
+  int sensorIndex1,
+  int sensorWorldAndGeneration,
+  int visitorIndex1,
+  int visitorWorldAndGeneration,
+});
+
+/// The sensor events of one step.
+typedef RawSensorEvents = ({
+  List<RawSensorEvent> begin,
+  List<RawSensorEvent> end,
+});
+
+/// A body move event: the body's new transform, and whether it fell asleep.
+typedef RawBodyMoveEvent = ({
+  int bodyIndex1,
+  int bodyWorldAndGeneration,
+  double x,
+  double y,
+  double rotationCos,
+  double rotationSin,
+  bool fellAsleep,
+});
+
+/// A ray cast hit.
+typedef RawRayHit = ({
+  int shapeIndex1,
+  int shapeWorldAndGeneration,
+  double pointX,
+  double pointY,
+  double normalX,
+  double normalY,
+  double fraction,
+});
 
 /// The `b2ShapeDef` fields flattened into a record so that the five shape
 /// creation methods do not repeat a dozen parameters each.

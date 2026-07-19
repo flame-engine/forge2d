@@ -34,9 +34,9 @@ void main() {
       expect(world.gravity, Vector2(0, -3.5));
     });
 
-    test('def toggles are applied', () {
+    test('definition toggles are applied', () {
       final world = World(
-        def: WorldDef(enableSleep: false, enableContinuous: false),
+        definition: WorldDef(enableSleep: false, enableContinuous: false),
       );
       addTearDown(world.destroy);
       expect(world.sleepingEnabled, isFalse);
