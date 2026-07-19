@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forge2D examples</title>
+  <script defer src="main.dart.js"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #151b30;
+      --text: #e5e9f5;
+      --muted: #8b93ad;
+      --accent: #7c9cff;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.6rem 1rem;
+      background: var(--panel);
+      border-bottom: 1px solid #232b47;
+    }
+    header h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+    header h1 span { color: var(--accent); }
+    nav {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    nav button {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid #2a3355;
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    nav button:hover { color: var(--text); border-color: var(--accent); }
+    nav button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0b1020;
+      font-weight: 600;
+    }
+    #canvas { display: block; width: 100vw; height: calc(100vh - 53px); }
+    #hint {
+      position: fixed;
+      bottom: 0.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.8rem;
+      background: color-mix(in srgb, var(--panel) 80%, transparent);
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    .spacer { flex: 1; }
+    .gh { color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Forge2D <span>examples</span></h1>
+    <nav id="nav"></nav>
+    <div class="spacer"></div>
+    <a class="gh" href="https://github.com/flame-engine/forge2d">GitHub</a>
+  </header>
+  <canvas id="canvas"></canvas>
+  <div id="hint"></div>
+  <div id="loading">Loading Box2D…</div>
+</body>
+</html>
