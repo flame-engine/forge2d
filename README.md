@@ -115,6 +115,12 @@ concepts map as follows:
   removed; stay on forge2d 0.14 if you depend on it.
 - Worlds default to `subStepCount: 4` in `step` instead of velocity and
   position iterations.
+- A bare `World()` now has the Box2D default gravity of `(0, -10)`; the old
+  API defaulted to zero gravity. Top-down games should pass
+  `World(gravity: Vector2.zero())`.
+- Destroying bodies, shapes, chains, or joints while the world is stepping
+  (from a collision callback) is deferred until the step ends; creating
+  them mid-step throws a `StateError` instead of the old silent queueing.
 
 ## Timeline
 

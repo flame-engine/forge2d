@@ -336,8 +336,23 @@ class Body {
   }
 
   /// Creates a shape with the given [geometry] and attaches it to the body.
+  ///
+  /// Cannot be called while the world is stepping.
   Shape createShape(ShapeGeometry geometry, [ShapeDef? definition]) {
+    world.checkCanMutate('create a shape');
     final shapeDefinition = definition ?? ShapeDef();
+    assert(
+      shapeDefinition.density >= 0,
+      'ShapeDef.density must not be negative',
+    );
+    assert(
+      switch (geometry) {
+        Circle(:final radius) => radius > 0 && radius.isFinite,
+        Capsule(:final radius) => radius > 0 && radius.isFinite,
+        _ => true,
+      },
+      'The geometry radius must be positive and finite',
+    );
     final rawDefinition = _rawShapeDef(shapeDefinition);
     final (shapeIndex1, shapeWorldAndGeneration) = switch (geometry) {
       Circle(:final center, :final radius) => rawBox2D.createCircleShape(
@@ -410,7 +425,10 @@ class Body {
   ///
   /// Chains need at least four points: open chains use the first and last
   /// point as invisible ghost anchors that smooth collisions at the ends.
+  ///
+  /// Cannot be called while the world is stepping.
   Chain createChain(ChainDef definition) {
+    world.checkCanMutate('create a chain');
     if (definition.points.length < 4) {
       throw ArgumentError('A chain needs at least four points');
     }
@@ -446,6 +464,10 @@ class Body {
       world.chainUserData[(chainIndex1, chainWorldAndGeneration)] =
           definition.userData;
     }
+    world.chainOwners[(chainIndex1, chainWorldAndGeneration)] = (
+      index1,
+      worldAndGeneration,
+    );
     return Chain.internal(world, chainIndex1, chainWorldAndGeneration);
   }
 
@@ -467,14 +489,33 @@ class Body {
     ];
   }
 
-  /// Destroys this body and all its shapes and joints.
+  /// Destroys this body and all its shapes, chains, and joints.
+  ///
+  /// Safe to call while the world is stepping (from a callback or while
+  /// processing events): the destruction is deferred until the step ends,
+  /// and the body stays valid until then.
   void destroy() {
+    if (world.locked) {
+      world.deferredActions.add(destroy);
+      return;
+    }
+    if (!isValid) {
+      // Also covers a deferred destroy that was requested more than once.
+      return;
+    }
     for (final shape in shapes) {
       world.shapeUserData.remove((shape.index1, shape.worldAndGeneration));
     }
     for (final joint in joints) {
       world.jointUserData.remove((joint.index1, joint.worldAndGeneration));
     }
+    world.chainOwners.removeWhere((chainId, ownerId) {
+      if (ownerId == (index1, worldAndGeneration)) {
+        world.chainUserData.remove(chainId);
+        return true;
+      }
+      return false;
+    });
     world.bodyUserData.remove((index1, worldAndGeneration));
     rawBox2D.destroyBody(index1, worldAndGeneration);
   }

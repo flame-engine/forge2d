@@ -50,14 +50,12 @@ final class RawBox2DWasm implements RawBox2D {
   // Scratch arena layout (see WasmRuntime.scratch, 4096 bytes):
   // - byte 0: small out-parameters (up to 128 bytes)
   // - byte 128: the f2dShapeDef struct (19 * 4 bytes)
-  // - byte 1024: string data
+  // Strings go through the runtime's growable string buffer instead.
   static const _outOffset = 0;
   static const _shapeDefOffset = 128;
-  static const _stringOffset = 1024;
 
   int get _out => _runtime.scratch + _outOffset;
   int get _shapeDefPointer => _runtime.scratch + _shapeDefOffset;
-  int get _string => _runtime.scratch + _stringOffset;
 
   num _call(String name, List<num> arguments) => _runtime.call(name, arguments);
 
@@ -72,10 +70,15 @@ final class RawBox2DWasm implements RawBox2D {
   static int _b(bool value) => value ? 1 : 0;
 
   /// Splits a Dart int holding a 64-bit bit field into unsigned 32-bit
-  /// halves. Negative values mean "all bits set" (the seam contract).
+  /// halves. -1 is the seam's "all bits set" sentinel; other negative
+  /// values are 64-bit patterns with the top bit set, which only exist
+  /// where ints are 64-bit (the VM and dart2wasm) and split exactly there.
   static (int, int) _splitBits(int value) {
-    if (value < 0) {
+    if (value == -1) {
       return (0xFFFFFFFF, 0xFFFFFFFF);
+    }
+    if (value < 0) {
+      return (value & 0xFFFFFFFF, (value >> 32) & 0xFFFFFFFF);
     }
     return (value % 0x100000000, value ~/ 0x100000000);
   }
@@ -92,8 +95,20 @@ final class RawBox2DWasm implements RawBox2D {
   (double, double) _outVec2() =>
       (_runtime.readF32(_out), _runtime.readF32(_out + 4));
 
-  (int, int) _outIdPair() =>
-      (_runtime.readI32(_out), _runtime.readI32(_out + 4));
+  /// Reinterprets a value read through a signed 32-bit view as unsigned,
+  /// keeping ids consistent with the unsigned values in event records even
+  /// once a slot's generation count sets the top bit.
+  static int _unsigned32(int value) => value < 0 ? value + 0x100000000 : value;
+
+  /// Normalizes the worldAndGeneration halves of a flat id pair list.
+  static List<int> _idPairs(List<int> raw) => [
+    for (var i = 0; i < raw.length; i++) i.isOdd ? _unsigned32(raw[i]) : raw[i],
+  ];
+
+  (int, int) _outIdPair() => (
+    _runtime.readI32(_out),
+    _unsigned32(_runtime.readI32(_out + 4)),
+  );
 
   // World.
 
@@ -183,7 +198,7 @@ final class RawBox2DWasm implements RawBox2D {
     required bool isEnabled,
     required bool allowFastRotation,
   }) {
-    final namePointer = _runtime.writeCString(_string, name);
+    final namePointer = _runtime.writeCString(name);
     _call('f2d_create_body', [
       worldId,
       type,
@@ -433,7 +448,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   void bodySetName(int index1, int worldAndGeneration, String? name) => _call(
     'f2d_body_set_name',
-    [index1, worldAndGeneration, _runtime.writeCString(_string, name)],
+    [index1, worldAndGeneration, _runtime.writeCString(name)],
   );
 
   @override
@@ -588,7 +603,7 @@ final class RawBox2DWasm implements RawBox2D {
       buffer,
       count,
     ]);
-    return _runtime.readI32List(buffer, written * 2);
+    return _idPairs(_runtime.readI32List(buffer, written * 2));
   }
 
   @override
@@ -607,7 +622,7 @@ final class RawBox2DWasm implements RawBox2D {
       buffer,
       count,
     ]);
-    return _runtime.readI32List(buffer, written * 2);
+    return _idPairs(_runtime.readI32List(buffer, written * 2));
   }
 
   // Shapes.
@@ -1112,7 +1127,7 @@ final class RawBox2DWasm implements RawBox2D {
       buffer,
       count,
     ]);
-    return _runtime.readI32List(buffer, written * 2);
+    return _idPairs(_runtime.readI32List(buffer, written * 2));
   }
 
   // Joints.

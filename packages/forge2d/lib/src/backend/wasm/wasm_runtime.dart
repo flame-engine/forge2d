@@ -153,6 +153,11 @@ class WasmRuntime {
   int _bulk = 0;
   int _bulkCapacity = 0;
 
+  /// A growable buffer for strings, separate from [bulk] so that calls can
+  /// pass a string and bulk data at the same time.
+  int _stringBuffer = 0;
+  int _stringCapacity = 0;
+
   final Map<String, JSFunction> _functions = {};
 
   /// Fetches and instantiates the module, trying each of [candidates] in
@@ -528,18 +533,27 @@ class WasmRuntime {
     }
   }
 
-  /// Writes [text] as a NUL-terminated UTF-8 string and returns the
-  /// pointer, or 0 for null.
-  int writeCString(int pointer, String? text) {
+  /// Writes [text] as a NUL-terminated UTF-8 string into the growable
+  /// string buffer and returns the pointer, or 0 for null.
+  int writeCString(String? text) {
     if (text == null) {
       return 0;
     }
     final bytes = utf8.encode(text);
-    for (var i = 0; i < bytes.length; i++) {
-      _u8[pointer + i] = bytes[i];
+    if (bytes.length + 1 > _stringCapacity) {
+      if (_stringBuffer != 0) {
+        (_functions['free'] ??=
+                _exports.getProperty('free'.toJS)! as JSFunction)
+            .callAsFunction(null, _stringBuffer.toJS);
+      }
+      _stringCapacity = (bytes.length + 1) * 2;
+      _stringBuffer = _malloc(_stringCapacity);
     }
-    _u8[pointer + bytes.length] = 0;
-    return pointer;
+    for (var i = 0; i < bytes.length; i++) {
+      _u8[_stringBuffer + i] = bytes[i];
+    }
+    _u8[_stringBuffer + bytes.length] = 0;
+    return _stringBuffer;
   }
 
   /// Reads a NUL-terminated UTF-8 string.

@@ -17,6 +17,7 @@
 // Keep this file in sync with lib/src/backend/raw_box2d_wasm.dart.
 
 #include <emscripten.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "box2d/box2d.h"
@@ -336,12 +337,15 @@ F2D_EXPORT int f2d_body_get_shape_count(int32_t index1, uint32_t world_and_gener
 
 F2D_EXPORT int f2d_body_get_shapes(int32_t index1, uint32_t world_and_generation, int32_t* out,
                                    int capacity) {
-  b2ShapeId shapes[capacity];
+  // Heap allocated: capacity is caller controlled and the wasm stack is
+  // only 64 KB.
+  b2ShapeId* shapes = malloc(capacity * sizeof(b2ShapeId));
   int count = b2Body_GetShapes(f2d_body(index1, world_and_generation), shapes, capacity);
   for (int i = 0; i < count; ++i) {
     out[2 * i] = shapes[i].index1;
     out[2 * i + 1] = (int32_t)f2d_wg_shape(shapes[i]);
   }
+  free(shapes);
   return count;
 }
 
@@ -351,12 +355,13 @@ F2D_EXPORT int f2d_body_get_joint_count(int32_t index1, uint32_t world_and_gener
 
 F2D_EXPORT int f2d_body_get_joints(int32_t index1, uint32_t world_and_generation, int32_t* out,
                                    int capacity) {
-  b2JointId joints[capacity];
+  b2JointId* joints = malloc(capacity * sizeof(b2JointId));
   int count = b2Body_GetJoints(f2d_body(index1, world_and_generation), joints, capacity);
   for (int i = 0; i < count; ++i) {
     out[2 * i] = joints[i].index1;
     out[2 * i + 1] = (int32_t)f2d_wg_joint(joints[i]);
   }
+  free(joints);
   return count;
 }
 
@@ -639,7 +644,8 @@ F2D_EXPORT void f2d_create_chain(int32_t index1, uint32_t world_and_generation, 
                                  uint32_t mask_hi, int32_t group_index,
                                  int is_loop, int enable_sensor_events,
                                  int32_t* out) {
-  b2SurfaceMaterial surface_materials[material_count];
+  b2SurfaceMaterial* surface_materials =
+      malloc(material_count * sizeof(b2SurfaceMaterial));
   for (int i = 0; i < material_count; ++i) {
     const float* m = materials + i * 6;
     surface_materials[i] = (b2SurfaceMaterial){
@@ -655,6 +661,7 @@ F2D_EXPORT void f2d_create_chain(int32_t index1, uint32_t world_and_generation, 
   def.isLoop = is_loop;
   def.enableSensorEvents = enable_sensor_events;
   b2ChainId id = b2CreateChain(f2d_body(index1, world_and_generation), &def);
+  free(surface_materials);
   out[0] = id.index1;
   out[1] = (int32_t)f2d_wg_chain(id);
 }
@@ -689,12 +696,13 @@ F2D_EXPORT int f2d_chain_get_segment_count(int32_t index1, uint32_t world_and_ge
 
 F2D_EXPORT int f2d_chain_get_segments(int32_t index1, uint32_t world_and_generation, int32_t* out,
                                       int capacity) {
-  b2ShapeId segments[capacity];
+  b2ShapeId* segments = malloc(capacity * sizeof(b2ShapeId));
   int count = b2Chain_GetSegments(f2d_chain(index1, world_and_generation), segments, capacity);
   for (int i = 0; i < count; ++i) {
     out[2 * i] = segments[i].index1;
     out[2 * i + 1] = (int32_t)f2d_wg_shape(segments[i]);
   }
+  free(segments);
   return count;
 }
 

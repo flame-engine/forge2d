@@ -68,6 +68,33 @@ class World {
   @internal
   final Map<(int, int), Object?> jointUserData = {};
 
+  /// The owning body of every chain, keyed by chain id, so that destroying
+  /// a body can release its chains' user data.
+  @internal
+  final Map<(int, int), (int, int)> chainOwners = {};
+
+  /// Whether the world is currently inside [step]. Mutating operations are
+  /// deferred or rejected while stepping.
+  @internal
+  bool locked = false;
+
+  /// Destroy operations requested during [step], flushed when it returns.
+  @internal
+  final List<void Function()> deferredActions = [];
+
+  /// Throws when the world is stepping: [operation] cannot run from inside
+  /// a callback. Destroy operations are deferred automatically instead.
+  @internal
+  void checkCanMutate(String operation) {
+    if (locked) {
+      throw StateError(
+        'Cannot $operation while the world is stepping. Collision callbacks '
+        'run inside step(); create after step() returns instead. Destroy '
+        'operations are deferred automatically.',
+      );
+    }
+  }
+
   /// Whether this world has not been destroyed.
   bool get isValid => rawBox2D.worldIsValid(id);
 
@@ -77,7 +104,19 @@ class World {
   /// for accuracy; 4 is a good default.
   void step(double timeStep, {int subStepCount = 4}) {
     assert(isValid, 'World has been destroyed');
-    rawBox2D.worldStep(id, timeStep, subStepCount);
+    locked = true;
+    try {
+      rawBox2D.worldStep(id, timeStep, subStepCount);
+    } finally {
+      locked = false;
+      if (deferredActions.isNotEmpty) {
+        final actions = List.of(deferredActions);
+        deferredActions.clear();
+        for (final action in actions) {
+          action();
+        }
+      }
+    }
   }
 
   /// The gravity vector, in meters per second squared.
@@ -103,9 +142,29 @@ class World {
       rawBox2D.worldEnableContinuous(id, enabled: value);
 
   /// Creates a body in this world.
+  ///
+  /// Cannot be called while the world is stepping.
   Body createBody([BodyDef? definition]) {
     assert(isValid, 'World has been destroyed');
+    checkCanMutate('create a body');
     final bodyDefinition = definition ?? BodyDef();
+    assert(
+      bodyDefinition.position.x.isFinite && bodyDefinition.position.y.isFinite,
+      'BodyDef.position must be finite',
+    );
+    assert(
+      bodyDefinition.linearVelocity.x.isFinite &&
+          bodyDefinition.linearVelocity.y.isFinite,
+      'BodyDef.linearVelocity must be finite',
+    );
+    assert(
+      bodyDefinition.angularVelocity.isFinite,
+      'BodyDef.angularVelocity must be finite',
+    );
+    assert(
+      bodyDefinition.linearDamping >= 0 && bodyDefinition.angularDamping >= 0,
+      'BodyDef damping must not be negative',
+    );
     final (index1, worldAndGeneration) = rawBox2D.createBody(
       id,
       type: bodyDefinition.type.index,
@@ -136,6 +195,7 @@ class World {
 
   /// Creates a distance joint from [definition].
   DistanceJoint createDistanceJoint(DistanceJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createDistanceJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -161,6 +221,7 @@ class World {
   /// Creates a filter joint from [definition], disabling collision between
   /// the two bodies.
   FilterJoint createFilterJoint(FilterJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createFilterJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -172,6 +233,7 @@ class World {
 
   /// Creates a motor joint from [definition].
   MotorJoint createMotorJoint(MotorJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createMotorJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -189,6 +251,7 @@ class World {
 
   /// Creates a mouse joint from [definition].
   MouseJoint createMouseJoint(MouseJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createMouseJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -205,6 +268,7 @@ class World {
 
   /// Creates a prismatic joint from [definition].
   PrismaticJoint createPrismaticJoint(PrismaticJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createPrismaticJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -231,6 +295,7 @@ class World {
 
   /// Creates a revolute joint from [definition].
   RevoluteJoint createRevoluteJoint(RevoluteJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createRevoluteJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -257,6 +322,7 @@ class World {
 
   /// Creates a weld joint from [definition].
   WeldJoint createWeldJoint(WeldJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createWeldJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -276,6 +342,7 @@ class World {
 
   /// Creates a wheel joint from [definition].
   WheelJoint createWheelJoint(WheelJointDef definition) {
+    checkCanMutate('create a joint');
     final (index1, worldAndGeneration) = rawBox2D.createWheelJoint(
       id,
       bodyA: (definition.bodyA.index1, definition.bodyA.worldAndGeneration),
@@ -685,10 +752,17 @@ class World {
   /// Destroys this world and everything in it.
   void destroy() {
     assert(isValid, 'World has been destroyed');
+    checkCanMutate('destroy the world');
+    // Unregister simulation callbacks so their closures do not outlive the
+    // world in the backend registries.
+    rawBox2D.worldSetCustomFilterCallback(id, null);
+    rawBox2D.worldSetPreSolveCallback(id, null);
     rawBox2D.destroyWorld(id);
     bodyUserData.clear();
     shapeUserData.clear();
     chainUserData.clear();
     jointUserData.clear();
+    chainOwners.clear();
+    deferredActions.clear();
   }
 }

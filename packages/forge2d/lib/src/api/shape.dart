@@ -224,7 +224,17 @@ class Shape {
   ///
   /// When [updateBodyMass] is false, call [Body.applyMassFromShapes]
   /// afterwards.
+  ///
+  /// Safe to call while the world is stepping: the destruction is deferred
+  /// until the step ends, and the shape stays valid until then.
   void destroy({bool updateBodyMass = true}) {
+    if (world.locked) {
+      world.deferredActions.add(() => destroy(updateBodyMass: updateBodyMass));
+      return;
+    }
+    if (!isValid) {
+      return;
+    }
     world.shapeUserData.remove((index1, worldAndGeneration));
     rawBox2D.destroyShape(
       index1,
