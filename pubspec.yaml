@@ -58,18 +58,13 @@ melos:
 
     benchmark:
       exec:
-        command: dart web/bench2d.dart
+        command: dart run bin/bench2d.dart
       packageFilters:
         scope: forge2d_benchmark
 
-    benchmark_serve:
-      exec:
-        command: dart pub global run webdev serve --release
-      packageFilters:
-        scope: forge2d_benchmark
-
-    example:
-      exec:
-        command: dart pub global run webdev serve --release
-      packageFilters:
-        scope: forge2d_examples
+    ffigen:
+      run: >
+        cd packages/forge2d/tool/ffigen &&
+        dart pub get &&
+        dart run ffigen --config ffigen.yaml
+      description: Regenerate the FFI bindings from the vendored Box2D headers.

@@ -1,20 +1,11 @@
-# Examples for Dart Forge2D
+# Examples for Forge2D
 
-If you haven't used `webdev` before you might need to run:
+Runnable console examples of the native-backed API:
 
 ```sh
-pub global activate webdev
+dart run bin/hello_world.dart
+dart run bin/car.dart
+dart run bin/domino_tower.dart
 ```
 
-And then you can run:
-```sh
-pub global run webdev serve
-```
-
-And open http://127.0.0.1:8080 in your browser.
-
-Since this is not running in release mode it will run a lot slower.
-If you want to run it in release mode you can run the following:
-```sh
-pub global run webdev serve --release
-```
+Browser examples return when the WebAssembly backend lands.

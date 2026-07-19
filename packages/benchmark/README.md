@@ -1,23 +1,17 @@
-# Benchmark for Dart Forge2D
+# Benchmark for Forge2D
 
-## In a browser
-```sh
-dart pub global run webdev serve --release
-```
-And then go to http://127.0.0.1:8080
-
-Note: remember that you need the `webdev` package to do this, install it like
-this:
+The classic [bench2d](https://github.com/joelgwebber/bench2d) benchmark:
+a 40-high pyramid of boxes, 256 warm-up frames followed by 256 measured
+frames.
 
 ```sh
-dart pub global activate webdev
+dart run bin/bench2d.dart
 ```
 
-## In the terminal
+Or from the repository root:
+
 ```sh
-dart web/bench2d.dart
+melos benchmark
 ```
 
-
-
-
+The web harness returns when the WebAssembly backend lands.
