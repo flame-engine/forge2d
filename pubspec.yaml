@@ -66,5 +66,6 @@ melos:
       run: >
         cd packages/forge2d/tool/ffigen &&
         dart pub get &&
-        dart run ffigen --config ffigen.yaml
+        dart run ffigen --config ffigen.yaml &&
+        dart format ../../lib/src/ffi/box2d.g.dart
       description: Regenerate the FFI bindings from the vendored Box2D headers.

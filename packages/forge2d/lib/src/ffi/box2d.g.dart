@@ -35,27 +35,19 @@ external int b2GetTicks();
 
 /// Get the milliseconds passed from an initial tick value.
 @ffi.Native<ffi.Float Function(ffi.Uint64)>()
-external double b2GetMilliseconds(
-  int ticks,
-);
+external double b2GetMilliseconds(int ticks);
 
 /// Get the milliseconds passed from an initial tick value. Resets the passed in
 /// value to the current tick value.
 @ffi.Native<ffi.Float Function(ffi.Pointer<ffi.Uint64>)>()
-external double b2GetMillisecondsAndReset(
-  ffi.Pointer<ffi.Uint64> ticks,
-);
+external double b2GetMillisecondsAndReset(ffi.Pointer<ffi.Uint64> ticks);
 
 /// Yield to be used in a busy loop.
 @ffi.Native<ffi.Void Function()>()
 external void b2Yield();
 
 @ffi.Native<ffi.Uint32 Function(ffi.Uint32, ffi.Pointer<ffi.Uint8>, ffi.Int)>()
-external int b2Hash(
-  int hash,
-  ffi.Pointer<ffi.Uint8> data,
-  int count,
-);
+external int b2Hash(int hash, ffi.Pointer<ffi.Uint8> data, int count);
 
 @ffi.Native<b2Vec2>()
 external final b2Vec2 b2Vec2_zero;
@@ -71,57 +63,39 @@ external final b2Mat22 b2Mat22_zero;
 
 /// Is this a valid number? Not NaN or infinity.
 @ffi.Native<ffi.Bool Function(ffi.Float)>()
-external bool b2IsValidFloat(
-  double a,
-);
+external bool b2IsValidFloat(double a);
 
 /// Is this a valid vector? Not NaN or infinity.
 @ffi.Native<ffi.Bool Function(b2Vec2)>()
-external bool b2IsValidVec2(
-  b2Vec2 v,
-);
+external bool b2IsValidVec2(b2Vec2 v);
 
 /// Is this a valid rotation? Not NaN or infinity. Is normalized.
 @ffi.Native<ffi.Bool Function(b2Rot)>()
-external bool b2IsValidRotation(
-  b2Rot q,
-);
+external bool b2IsValidRotation(b2Rot q);
 
 /// Is this a valid bounding box? Not Nan or infinity. Upper bound greater than or equal to lower bound.
 @ffi.Native<ffi.Bool Function(b2AABB)>()
-external bool b2IsValidAABB(
-  b2AABB aabb,
-);
+external bool b2IsValidAABB(b2AABB aabb);
 
 /// Is this a valid plane? Normal is a unit vector. Not Nan or infinity.
 @ffi.Native<ffi.Bool Function(b2Plane)>()
-external bool b2IsValidPlane(
-  b2Plane a,
-);
+external bool b2IsValidPlane(b2Plane a);
 
 /// Compute an approximate arctangent in the range [-pi, pi]
 /// This is hand coded for cross-platform determinism. The atan2f
 /// function in the standard library is not cross-platform deterministic.
 /// Accurate to around 0.0023 degrees
 @ffi.Native<ffi.Float Function(ffi.Float, ffi.Float)>()
-external double b2Atan2(
-  double y,
-  double x,
-);
+external double b2Atan2(double y, double x);
 
 /// Compute the cosine and sine of an angle in radians. Implemented
 /// for cross-platform determinism.
 @ffi.Native<b2CosSin Function(ffi.Float)>()
-external b2CosSin b2ComputeCosSin(
-  double radians,
-);
+external b2CosSin b2ComputeCosSin(double radians);
 
 /// Compute the rotation between two unit vectors
 @ffi.Native<b2Rot Function(b2Vec2, b2Vec2)>()
-external b2Rot b2ComputeRotationBetweenUnitVectors(
-  b2Vec2 v1,
-  b2Vec2 v2,
-);
+external b2Rot b2ComputeRotationBetweenUnitVectors(b2Vec2 v1, b2Vec2 v2);
 
 /// Box2D bases all length units on meters, but you may need different units for your game.
 /// You can set this value to use different units. This should be done at application startup
@@ -138,9 +112,7 @@ external b2Rot b2ComputeRotationBetweenUnitVectors(
 /// forces.
 /// @warning This must be modified before any calls to Box2D
 @ffi.Native<ffi.Void Function(ffi.Float)>()
-external void b2SetLengthUnitsPerMeter(
-  double lengthUnits,
-);
+external void b2SetLengthUnitsPerMeter(double lengthUnits);
 
 /// Get the current length units per meter.
 @ffi.Native<ffi.Float Function()>()
@@ -148,17 +120,12 @@ external double b2GetLengthUnitsPerMeter();
 
 /// Validate ray cast input data (NaN, etc)
 @ffi.Native<ffi.Bool Function(ffi.Pointer<b2RayCastInput>)>()
-external bool b2IsValidRay(
-  ffi.Pointer<b2RayCastInput> input,
-);
+external bool b2IsValidRay(ffi.Pointer<b2RayCastInput> input);
 
 /// Make a convex polygon from a convex hull. This will assert if the hull is not valid.
 /// @warning Do not manually fill in the hull data, it must come directly from b2ComputeHull
 @ffi.Native<b2Polygon Function(ffi.Pointer<b2Hull>, ffi.Float)>()
-external b2Polygon b2MakePolygon(
-  ffi.Pointer<b2Hull> hull,
-  double radius,
-);
+external b2Polygon b2MakePolygon(ffi.Pointer<b2Hull> hull, double radius);
 
 /// Make an offset convex polygon from a convex hull. This will assert if the hull is not valid.
 /// @warning Do not manually fill in the hull data, it must come directly from b2ComputeHull
@@ -182,18 +149,13 @@ external b2Polygon b2MakeOffsetRoundedPolygon(
 /// Make a square polygon, bypassing the need for a convex hull.
 /// @param halfWidth the half-width
 @ffi.Native<b2Polygon Function(ffi.Float)>()
-external b2Polygon b2MakeSquare(
-  double halfWidth,
-);
+external b2Polygon b2MakeSquare(double halfWidth);
 
 /// Make a box (rectangle) polygon, bypassing the need for a convex hull.
 /// @param halfWidth the half-width (x-axis)
 /// @param halfHeight the half-height (y-axis)
 @ffi.Native<b2Polygon Function(ffi.Float, ffi.Float)>()
-external b2Polygon b2MakeBox(
-  double halfWidth,
-  double halfHeight,
-);
+external b2Polygon b2MakeBox(double halfWidth, double halfHeight);
 
 /// Make a rounded box, bypassing the need for a convex hull.
 /// @param halfWidth the half-width (x-axis)
@@ -294,24 +256,15 @@ external b2AABB b2ComputeSegmentAABB(
 
 /// Test a point for overlap with a circle in local space
 @ffi.Native<ffi.Bool Function(b2Vec2, ffi.Pointer<b2Circle>)>()
-external bool b2PointInCircle(
-  b2Vec2 point,
-  ffi.Pointer<b2Circle> shape,
-);
+external bool b2PointInCircle(b2Vec2 point, ffi.Pointer<b2Circle> shape);
 
 /// Test a point for overlap with a capsule in local space
 @ffi.Native<ffi.Bool Function(b2Vec2, ffi.Pointer<b2Capsule>)>()
-external bool b2PointInCapsule(
-  b2Vec2 point,
-  ffi.Pointer<b2Capsule> shape,
-);
+external bool b2PointInCapsule(b2Vec2 point, ffi.Pointer<b2Capsule> shape);
 
 /// Test a point for overlap with a convex polygon in local space
 @ffi.Native<ffi.Bool Function(b2Vec2, ffi.Pointer<b2Polygon>)>()
-external bool b2PointInPolygon(
-  b2Vec2 point,
-  ffi.Pointer<b2Polygon> shape,
-);
+external bool b2PointInPolygon(b2Vec2 point, ffi.Pointer<b2Polygon> shape);
 
 /// Ray cast versus circle shape in local space. Initial overlap is treated as a miss.
 @ffi.Native<
@@ -400,19 +353,14 @@ external b2CastOutput b2ShapeCastPolygon(
 /// This welds close points and removes collinear points.
 /// @warning Do not modify a hull once it has been computed
 @ffi.Native<b2Hull Function(ffi.Pointer<b2Vec2>, ffi.Int)>()
-external b2Hull b2ComputeHull(
-  ffi.Pointer<b2Vec2> points,
-  int count,
-);
+external b2Hull b2ComputeHull(ffi.Pointer<b2Vec2> points, int count);
 
 /// This determines if a hull is valid. Checks for:
 /// - convexity
 /// - collinear points
 /// This is expensive and should not be called at runtime.
 @ffi.Native<ffi.Bool Function(ffi.Pointer<b2Hull>)>()
-external bool b2ValidateHull(
-  ffi.Pointer<b2Hull> hull,
-);
+external bool b2ValidateHull(ffi.Pointer<b2Hull> hull);
 
 /// Compute the distance between two line segments, clamping at the end points if needed.
 @ffi.Native<b2SegmentDistanceResult Function(b2Vec2, b2Vec2, b2Vec2, b2Vec2)>()
@@ -447,9 +395,7 @@ external b2DistanceOutput b2ShapeDistance(
 /// Perform a linear shape cast of shape B moving and shape A fixed. Determines the hit point, normal, and translation fraction.
 /// Initially touching shapes are treated as a miss.
 @ffi.Native<b2CastOutput Function(ffi.Pointer<b2ShapeCastPairInput>)>()
-external b2CastOutput b2ShapeCast(
-  ffi.Pointer<b2ShapeCastPairInput> input,
-);
+external b2CastOutput b2ShapeCast(ffi.Pointer<b2ShapeCastPairInput> input);
 
 /// Make a proxy for use in overlap, shape cast, and related functions. This is a deep copy of the points.
 @ffi.Native<b2ShapeProxy Function(ffi.Pointer<b2Vec2>, ffi.Int, ffi.Float)>()
@@ -483,9 +429,7 @@ external b2Transform b2GetSweepTransform(
 /// non-tunneling collisions. If you change the time interval, you should call this function
 /// again.
 @ffi.Native<b2TOIOutput Function(ffi.Pointer<b2TOIInput>)>()
-external b2TOIOutput b2TimeOfImpact(
-  ffi.Pointer<b2TOIInput> input,
-);
+external b2TOIOutput b2TimeOfImpact(ffi.Pointer<b2TOIInput> input);
 
 /// Compute the contact manifold between two circles
 @ffi.Native<
@@ -689,9 +633,7 @@ external b2DynamicTree b2DynamicTree_Create();
 
 /// Destroy the tree, freeing the node pool.
 @ffi.Native<ffi.Void Function(ffi.Pointer<b2DynamicTree>)>()
-external void b2DynamicTree_Destroy(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external void b2DynamicTree_Destroy(ffi.Pointer<b2DynamicTree> tree);
 
 /// Create a proxy. Provide an AABB and a userData value.
 @ffi.Native<
@@ -823,27 +765,19 @@ external b2TreeStats b2DynamicTree_ShapeCast(
 
 /// Get the height of the binary tree.
 @ffi.Native<ffi.Int Function(ffi.Pointer<b2DynamicTree>)>()
-external int b2DynamicTree_GetHeight(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external int b2DynamicTree_GetHeight(ffi.Pointer<b2DynamicTree> tree);
 
 /// Get the ratio of the sum of the node areas to the root area.
 @ffi.Native<ffi.Float Function(ffi.Pointer<b2DynamicTree>)>()
-external double b2DynamicTree_GetAreaRatio(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external double b2DynamicTree_GetAreaRatio(ffi.Pointer<b2DynamicTree> tree);
 
 /// Get the bounding box that contains the entire tree
 @ffi.Native<b2AABB Function(ffi.Pointer<b2DynamicTree>)>()
-external b2AABB b2DynamicTree_GetRootBounds(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external b2AABB b2DynamicTree_GetRootBounds(ffi.Pointer<b2DynamicTree> tree);
 
 /// Get the number of proxies created
 @ffi.Native<ffi.Int Function(ffi.Pointer<b2DynamicTree>)>()
-external int b2DynamicTree_GetProxyCount(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external int b2DynamicTree_GetProxyCount(ffi.Pointer<b2DynamicTree> tree);
 
 /// Rebuild the tree while retaining subtrees that haven't changed. Returns the number of boxes sorted.
 @ffi.Native<ffi.Int Function(ffi.Pointer<b2DynamicTree>, ffi.Bool)>()
@@ -854,9 +788,7 @@ external int b2DynamicTree_Rebuild(
 
 /// Get the number of bytes used by this tree
 @ffi.Native<ffi.Int Function(ffi.Pointer<b2DynamicTree>)>()
-external int b2DynamicTree_GetByteCount(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external int b2DynamicTree_GetByteCount(ffi.Pointer<b2DynamicTree> tree);
 
 /// Get proxy user data
 @ffi.Native<ffi.Uint64 Function(ffi.Pointer<b2DynamicTree>, ffi.Int)>()
@@ -874,15 +806,11 @@ external b2AABB b2DynamicTree_GetAABB(
 
 /// Validate this tree. For testing.
 @ffi.Native<ffi.Void Function(ffi.Pointer<b2DynamicTree>)>()
-external void b2DynamicTree_Validate(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external void b2DynamicTree_Validate(ffi.Pointer<b2DynamicTree> tree);
 
 /// Validate this tree has no enlarged AABBs. For testing.
 @ffi.Native<ffi.Void Function(ffi.Pointer<b2DynamicTree>)>()
-external void b2DynamicTree_ValidateNoEnlarged(
-  ffi.Pointer<b2DynamicTree> tree,
-);
+external void b2DynamicTree_ValidateNoEnlarged(ffi.Pointer<b2DynamicTree> tree);
 
 /// Solves the position of a mover that satisfies the given collision planes.
 /// @param targetDelta the desired movement from the position used to generate the collision planes
@@ -1012,21 +940,15 @@ external b2DebugDraw b2DefaultDebugDraw();
 /// up to 128 worlds. Each world is completely independent and may be simulated in parallel.
 /// @return the world id.
 @ffi.Native<b2WorldId Function(ffi.Pointer<b2WorldDef>)>()
-external b2WorldId b2CreateWorld(
-  ffi.Pointer<b2WorldDef> def,
-);
+external b2WorldId b2CreateWorld(ffi.Pointer<b2WorldDef> def);
 
 /// Destroy a world
 @ffi.Native<ffi.Void Function(b2WorldId)>()
-external void b2DestroyWorld(
-  b2WorldId worldId,
-);
+external void b2DestroyWorld(b2WorldId worldId);
 
 /// World id validation. Provides validation for up to 64K allocations.
 @ffi.Native<ffi.Bool Function(b2WorldId)>()
-external bool b2World_IsValid(
-  b2WorldId id,
-);
+external bool b2World_IsValid(b2WorldId id);
 
 /// Simulate a world for one time step. This performs collision detection, integration, and constraint solution.
 /// @param worldId The world to simulate
@@ -1041,28 +963,19 @@ external void b2World_Step(
 
 /// Call this to draw shapes and other debug draw data
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Pointer<b2DebugDraw>)>()
-external void b2World_Draw(
-  b2WorldId worldId,
-  ffi.Pointer<b2DebugDraw> draw,
-);
+external void b2World_Draw(b2WorldId worldId, ffi.Pointer<b2DebugDraw> draw);
 
 /// Get the body events for the current time step. The event data is transient. Do not store a reference to this data.
 @ffi.Native<b2BodyEvents Function(b2WorldId)>()
-external b2BodyEvents b2World_GetBodyEvents(
-  b2WorldId worldId,
-);
+external b2BodyEvents b2World_GetBodyEvents(b2WorldId worldId);
 
 /// Get sensor events for the current time step. The event data is transient. Do not store a reference to this data.
 @ffi.Native<b2SensorEvents Function(b2WorldId)>()
-external b2SensorEvents b2World_GetSensorEvents(
-  b2WorldId worldId,
-);
+external b2SensorEvents b2World_GetSensorEvents(b2WorldId worldId);
 
 /// Get contact events for this current time step. The event data is transient. Do not store a reference to this data.
 @ffi.Native<b2ContactEvents Function(b2WorldId)>()
-external b2ContactEvents b2World_GetContactEvents(
-  b2WorldId worldId,
-);
+external b2ContactEvents b2World_GetContactEvents(b2WorldId worldId);
 
 /// Overlap test for all shapes that *potentially* overlap the provided AABB
 @ffi.Native<
@@ -1195,62 +1108,42 @@ external void b2World_CollideMover(
 /// by disabling sleep completely at the world level.
 /// @see b2WorldDef
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Bool)>()
-external void b2World_EnableSleeping(
-  b2WorldId worldId,
-  bool flag,
-);
+external void b2World_EnableSleeping(b2WorldId worldId, bool flag);
 
 /// Is body sleeping enabled?
 @ffi.Native<ffi.Bool Function(b2WorldId)>()
-external bool b2World_IsSleepingEnabled(
-  b2WorldId worldId,
-);
+external bool b2World_IsSleepingEnabled(b2WorldId worldId);
 
 /// Enable/disable continuous collision between dynamic and static bodies. Generally you should keep continuous
 /// collision enabled to prevent fast moving objects from going through static objects. The performance gain from
 /// disabling continuous collision is minor.
 /// @see b2WorldDef
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Bool)>()
-external void b2World_EnableContinuous(
-  b2WorldId worldId,
-  bool flag,
-);
+external void b2World_EnableContinuous(b2WorldId worldId, bool flag);
 
 /// Is continuous collision enabled?
 @ffi.Native<ffi.Bool Function(b2WorldId)>()
-external bool b2World_IsContinuousEnabled(
-  b2WorldId worldId,
-);
+external bool b2World_IsContinuousEnabled(b2WorldId worldId);
 
 /// Adjust the restitution threshold. It is recommended not to make this value very small
 /// because it will prevent bodies from sleeping. Usually in meters per second.
 /// @see b2WorldDef
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Float)>()
-external void b2World_SetRestitutionThreshold(
-  b2WorldId worldId,
-  double value,
-);
+external void b2World_SetRestitutionThreshold(b2WorldId worldId, double value);
 
 /// Get the the restitution speed threshold. Usually in meters per second.
 @ffi.Native<ffi.Float Function(b2WorldId)>()
-external double b2World_GetRestitutionThreshold(
-  b2WorldId worldId,
-);
+external double b2World_GetRestitutionThreshold(b2WorldId worldId);
 
 /// Adjust the hit event threshold. This controls the collision speed needed to generate a b2ContactHitEvent.
 /// Usually in meters per second.
 /// @see b2WorldDef::hitEventThreshold
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Float)>()
-external void b2World_SetHitEventThreshold(
-  b2WorldId worldId,
-  double value,
-);
+external void b2World_SetHitEventThreshold(b2WorldId worldId, double value);
 
 /// Get the the hit event speed threshold. Usually in meters per second.
 @ffi.Native<ffi.Float Function(b2WorldId)>()
-external double b2World_GetHitEventThreshold(
-  b2WorldId worldId,
-);
+external double b2World_GetHitEventThreshold(b2WorldId worldId);
 
 /// Register the custom filter callback. This is optional.
 @ffi.Native<
@@ -1284,16 +1177,11 @@ external void b2World_SetPreSolveCallback(
 /// is left as a decision for the application. Usually in m/s^2.
 /// @see b2WorldDef
 @ffi.Native<ffi.Void Function(b2WorldId, b2Vec2)>()
-external void b2World_SetGravity(
-  b2WorldId worldId,
-  b2Vec2 gravity,
-);
+external void b2World_SetGravity(b2WorldId worldId, b2Vec2 gravity);
 
 /// Get the gravity vector
 @ffi.Native<b2Vec2 Function(b2WorldId)>()
-external b2Vec2 b2World_GetGravity(
-  b2WorldId worldId,
-);
+external b2Vec2 b2World_GetGravity(b2WorldId worldId);
 
 /// Apply a radial explosion
 /// @param worldId The world id
@@ -1327,41 +1215,28 @@ external void b2World_SetMaximumLinearSpeed(
 
 /// Get the maximum linear speed. Usually in m/s.
 @ffi.Native<ffi.Float Function(b2WorldId)>()
-external double b2World_GetMaximumLinearSpeed(
-  b2WorldId worldId,
-);
+external double b2World_GetMaximumLinearSpeed(b2WorldId worldId);
 
 /// Enable/disable constraint warm starting. Advanced feature for testing. Disabling
 /// warm starting greatly reduces stability and provides no performance gain.
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Bool)>()
-external void b2World_EnableWarmStarting(
-  b2WorldId worldId,
-  bool flag,
-);
+external void b2World_EnableWarmStarting(b2WorldId worldId, bool flag);
 
 /// Is constraint warm starting enabled?
 @ffi.Native<ffi.Bool Function(b2WorldId)>()
-external bool b2World_IsWarmStartingEnabled(
-  b2WorldId worldId,
-);
+external bool b2World_IsWarmStartingEnabled(b2WorldId worldId);
 
 /// Get the number of awake bodies.
 @ffi.Native<ffi.Int Function(b2WorldId)>()
-external int b2World_GetAwakeBodyCount(
-  b2WorldId worldId,
-);
+external int b2World_GetAwakeBodyCount(b2WorldId worldId);
 
 /// Get the current world performance profile
 @ffi.Native<b2Profile Function(b2WorldId)>()
-external b2Profile b2World_GetProfile(
-  b2WorldId worldId,
-);
+external b2Profile b2World_GetProfile(b2WorldId worldId);
 
 /// Get world counters and sizes
 @ffi.Native<b2Counters Function(b2WorldId)>()
-external b2Counters b2World_GetCounters(
-  b2WorldId worldId,
-);
+external b2Counters b2World_GetCounters(b2WorldId worldId);
 
 /// Set the user data pointer.
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Pointer<ffi.Void>)>()
@@ -1372,9 +1247,7 @@ external void b2World_SetUserData(
 
 /// Get the user data pointer.
 @ffi.Native<ffi.Pointer<ffi.Void> Function(b2WorldId)>()
-external ffi.Pointer<ffi.Void> b2World_GetUserData(
-  b2WorldId worldId,
-);
+external ffi.Pointer<ffi.Void> b2World_GetUserData(b2WorldId worldId);
 
 /// Set the friction callback. Passing NULL resets to default.
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Pointer<b2FrictionCallback>)>()
@@ -1392,22 +1265,15 @@ external void b2World_SetRestitutionCallback(
 
 /// Dump memory stats to box2d_memory.txt
 @ffi.Native<ffi.Void Function(b2WorldId)>()
-external void b2World_DumpMemoryStats(
-  b2WorldId worldId,
-);
+external void b2World_DumpMemoryStats(b2WorldId worldId);
 
 /// This is for internal testing
 @ffi.Native<ffi.Void Function(b2WorldId)>()
-external void b2World_RebuildStaticTree(
-  b2WorldId worldId,
-);
+external void b2World_RebuildStaticTree(b2WorldId worldId);
 
 /// This is for internal testing
 @ffi.Native<ffi.Void Function(b2WorldId, ffi.Bool)>()
-external void b2World_EnableSpeculative(
-  b2WorldId worldId,
-  bool flag,
-);
+external void b2World_EnableSpeculative(b2WorldId worldId, bool flag);
 
 /// Create a rigid body given a definition. No reference to the definition is retained. So you can create the definition
 /// on the stack and pass it as a pointer.
@@ -1417,68 +1283,41 @@ external void b2World_EnableSpeculative(
 /// @endcode
 /// @warning This function is locked during callbacks.
 @ffi.Native<b2BodyId Function(b2WorldId, ffi.Pointer<b2BodyDef>)>()
-external b2BodyId b2CreateBody(
-  b2WorldId worldId,
-  ffi.Pointer<b2BodyDef> def,
-);
+external b2BodyId b2CreateBody(b2WorldId worldId, ffi.Pointer<b2BodyDef> def);
 
 /// Destroy a rigid body given an id. This destroys all shapes and joints attached to the body.
 /// Do not keep references to the associated shapes and joints.
 @ffi.Native<ffi.Void Function(b2BodyId)>()
-external void b2DestroyBody(
-  b2BodyId bodyId,
-);
+external void b2DestroyBody(b2BodyId bodyId);
 
 /// Body identifier validation. Can be used to detect orphaned ids. Provides validation for up to 64K allocations.
 @ffi.Native<ffi.Bool Function(b2BodyId)>()
-external bool b2Body_IsValid(
-  b2BodyId id,
-);
+external bool b2Body_IsValid(b2BodyId id);
 
 /// Get the body type: static, kinematic, or dynamic
 @ffi.Native<ffi.UnsignedInt Function(b2BodyId)>(symbol: 'b2Body_GetType')
-external int _b2Body_GetType(
-  b2BodyId bodyId,
-);
+external int _b2Body_GetType(b2BodyId bodyId);
 
-b2BodyType b2Body_GetType(
-  b2BodyId bodyId,
-) => b2BodyType.fromValue(
-  _b2Body_GetType(
-    bodyId,
-  ),
-);
+b2BodyType b2Body_GetType(b2BodyId bodyId) =>
+    b2BodyType.fromValue(_b2Body_GetType(bodyId));
 
 /// Change the body type. This is an expensive operation. This automatically updates the mass
 /// properties regardless of the automatic mass setting.
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.UnsignedInt)>(
   symbol: 'b2Body_SetType',
 )
-external void _b2Body_SetType(
-  b2BodyId bodyId,
-  int type,
-);
+external void _b2Body_SetType(b2BodyId bodyId, int type);
 
-void b2Body_SetType(
-  b2BodyId bodyId,
-  b2BodyType type,
-) => _b2Body_SetType(
-  bodyId,
-  type.value,
-);
+void b2Body_SetType(b2BodyId bodyId, b2BodyType type) =>
+    _b2Body_SetType(bodyId, type.value);
 
 /// Set the body name. Up to 31 characters excluding 0 termination.
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Pointer<ffi.Char>)>()
-external void b2Body_SetName(
-  b2BodyId bodyId,
-  ffi.Pointer<ffi.Char> name,
-);
+external void b2Body_SetName(b2BodyId bodyId, ffi.Pointer<ffi.Char> name);
 
 /// Get the body name. May be null.
 @ffi.Native<ffi.Pointer<ffi.Char> Function(b2BodyId)>()
-external ffi.Pointer<ffi.Char> b2Body_GetName(
-  b2BodyId bodyId,
-);
+external ffi.Pointer<ffi.Char> b2Body_GetName(b2BodyId bodyId);
 
 /// Set the user data for a body
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Pointer<ffi.Void>)>()
@@ -1489,27 +1328,19 @@ external void b2Body_SetUserData(
 
 /// Get the user data stored in a body
 @ffi.Native<ffi.Pointer<ffi.Void> Function(b2BodyId)>()
-external ffi.Pointer<ffi.Void> b2Body_GetUserData(
-  b2BodyId bodyId,
-);
+external ffi.Pointer<ffi.Void> b2Body_GetUserData(b2BodyId bodyId);
 
 /// Get the world position of a body. This is the location of the body origin.
 @ffi.Native<b2Vec2 Function(b2BodyId)>()
-external b2Vec2 b2Body_GetPosition(
-  b2BodyId bodyId,
-);
+external b2Vec2 b2Body_GetPosition(b2BodyId bodyId);
 
 /// Get the world rotation of a body as a cosine/sine pair (complex number)
 @ffi.Native<b2Rot Function(b2BodyId)>()
-external b2Rot b2Body_GetRotation(
-  b2BodyId bodyId,
-);
+external b2Rot b2Body_GetRotation(b2BodyId bodyId);
 
 /// Get the world transform of a body.
 @ffi.Native<b2Transform Function(b2BodyId)>()
-external b2Transform b2Body_GetTransform(
-  b2BodyId bodyId,
-);
+external b2Transform b2Body_GetTransform(b2BodyId bodyId);
 
 /// Set the world transform of a body. This acts as a teleport and is fairly expensive.
 /// @note Generally you should create a body with then intended transform.
@@ -1523,50 +1354,31 @@ external void b2Body_SetTransform(
 
 /// Get a local point on a body given a world point
 @ffi.Native<b2Vec2 Function(b2BodyId, b2Vec2)>()
-external b2Vec2 b2Body_GetLocalPoint(
-  b2BodyId bodyId,
-  b2Vec2 worldPoint,
-);
+external b2Vec2 b2Body_GetLocalPoint(b2BodyId bodyId, b2Vec2 worldPoint);
 
 /// Get a world point on a body given a local point
 @ffi.Native<b2Vec2 Function(b2BodyId, b2Vec2)>()
-external b2Vec2 b2Body_GetWorldPoint(
-  b2BodyId bodyId,
-  b2Vec2 localPoint,
-);
+external b2Vec2 b2Body_GetWorldPoint(b2BodyId bodyId, b2Vec2 localPoint);
 
 /// Get a local vector on a body given a world vector
 @ffi.Native<b2Vec2 Function(b2BodyId, b2Vec2)>()
-external b2Vec2 b2Body_GetLocalVector(
-  b2BodyId bodyId,
-  b2Vec2 worldVector,
-);
+external b2Vec2 b2Body_GetLocalVector(b2BodyId bodyId, b2Vec2 worldVector);
 
 /// Get a world vector on a body given a local vector
 @ffi.Native<b2Vec2 Function(b2BodyId, b2Vec2)>()
-external b2Vec2 b2Body_GetWorldVector(
-  b2BodyId bodyId,
-  b2Vec2 localVector,
-);
+external b2Vec2 b2Body_GetWorldVector(b2BodyId bodyId, b2Vec2 localVector);
 
 /// Get the linear velocity of a body's center of mass. Usually in meters per second.
 @ffi.Native<b2Vec2 Function(b2BodyId)>()
-external b2Vec2 b2Body_GetLinearVelocity(
-  b2BodyId bodyId,
-);
+external b2Vec2 b2Body_GetLinearVelocity(b2BodyId bodyId);
 
 /// Get the angular velocity of a body in radians per second
 @ffi.Native<ffi.Float Function(b2BodyId)>()
-external double b2Body_GetAngularVelocity(
-  b2BodyId bodyId,
-);
+external double b2Body_GetAngularVelocity(b2BodyId bodyId);
 
 /// Set the linear velocity of a body. Usually in meters per second.
 @ffi.Native<ffi.Void Function(b2BodyId, b2Vec2)>()
-external void b2Body_SetLinearVelocity(
-  b2BodyId bodyId,
-  b2Vec2 linearVelocity,
-);
+external void b2Body_SetLinearVelocity(b2BodyId bodyId, b2Vec2 linearVelocity);
 
 /// Set the angular velocity of a body in radians per second
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Float)>()
@@ -1633,11 +1445,7 @@ external void b2Body_ApplyForceToCenter(
 /// @param torque about the z-axis (out of the screen), usually in N*m.
 /// @param wake also wake up the body
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Float, ffi.Bool)>()
-external void b2Body_ApplyTorque(
-  b2BodyId bodyId,
-  double torque,
-  bool wake,
-);
+external void b2Body_ApplyTorque(b2BodyId bodyId, double torque, bool wake);
 
 /// Apply an impulse at a point. This immediately modifies the velocity.
 /// It also modifies the angular velocity if the point of application
@@ -1687,42 +1495,29 @@ external void b2Body_ApplyAngularImpulse(
 
 /// Get the mass of the body, usually in kilograms
 @ffi.Native<ffi.Float Function(b2BodyId)>()
-external double b2Body_GetMass(
-  b2BodyId bodyId,
-);
+external double b2Body_GetMass(b2BodyId bodyId);
 
 /// Get the rotational inertia of the body, usually in kg*m^2
 @ffi.Native<ffi.Float Function(b2BodyId)>()
-external double b2Body_GetRotationalInertia(
-  b2BodyId bodyId,
-);
+external double b2Body_GetRotationalInertia(b2BodyId bodyId);
 
 /// Get the center of mass position of the body in local space
 @ffi.Native<b2Vec2 Function(b2BodyId)>()
-external b2Vec2 b2Body_GetLocalCenterOfMass(
-  b2BodyId bodyId,
-);
+external b2Vec2 b2Body_GetLocalCenterOfMass(b2BodyId bodyId);
 
 /// Get the center of mass position of the body in world space
 @ffi.Native<b2Vec2 Function(b2BodyId)>()
-external b2Vec2 b2Body_GetWorldCenterOfMass(
-  b2BodyId bodyId,
-);
+external b2Vec2 b2Body_GetWorldCenterOfMass(b2BodyId bodyId);
 
 /// Override the body's mass properties. Normally this is computed automatically using the
 /// shape geometry and density. This information is lost if a shape is added or removed or if the
 /// body type changes.
 @ffi.Native<ffi.Void Function(b2BodyId, b2MassData)>()
-external void b2Body_SetMassData(
-  b2BodyId bodyId,
-  b2MassData massData,
-);
+external void b2Body_SetMassData(b2BodyId bodyId, b2MassData massData);
 
 /// Get the mass data for a body
 @ffi.Native<b2MassData Function(b2BodyId)>()
-external b2MassData b2Body_GetMassData(
-  b2BodyId bodyId,
-);
+external b2MassData b2Body_GetMassData(b2BodyId bodyId);
 
 /// This update the mass properties to the sum of the mass properties of the shapes.
 /// This normally does not need to be called unless you called SetMassData to override
@@ -1731,164 +1526,106 @@ external b2MassData b2Body_GetMassData(
 /// You should call this regardless of body type.
 /// Note that sensor shapes may have mass.
 @ffi.Native<ffi.Void Function(b2BodyId)>()
-external void b2Body_ApplyMassFromShapes(
-  b2BodyId bodyId,
-);
+external void b2Body_ApplyMassFromShapes(b2BodyId bodyId);
 
 /// Adjust the linear damping. Normally this is set in b2BodyDef before creation.
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Float)>()
-external void b2Body_SetLinearDamping(
-  b2BodyId bodyId,
-  double linearDamping,
-);
+external void b2Body_SetLinearDamping(b2BodyId bodyId, double linearDamping);
 
 /// Get the current linear damping.
 @ffi.Native<ffi.Float Function(b2BodyId)>()
-external double b2Body_GetLinearDamping(
-  b2BodyId bodyId,
-);
+external double b2Body_GetLinearDamping(b2BodyId bodyId);
 
 /// Adjust the angular damping. Normally this is set in b2BodyDef before creation.
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Float)>()
-external void b2Body_SetAngularDamping(
-  b2BodyId bodyId,
-  double angularDamping,
-);
+external void b2Body_SetAngularDamping(b2BodyId bodyId, double angularDamping);
 
 /// Get the current angular damping.
 @ffi.Native<ffi.Float Function(b2BodyId)>()
-external double b2Body_GetAngularDamping(
-  b2BodyId bodyId,
-);
+external double b2Body_GetAngularDamping(b2BodyId bodyId);
 
 /// Adjust the gravity scale. Normally this is set in b2BodyDef before creation.
 /// @see b2BodyDef::gravityScale
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Float)>()
-external void b2Body_SetGravityScale(
-  b2BodyId bodyId,
-  double gravityScale,
-);
+external void b2Body_SetGravityScale(b2BodyId bodyId, double gravityScale);
 
 /// Get the current gravity scale
 @ffi.Native<ffi.Float Function(b2BodyId)>()
-external double b2Body_GetGravityScale(
-  b2BodyId bodyId,
-);
+external double b2Body_GetGravityScale(b2BodyId bodyId);
 
 /// @return true if this body is awake
 @ffi.Native<ffi.Bool Function(b2BodyId)>()
-external bool b2Body_IsAwake(
-  b2BodyId bodyId,
-);
+external bool b2Body_IsAwake(b2BodyId bodyId);
 
 /// Wake a body from sleep. This wakes the entire island the body is touching.
 /// @warning Putting a body to sleep will put the entire island of bodies touching this body to sleep,
 /// which can be expensive and possibly unintuitive.
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Bool)>()
-external void b2Body_SetAwake(
-  b2BodyId bodyId,
-  bool awake,
-);
+external void b2Body_SetAwake(b2BodyId bodyId, bool awake);
 
 /// Enable or disable sleeping for this body. If sleeping is disabled the body will wake.
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Bool)>()
-external void b2Body_EnableSleep(
-  b2BodyId bodyId,
-  bool enableSleep,
-);
+external void b2Body_EnableSleep(b2BodyId bodyId, bool enableSleep);
 
 /// Returns true if sleeping is enabled for this body
 @ffi.Native<ffi.Bool Function(b2BodyId)>()
-external bool b2Body_IsSleepEnabled(
-  b2BodyId bodyId,
-);
+external bool b2Body_IsSleepEnabled(b2BodyId bodyId);
 
 /// Set the sleep threshold, usually in meters per second
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Float)>()
-external void b2Body_SetSleepThreshold(
-  b2BodyId bodyId,
-  double sleepThreshold,
-);
+external void b2Body_SetSleepThreshold(b2BodyId bodyId, double sleepThreshold);
 
 /// Get the sleep threshold, usually in meters per second.
 @ffi.Native<ffi.Float Function(b2BodyId)>()
-external double b2Body_GetSleepThreshold(
-  b2BodyId bodyId,
-);
+external double b2Body_GetSleepThreshold(b2BodyId bodyId);
 
 /// Returns true if this body is enabled
 @ffi.Native<ffi.Bool Function(b2BodyId)>()
-external bool b2Body_IsEnabled(
-  b2BodyId bodyId,
-);
+external bool b2Body_IsEnabled(b2BodyId bodyId);
 
 /// Disable a body by removing it completely from the simulation. This is expensive.
 @ffi.Native<ffi.Void Function(b2BodyId)>()
-external void b2Body_Disable(
-  b2BodyId bodyId,
-);
+external void b2Body_Disable(b2BodyId bodyId);
 
 /// Enable a body by adding it to the simulation. This is expensive.
 @ffi.Native<ffi.Void Function(b2BodyId)>()
-external void b2Body_Enable(
-  b2BodyId bodyId,
-);
+external void b2Body_Enable(b2BodyId bodyId);
 
 /// Set this body to have fixed rotation. This causes the mass to be reset in all cases.
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Bool)>()
-external void b2Body_SetFixedRotation(
-  b2BodyId bodyId,
-  bool flag,
-);
+external void b2Body_SetFixedRotation(b2BodyId bodyId, bool flag);
 
 /// Does this body have fixed rotation?
 @ffi.Native<ffi.Bool Function(b2BodyId)>()
-external bool b2Body_IsFixedRotation(
-  b2BodyId bodyId,
-);
+external bool b2Body_IsFixedRotation(b2BodyId bodyId);
 
 /// Set this body to be a bullet. A bullet does continuous collision detection
 /// against dynamic bodies (but not other bullets).
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Bool)>()
-external void b2Body_SetBullet(
-  b2BodyId bodyId,
-  bool flag,
-);
+external void b2Body_SetBullet(b2BodyId bodyId, bool flag);
 
 /// Is this body a bullet?
 @ffi.Native<ffi.Bool Function(b2BodyId)>()
-external bool b2Body_IsBullet(
-  b2BodyId bodyId,
-);
+external bool b2Body_IsBullet(b2BodyId bodyId);
 
 /// Enable/disable contact events on all shapes.
 /// @see b2ShapeDef::enableContactEvents
 /// @warning changing this at runtime may cause mismatched begin/end touch events
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Bool)>()
-external void b2Body_EnableContactEvents(
-  b2BodyId bodyId,
-  bool flag,
-);
+external void b2Body_EnableContactEvents(b2BodyId bodyId, bool flag);
 
 /// Enable/disable hit events on all shapes
 /// @see b2ShapeDef::enableHitEvents
 @ffi.Native<ffi.Void Function(b2BodyId, ffi.Bool)>()
-external void b2Body_EnableHitEvents(
-  b2BodyId bodyId,
-  bool flag,
-);
+external void b2Body_EnableHitEvents(b2BodyId bodyId, bool flag);
 
 /// Get the world that owns this body
 @ffi.Native<b2WorldId Function(b2BodyId)>()
-external b2WorldId b2Body_GetWorld(
-  b2BodyId bodyId,
-);
+external b2WorldId b2Body_GetWorld(b2BodyId bodyId);
 
 /// Get the number of shapes on this body
 @ffi.Native<ffi.Int Function(b2BodyId)>()
-external int b2Body_GetShapeCount(
-  b2BodyId bodyId,
-);
+external int b2Body_GetShapeCount(b2BodyId bodyId);
 
 /// Get the shape ids for all shapes on this body, up to the provided capacity.
 /// @returns the number of shape ids stored in the user array
@@ -1901,9 +1638,7 @@ external int b2Body_GetShapes(
 
 /// Get the number of joints on this body
 @ffi.Native<ffi.Int Function(b2BodyId)>()
-external int b2Body_GetJointCount(
-  b2BodyId bodyId,
-);
+external int b2Body_GetJointCount(b2BodyId bodyId);
 
 /// Get the joint ids for all joints on this body, up to the provided capacity
 /// @returns the number of joint ids stored in the user array
@@ -1916,9 +1651,7 @@ external int b2Body_GetJoints(
 
 /// Get the maximum capacity required for retrieving all the touching contacts on a body
 @ffi.Native<ffi.Int Function(b2BodyId)>()
-external int b2Body_GetContactCapacity(
-  b2BodyId bodyId,
-);
+external int b2Body_GetContactCapacity(b2BodyId bodyId);
 
 /// Get the touching contact data for a body.
 /// @note Box2D uses speculative collision so some contact points may be separated.
@@ -1934,9 +1667,7 @@ external int b2Body_GetContactData(
 /// Get the current world AABB that contains all the attached shapes. Note that this may not encompass the body origin.
 /// If there are no shapes attached then the returned AABB is empty and centered on the body origin.
 @ffi.Native<b2AABB Function(b2BodyId)>()
-external b2AABB b2Body_ComputeAABB(
-  b2BodyId bodyId,
-);
+external b2AABB b2Body_ComputeAABB(b2BodyId bodyId);
 
 /// Create a circle shape and attach it to a body. The shape definition and geometry are fully cloned.
 /// Contacts are not created until the next time step.
@@ -1990,50 +1721,32 @@ external b2ShapeId b2CreatePolygonShape(
 /// body are destroyed at once.
 /// @see b2Body_ApplyMassFromShapes
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Bool)>()
-external void b2DestroyShape(
-  b2ShapeId shapeId,
-  bool updateBodyMass,
-);
+external void b2DestroyShape(b2ShapeId shapeId, bool updateBodyMass);
 
 /// Shape identifier validation. Provides validation for up to 64K allocations.
 @ffi.Native<ffi.Bool Function(b2ShapeId)>()
-external bool b2Shape_IsValid(
-  b2ShapeId id,
-);
+external bool b2Shape_IsValid(b2ShapeId id);
 
 /// Get the type of a shape
 @ffi.Native<ffi.UnsignedInt Function(b2ShapeId)>(symbol: 'b2Shape_GetType')
-external int _b2Shape_GetType(
-  b2ShapeId shapeId,
-);
+external int _b2Shape_GetType(b2ShapeId shapeId);
 
-b2ShapeType b2Shape_GetType(
-  b2ShapeId shapeId,
-) => b2ShapeType.fromValue(
-  _b2Shape_GetType(
-    shapeId,
-  ),
-);
+b2ShapeType b2Shape_GetType(b2ShapeId shapeId) =>
+    b2ShapeType.fromValue(_b2Shape_GetType(shapeId));
 
 /// Get the id of the body that a shape is attached to
 @ffi.Native<b2BodyId Function(b2ShapeId)>()
-external b2BodyId b2Shape_GetBody(
-  b2ShapeId shapeId,
-);
+external b2BodyId b2Shape_GetBody(b2ShapeId shapeId);
 
 /// Get the world that owns this shape
 @ffi.Native<b2WorldId Function(b2ShapeId)>()
-external b2WorldId b2Shape_GetWorld(
-  b2ShapeId shapeId,
-);
+external b2WorldId b2Shape_GetWorld(b2ShapeId shapeId);
 
 /// Returns true if the shape is a sensor. It is not possible to change a shape
 /// from sensor to solid dynamically because this breaks the contract for
 /// sensor events.
 @ffi.Native<ffi.Bool Function(b2ShapeId)>()
-external bool b2Shape_IsSensor(
-  b2ShapeId shapeId,
-);
+external bool b2Shape_IsSensor(b2ShapeId shapeId);
 
 /// Set the user data for a shape
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Pointer<ffi.Void>)>()
@@ -2045,9 +1758,7 @@ external void b2Shape_SetUserData(
 /// Get the user data for a shape. This is useful when you get a shape id
 /// from an event or query.
 @ffi.Native<ffi.Pointer<ffi.Void> Function(b2ShapeId)>()
-external ffi.Pointer<ffi.Void> b2Shape_GetUserData(
-  b2ShapeId shapeId,
-);
+external ffi.Pointer<ffi.Void> b2Shape_GetUserData(b2ShapeId shapeId);
 
 /// Set the mass density of a shape, usually in kg/m^2.
 /// This will optionally update the mass properties on the parent body.
@@ -2061,51 +1772,34 @@ external void b2Shape_SetDensity(
 
 /// Get the density of a shape, usually in kg/m^2
 @ffi.Native<ffi.Float Function(b2ShapeId)>()
-external double b2Shape_GetDensity(
-  b2ShapeId shapeId,
-);
+external double b2Shape_GetDensity(b2ShapeId shapeId);
 
 /// Set the friction on a shape
 /// @see b2ShapeDef::friction
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Float)>()
-external void b2Shape_SetFriction(
-  b2ShapeId shapeId,
-  double friction,
-);
+external void b2Shape_SetFriction(b2ShapeId shapeId, double friction);
 
 /// Get the friction of a shape
 @ffi.Native<ffi.Float Function(b2ShapeId)>()
-external double b2Shape_GetFriction(
-  b2ShapeId shapeId,
-);
+external double b2Shape_GetFriction(b2ShapeId shapeId);
 
 /// Set the shape restitution (bounciness)
 /// @see b2ShapeDef::restitution
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Float)>()
-external void b2Shape_SetRestitution(
-  b2ShapeId shapeId,
-  double restitution,
-);
+external void b2Shape_SetRestitution(b2ShapeId shapeId, double restitution);
 
 /// Get the shape restitution
 @ffi.Native<ffi.Float Function(b2ShapeId)>()
-external double b2Shape_GetRestitution(
-  b2ShapeId shapeId,
-);
+external double b2Shape_GetRestitution(b2ShapeId shapeId);
 
 /// Set the shape material identifier
 /// @see b2ShapeDef::material
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Int)>()
-external void b2Shape_SetMaterial(
-  b2ShapeId shapeId,
-  int material,
-);
+external void b2Shape_SetMaterial(b2ShapeId shapeId, int material);
 
 /// Get the shape material identifier
 @ffi.Native<ffi.Int Function(b2ShapeId)>()
-external int b2Shape_GetMaterial(
-  b2ShapeId shapeId,
-);
+external int b2Shape_GetMaterial(b2ShapeId shapeId);
 
 /// Set the shape surface material
 @ffi.Native<ffi.Void Function(b2ShapeId, b2SurfaceMaterial)>()
@@ -2116,90 +1810,60 @@ external void b2Shape_SetSurfaceMaterial(
 
 /// Get the shape surface material
 @ffi.Native<b2SurfaceMaterial Function(b2ShapeId)>()
-external b2SurfaceMaterial b2Shape_GetSurfaceMaterial(
-  b2ShapeId shapeId,
-);
+external b2SurfaceMaterial b2Shape_GetSurfaceMaterial(b2ShapeId shapeId);
 
 /// Get the shape filter
 @ffi.Native<b2Filter Function(b2ShapeId)>()
-external b2Filter b2Shape_GetFilter(
-  b2ShapeId shapeId,
-);
+external b2Filter b2Shape_GetFilter(b2ShapeId shapeId);
 
 /// Set the current filter. This is almost as expensive as recreating the shape. This may cause
 /// contacts to be immediately destroyed. However contacts are not created until the next world step.
 /// Sensor overlap state is also not updated until the next world step.
 /// @see b2ShapeDef::filter
 @ffi.Native<ffi.Void Function(b2ShapeId, b2Filter)>()
-external void b2Shape_SetFilter(
-  b2ShapeId shapeId,
-  b2Filter filter,
-);
+external void b2Shape_SetFilter(b2ShapeId shapeId, b2Filter filter);
 
 /// Enable sensor events for this shape.
 /// @see b2ShapeDef::enableSensorEvents
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Bool)>()
-external void b2Shape_EnableSensorEvents(
-  b2ShapeId shapeId,
-  bool flag,
-);
+external void b2Shape_EnableSensorEvents(b2ShapeId shapeId, bool flag);
 
 /// Returns true if sensor events are enabled.
 @ffi.Native<ffi.Bool Function(b2ShapeId)>()
-external bool b2Shape_AreSensorEventsEnabled(
-  b2ShapeId shapeId,
-);
+external bool b2Shape_AreSensorEventsEnabled(b2ShapeId shapeId);
 
 /// Enable contact events for this shape. Only applies to kinematic and dynamic bodies. Ignored for sensors.
 /// @see b2ShapeDef::enableContactEvents
 /// @warning changing this at run-time may lead to lost begin/end events
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Bool)>()
-external void b2Shape_EnableContactEvents(
-  b2ShapeId shapeId,
-  bool flag,
-);
+external void b2Shape_EnableContactEvents(b2ShapeId shapeId, bool flag);
 
 /// Returns true if contact events are enabled
 @ffi.Native<ffi.Bool Function(b2ShapeId)>()
-external bool b2Shape_AreContactEventsEnabled(
-  b2ShapeId shapeId,
-);
+external bool b2Shape_AreContactEventsEnabled(b2ShapeId shapeId);
 
 /// Enable pre-solve contact events for this shape. Only applies to dynamic bodies. These are expensive
 /// and must be carefully handled due to multithreading. Ignored for sensors.
 /// @see b2PreSolveFcn
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Bool)>()
-external void b2Shape_EnablePreSolveEvents(
-  b2ShapeId shapeId,
-  bool flag,
-);
+external void b2Shape_EnablePreSolveEvents(b2ShapeId shapeId, bool flag);
 
 /// Returns true if pre-solve events are enabled
 @ffi.Native<ffi.Bool Function(b2ShapeId)>()
-external bool b2Shape_ArePreSolveEventsEnabled(
-  b2ShapeId shapeId,
-);
+external bool b2Shape_ArePreSolveEventsEnabled(b2ShapeId shapeId);
 
 /// Enable contact hit events for this shape. Ignored for sensors.
 /// @see b2WorldDef.hitEventThreshold
 @ffi.Native<ffi.Void Function(b2ShapeId, ffi.Bool)>()
-external void b2Shape_EnableHitEvents(
-  b2ShapeId shapeId,
-  bool flag,
-);
+external void b2Shape_EnableHitEvents(b2ShapeId shapeId, bool flag);
 
 /// Returns true if hit events are enabled
 @ffi.Native<ffi.Bool Function(b2ShapeId)>()
-external bool b2Shape_AreHitEventsEnabled(
-  b2ShapeId shapeId,
-);
+external bool b2Shape_AreHitEventsEnabled(b2ShapeId shapeId);
 
 /// Test a point for overlap with a shape
 @ffi.Native<ffi.Bool Function(b2ShapeId, b2Vec2)>()
-external bool b2Shape_TestPoint(
-  b2ShapeId shapeId,
-  b2Vec2 point,
-);
+external bool b2Shape_TestPoint(b2ShapeId shapeId, b2Vec2 point);
 
 /// Ray cast a shape directly
 @ffi.Native<b2CastOutput Function(b2ShapeId, ffi.Pointer<b2RayCastInput>)>()
@@ -2210,34 +1874,24 @@ external b2CastOutput b2Shape_RayCast(
 
 /// Get a copy of the shape's circle. Asserts the type is correct.
 @ffi.Native<b2Circle Function(b2ShapeId)>()
-external b2Circle b2Shape_GetCircle(
-  b2ShapeId shapeId,
-);
+external b2Circle b2Shape_GetCircle(b2ShapeId shapeId);
 
 /// Get a copy of the shape's line segment. Asserts the type is correct.
 @ffi.Native<b2Segment Function(b2ShapeId)>()
-external b2Segment b2Shape_GetSegment(
-  b2ShapeId shapeId,
-);
+external b2Segment b2Shape_GetSegment(b2ShapeId shapeId);
 
 /// Get a copy of the shape's chain segment. These come from chain shapes.
 /// Asserts the type is correct.
 @ffi.Native<b2ChainSegment Function(b2ShapeId)>()
-external b2ChainSegment b2Shape_GetChainSegment(
-  b2ShapeId shapeId,
-);
+external b2ChainSegment b2Shape_GetChainSegment(b2ShapeId shapeId);
 
 /// Get a copy of the shape's capsule. Asserts the type is correct.
 @ffi.Native<b2Capsule Function(b2ShapeId)>()
-external b2Capsule b2Shape_GetCapsule(
-  b2ShapeId shapeId,
-);
+external b2Capsule b2Shape_GetCapsule(b2ShapeId shapeId);
 
 /// Get a copy of the shape's convex polygon. Asserts the type is correct.
 @ffi.Native<b2Polygon Function(b2ShapeId)>()
-external b2Polygon b2Shape_GetPolygon(
-  b2ShapeId shapeId,
-);
+external b2Polygon b2Shape_GetPolygon(b2ShapeId shapeId);
 
 /// Allows you to change a shape to be a circle or update the current circle.
 /// This does not modify the mass properties.
@@ -2276,15 +1930,11 @@ external void b2Shape_SetPolygon(
 /// Get the parent chain id if the shape type is a chain segment, otherwise
 /// returns b2_nullChainId.
 @ffi.Native<b2ChainId Function(b2ShapeId)>()
-external b2ChainId b2Shape_GetParentChain(
-  b2ShapeId shapeId,
-);
+external b2ChainId b2Shape_GetParentChain(b2ShapeId shapeId);
 
 /// Get the maximum capacity required for retrieving all the touching contacts on a shape
 @ffi.Native<ffi.Int Function(b2ShapeId)>()
-external int b2Shape_GetContactCapacity(
-  b2ShapeId shapeId,
-);
+external int b2Shape_GetContactCapacity(b2ShapeId shapeId);
 
 /// Get the touching contact data for a shape. The provided shapeId will be either shapeIdA or shapeIdB on the contact data.
 /// @note Box2D uses speculative collision so some contact points may be separated.
@@ -2302,9 +1952,7 @@ external int b2Shape_GetContactData(
 /// @param shapeId the id of a sensor shape
 /// @returns the required capacity to get all the overlaps in b2Shape_GetSensorOverlaps
 @ffi.Native<ffi.Int Function(b2ShapeId)>()
-external int b2Shape_GetSensorCapacity(
-  b2ShapeId shapeId,
-);
+external int b2Shape_GetSensorCapacity(b2ShapeId shapeId);
 
 /// Get the overlapped shapes for a sensor shape.
 /// @param shapeId the id of a sensor shape
@@ -2322,49 +1970,33 @@ external int b2Shape_GetSensorOverlaps(
 
 /// Get the current world AABB
 @ffi.Native<b2AABB Function(b2ShapeId)>()
-external b2AABB b2Shape_GetAABB(
-  b2ShapeId shapeId,
-);
+external b2AABB b2Shape_GetAABB(b2ShapeId shapeId);
 
 /// Get the mass data for a shape
 @ffi.Native<b2MassData Function(b2ShapeId)>()
-external b2MassData b2Shape_GetMassData(
-  b2ShapeId shapeId,
-);
+external b2MassData b2Shape_GetMassData(b2ShapeId shapeId);
 
 /// Get the closest point on a shape to a target point. Target and result are in world space.
 /// todo need sample
 @ffi.Native<b2Vec2 Function(b2ShapeId, b2Vec2)>()
-external b2Vec2 b2Shape_GetClosestPoint(
-  b2ShapeId shapeId,
-  b2Vec2 target,
-);
+external b2Vec2 b2Shape_GetClosestPoint(b2ShapeId shapeId, b2Vec2 target);
 
 /// Create a chain shape
 /// @see b2ChainDef for details
 @ffi.Native<b2ChainId Function(b2BodyId, ffi.Pointer<b2ChainDef>)>()
-external b2ChainId b2CreateChain(
-  b2BodyId bodyId,
-  ffi.Pointer<b2ChainDef> def,
-);
+external b2ChainId b2CreateChain(b2BodyId bodyId, ffi.Pointer<b2ChainDef> def);
 
 /// Destroy a chain shape
 @ffi.Native<ffi.Void Function(b2ChainId)>()
-external void b2DestroyChain(
-  b2ChainId chainId,
-);
+external void b2DestroyChain(b2ChainId chainId);
 
 /// Get the world that owns this chain shape
 @ffi.Native<b2WorldId Function(b2ChainId)>()
-external b2WorldId b2Chain_GetWorld(
-  b2ChainId chainId,
-);
+external b2WorldId b2Chain_GetWorld(b2ChainId chainId);
 
 /// Get the number of segments on this chain
 @ffi.Native<ffi.Int Function(b2ChainId)>()
-external int b2Chain_GetSegmentCount(
-  b2ChainId chainId,
-);
+external int b2Chain_GetSegmentCount(b2ChainId chainId);
 
 /// Fill a user array with chain segment shape ids up to the specified capacity. Returns
 /// the actual number of segments returned.
@@ -2378,126 +2010,80 @@ external int b2Chain_GetSegments(
 /// Set the chain friction
 /// @see b2ChainDef::friction
 @ffi.Native<ffi.Void Function(b2ChainId, ffi.Float)>()
-external void b2Chain_SetFriction(
-  b2ChainId chainId,
-  double friction,
-);
+external void b2Chain_SetFriction(b2ChainId chainId, double friction);
 
 /// Get the chain friction
 @ffi.Native<ffi.Float Function(b2ChainId)>()
-external double b2Chain_GetFriction(
-  b2ChainId chainId,
-);
+external double b2Chain_GetFriction(b2ChainId chainId);
 
 /// Set the chain restitution (bounciness)
 /// @see b2ChainDef::restitution
 @ffi.Native<ffi.Void Function(b2ChainId, ffi.Float)>()
-external void b2Chain_SetRestitution(
-  b2ChainId chainId,
-  double restitution,
-);
+external void b2Chain_SetRestitution(b2ChainId chainId, double restitution);
 
 /// Get the chain restitution
 @ffi.Native<ffi.Float Function(b2ChainId)>()
-external double b2Chain_GetRestitution(
-  b2ChainId chainId,
-);
+external double b2Chain_GetRestitution(b2ChainId chainId);
 
 /// Set the chain material
 /// @see b2ChainDef::material
 @ffi.Native<ffi.Void Function(b2ChainId, ffi.Int)>()
-external void b2Chain_SetMaterial(
-  b2ChainId chainId,
-  int material,
-);
+external void b2Chain_SetMaterial(b2ChainId chainId, int material);
 
 /// Get the chain material
 @ffi.Native<ffi.Int Function(b2ChainId)>()
-external int b2Chain_GetMaterial(
-  b2ChainId chainId,
-);
+external int b2Chain_GetMaterial(b2ChainId chainId);
 
 /// Chain identifier validation. Provides validation for up to 64K allocations.
 @ffi.Native<ffi.Bool Function(b2ChainId)>()
-external bool b2Chain_IsValid(
-  b2ChainId id,
-);
+external bool b2Chain_IsValid(b2ChainId id);
 
 /// Destroy a joint
 @ffi.Native<ffi.Void Function(b2JointId)>()
-external void b2DestroyJoint(
-  b2JointId jointId,
-);
+external void b2DestroyJoint(b2JointId jointId);
 
 /// Joint identifier validation. Provides validation for up to 64K allocations.
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2Joint_IsValid(
-  b2JointId id,
-);
+external bool b2Joint_IsValid(b2JointId id);
 
 /// Get the joint type
 @ffi.Native<ffi.UnsignedInt Function(b2JointId)>(symbol: 'b2Joint_GetType')
-external int _b2Joint_GetType(
-  b2JointId jointId,
-);
+external int _b2Joint_GetType(b2JointId jointId);
 
-b2JointType b2Joint_GetType(
-  b2JointId jointId,
-) => b2JointType.fromValue(
-  _b2Joint_GetType(
-    jointId,
-  ),
-);
+b2JointType b2Joint_GetType(b2JointId jointId) =>
+    b2JointType.fromValue(_b2Joint_GetType(jointId));
 
 /// Get body A id on a joint
 @ffi.Native<b2BodyId Function(b2JointId)>()
-external b2BodyId b2Joint_GetBodyA(
-  b2JointId jointId,
-);
+external b2BodyId b2Joint_GetBodyA(b2JointId jointId);
 
 /// Get body B id on a joint
 @ffi.Native<b2BodyId Function(b2JointId)>()
-external b2BodyId b2Joint_GetBodyB(
-  b2JointId jointId,
-);
+external b2BodyId b2Joint_GetBodyB(b2JointId jointId);
 
 /// Get the world that owns this joint
 @ffi.Native<b2WorldId Function(b2JointId)>()
-external b2WorldId b2Joint_GetWorld(
-  b2JointId jointId,
-);
+external b2WorldId b2Joint_GetWorld(b2JointId jointId);
 
 /// Set the local anchor on bodyA
 @ffi.Native<ffi.Void Function(b2JointId, b2Vec2)>()
-external void b2Joint_SetLocalAnchorA(
-  b2JointId jointId,
-  b2Vec2 localAnchor,
-);
+external void b2Joint_SetLocalAnchorA(b2JointId jointId, b2Vec2 localAnchor);
 
 /// Get the local anchor on bodyA
 @ffi.Native<b2Vec2 Function(b2JointId)>()
-external b2Vec2 b2Joint_GetLocalAnchorA(
-  b2JointId jointId,
-);
+external b2Vec2 b2Joint_GetLocalAnchorA(b2JointId jointId);
 
 /// Set the local anchor on bodyB
 @ffi.Native<ffi.Void Function(b2JointId, b2Vec2)>()
-external void b2Joint_SetLocalAnchorB(
-  b2JointId jointId,
-  b2Vec2 localAnchor,
-);
+external void b2Joint_SetLocalAnchorB(b2JointId jointId, b2Vec2 localAnchor);
 
 /// Get the local anchor on bodyB
 @ffi.Native<b2Vec2 Function(b2JointId)>()
-external b2Vec2 b2Joint_GetLocalAnchorB(
-  b2JointId jointId,
-);
+external b2Vec2 b2Joint_GetLocalAnchorB(b2JointId jointId);
 
 /// Get the joint reference angle in radians (revolute, prismatic, and weld)
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2Joint_GetReferenceAngle(
-  b2JointId jointId,
-);
+external double b2Joint_GetReferenceAngle(b2JointId jointId);
 
 /// Set the joint reference angle in radians, must be in [-pi,pi]. (revolute, prismatic, and weld)
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -2508,16 +2094,11 @@ external void b2Joint_SetReferenceAngle(
 
 /// Set the local axis on bodyA (prismatic and wheel)
 @ffi.Native<ffi.Void Function(b2JointId, b2Vec2)>()
-external void b2Joint_SetLocalAxisA(
-  b2JointId jointId,
-  b2Vec2 localAxis,
-);
+external void b2Joint_SetLocalAxisA(b2JointId jointId, b2Vec2 localAxis);
 
 /// Get the local axis on bodyA (prismatic and wheel)
 @ffi.Native<b2Vec2 Function(b2JointId)>()
-external b2Vec2 b2Joint_GetLocalAxisA(
-  b2JointId jointId,
-);
+external b2Vec2 b2Joint_GetLocalAxisA(b2JointId jointId);
 
 /// Toggle collision between connected bodies
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
@@ -2528,9 +2109,7 @@ external void b2Joint_SetCollideConnected(
 
 /// Is collision allowed between connected bodies?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2Joint_GetCollideConnected(
-  b2JointId jointId,
-);
+external bool b2Joint_GetCollideConnected(b2JointId jointId);
 
 /// Set the user data on a joint
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Pointer<ffi.Void>)>()
@@ -2541,39 +2120,27 @@ external void b2Joint_SetUserData(
 
 /// Get the user data on a joint
 @ffi.Native<ffi.Pointer<ffi.Void> Function(b2JointId)>()
-external ffi.Pointer<ffi.Void> b2Joint_GetUserData(
-  b2JointId jointId,
-);
+external ffi.Pointer<ffi.Void> b2Joint_GetUserData(b2JointId jointId);
 
 /// Wake the bodies connect to this joint
 @ffi.Native<ffi.Void Function(b2JointId)>()
-external void b2Joint_WakeBodies(
-  b2JointId jointId,
-);
+external void b2Joint_WakeBodies(b2JointId jointId);
 
 /// Get the current constraint force for this joint. Usually in Newtons.
 @ffi.Native<b2Vec2 Function(b2JointId)>()
-external b2Vec2 b2Joint_GetConstraintForce(
-  b2JointId jointId,
-);
+external b2Vec2 b2Joint_GetConstraintForce(b2JointId jointId);
 
 /// Get the current constraint torque for this joint. Usually in Newton * meters.
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2Joint_GetConstraintTorque(
-  b2JointId jointId,
-);
+external double b2Joint_GetConstraintTorque(b2JointId jointId);
 
 /// Get the current linear separation error for this joint. Does not consider admissible movement. Usually in meters.
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2Joint_GetLinearSeparation(
-  b2JointId jointId,
-);
+external double b2Joint_GetLinearSeparation(b2JointId jointId);
 
 /// Get the current angular separation error for this joint. Does not consider admissible movement. Usually in meters.
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2Joint_GetAngularSeparation(
-  b2JointId jointId,
-);
+external double b2Joint_GetAngularSeparation(b2JointId jointId);
 
 /// Get the joint constraint tuning. Advanced feature.
 @ffi.Native<
@@ -2608,16 +2175,11 @@ external b2JointId b2CreateDistanceJoint(
 /// @param jointId The id for a distance joint
 /// @param length The new distance joint length
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2DistanceJoint_SetLength(
-  b2JointId jointId,
-  double length,
-);
+external void b2DistanceJoint_SetLength(b2JointId jointId, double length);
 
 /// Get the rest length of a distance joint
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetLength(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetLength(b2JointId jointId);
 
 /// Enable/disable the distance joint spring. When disabled the distance joint is rigid.
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
@@ -2628,16 +2190,11 @@ external void b2DistanceJoint_EnableSpring(
 
 /// Is the distance joint spring enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2DistanceJoint_IsSpringEnabled(
-  b2JointId jointId,
-);
+external bool b2DistanceJoint_IsSpringEnabled(b2JointId jointId);
 
 /// Set the spring stiffness in Hertz
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2DistanceJoint_SetSpringHertz(
-  b2JointId jointId,
-  double hertz,
-);
+external void b2DistanceJoint_SetSpringHertz(b2JointId jointId, double hertz);
 
 /// Set the spring damping ratio, non-dimensional
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -2648,29 +2205,20 @@ external void b2DistanceJoint_SetSpringDampingRatio(
 
 /// Get the spring Hertz
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetSpringHertz(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetSpringHertz(b2JointId jointId);
 
 /// Get the spring damping ratio
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetSpringDampingRatio(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetSpringDampingRatio(b2JointId jointId);
 
 /// Enable joint limit. The limit only works if the joint spring is enabled. Otherwise the joint is rigid
 /// and the limit has no effect.
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2DistanceJoint_EnableLimit(
-  b2JointId jointId,
-  bool enableLimit,
-);
+external void b2DistanceJoint_EnableLimit(b2JointId jointId, bool enableLimit);
 
 /// Is the distance joint limit enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2DistanceJoint_IsLimitEnabled(
-  b2JointId jointId,
-);
+external bool b2DistanceJoint_IsLimitEnabled(b2JointId jointId);
 
 /// Set the minimum and maximum length parameters of a distance joint
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float, ffi.Float)>()
@@ -2682,34 +2230,23 @@ external void b2DistanceJoint_SetLengthRange(
 
 /// Get the distance joint minimum length
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetMinLength(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetMinLength(b2JointId jointId);
 
 /// Get the distance joint maximum length
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetMaxLength(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetMaxLength(b2JointId jointId);
 
 /// Get the current length of a distance joint
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetCurrentLength(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetCurrentLength(b2JointId jointId);
 
 /// Enable/disable the distance joint motor
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2DistanceJoint_EnableMotor(
-  b2JointId jointId,
-  bool enableMotor,
-);
+external void b2DistanceJoint_EnableMotor(b2JointId jointId, bool enableMotor);
 
 /// Is the distance joint motor enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2DistanceJoint_IsMotorEnabled(
-  b2JointId jointId,
-);
+external bool b2DistanceJoint_IsMotorEnabled(b2JointId jointId);
 
 /// Set the distance joint motor speed, usually in meters per second
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -2720,28 +2257,19 @@ external void b2DistanceJoint_SetMotorSpeed(
 
 /// Get the distance joint motor speed, usually in meters per second
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetMotorSpeed(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetMotorSpeed(b2JointId jointId);
 
 /// Set the distance joint maximum motor force, usually in newtons
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2DistanceJoint_SetMaxMotorForce(
-  b2JointId jointId,
-  double force,
-);
+external void b2DistanceJoint_SetMaxMotorForce(b2JointId jointId, double force);
 
 /// Get the distance joint maximum motor force, usually in newtons
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetMaxMotorForce(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetMaxMotorForce(b2JointId jointId);
 
 /// Get the distance joint current motor force, usually in newtons
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2DistanceJoint_GetMotorForce(
-  b2JointId jointId,
-);
+external double b2DistanceJoint_GetMotorForce(b2JointId jointId);
 
 /// Create a motor joint
 /// @see b2MotorJointDef for details
@@ -2760,9 +2288,7 @@ external void b2MotorJoint_SetLinearOffset(
 
 /// Get the motor joint linear offset target
 @ffi.Native<b2Vec2 Function(b2JointId)>()
-external b2Vec2 b2MotorJoint_GetLinearOffset(
-  b2JointId jointId,
-);
+external b2Vec2 b2MotorJoint_GetLinearOffset(b2JointId jointId);
 
 /// Set the motor joint angular offset target in radians. This angle will be unwound
 /// so the motor will drive along the shortest arc.
@@ -2774,35 +2300,23 @@ external void b2MotorJoint_SetAngularOffset(
 
 /// Get the motor joint angular offset target in radians
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2MotorJoint_GetAngularOffset(
-  b2JointId jointId,
-);
+external double b2MotorJoint_GetAngularOffset(b2JointId jointId);
 
 /// Set the motor joint maximum force, usually in newtons
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2MotorJoint_SetMaxForce(
-  b2JointId jointId,
-  double maxForce,
-);
+external void b2MotorJoint_SetMaxForce(b2JointId jointId, double maxForce);
 
 /// Get the motor joint maximum force, usually in newtons
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2MotorJoint_GetMaxForce(
-  b2JointId jointId,
-);
+external double b2MotorJoint_GetMaxForce(b2JointId jointId);
 
 /// Set the motor joint maximum torque, usually in newton-meters
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2MotorJoint_SetMaxTorque(
-  b2JointId jointId,
-  double maxTorque,
-);
+external void b2MotorJoint_SetMaxTorque(b2JointId jointId, double maxTorque);
 
 /// Get the motor joint maximum torque, usually in newton-meters
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2MotorJoint_GetMaxTorque(
-  b2JointId jointId,
-);
+external double b2MotorJoint_GetMaxTorque(b2JointId jointId);
 
 /// Set the motor joint correction factor, usually in [0, 1]
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -2813,9 +2327,7 @@ external void b2MotorJoint_SetCorrectionFactor(
 
 /// Get the motor joint correction factor, usually in [0, 1]
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2MotorJoint_GetCorrectionFactor(
-  b2JointId jointId,
-);
+external double b2MotorJoint_GetCorrectionFactor(b2JointId jointId);
 
 /// Create a mouse joint
 /// @see b2MouseJointDef for details
@@ -2827,29 +2339,19 @@ external b2JointId b2CreateMouseJoint(
 
 /// Set the mouse joint target
 @ffi.Native<ffi.Void Function(b2JointId, b2Vec2)>()
-external void b2MouseJoint_SetTarget(
-  b2JointId jointId,
-  b2Vec2 target,
-);
+external void b2MouseJoint_SetTarget(b2JointId jointId, b2Vec2 target);
 
 /// Get the mouse joint target
 @ffi.Native<b2Vec2 Function(b2JointId)>()
-external b2Vec2 b2MouseJoint_GetTarget(
-  b2JointId jointId,
-);
+external b2Vec2 b2MouseJoint_GetTarget(b2JointId jointId);
 
 /// Set the mouse joint spring stiffness in Hertz
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2MouseJoint_SetSpringHertz(
-  b2JointId jointId,
-  double hertz,
-);
+external void b2MouseJoint_SetSpringHertz(b2JointId jointId, double hertz);
 
 /// Get the mouse joint spring stiffness in Hertz
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2MouseJoint_GetSpringHertz(
-  b2JointId jointId,
-);
+external double b2MouseJoint_GetSpringHertz(b2JointId jointId);
 
 /// Set the mouse joint spring damping ratio, non-dimensional
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -2860,22 +2362,15 @@ external void b2MouseJoint_SetSpringDampingRatio(
 
 /// Get the mouse joint damping ratio, non-dimensional
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2MouseJoint_GetSpringDampingRatio(
-  b2JointId jointId,
-);
+external double b2MouseJoint_GetSpringDampingRatio(b2JointId jointId);
 
 /// Set the mouse joint maximum force, usually in newtons
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2MouseJoint_SetMaxForce(
-  b2JointId jointId,
-  double maxForce,
-);
+external void b2MouseJoint_SetMaxForce(b2JointId jointId, double maxForce);
 
 /// Get the mouse joint maximum force, usually in newtons
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2MouseJoint_GetMaxForce(
-  b2JointId jointId,
-);
+external double b2MouseJoint_GetMaxForce(b2JointId jointId);
 
 /// Create a filter joint.
 /// @see b2FilterJointDef for details
@@ -2902,24 +2397,17 @@ external void b2PrismaticJoint_EnableSpring(
 
 /// Is the prismatic joint spring enabled or not?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2PrismaticJoint_IsSpringEnabled(
-  b2JointId jointId,
-);
+external bool b2PrismaticJoint_IsSpringEnabled(b2JointId jointId);
 
 /// Set the prismatic joint stiffness in Hertz.
 /// This should usually be less than a quarter of the simulation rate. For example, if the simulation
 /// runs at 60Hz then the joint stiffness should be 15Hz or less.
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2PrismaticJoint_SetSpringHertz(
-  b2JointId jointId,
-  double hertz,
-);
+external void b2PrismaticJoint_SetSpringHertz(b2JointId jointId, double hertz);
 
 /// Get the prismatic joint stiffness in Hertz
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetSpringHertz(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetSpringHertz(b2JointId jointId);
 
 /// Set the prismatic joint damping ratio (non-dimensional)
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -2930,9 +2418,7 @@ external void b2PrismaticJoint_SetSpringDampingRatio(
 
 /// Get the prismatic spring damping ratio (non-dimensional)
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetSpringDampingRatio(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetSpringDampingRatio(b2JointId jointId);
 
 /// Set the prismatic joint spring target angle, usually in meters
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -2943,34 +2429,23 @@ external void b2PrismaticJoint_SetTargetTranslation(
 
 /// Get the prismatic joint spring target translation, usually in meters
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetTargetTranslation(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetTargetTranslation(b2JointId jointId);
 
 /// Enable/disable a prismatic joint limit
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2PrismaticJoint_EnableLimit(
-  b2JointId jointId,
-  bool enableLimit,
-);
+external void b2PrismaticJoint_EnableLimit(b2JointId jointId, bool enableLimit);
 
 /// Is the prismatic joint limit enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2PrismaticJoint_IsLimitEnabled(
-  b2JointId jointId,
-);
+external bool b2PrismaticJoint_IsLimitEnabled(b2JointId jointId);
 
 /// Get the prismatic joint lower limit
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetLowerLimit(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetLowerLimit(b2JointId jointId);
 
 /// Get the prismatic joint upper limit
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetUpperLimit(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetUpperLimit(b2JointId jointId);
 
 /// Set the prismatic joint limits
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float, ffi.Float)>()
@@ -2982,16 +2457,11 @@ external void b2PrismaticJoint_SetLimits(
 
 /// Enable/disable a prismatic joint motor
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2PrismaticJoint_EnableMotor(
-  b2JointId jointId,
-  bool enableMotor,
-);
+external void b2PrismaticJoint_EnableMotor(b2JointId jointId, bool enableMotor);
 
 /// Is the prismatic joint motor enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2PrismaticJoint_IsMotorEnabled(
-  b2JointId jointId,
-);
+external bool b2PrismaticJoint_IsMotorEnabled(b2JointId jointId);
 
 /// Set the prismatic joint motor speed, usually in meters per second
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3002,9 +2472,7 @@ external void b2PrismaticJoint_SetMotorSpeed(
 
 /// Get the prismatic joint motor speed, usually in meters per second
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetMotorSpeed(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetMotorSpeed(b2JointId jointId);
 
 /// Set the prismatic joint maximum motor force, usually in newtons
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3015,27 +2483,19 @@ external void b2PrismaticJoint_SetMaxMotorForce(
 
 /// Get the prismatic joint maximum motor force, usually in newtons
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetMaxMotorForce(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetMaxMotorForce(b2JointId jointId);
 
 /// Get the prismatic joint current motor force, usually in newtons
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetMotorForce(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetMotorForce(b2JointId jointId);
 
 /// Get the current joint translation, usually in meters.
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetTranslation(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetTranslation(b2JointId jointId);
 
 /// Get the current joint translation speed, usually in meters per second.
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2PrismaticJoint_GetSpeed(
-  b2JointId jointId,
-);
+external double b2PrismaticJoint_GetSpeed(b2JointId jointId);
 
 /// Create a revolute joint
 /// @see b2RevoluteJointDef for details
@@ -3054,22 +2514,15 @@ external void b2RevoluteJoint_EnableSpring(
 
 /// It the revolute angular spring enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2RevoluteJoint_IsSpringEnabled(
-  b2JointId jointId,
-);
+external bool b2RevoluteJoint_IsSpringEnabled(b2JointId jointId);
 
 /// Set the revolute joint spring stiffness in Hertz
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2RevoluteJoint_SetSpringHertz(
-  b2JointId jointId,
-  double hertz,
-);
+external void b2RevoluteJoint_SetSpringHertz(b2JointId jointId, double hertz);
 
 /// Get the revolute joint spring stiffness in Hertz
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetSpringHertz(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetSpringHertz(b2JointId jointId);
 
 /// Set the revolute joint spring damping ratio, non-dimensional
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3080,54 +2533,36 @@ external void b2RevoluteJoint_SetSpringDampingRatio(
 
 /// Get the revolute joint spring damping ratio, non-dimensional
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetSpringDampingRatio(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetSpringDampingRatio(b2JointId jointId);
 
 /// Set the revolute joint spring target angle, radians
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2RevoluteJoint_SetTargetAngle(
-  b2JointId jointId,
-  double angle,
-);
+external void b2RevoluteJoint_SetTargetAngle(b2JointId jointId, double angle);
 
 /// Get the revolute joint spring target angle, radians
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetTargetAngle(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetTargetAngle(b2JointId jointId);
 
 /// Get the revolute joint current angle in radians relative to the reference angle
 /// @see b2RevoluteJointDef::referenceAngle
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetAngle(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetAngle(b2JointId jointId);
 
 /// Enable/disable the revolute joint limit
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2RevoluteJoint_EnableLimit(
-  b2JointId jointId,
-  bool enableLimit,
-);
+external void b2RevoluteJoint_EnableLimit(b2JointId jointId, bool enableLimit);
 
 /// Is the revolute joint limit enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2RevoluteJoint_IsLimitEnabled(
-  b2JointId jointId,
-);
+external bool b2RevoluteJoint_IsLimitEnabled(b2JointId jointId);
 
 /// Get the revolute joint lower limit in radians
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetLowerLimit(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetLowerLimit(b2JointId jointId);
 
 /// Get the revolute joint upper limit in radians
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetUpperLimit(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetUpperLimit(b2JointId jointId);
 
 /// Set the revolute joint limits in radians. It is expected that lower <= upper
 /// and that -0.99 * B2_PI <= lower && upper <= -0.99 * B2_PI.
@@ -3140,16 +2575,11 @@ external void b2RevoluteJoint_SetLimits(
 
 /// Enable/disable a revolute joint motor
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2RevoluteJoint_EnableMotor(
-  b2JointId jointId,
-  bool enableMotor,
-);
+external void b2RevoluteJoint_EnableMotor(b2JointId jointId, bool enableMotor);
 
 /// Is the revolute joint motor enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2RevoluteJoint_IsMotorEnabled(
-  b2JointId jointId,
-);
+external bool b2RevoluteJoint_IsMotorEnabled(b2JointId jointId);
 
 /// Set the revolute joint motor speed in radians per second
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3160,15 +2590,11 @@ external void b2RevoluteJoint_SetMotorSpeed(
 
 /// Get the revolute joint motor speed in radians per second
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetMotorSpeed(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetMotorSpeed(b2JointId jointId);
 
 /// Get the revolute joint current motor torque, usually in newton-meters
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetMotorTorque(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetMotorTorque(b2JointId jointId);
 
 /// Set the revolute joint maximum motor torque, usually in newton-meters
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3179,9 +2605,7 @@ external void b2RevoluteJoint_SetMaxMotorTorque(
 
 /// Get the revolute joint maximum motor torque, usually in newton-meters
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2RevoluteJoint_GetMaxMotorTorque(
-  b2JointId jointId,
-);
+external double b2RevoluteJoint_GetMaxMotorTorque(b2JointId jointId);
 
 /// Create a weld joint
 /// @see b2WeldJointDef for details
@@ -3193,16 +2617,11 @@ external b2JointId b2CreateWeldJoint(
 
 /// Set the weld joint linear stiffness in Hertz. 0 is rigid.
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2WeldJoint_SetLinearHertz(
-  b2JointId jointId,
-  double hertz,
-);
+external void b2WeldJoint_SetLinearHertz(b2JointId jointId, double hertz);
 
 /// Get the weld joint linear stiffness in Hertz
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WeldJoint_GetLinearHertz(
-  b2JointId jointId,
-);
+external double b2WeldJoint_GetLinearHertz(b2JointId jointId);
 
 /// Set the weld joint linear damping ratio (non-dimensional)
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3213,22 +2632,15 @@ external void b2WeldJoint_SetLinearDampingRatio(
 
 /// Get the weld joint linear damping ratio (non-dimensional)
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WeldJoint_GetLinearDampingRatio(
-  b2JointId jointId,
-);
+external double b2WeldJoint_GetLinearDampingRatio(b2JointId jointId);
 
 /// Set the weld joint angular stiffness in Hertz. 0 is rigid.
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2WeldJoint_SetAngularHertz(
-  b2JointId jointId,
-  double hertz,
-);
+external void b2WeldJoint_SetAngularHertz(b2JointId jointId, double hertz);
 
 /// Get the weld joint angular stiffness in Hertz
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WeldJoint_GetAngularHertz(
-  b2JointId jointId,
-);
+external double b2WeldJoint_GetAngularHertz(b2JointId jointId);
 
 /// Set weld joint angular damping ratio, non-dimensional
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3239,9 +2651,7 @@ external void b2WeldJoint_SetAngularDampingRatio(
 
 /// Get the weld joint angular damping ratio, non-dimensional
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WeldJoint_GetAngularDampingRatio(
-  b2JointId jointId,
-);
+external double b2WeldJoint_GetAngularDampingRatio(b2JointId jointId);
 
 /// Create a wheel joint
 /// @see b2WheelJointDef for details
@@ -3253,29 +2663,19 @@ external b2JointId b2CreateWheelJoint(
 
 /// Enable/disable the wheel joint spring
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2WheelJoint_EnableSpring(
-  b2JointId jointId,
-  bool enableSpring,
-);
+external void b2WheelJoint_EnableSpring(b2JointId jointId, bool enableSpring);
 
 /// Is the wheel joint spring enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2WheelJoint_IsSpringEnabled(
-  b2JointId jointId,
-);
+external bool b2WheelJoint_IsSpringEnabled(b2JointId jointId);
 
 /// Set the wheel joint stiffness in Hertz
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2WheelJoint_SetSpringHertz(
-  b2JointId jointId,
-  double hertz,
-);
+external void b2WheelJoint_SetSpringHertz(b2JointId jointId, double hertz);
 
 /// Get the wheel joint stiffness in Hertz
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WheelJoint_GetSpringHertz(
-  b2JointId jointId,
-);
+external double b2WheelJoint_GetSpringHertz(b2JointId jointId);
 
 /// Set the wheel joint damping ratio, non-dimensional
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
@@ -3286,34 +2686,23 @@ external void b2WheelJoint_SetSpringDampingRatio(
 
 /// Get the wheel joint damping ratio, non-dimensional
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WheelJoint_GetSpringDampingRatio(
-  b2JointId jointId,
-);
+external double b2WheelJoint_GetSpringDampingRatio(b2JointId jointId);
 
 /// Enable/disable the wheel joint limit
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2WheelJoint_EnableLimit(
-  b2JointId jointId,
-  bool enableLimit,
-);
+external void b2WheelJoint_EnableLimit(b2JointId jointId, bool enableLimit);
 
 /// Is the wheel joint limit enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2WheelJoint_IsLimitEnabled(
-  b2JointId jointId,
-);
+external bool b2WheelJoint_IsLimitEnabled(b2JointId jointId);
 
 /// Get the wheel joint lower limit
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WheelJoint_GetLowerLimit(
-  b2JointId jointId,
-);
+external double b2WheelJoint_GetLowerLimit(b2JointId jointId);
 
 /// Get the wheel joint upper limit
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WheelJoint_GetUpperLimit(
-  b2JointId jointId,
-);
+external double b2WheelJoint_GetUpperLimit(b2JointId jointId);
 
 /// Set the wheel joint limits
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float, ffi.Float)>()
@@ -3325,48 +2714,31 @@ external void b2WheelJoint_SetLimits(
 
 /// Enable/disable the wheel joint motor
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Bool)>()
-external void b2WheelJoint_EnableMotor(
-  b2JointId jointId,
-  bool enableMotor,
-);
+external void b2WheelJoint_EnableMotor(b2JointId jointId, bool enableMotor);
 
 /// Is the wheel joint motor enabled?
 @ffi.Native<ffi.Bool Function(b2JointId)>()
-external bool b2WheelJoint_IsMotorEnabled(
-  b2JointId jointId,
-);
+external bool b2WheelJoint_IsMotorEnabled(b2JointId jointId);
 
 /// Set the wheel joint motor speed in radians per second
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2WheelJoint_SetMotorSpeed(
-  b2JointId jointId,
-  double motorSpeed,
-);
+external void b2WheelJoint_SetMotorSpeed(b2JointId jointId, double motorSpeed);
 
 /// Get the wheel joint motor speed in radians per second
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WheelJoint_GetMotorSpeed(
-  b2JointId jointId,
-);
+external double b2WheelJoint_GetMotorSpeed(b2JointId jointId);
 
 /// Set the wheel joint maximum motor torque, usually in newton-meters
 @ffi.Native<ffi.Void Function(b2JointId, ffi.Float)>()
-external void b2WheelJoint_SetMaxMotorTorque(
-  b2JointId jointId,
-  double torque,
-);
+external void b2WheelJoint_SetMaxMotorTorque(b2JointId jointId, double torque);
 
 /// Get the wheel joint maximum motor torque, usually in newton-meters
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WheelJoint_GetMaxMotorTorque(
-  b2JointId jointId,
-);
+external double b2WheelJoint_GetMaxMotorTorque(b2JointId jointId);
 
 /// Get the wheel joint current motor torque, usually in newton-meters
 @ffi.Native<ffi.Float Function(b2JointId)>()
-external double b2WheelJoint_GetMotorTorque(
-  b2JointId jointId,
-);
+external double b2WheelJoint_GetMotorTorque(b2JointId jointId);
 
 /// Prototype for user allocation function
 /// @param size the allocation size in bytes

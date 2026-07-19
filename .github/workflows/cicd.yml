@@ -41,6 +41,9 @@ jobs:
         run: |
           dart pub get
           dart run ffigen --config ffigen.yaml
+          # ffigen's own formatting differs between SDKs; normalize with the
+          # package-language-version-aware formatter.
+          dart format ../../lib/src/ffi/box2d.g.dart
       - name: Verify committed bindings are up to date
         run: |
           git diff -- packages/forge2d/lib/src/ffi/box2d.g.dart > bindings.diff
