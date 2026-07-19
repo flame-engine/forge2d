@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Forge2D examples</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
   <script defer src="main.dart.js"></script>
   <style>
     :root {
@@ -31,11 +32,15 @@
       border-bottom: 1px solid #232b47;
     }
     header h1 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       font-size: 1rem;
       font-weight: 600;
       margin: 0;
       letter-spacing: 0.02em;
     }
+    header h1 img { height: 1.7rem; width: 1.7rem; }
     header h1 span { color: var(--accent); }
     nav {
       display: flex;
@@ -99,7 +104,7 @@
 </head>
 <body>
   <header>
-    <h1>Forge2D <span>examples</span></h1>
+    <h1><img src="logo.svg" alt="Forge2D logo">Forge2D <span>examples</span></h1>
     <nav id="nav"></nav>
     <div class="spacer"></div>
     <button id="reset" title="Restart the scene">&#8635; Reset</button>
