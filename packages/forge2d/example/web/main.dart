@@ -145,13 +145,54 @@ class _App {
         _draw.center.setFrom(follow());
       }
       _resizeCanvas();
-      _draw.beginFrame(
-        _canvas.width.toDouble(),
-        _canvas.height.toDouble(),
-      );
-      world.draw(_draw);
+      _draw.beginFrame(_canvas.width.toDouble(), _canvas.height.toDouble());
+      _renderShapes(world);
+      // Joints still come from the debug draw; shape drawing is off because
+      // _renderShapes draws them from their geometry.
+      world.draw(_draw..drawShapes = false);
     }
     window.requestAnimationFrame(_frame.toJS);
+  }
+
+  /// Renders every shape in view from its read-back geometry and its
+  /// body's transform, the same pattern a game renderer uses. The camera
+  /// rectangle doubles as a culling query.
+  void _renderShapes(World world) {
+    final viewHalfHeight = _draw.viewHeight / 2;
+    final viewHalfWidth =
+        viewHalfHeight * (_canvas.width / _canvas.height.clamp(1, 1 << 16));
+    final margin = Vector2(viewHalfWidth + 5, viewHalfHeight + 5);
+    final view = Aabb(_draw.center - margin, _draw.center + margin);
+
+    for (final shape in world.overlapAabb(view)) {
+      final transform = shape.body.transform;
+      final color = shape.userData is int
+          ? shape.userData! as int
+          : Palette.slate;
+      switch (shape.geometry) {
+        case Circle(:final center, :final radius):
+          _draw.drawSolidCircle(
+            Transform(transform.apply(center), transform.rotation),
+            radius,
+            color,
+          );
+        case Capsule(:final center1, :final center2, :final radius):
+          _draw.drawSolidCapsule(
+            transform.apply(center1),
+            transform.apply(center2),
+            radius,
+            color,
+          );
+        case Segment(:final point1, :final point2):
+          _draw.drawSegment(
+            transform.apply(point1),
+            transform.apply(point2),
+            color,
+          );
+        case Polygon(:final points, :final radius):
+          _draw.drawSolidPolygon(transform, points!, radius, color);
+      }
+    }
   }
 
   void _resizeCanvas() {

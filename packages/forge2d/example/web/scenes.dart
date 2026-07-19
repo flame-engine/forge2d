@@ -19,6 +19,8 @@ abstract final class Palette {
 }
 
 ShapeDef _solid(int color, {double? friction, double? restitution}) => ShapeDef(
+  // The renderer reads the color from the shape's user data.
+  userData: color,
   material: SurfaceMaterial(
     friction: friction ?? 0.6,
     restitution: restitution ?? 0,
@@ -27,6 +29,7 @@ ShapeDef _solid(int color, {double? friction, double? restitution}) => ShapeDef(
 );
 
 ShapeDef _static() => ShapeDef(
+  userData: Palette.slate,
   material: SurfaceMaterial(customColor: Palette.slate),
 );
 
@@ -121,6 +124,7 @@ final scenes = <Scene>[
             .createShape(
               Polygon.box(dominoWidth / 2, dominoHeight / 2),
               ShapeDef(
+                userData: Palette.dynamics[tint % Palette.dynamics.length],
                 density: dominoDensity,
                 material: SurfaceMaterial(
                   friction: 0.1,
@@ -202,6 +206,7 @@ final scenes = <Scene>[
             .createShape(
               Circle(radius: 1.4),
               ShapeDef(
+                userData: Palette.rose,
                 density: 10,
                 material: SurfaceMaterial(customColor: Palette.rose),
               ),
@@ -439,6 +444,7 @@ final scenes = <Scene>[
           )..createShape(
             Circle(radius: 0.45),
             ShapeDef(
+              userData: Palette.rose,
               material: SurfaceMaterial(
                 friction: 1.6,
                 customColor: Palette.rose,
