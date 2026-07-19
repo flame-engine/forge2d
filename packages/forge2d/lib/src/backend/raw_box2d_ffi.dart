@@ -471,6 +471,22 @@ final class RawBox2DFfi implements RawBox2D {
     });
   }
 
+  @override
+  List<int> bodyGetJoints(int index1, int wg) {
+    return using((arena) {
+      final body = _body(index1, wg);
+      final count = b2.b2Body_GetJointCount(body);
+      final joints = arena<b2.b2JointId>(count);
+      final written = b2.b2Body_GetJoints(body, joints, count);
+      return [
+        for (var i = 0; i < written; i++) ...[
+          joints[i].index1,
+          joints[i].world0 | (joints[i].generation << 16),
+        ],
+      ];
+    });
+  }
+
   // Shapes.
 
   Pointer<b2.b2ShapeDef> _shapeDef(Arena arena, RawShapeDef def) {
@@ -854,4 +870,826 @@ final class RawBox2DFfi implements RawBox2D {
       ];
     });
   }
+
+  // Joints.
+
+  b2.b2JointId _joint(int index1, int wg) => Struct.create<b2.b2JointId>()
+    ..index1 = index1
+    ..world0 = wg & 0xFFFF
+    ..generation = (wg >> 16) & 0xFFFF;
+
+  (int, int) _packJoint(b2.b2JointId id) => (
+    id.index1,
+    id.world0 | (id.generation << 16),
+  );
+
+  @override
+  (int, int) createDistanceJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required double length,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double minLength,
+    required double maxLength,
+    required bool enableMotor,
+    required double maxMotorForce,
+    required double motorSpeed,
+    required bool collideConnected,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2DistanceJointDef>()
+        ..ref = b2.b2DefaultDistanceJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2)
+        ..localAnchorA.x = localAnchorA.$1
+        ..localAnchorA.y = localAnchorA.$2
+        ..localAnchorB.x = localAnchorB.$1
+        ..localAnchorB.y = localAnchorB.$2
+        ..length = length
+        ..enableSpring = enableSpring
+        ..hertz = hertz
+        ..dampingRatio = dampingRatio
+        ..enableLimit = enableLimit
+        ..minLength = minLength
+        ..maxLength = maxLength
+        ..enableMotor = enableMotor
+        ..maxMotorForce = maxMotorForce
+        ..motorSpeed = motorSpeed
+        ..collideConnected = collideConnected;
+      return _packJoint(b2.b2CreateDistanceJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  (int, int) createFilterJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2FilterJointDef>()
+        ..ref = b2.b2DefaultFilterJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2);
+      return _packJoint(b2.b2CreateFilterJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  (int, int) createMotorJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) linearOffset,
+    required double angularOffset,
+    required double maxForce,
+    required double maxTorque,
+    required double correctionFactor,
+    required bool collideConnected,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2MotorJointDef>()
+        ..ref = b2.b2DefaultMotorJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2)
+        ..linearOffset.x = linearOffset.$1
+        ..linearOffset.y = linearOffset.$2
+        ..angularOffset = angularOffset
+        ..maxForce = maxForce
+        ..maxTorque = maxTorque
+        ..correctionFactor = correctionFactor
+        ..collideConnected = collideConnected;
+      return _packJoint(b2.b2CreateMotorJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  (int, int) createMouseJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) target,
+    required double hertz,
+    required double dampingRatio,
+    required double maxForce,
+    required bool collideConnected,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2MouseJointDef>()
+        ..ref = b2.b2DefaultMouseJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2)
+        ..target.x = target.$1
+        ..target.y = target.$2
+        ..hertz = hertz
+        ..dampingRatio = dampingRatio
+        ..maxForce = maxForce
+        ..collideConnected = collideConnected;
+      return _packJoint(b2.b2CreateMouseJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  (int, int) createPrismaticJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required (double, double) localAxisA,
+    required double referenceAngle,
+    required double targetTranslation,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double lowerTranslation,
+    required double upperTranslation,
+    required bool enableMotor,
+    required double maxMotorForce,
+    required double motorSpeed,
+    required bool collideConnected,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2PrismaticJointDef>()
+        ..ref = b2.b2DefaultPrismaticJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2)
+        ..localAnchorA.x = localAnchorA.$1
+        ..localAnchorA.y = localAnchorA.$2
+        ..localAnchorB.x = localAnchorB.$1
+        ..localAnchorB.y = localAnchorB.$2
+        ..localAxisA.x = localAxisA.$1
+        ..localAxisA.y = localAxisA.$2
+        ..referenceAngle = referenceAngle
+        ..targetTranslation = targetTranslation
+        ..enableSpring = enableSpring
+        ..hertz = hertz
+        ..dampingRatio = dampingRatio
+        ..enableLimit = enableLimit
+        ..lowerTranslation = lowerTranslation
+        ..upperTranslation = upperTranslation
+        ..enableMotor = enableMotor
+        ..maxMotorForce = maxMotorForce
+        ..motorSpeed = motorSpeed
+        ..collideConnected = collideConnected;
+      return _packJoint(b2.b2CreatePrismaticJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  (int, int) createRevoluteJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required double referenceAngle,
+    required double targetAngle,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double lowerAngle,
+    required double upperAngle,
+    required bool enableMotor,
+    required double maxMotorTorque,
+    required double motorSpeed,
+    required double drawSize,
+    required bool collideConnected,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2RevoluteJointDef>()
+        ..ref = b2.b2DefaultRevoluteJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2)
+        ..localAnchorA.x = localAnchorA.$1
+        ..localAnchorA.y = localAnchorA.$2
+        ..localAnchorB.x = localAnchorB.$1
+        ..localAnchorB.y = localAnchorB.$2
+        ..referenceAngle = referenceAngle
+        ..targetAngle = targetAngle
+        ..enableSpring = enableSpring
+        ..hertz = hertz
+        ..dampingRatio = dampingRatio
+        ..enableLimit = enableLimit
+        ..lowerAngle = lowerAngle
+        ..upperAngle = upperAngle
+        ..enableMotor = enableMotor
+        ..maxMotorTorque = maxMotorTorque
+        ..motorSpeed = motorSpeed
+        ..drawSize = drawSize
+        ..collideConnected = collideConnected;
+      return _packJoint(b2.b2CreateRevoluteJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  (int, int) createWeldJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required double referenceAngle,
+    required double linearHertz,
+    required double angularHertz,
+    required double linearDampingRatio,
+    required double angularDampingRatio,
+    required bool collideConnected,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2WeldJointDef>()..ref = b2.b2DefaultWeldJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2)
+        ..localAnchorA.x = localAnchorA.$1
+        ..localAnchorA.y = localAnchorA.$2
+        ..localAnchorB.x = localAnchorB.$1
+        ..localAnchorB.y = localAnchorB.$2
+        ..referenceAngle = referenceAngle
+        ..linearHertz = linearHertz
+        ..angularHertz = angularHertz
+        ..linearDampingRatio = linearDampingRatio
+        ..angularDampingRatio = angularDampingRatio
+        ..collideConnected = collideConnected;
+      return _packJoint(b2.b2CreateWeldJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  (int, int) createWheelJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required (double, double) localAxisA,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double lowerTranslation,
+    required double upperTranslation,
+    required bool enableMotor,
+    required double maxMotorTorque,
+    required double motorSpeed,
+    required bool collideConnected,
+  }) {
+    return using((arena) {
+      final def = arena<b2.b2WheelJointDef>()
+        ..ref = b2.b2DefaultWheelJointDef();
+      def.ref
+        ..bodyIdA = _body(bodyA.$1, bodyA.$2)
+        ..bodyIdB = _body(bodyB.$1, bodyB.$2)
+        ..localAnchorA.x = localAnchorA.$1
+        ..localAnchorA.y = localAnchorA.$2
+        ..localAnchorB.x = localAnchorB.$1
+        ..localAnchorB.y = localAnchorB.$2
+        ..localAxisA.x = localAxisA.$1
+        ..localAxisA.y = localAxisA.$2
+        ..enableSpring = enableSpring
+        ..hertz = hertz
+        ..dampingRatio = dampingRatio
+        ..enableLimit = enableLimit
+        ..lowerTranslation = lowerTranslation
+        ..upperTranslation = upperTranslation
+        ..enableMotor = enableMotor
+        ..maxMotorTorque = maxMotorTorque
+        ..motorSpeed = motorSpeed
+        ..collideConnected = collideConnected;
+      return _packJoint(b2.b2CreateWheelJoint(_world(worldId), def));
+    });
+  }
+
+  @override
+  void destroyJoint(int index1, int wg) =>
+      b2.b2DestroyJoint(_joint(index1, wg));
+
+  @override
+  bool jointIsValid(int index1, int wg) =>
+      b2.b2Joint_IsValid(_joint(index1, wg));
+
+  @override
+  int jointGetType(int index1, int wg) =>
+      b2.b2Joint_GetType(_joint(index1, wg)).value;
+
+  @override
+  (int, int) jointGetBodyA(int index1, int wg) =>
+      _packBody(b2.b2Joint_GetBodyA(_joint(index1, wg)));
+
+  @override
+  (int, int) jointGetBodyB(int index1, int wg) =>
+      _packBody(b2.b2Joint_GetBodyB(_joint(index1, wg)));
+
+  @override
+  (double, double) jointGetLocalAnchorA(int index1, int wg) {
+    final anchor = b2.b2Joint_GetLocalAnchorA(_joint(index1, wg));
+    return (anchor.x, anchor.y);
+  }
+
+  @override
+  (double, double) jointGetLocalAnchorB(int index1, int wg) {
+    final anchor = b2.b2Joint_GetLocalAnchorB(_joint(index1, wg));
+    return (anchor.x, anchor.y);
+  }
+
+  @override
+  bool jointGetCollideConnected(int index1, int wg) =>
+      b2.b2Joint_GetCollideConnected(_joint(index1, wg));
+
+  @override
+  void jointSetCollideConnected(int index1, int wg, {required bool value}) =>
+      b2.b2Joint_SetCollideConnected(_joint(index1, wg), value);
+
+  @override
+  void jointWakeBodies(int index1, int wg) =>
+      b2.b2Joint_WakeBodies(_joint(index1, wg));
+
+  @override
+  (double, double) jointGetConstraintForce(int index1, int wg) {
+    final force = b2.b2Joint_GetConstraintForce(_joint(index1, wg));
+    return (force.x, force.y);
+  }
+
+  @override
+  double jointGetConstraintTorque(int index1, int wg) =>
+      b2.b2Joint_GetConstraintTorque(_joint(index1, wg));
+
+  // Distance joint.
+
+  @override
+  double distanceJointGetLength(int index1, int wg) =>
+      b2.b2DistanceJoint_GetLength(_joint(index1, wg));
+
+  @override
+  void distanceJointSetLength(int index1, int wg, double length) =>
+      b2.b2DistanceJoint_SetLength(_joint(index1, wg), length);
+
+  @override
+  double distanceJointGetCurrentLength(int index1, int wg) =>
+      b2.b2DistanceJoint_GetCurrentLength(_joint(index1, wg));
+
+  @override
+  bool distanceJointIsSpringEnabled(int index1, int wg) =>
+      b2.b2DistanceJoint_IsSpringEnabled(_joint(index1, wg));
+
+  @override
+  void distanceJointEnableSpring(int index1, int wg, {required bool enabled}) =>
+      b2.b2DistanceJoint_EnableSpring(_joint(index1, wg), enabled);
+
+  @override
+  double distanceJointGetSpringHertz(int index1, int wg) =>
+      b2.b2DistanceJoint_GetSpringHertz(_joint(index1, wg));
+
+  @override
+  void distanceJointSetSpringHertz(int index1, int wg, double hertz) =>
+      b2.b2DistanceJoint_SetSpringHertz(_joint(index1, wg), hertz);
+
+  @override
+  double distanceJointGetSpringDampingRatio(int index1, int wg) =>
+      b2.b2DistanceJoint_GetSpringDampingRatio(_joint(index1, wg));
+
+  @override
+  void distanceJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
+      b2.b2DistanceJoint_SetSpringDampingRatio(_joint(index1, wg), ratio);
+
+  @override
+  bool distanceJointIsLimitEnabled(int index1, int wg) =>
+      b2.b2DistanceJoint_IsLimitEnabled(_joint(index1, wg));
+
+  @override
+  void distanceJointEnableLimit(int index1, int wg, {required bool enabled}) =>
+      b2.b2DistanceJoint_EnableLimit(_joint(index1, wg), enabled);
+
+  @override
+  double distanceJointGetMinLength(int index1, int wg) =>
+      b2.b2DistanceJoint_GetMinLength(_joint(index1, wg));
+
+  @override
+  double distanceJointGetMaxLength(int index1, int wg) =>
+      b2.b2DistanceJoint_GetMaxLength(_joint(index1, wg));
+
+  @override
+  void distanceJointSetLengthRange(
+    int index1,
+    int wg,
+    double minLength,
+    double maxLength,
+  ) => b2.b2DistanceJoint_SetLengthRange(
+    _joint(index1, wg),
+    minLength,
+    maxLength,
+  );
+
+  @override
+  bool distanceJointIsMotorEnabled(int index1, int wg) =>
+      b2.b2DistanceJoint_IsMotorEnabled(_joint(index1, wg));
+
+  @override
+  void distanceJointEnableMotor(int index1, int wg, {required bool enabled}) =>
+      b2.b2DistanceJoint_EnableMotor(_joint(index1, wg), enabled);
+
+  @override
+  double distanceJointGetMotorSpeed(int index1, int wg) =>
+      b2.b2DistanceJoint_GetMotorSpeed(_joint(index1, wg));
+
+  @override
+  void distanceJointSetMotorSpeed(int index1, int wg, double speed) =>
+      b2.b2DistanceJoint_SetMotorSpeed(_joint(index1, wg), speed);
+
+  @override
+  double distanceJointGetMaxMotorForce(int index1, int wg) =>
+      b2.b2DistanceJoint_GetMaxMotorForce(_joint(index1, wg));
+
+  @override
+  void distanceJointSetMaxMotorForce(int index1, int wg, double force) =>
+      b2.b2DistanceJoint_SetMaxMotorForce(_joint(index1, wg), force);
+
+  @override
+  double distanceJointGetMotorForce(int index1, int wg) =>
+      b2.b2DistanceJoint_GetMotorForce(_joint(index1, wg));
+
+  // Motor joint.
+
+  @override
+  (double, double) motorJointGetLinearOffset(int index1, int wg) {
+    final offset = b2.b2MotorJoint_GetLinearOffset(_joint(index1, wg));
+    return (offset.x, offset.y);
+  }
+
+  @override
+  void motorJointSetLinearOffset(int index1, int wg, double x, double y) =>
+      b2.b2MotorJoint_SetLinearOffset(_joint(index1, wg), _vec2(x, y));
+
+  @override
+  double motorJointGetAngularOffset(int index1, int wg) =>
+      b2.b2MotorJoint_GetAngularOffset(_joint(index1, wg));
+
+  @override
+  void motorJointSetAngularOffset(int index1, int wg, double offset) =>
+      b2.b2MotorJoint_SetAngularOffset(_joint(index1, wg), offset);
+
+  @override
+  double motorJointGetMaxForce(int index1, int wg) =>
+      b2.b2MotorJoint_GetMaxForce(_joint(index1, wg));
+
+  @override
+  void motorJointSetMaxForce(int index1, int wg, double force) =>
+      b2.b2MotorJoint_SetMaxForce(_joint(index1, wg), force);
+
+  @override
+  double motorJointGetMaxTorque(int index1, int wg) =>
+      b2.b2MotorJoint_GetMaxTorque(_joint(index1, wg));
+
+  @override
+  void motorJointSetMaxTorque(int index1, int wg, double torque) =>
+      b2.b2MotorJoint_SetMaxTorque(_joint(index1, wg), torque);
+
+  @override
+  double motorJointGetCorrectionFactor(int index1, int wg) =>
+      b2.b2MotorJoint_GetCorrectionFactor(_joint(index1, wg));
+
+  @override
+  void motorJointSetCorrectionFactor(int index1, int wg, double factor) =>
+      b2.b2MotorJoint_SetCorrectionFactor(_joint(index1, wg), factor);
+
+  // Mouse joint.
+
+  @override
+  (double, double) mouseJointGetTarget(int index1, int wg) {
+    final target = b2.b2MouseJoint_GetTarget(_joint(index1, wg));
+    return (target.x, target.y);
+  }
+
+  @override
+  void mouseJointSetTarget(int index1, int wg, double x, double y) =>
+      b2.b2MouseJoint_SetTarget(_joint(index1, wg), _vec2(x, y));
+
+  @override
+  double mouseJointGetSpringHertz(int index1, int wg) =>
+      b2.b2MouseJoint_GetSpringHertz(_joint(index1, wg));
+
+  @override
+  void mouseJointSetSpringHertz(int index1, int wg, double hertz) =>
+      b2.b2MouseJoint_SetSpringHertz(_joint(index1, wg), hertz);
+
+  @override
+  double mouseJointGetSpringDampingRatio(int index1, int wg) =>
+      b2.b2MouseJoint_GetSpringDampingRatio(_joint(index1, wg));
+
+  @override
+  void mouseJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
+      b2.b2MouseJoint_SetSpringDampingRatio(_joint(index1, wg), ratio);
+
+  @override
+  double mouseJointGetMaxForce(int index1, int wg) =>
+      b2.b2MouseJoint_GetMaxForce(_joint(index1, wg));
+
+  @override
+  void mouseJointSetMaxForce(int index1, int wg, double force) =>
+      b2.b2MouseJoint_SetMaxForce(_joint(index1, wg), force);
+
+  // Prismatic joint.
+
+  @override
+  bool prismaticJointIsSpringEnabled(int index1, int wg) =>
+      b2.b2PrismaticJoint_IsSpringEnabled(_joint(index1, wg));
+
+  @override
+  void prismaticJointEnableSpring(
+    int index1,
+    int wg, {
+    required bool enabled,
+  }) => b2.b2PrismaticJoint_EnableSpring(_joint(index1, wg), enabled);
+
+  @override
+  double prismaticJointGetSpringHertz(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetSpringHertz(_joint(index1, wg));
+
+  @override
+  void prismaticJointSetSpringHertz(int index1, int wg, double hertz) =>
+      b2.b2PrismaticJoint_SetSpringHertz(_joint(index1, wg), hertz);
+
+  @override
+  double prismaticJointGetSpringDampingRatio(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetSpringDampingRatio(_joint(index1, wg));
+
+  @override
+  void prismaticJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
+      b2.b2PrismaticJoint_SetSpringDampingRatio(_joint(index1, wg), ratio);
+
+  @override
+  double prismaticJointGetTargetTranslation(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetTargetTranslation(_joint(index1, wg));
+
+  @override
+  void prismaticJointSetTargetTranslation(int index1, int wg, double value) =>
+      b2.b2PrismaticJoint_SetTargetTranslation(_joint(index1, wg), value);
+
+  @override
+  bool prismaticJointIsLimitEnabled(int index1, int wg) =>
+      b2.b2PrismaticJoint_IsLimitEnabled(_joint(index1, wg));
+
+  @override
+  void prismaticJointEnableLimit(int index1, int wg, {required bool enabled}) =>
+      b2.b2PrismaticJoint_EnableLimit(_joint(index1, wg), enabled);
+
+  @override
+  double prismaticJointGetLowerLimit(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetLowerLimit(_joint(index1, wg));
+
+  @override
+  double prismaticJointGetUpperLimit(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetUpperLimit(_joint(index1, wg));
+
+  @override
+  void prismaticJointSetLimits(
+    int index1,
+    int wg,
+    double lower,
+    double upper,
+  ) => b2.b2PrismaticJoint_SetLimits(_joint(index1, wg), lower, upper);
+
+  @override
+  bool prismaticJointIsMotorEnabled(int index1, int wg) =>
+      b2.b2PrismaticJoint_IsMotorEnabled(_joint(index1, wg));
+
+  @override
+  void prismaticJointEnableMotor(int index1, int wg, {required bool enabled}) =>
+      b2.b2PrismaticJoint_EnableMotor(_joint(index1, wg), enabled);
+
+  @override
+  double prismaticJointGetMotorSpeed(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetMotorSpeed(_joint(index1, wg));
+
+  @override
+  void prismaticJointSetMotorSpeed(int index1, int wg, double speed) =>
+      b2.b2PrismaticJoint_SetMotorSpeed(_joint(index1, wg), speed);
+
+  @override
+  double prismaticJointGetMaxMotorForce(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetMaxMotorForce(_joint(index1, wg));
+
+  @override
+  void prismaticJointSetMaxMotorForce(int index1, int wg, double force) =>
+      b2.b2PrismaticJoint_SetMaxMotorForce(_joint(index1, wg), force);
+
+  @override
+  double prismaticJointGetMotorForce(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetMotorForce(_joint(index1, wg));
+
+  @override
+  double prismaticJointGetTranslation(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetTranslation(_joint(index1, wg));
+
+  @override
+  double prismaticJointGetSpeed(int index1, int wg) =>
+      b2.b2PrismaticJoint_GetSpeed(_joint(index1, wg));
+
+  // Revolute joint.
+
+  @override
+  bool revoluteJointIsSpringEnabled(int index1, int wg) =>
+      b2.b2RevoluteJoint_IsSpringEnabled(_joint(index1, wg));
+
+  @override
+  void revoluteJointEnableSpring(int index1, int wg, {required bool enabled}) =>
+      b2.b2RevoluteJoint_EnableSpring(_joint(index1, wg), enabled);
+
+  @override
+  double revoluteJointGetSpringHertz(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetSpringHertz(_joint(index1, wg));
+
+  @override
+  void revoluteJointSetSpringHertz(int index1, int wg, double hertz) =>
+      b2.b2RevoluteJoint_SetSpringHertz(_joint(index1, wg), hertz);
+
+  @override
+  double revoluteJointGetSpringDampingRatio(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetSpringDampingRatio(_joint(index1, wg));
+
+  @override
+  void revoluteJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
+      b2.b2RevoluteJoint_SetSpringDampingRatio(_joint(index1, wg), ratio);
+
+  @override
+  double revoluteJointGetTargetAngle(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetTargetAngle(_joint(index1, wg));
+
+  @override
+  void revoluteJointSetTargetAngle(int index1, int wg, double angle) =>
+      b2.b2RevoluteJoint_SetTargetAngle(_joint(index1, wg), angle);
+
+  @override
+  double revoluteJointGetAngle(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetAngle(_joint(index1, wg));
+
+  @override
+  bool revoluteJointIsLimitEnabled(int index1, int wg) =>
+      b2.b2RevoluteJoint_IsLimitEnabled(_joint(index1, wg));
+
+  @override
+  void revoluteJointEnableLimit(int index1, int wg, {required bool enabled}) =>
+      b2.b2RevoluteJoint_EnableLimit(_joint(index1, wg), enabled);
+
+  @override
+  double revoluteJointGetLowerLimit(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetLowerLimit(_joint(index1, wg));
+
+  @override
+  double revoluteJointGetUpperLimit(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetUpperLimit(_joint(index1, wg));
+
+  @override
+  void revoluteJointSetLimits(int index1, int wg, double lower, double upper) =>
+      b2.b2RevoluteJoint_SetLimits(_joint(index1, wg), lower, upper);
+
+  @override
+  bool revoluteJointIsMotorEnabled(int index1, int wg) =>
+      b2.b2RevoluteJoint_IsMotorEnabled(_joint(index1, wg));
+
+  @override
+  void revoluteJointEnableMotor(int index1, int wg, {required bool enabled}) =>
+      b2.b2RevoluteJoint_EnableMotor(_joint(index1, wg), enabled);
+
+  @override
+  double revoluteJointGetMotorSpeed(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetMotorSpeed(_joint(index1, wg));
+
+  @override
+  void revoluteJointSetMotorSpeed(int index1, int wg, double speed) =>
+      b2.b2RevoluteJoint_SetMotorSpeed(_joint(index1, wg), speed);
+
+  @override
+  double revoluteJointGetMaxMotorTorque(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetMaxMotorTorque(_joint(index1, wg));
+
+  @override
+  void revoluteJointSetMaxMotorTorque(int index1, int wg, double torque) =>
+      b2.b2RevoluteJoint_SetMaxMotorTorque(_joint(index1, wg), torque);
+
+  @override
+  double revoluteJointGetMotorTorque(int index1, int wg) =>
+      b2.b2RevoluteJoint_GetMotorTorque(_joint(index1, wg));
+
+  // Weld joint.
+
+  @override
+  double weldJointGetLinearHertz(int index1, int wg) =>
+      b2.b2WeldJoint_GetLinearHertz(_joint(index1, wg));
+
+  @override
+  void weldJointSetLinearHertz(int index1, int wg, double hertz) =>
+      b2.b2WeldJoint_SetLinearHertz(_joint(index1, wg), hertz);
+
+  @override
+  double weldJointGetAngularHertz(int index1, int wg) =>
+      b2.b2WeldJoint_GetAngularHertz(_joint(index1, wg));
+
+  @override
+  void weldJointSetAngularHertz(int index1, int wg, double hertz) =>
+      b2.b2WeldJoint_SetAngularHertz(_joint(index1, wg), hertz);
+
+  @override
+  double weldJointGetLinearDampingRatio(int index1, int wg) =>
+      b2.b2WeldJoint_GetLinearDampingRatio(_joint(index1, wg));
+
+  @override
+  void weldJointSetLinearDampingRatio(int index1, int wg, double ratio) =>
+      b2.b2WeldJoint_SetLinearDampingRatio(_joint(index1, wg), ratio);
+
+  @override
+  double weldJointGetAngularDampingRatio(int index1, int wg) =>
+      b2.b2WeldJoint_GetAngularDampingRatio(_joint(index1, wg));
+
+  @override
+  void weldJointSetAngularDampingRatio(int index1, int wg, double ratio) =>
+      b2.b2WeldJoint_SetAngularDampingRatio(_joint(index1, wg), ratio);
+
+  // Wheel joint.
+
+  @override
+  bool wheelJointIsSpringEnabled(int index1, int wg) =>
+      b2.b2WheelJoint_IsSpringEnabled(_joint(index1, wg));
+
+  @override
+  void wheelJointEnableSpring(int index1, int wg, {required bool enabled}) =>
+      b2.b2WheelJoint_EnableSpring(_joint(index1, wg), enabled);
+
+  @override
+  double wheelJointGetSpringHertz(int index1, int wg) =>
+      b2.b2WheelJoint_GetSpringHertz(_joint(index1, wg));
+
+  @override
+  void wheelJointSetSpringHertz(int index1, int wg, double hertz) =>
+      b2.b2WheelJoint_SetSpringHertz(_joint(index1, wg), hertz);
+
+  @override
+  double wheelJointGetSpringDampingRatio(int index1, int wg) =>
+      b2.b2WheelJoint_GetSpringDampingRatio(_joint(index1, wg));
+
+  @override
+  void wheelJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
+      b2.b2WheelJoint_SetSpringDampingRatio(_joint(index1, wg), ratio);
+
+  @override
+  bool wheelJointIsLimitEnabled(int index1, int wg) =>
+      b2.b2WheelJoint_IsLimitEnabled(_joint(index1, wg));
+
+  @override
+  void wheelJointEnableLimit(int index1, int wg, {required bool enabled}) =>
+      b2.b2WheelJoint_EnableLimit(_joint(index1, wg), enabled);
+
+  @override
+  double wheelJointGetLowerLimit(int index1, int wg) =>
+      b2.b2WheelJoint_GetLowerLimit(_joint(index1, wg));
+
+  @override
+  double wheelJointGetUpperLimit(int index1, int wg) =>
+      b2.b2WheelJoint_GetUpperLimit(_joint(index1, wg));
+
+  @override
+  void wheelJointSetLimits(int index1, int wg, double lower, double upper) =>
+      b2.b2WheelJoint_SetLimits(_joint(index1, wg), lower, upper);
+
+  @override
+  bool wheelJointIsMotorEnabled(int index1, int wg) =>
+      b2.b2WheelJoint_IsMotorEnabled(_joint(index1, wg));
+
+  @override
+  void wheelJointEnableMotor(int index1, int wg, {required bool enabled}) =>
+      b2.b2WheelJoint_EnableMotor(_joint(index1, wg), enabled);
+
+  @override
+  double wheelJointGetMotorSpeed(int index1, int wg) =>
+      b2.b2WheelJoint_GetMotorSpeed(_joint(index1, wg));
+
+  @override
+  void wheelJointSetMotorSpeed(int index1, int wg, double speed) =>
+      b2.b2WheelJoint_SetMotorSpeed(_joint(index1, wg), speed);
+
+  @override
+  double wheelJointGetMaxMotorTorque(int index1, int wg) =>
+      b2.b2WheelJoint_GetMaxMotorTorque(_joint(index1, wg));
+
+  @override
+  void wheelJointSetMaxMotorTorque(int index1, int wg, double torque) =>
+      b2.b2WheelJoint_SetMaxMotorTorque(_joint(index1, wg), torque);
+
+  @override
+  double wheelJointGetMotorTorque(int index1, int wg) =>
+      b2.b2WheelJoint_GetMotorTorque(_joint(index1, wg));
 }

@@ -281,6 +281,10 @@ abstract interface class RawBox2D {
   /// `[index1, wg, index1, wg, ...]`.
   List<int> bodyGetShapes(int index1, int wg);
 
+  /// Returns the ids of the joints attached to the body, as
+  /// `[index1, wg, index1, wg, ...]`.
+  List<int> bodyGetJoints(int index1, int wg);
+
   // Shapes.
 
   /// Creates a circle shape on the body. Returns the shape id pair.
@@ -471,6 +475,523 @@ abstract interface class RawBox2D {
   /// Returns the ids of the segment shapes owned by the chain, as
   /// `[index1, wg, index1, wg, ...]`.
   List<int> chainGetSegments(int index1, int wg);
+
+  // Joints.
+  //
+  // The create methods mirror the `b2*JointDef` structs; implementations
+  // start from the native defaults and overwrite every field given here.
+  // [bodyA] and [bodyB] are (index1, wg) id pairs.
+
+  /// Creates a distance joint. Returns the joint id pair.
+  (int, int) createDistanceJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required double length,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double minLength,
+    required double maxLength,
+    required bool enableMotor,
+    required double maxMotorForce,
+    required double motorSpeed,
+    required bool collideConnected,
+  });
+
+  /// Creates a filter joint, which only disables collision between the two
+  /// bodies. Returns the joint id pair.
+  (int, int) createFilterJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+  });
+
+  /// Creates a motor joint. Returns the joint id pair.
+  (int, int) createMotorJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) linearOffset,
+    required double angularOffset,
+    required double maxForce,
+    required double maxTorque,
+    required double correctionFactor,
+    required bool collideConnected,
+  });
+
+  /// Creates a mouse joint. Returns the joint id pair.
+  (int, int) createMouseJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) target,
+    required double hertz,
+    required double dampingRatio,
+    required double maxForce,
+    required bool collideConnected,
+  });
+
+  /// Creates a prismatic joint. Returns the joint id pair.
+  (int, int) createPrismaticJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required (double, double) localAxisA,
+    required double referenceAngle,
+    required double targetTranslation,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double lowerTranslation,
+    required double upperTranslation,
+    required bool enableMotor,
+    required double maxMotorForce,
+    required double motorSpeed,
+    required bool collideConnected,
+  });
+
+  /// Creates a revolute joint. Returns the joint id pair.
+  (int, int) createRevoluteJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required double referenceAngle,
+    required double targetAngle,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double lowerAngle,
+    required double upperAngle,
+    required bool enableMotor,
+    required double maxMotorTorque,
+    required double motorSpeed,
+    required double drawSize,
+    required bool collideConnected,
+  });
+
+  /// Creates a weld joint. Returns the joint id pair.
+  (int, int) createWeldJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required double referenceAngle,
+    required double linearHertz,
+    required double angularHertz,
+    required double linearDampingRatio,
+    required double angularDampingRatio,
+    required bool collideConnected,
+  });
+
+  /// Creates a wheel joint. Returns the joint id pair.
+  (int, int) createWheelJoint(
+    int worldId, {
+    required (int, int) bodyA,
+    required (int, int) bodyB,
+    required (double, double) localAnchorA,
+    required (double, double) localAnchorB,
+    required (double, double) localAxisA,
+    required bool enableSpring,
+    required double hertz,
+    required double dampingRatio,
+    required bool enableLimit,
+    required double lowerTranslation,
+    required double upperTranslation,
+    required bool enableMotor,
+    required double maxMotorTorque,
+    required double motorSpeed,
+    required bool collideConnected,
+  });
+
+  /// Destroys the joint.
+  void destroyJoint(int index1, int wg);
+
+  /// Whether the id refers to a live joint.
+  bool jointIsValid(int index1, int wg);
+
+  /// Returns the `JointType` index of the joint.
+  int jointGetType(int index1, int wg);
+
+  /// Returns the id pair of the first attached body.
+  (int, int) jointGetBodyA(int index1, int wg);
+
+  /// Returns the id pair of the second attached body.
+  (int, int) jointGetBodyB(int index1, int wg);
+
+  /// Returns the local anchor on the first body.
+  (double, double) jointGetLocalAnchorA(int index1, int wg);
+
+  /// Returns the local anchor on the second body.
+  (double, double) jointGetLocalAnchorB(int index1, int wg);
+
+  /// Whether the connected bodies can collide.
+  bool jointGetCollideConnected(int index1, int wg);
+
+  /// Sets whether the connected bodies can collide.
+  void jointSetCollideConnected(int index1, int wg, {required bool value});
+
+  /// Wakes the connected bodies.
+  void jointWakeBodies(int index1, int wg);
+
+  /// Returns the constraint force on the joint, in newtons.
+  (double, double) jointGetConstraintForce(int index1, int wg);
+
+  /// Returns the constraint torque on the joint, in newton-meters.
+  double jointGetConstraintTorque(int index1, int wg);
+
+  // Distance joint.
+
+  /// Returns the rest length.
+  double distanceJointGetLength(int index1, int wg);
+
+  /// Sets the rest length.
+  void distanceJointSetLength(int index1, int wg, double length);
+
+  /// Returns the current distance between the anchors.
+  double distanceJointGetCurrentLength(int index1, int wg);
+
+  /// Whether the spring is enabled.
+  bool distanceJointIsSpringEnabled(int index1, int wg);
+
+  /// Enables or disables the spring.
+  void distanceJointEnableSpring(int index1, int wg, {required bool enabled});
+
+  /// Returns the spring stiffness in hertz.
+  double distanceJointGetSpringHertz(int index1, int wg);
+
+  /// Sets the spring stiffness in hertz.
+  void distanceJointSetSpringHertz(int index1, int wg, double hertz);
+
+  /// Returns the spring damping ratio.
+  double distanceJointGetSpringDampingRatio(int index1, int wg);
+
+  /// Sets the spring damping ratio.
+  void distanceJointSetSpringDampingRatio(int index1, int wg, double ratio);
+
+  /// Whether the length limit is enabled.
+  bool distanceJointIsLimitEnabled(int index1, int wg);
+
+  /// Enables or disables the length limit.
+  void distanceJointEnableLimit(int index1, int wg, {required bool enabled});
+
+  /// Returns the minimum length.
+  double distanceJointGetMinLength(int index1, int wg);
+
+  /// Returns the maximum length.
+  double distanceJointGetMaxLength(int index1, int wg);
+
+  /// Sets the length limit range.
+  void distanceJointSetLengthRange(
+    int index1,
+    int wg,
+    double minLength,
+    double maxLength,
+  );
+
+  /// Whether the motor is enabled.
+  bool distanceJointIsMotorEnabled(int index1, int wg);
+
+  /// Enables or disables the motor.
+  void distanceJointEnableMotor(int index1, int wg, {required bool enabled});
+
+  /// Returns the motor speed, in meters per second.
+  double distanceJointGetMotorSpeed(int index1, int wg);
+
+  /// Sets the motor speed, in meters per second.
+  void distanceJointSetMotorSpeed(int index1, int wg, double speed);
+
+  /// Returns the maximum motor force, in newtons.
+  double distanceJointGetMaxMotorForce(int index1, int wg);
+
+  /// Sets the maximum motor force, in newtons.
+  void distanceJointSetMaxMotorForce(int index1, int wg, double force);
+
+  /// Returns the current motor force, in newtons.
+  double distanceJointGetMotorForce(int index1, int wg);
+
+  // Motor joint.
+
+  /// Returns the target linear offset in the frame of body A.
+  (double, double) motorJointGetLinearOffset(int index1, int wg);
+
+  /// Sets the target linear offset in the frame of body A.
+  void motorJointSetLinearOffset(int index1, int wg, double x, double y);
+
+  /// Returns the target angular offset.
+  double motorJointGetAngularOffset(int index1, int wg);
+
+  /// Sets the target angular offset.
+  void motorJointSetAngularOffset(int index1, int wg, double offset);
+
+  /// Returns the maximum force, in newtons.
+  double motorJointGetMaxForce(int index1, int wg);
+
+  /// Sets the maximum force, in newtons.
+  void motorJointSetMaxForce(int index1, int wg, double force);
+
+  /// Returns the maximum torque, in newton-meters.
+  double motorJointGetMaxTorque(int index1, int wg);
+
+  /// Sets the maximum torque, in newton-meters.
+  void motorJointSetMaxTorque(int index1, int wg, double torque);
+
+  /// Returns the position correction factor, in `[0, 1]`.
+  double motorJointGetCorrectionFactor(int index1, int wg);
+
+  /// Sets the position correction factor, in `[0, 1]`.
+  void motorJointSetCorrectionFactor(int index1, int wg, double factor);
+
+  // Mouse joint.
+
+  /// Returns the target point.
+  (double, double) mouseJointGetTarget(int index1, int wg);
+
+  /// Sets the target point.
+  void mouseJointSetTarget(int index1, int wg, double x, double y);
+
+  /// Returns the spring stiffness in hertz.
+  double mouseJointGetSpringHertz(int index1, int wg);
+
+  /// Sets the spring stiffness in hertz.
+  void mouseJointSetSpringHertz(int index1, int wg, double hertz);
+
+  /// Returns the spring damping ratio.
+  double mouseJointGetSpringDampingRatio(int index1, int wg);
+
+  /// Sets the spring damping ratio.
+  void mouseJointSetSpringDampingRatio(int index1, int wg, double ratio);
+
+  /// Returns the maximum force, in newtons.
+  double mouseJointGetMaxForce(int index1, int wg);
+
+  /// Sets the maximum force, in newtons.
+  void mouseJointSetMaxForce(int index1, int wg, double force);
+
+  // Prismatic joint.
+
+  /// Whether the spring is enabled.
+  bool prismaticJointIsSpringEnabled(int index1, int wg);
+
+  /// Enables or disables the spring.
+  void prismaticJointEnableSpring(int index1, int wg, {required bool enabled});
+
+  /// Returns the spring stiffness in hertz.
+  double prismaticJointGetSpringHertz(int index1, int wg);
+
+  /// Sets the spring stiffness in hertz.
+  void prismaticJointSetSpringHertz(int index1, int wg, double hertz);
+
+  /// Returns the spring damping ratio.
+  double prismaticJointGetSpringDampingRatio(int index1, int wg);
+
+  /// Sets the spring damping ratio.
+  void prismaticJointSetSpringDampingRatio(int index1, int wg, double ratio);
+
+  /// Returns the target translation, in meters.
+  double prismaticJointGetTargetTranslation(int index1, int wg);
+
+  /// Sets the target translation, in meters.
+  void prismaticJointSetTargetTranslation(int index1, int wg, double value);
+
+  /// Whether the translation limit is enabled.
+  bool prismaticJointIsLimitEnabled(int index1, int wg);
+
+  /// Enables or disables the translation limit.
+  void prismaticJointEnableLimit(int index1, int wg, {required bool enabled});
+
+  /// Returns the lower translation limit.
+  double prismaticJointGetLowerLimit(int index1, int wg);
+
+  /// Returns the upper translation limit.
+  double prismaticJointGetUpperLimit(int index1, int wg);
+
+  /// Sets the translation limits.
+  void prismaticJointSetLimits(int index1, int wg, double lower, double upper);
+
+  /// Whether the motor is enabled.
+  bool prismaticJointIsMotorEnabled(int index1, int wg);
+
+  /// Enables or disables the motor.
+  void prismaticJointEnableMotor(int index1, int wg, {required bool enabled});
+
+  /// Returns the motor speed, in meters per second.
+  double prismaticJointGetMotorSpeed(int index1, int wg);
+
+  /// Sets the motor speed, in meters per second.
+  void prismaticJointSetMotorSpeed(int index1, int wg, double speed);
+
+  /// Returns the maximum motor force, in newtons.
+  double prismaticJointGetMaxMotorForce(int index1, int wg);
+
+  /// Sets the maximum motor force, in newtons.
+  void prismaticJointSetMaxMotorForce(int index1, int wg, double force);
+
+  /// Returns the current motor force, in newtons.
+  double prismaticJointGetMotorForce(int index1, int wg);
+
+  /// Returns the current translation, in meters.
+  double prismaticJointGetTranslation(int index1, int wg);
+
+  /// Returns the current translation speed, in meters per second.
+  double prismaticJointGetSpeed(int index1, int wg);
+
+  // Revolute joint.
+
+  /// Whether the spring is enabled.
+  bool revoluteJointIsSpringEnabled(int index1, int wg);
+
+  /// Enables or disables the spring.
+  void revoluteJointEnableSpring(int index1, int wg, {required bool enabled});
+
+  /// Returns the spring stiffness in hertz.
+  double revoluteJointGetSpringHertz(int index1, int wg);
+
+  /// Sets the spring stiffness in hertz.
+  void revoluteJointSetSpringHertz(int index1, int wg, double hertz);
+
+  /// Returns the spring damping ratio.
+  double revoluteJointGetSpringDampingRatio(int index1, int wg);
+
+  /// Sets the spring damping ratio.
+  void revoluteJointSetSpringDampingRatio(int index1, int wg, double ratio);
+
+  /// Returns the target angle, in radians.
+  double revoluteJointGetTargetAngle(int index1, int wg);
+
+  /// Sets the target angle, in radians.
+  void revoluteJointSetTargetAngle(int index1, int wg, double angle);
+
+  /// Returns the current joint angle, in radians.
+  double revoluteJointGetAngle(int index1, int wg);
+
+  /// Whether the angle limit is enabled.
+  bool revoluteJointIsLimitEnabled(int index1, int wg);
+
+  /// Enables or disables the angle limit.
+  void revoluteJointEnableLimit(int index1, int wg, {required bool enabled});
+
+  /// Returns the lower angle limit, in radians.
+  double revoluteJointGetLowerLimit(int index1, int wg);
+
+  /// Returns the upper angle limit, in radians.
+  double revoluteJointGetUpperLimit(int index1, int wg);
+
+  /// Sets the angle limits, in radians.
+  void revoluteJointSetLimits(int index1, int wg, double lower, double upper);
+
+  /// Whether the motor is enabled.
+  bool revoluteJointIsMotorEnabled(int index1, int wg);
+
+  /// Enables or disables the motor.
+  void revoluteJointEnableMotor(int index1, int wg, {required bool enabled});
+
+  /// Returns the motor speed, in radians per second.
+  double revoluteJointGetMotorSpeed(int index1, int wg);
+
+  /// Sets the motor speed, in radians per second.
+  void revoluteJointSetMotorSpeed(int index1, int wg, double speed);
+
+  /// Returns the maximum motor torque, in newton-meters.
+  double revoluteJointGetMaxMotorTorque(int index1, int wg);
+
+  /// Sets the maximum motor torque, in newton-meters.
+  void revoluteJointSetMaxMotorTorque(int index1, int wg, double torque);
+
+  /// Returns the current motor torque, in newton-meters.
+  double revoluteJointGetMotorTorque(int index1, int wg);
+
+  // Weld joint.
+
+  /// Returns the linear stiffness in hertz.
+  double weldJointGetLinearHertz(int index1, int wg);
+
+  /// Sets the linear stiffness in hertz (zero for rigid).
+  void weldJointSetLinearHertz(int index1, int wg, double hertz);
+
+  /// Returns the angular stiffness in hertz.
+  double weldJointGetAngularHertz(int index1, int wg);
+
+  /// Sets the angular stiffness in hertz (zero for rigid).
+  void weldJointSetAngularHertz(int index1, int wg, double hertz);
+
+  /// Returns the linear damping ratio.
+  double weldJointGetLinearDampingRatio(int index1, int wg);
+
+  /// Sets the linear damping ratio.
+  void weldJointSetLinearDampingRatio(int index1, int wg, double ratio);
+
+  /// Returns the angular damping ratio.
+  double weldJointGetAngularDampingRatio(int index1, int wg);
+
+  /// Sets the angular damping ratio.
+  void weldJointSetAngularDampingRatio(int index1, int wg, double ratio);
+
+  // Wheel joint.
+
+  /// Whether the spring is enabled.
+  bool wheelJointIsSpringEnabled(int index1, int wg);
+
+  /// Enables or disables the spring.
+  void wheelJointEnableSpring(int index1, int wg, {required bool enabled});
+
+  /// Returns the spring stiffness in hertz.
+  double wheelJointGetSpringHertz(int index1, int wg);
+
+  /// Sets the spring stiffness in hertz.
+  void wheelJointSetSpringHertz(int index1, int wg, double hertz);
+
+  /// Returns the spring damping ratio.
+  double wheelJointGetSpringDampingRatio(int index1, int wg);
+
+  /// Sets the spring damping ratio.
+  void wheelJointSetSpringDampingRatio(int index1, int wg, double ratio);
+
+  /// Whether the translation limit is enabled.
+  bool wheelJointIsLimitEnabled(int index1, int wg);
+
+  /// Enables or disables the translation limit.
+  void wheelJointEnableLimit(int index1, int wg, {required bool enabled});
+
+  /// Returns the lower translation limit.
+  double wheelJointGetLowerLimit(int index1, int wg);
+
+  /// Returns the upper translation limit.
+  double wheelJointGetUpperLimit(int index1, int wg);
+
+  /// Sets the translation limits.
+  void wheelJointSetLimits(int index1, int wg, double lower, double upper);
+
+  /// Whether the motor is enabled.
+  bool wheelJointIsMotorEnabled(int index1, int wg);
+
+  /// Enables or disables the motor.
+  void wheelJointEnableMotor(int index1, int wg, {required bool enabled});
+
+  /// Returns the motor speed, in radians per second.
+  double wheelJointGetMotorSpeed(int index1, int wg);
+
+  /// Sets the motor speed, in radians per second.
+  void wheelJointSetMotorSpeed(int index1, int wg, double speed);
+
+  /// Returns the maximum motor torque, in newton-meters.
+  double wheelJointGetMaxMotorTorque(int index1, int wg);
+
+  /// Sets the maximum motor torque, in newton-meters.
+  void wheelJointSetMaxMotorTorque(int index1, int wg, double torque);
+
+  /// Returns the current motor torque, in newton-meters.
+  double wheelJointGetMotorTorque(int index1, int wg);
 }
 
 /// The `b2ShapeDef` fields flattened into a record so that the five shape

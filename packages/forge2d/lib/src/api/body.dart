@@ -2,6 +2,7 @@ import 'package:forge2d/src/api/chain.dart';
 import 'package:forge2d/src/api/defs.dart';
 import 'package:forge2d/src/api/enums.dart';
 import 'package:forge2d/src/api/geometry.dart';
+import 'package:forge2d/src/api/joints/joint.dart';
 import 'package:forge2d/src/api/math.dart';
 import 'package:forge2d/src/api/shape.dart';
 import 'package:forge2d/src/api/world.dart';
@@ -413,10 +414,22 @@ class Body {
     ];
   }
 
+  /// The joints attached to this body.
+  List<Joint> get joints {
+    final ids = rawBox2D.bodyGetJoints(index1, wg);
+    return [
+      for (var i = 0; i < ids.length; i += 2)
+        jointFromId(world, ids[i], ids[i + 1]),
+    ];
+  }
+
   /// Destroys this body and all its shapes and joints.
   void destroy() {
     for (final shape in shapes) {
       world.shapeUserData.remove((shape.index1, shape.wg));
+    }
+    for (final joint in joints) {
+      world.jointUserData.remove((joint.index1, joint.wg));
     }
     world.bodyUserData.remove((index1, wg));
     rawBox2D.destroyBody(index1, wg);
