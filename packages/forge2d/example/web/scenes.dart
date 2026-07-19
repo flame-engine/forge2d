@@ -419,13 +419,23 @@ final scenes = <Scene>[
         ),
       );
 
+      // The car never sleeps: joint motor changes alone do not wake
+      // sleeping bodies, which would swallow the first keyboard input.
       final chassis = world.createBody(
-        BodyDef(type: BodyType.dynamic, position: Vector2(0, 4)),
+        BodyDef(
+          type: BodyType.dynamic,
+          position: Vector2(0, 4),
+          enableSleep: false,
+        ),
       )..createShape(Polygon.box(1.4, 0.35), _solid(Palette.indigo));
 
       Body wheel(double x) =>
           world.createBody(
-            BodyDef(type: BodyType.dynamic, position: Vector2(x, 3.5)),
+            BodyDef(
+              type: BodyType.dynamic,
+              position: Vector2(x, 3.5),
+              enableSleep: false,
+            ),
           )..createShape(
             Circle(radius: 0.45),
             ShapeDef(
