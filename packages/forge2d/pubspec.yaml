@@ -5,7 +5,7 @@ homepage: https://github.com/flame-engine/forge2d
 resolution: workspace
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.9.0 <4.0.0"
 
 dependencies:
   meta: ^1.16.0

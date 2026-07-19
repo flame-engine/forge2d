@@ -12,22 +12,21 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-      - uses: bluefireteam/melos-action@main
+      - uses: bluefireteam/melos-action@v3
       - run: melos run format-check
 
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v3
+      - name: "Analyze with latest stable"
+        uses: invertase/github-action-dart-analyzer@v3
         with:
-          channel: 'stable'
-      - uses: bluefireteam/melos-action@main
-      - run: melos run analyze
+          fatal-infos: true
   # END LINTING STAGE
 
   # BEGIN TESTING STAGE
@@ -35,10 +34,8 @@ jobs:
     needs: [format, analyze]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-      - uses: bluefireteam/melos-action@main
-      - run: melos run test
+      - uses: bluefireteam/melos-action@v3
+      - run: melos test
   # END TESTING STAGE
