@@ -1,0 +1,41 @@
+name: Box2DNative
+description: Bindings to the vendored Box2D (see third_party/box2d/VERSION).
+language: c
+output: '../../lib/src/ffi/box2d.g.dart'
+ffi-native:
+  asset-id: 'package:forge2d/src/ffi/box2d.g.dart'
+headers:
+  entry-points:
+    - '../../third_party/box2d/include/box2d/box2d.h'
+  include-directives:
+    - '**box2d/*.h'
+compiler-opts:
+  - '-I../../third_party/box2d/include'
+functions:
+  include:
+    - 'b2.*'
+  exclude:
+    - 'b2SetAllocator'
+    - 'b2SetAssertFcn'
+structs:
+  include:
+    - 'b2.*'
+enums:
+  include:
+    - 'b2.*'
+# Box2D enums are plain int32 on every supported compiler/OS/arch combination.
+silence-enum-warning: true
+unions:
+  include:
+    - 'b2.*'
+typedefs:
+  include:
+    - 'b2.*'
+preamble: |
+  // Generated bindings to the vendored Box2D snapshot.
+  // Do not edit by hand. Regenerate with:
+  //   cd packages/forge2d/tool/ffigen && dart pub get && dart run ffigen
+  // ignore_for_file: type=lint
+comments:
+  style: any
+  length: full

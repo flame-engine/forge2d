@@ -1,0 +1,14 @@
+# Standalone tool package: ffigen conflicts with melos over cli_util, so it
+# cannot be part of the pub workspace. Run bindings generation with:
+#
+#   cd packages/forge2d/tool/ffigen
+#   dart pub get
+#   dart run ffigen
+name: forge2d_ffigen
+publish_to: none
+
+environment:
+  sdk: ^3.12.0
+
+dev_dependencies:
+  ffigen: ^20.1.1
