@@ -35,6 +35,7 @@ class _App {
 
   World? _world;
   SceneHooks _hooks = SceneHooks();
+  Scene _currentScene = scenes.first;
   MouseJoint? _mouseJoint;
   double _lastTimestamp = 0;
   double _accumulator = 0;
@@ -58,6 +59,11 @@ class _App {
       document,
       'keyup',
       (event) => _hooks.onKey?.call(event.key, down: false),
+    );
+    _listen<Event>(
+      document.getElementById('reset')!,
+      'click',
+      (_) => _select(_currentScene),
     );
     _listen<PointerEvent>(_canvas, 'pointerdown', _onPointerDown);
     _listen<PointerEvent>(_canvas, 'pointermove', _onPointerMove);
@@ -83,6 +89,7 @@ class _App {
   void _select(Scene scene) {
     _releaseMouseJoint();
     _world?.destroy();
+    _currentScene = scene;
     _hooks = SceneHooks();
     _world = World()..let(scene.build, _hooks);
     _draw

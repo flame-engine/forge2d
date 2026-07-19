@@ -59,6 +59,17 @@
       color: #0b1020;
       font-weight: 600;
     }
+    #reset {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid #2a3355;
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    #reset:hover { border-color: var(--accent); color: var(--accent); }
     #canvas { display: block; width: 100vw; height: calc(100vh - 53px); }
     #hint {
       position: fixed;
@@ -91,6 +102,7 @@
     <h1>Forge2D <span>examples</span></h1>
     <nav id="nav"></nav>
     <div class="spacer"></div>
+    <button id="reset" title="Restart the scene">&#8635; Reset</button>
     <a class="gh" href="https://github.com/flame-engine/forge2d">GitHub</a>
   </header>
   <canvas id="canvas"></canvas>

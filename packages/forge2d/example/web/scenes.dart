@@ -94,43 +94,119 @@ final scenes = <Scene>[
   Scene(
     name: 'Domino tower',
     hint: 'A heavy ball topples the tower; drag the debris around',
-    viewHeight: 30,
-    centerY: 8,
+    viewHeight: 46,
+    centerY: 17,
     build: (world, hooks) {
-      hooks.anchor = _ground(world);
-      const rows = 10;
+      hooks.anchor = _ground(world, width: 45);
+
+      // The classic domino tower: vertical dominoes carry horizontal
+      // dominoes as planks, level by level, with braces at the edges.
+      const dominoWidth = 0.2;
+      const dominoHeight = 1.0;
+      const baseCount = 25;
+      var dominoDensity = 10.0;
       var tint = 0;
-      for (var row = 0; row < rows; row++) {
-        final count = rows - row;
-        final y = 0.45 + row * 0.95;
-        for (var i = 0; i < count; i++) {
-          final x = (i - (count - 1) / 2) * 1.1;
-          world
-              .createBody(
-                BodyDef(type: BodyType.dynamic, position: Vector2(x, y)),
-              )
-              .createShape(
-                Polygon.box(0.05, 0.45),
-                _solid(Palette.dynamic(tint++)),
-              );
+
+      void makeDomino(double x, double y, {required bool horizontal}) {
+        world
+            .createBody(
+              BodyDef(
+                type: BodyType.dynamic,
+                position: Vector2(x, y),
+                rotation: horizontal
+                    ? Rot.fromAngle(math.pi / 2)
+                    : const Rot.identity(),
+              ),
+            )
+            .createShape(
+              Polygon.box(dominoWidth / 2, dominoHeight / 2),
+              ShapeDef(
+                density: dominoDensity,
+                material: SurfaceMaterial(
+                  friction: 0.1,
+                  restitution: 0.65,
+                  customColor: Palette.dynamic(tint++),
+                ),
+              ),
+            );
+      }
+
+      for (var i = 0; i < baseCount; ++i) {
+        final x = i * 1.5 * dominoHeight - 1.5 * dominoHeight * baseCount / 2;
+        makeDomino(x, dominoHeight / 2, horizontal: false);
+        makeDomino(x, dominoHeight + dominoWidth / 2, horizontal: true);
+      }
+      for (var level = 1; level < baseCount; ++level) {
+        if (level > 3) {
+          dominoDensity *= 0.8;
+        }
+        final y =
+            dominoHeight * 0.5 +
+            (dominoHeight + 2 * dominoWidth) * 0.99 * level;
+        final count = baseCount - level;
+        for (var i = 0; i < count; ++i) {
+          final x = i * 1.5 * dominoHeight - 1.5 * dominoHeight * count / 2;
+          dominoDensity *= 2.5;
+          if (i == 0) {
+            makeDomino(
+              x - 1.25 * dominoHeight + 0.5 * dominoWidth,
+              y - dominoWidth,
+              horizontal: false,
+            );
+          }
+          if (i == count - 1) {
+            makeDomino(
+              x + 1.25 * dominoHeight - 0.5 * dominoWidth,
+              y - dominoWidth,
+              horizontal: false,
+            );
+          }
+          dominoDensity /= 2.5;
+          makeDomino(x, y, horizontal: false);
+          makeDomino(
+            x,
+            y + 0.5 * (dominoWidth + dominoHeight),
+            horizontal: true,
+          );
+          makeDomino(
+            x,
+            y - 0.5 * (dominoWidth + dominoHeight),
+            horizontal: true,
+          );
         }
       }
-      world
-          .createBody(
-            BodyDef(
-              type: BodyType.dynamic,
-              position: Vector2(-30, 6),
-              linearVelocity: Vector2(35, 0),
-              isBullet: true,
-            ),
-          )
-          .createShape(
-            Circle(radius: 0.9),
-            ShapeDef(
-              density: 8,
-              material: SurfaceMaterial(customColor: Palette.rose),
-            ),
-          );
+
+      // The ball launches once the tower has had a moment to stand, from a
+      // random side, height, and speed on every run.
+      final random = math.Random();
+      final side = random.nextBool() ? 1 : -1;
+      final height = 8 + random.nextDouble() * 16;
+      final speed = 42 + random.nextDouble() * 18;
+      var elapsed = 0.0;
+      var launched = false;
+      hooks.onTick = (timeStep) {
+        elapsed += timeStep;
+        if (launched || elapsed < 2) {
+          return;
+        }
+        launched = true;
+        world
+            .createBody(
+              BodyDef(
+                type: BodyType.dynamic,
+                position: Vector2(-side * 45, height),
+                linearVelocity: Vector2(side * speed, 0),
+                isBullet: true,
+              ),
+            )
+            .createShape(
+              Circle(radius: 1.4),
+              ShapeDef(
+                density: 10,
+                material: SurfaceMaterial(customColor: Palette.rose),
+              ),
+            );
+      };
     },
   ),
   Scene(
