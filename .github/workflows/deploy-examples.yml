@@ -10,16 +10,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,17 +25,20 @@ jobs:
       - uses: bluefireteam/melos-action@v3
       - name: Build the examples
         working-directory: packages/forge2d/example
-        run: dart run build_runner build --release --output build
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: packages/forge2d/example/build/web
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+        run: |
+          dart run build_runner build --release --output build
+          # The output's packages directory is a symlink; materialize it so
+          # the published branch carries real files.
+          cp -rL build/web site
+      - name: Publish to the gh-pages branch
+        working-directory: packages/forge2d/example/site
+        run: |
+          touch .nojekyll
+          git init -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Deploy forge2d examples for $GITHUB_SHA"
+          git push --force \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" \
+            gh-pages
