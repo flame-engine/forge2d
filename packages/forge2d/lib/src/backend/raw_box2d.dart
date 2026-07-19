@@ -1350,7 +1350,83 @@ abstract interface class RawBox2D {
     )?
     callback,
   );
+
+  // Debug drawing.
+
+  /// Draws the world's debug data by dispatching to [draw]'s callbacks.
+  ///
+  /// Vertex lists are flattened as `[x0, y0, x1, y1, ...]`, transforms as
+  /// (positionX, positionY, rotationCos, rotationSin), and colors as
+  /// 0xRRGGBB ints.
+  void worldDraw(int worldId, RawDebugDraw draw);
 }
+
+/// The debug-draw toggles and callbacks, mirroring `b2DebugDraw`.
+typedef RawDebugDraw = ({
+  // Bounds culling: when null, everything is drawn.
+  (double, double, double, double)? drawingBounds,
+  bool drawShapes,
+  bool drawJoints,
+  bool drawJointExtras,
+  bool drawBounds,
+  bool drawMass,
+  bool drawBodyNames,
+  bool drawContacts,
+  bool drawGraphColors,
+  bool drawContactNormals,
+  bool drawContactImpulses,
+  bool drawContactFeatures,
+  bool drawFrictionImpulses,
+  bool drawIslands,
+  void Function(List<double> vertices, int color) drawPolygon,
+  void Function(
+    double positionX,
+    double positionY,
+    double rotationCos,
+    double rotationSin,
+    List<double> vertices,
+    double radius,
+    int color,
+  )
+  drawSolidPolygon,
+  void Function(double centerX, double centerY, double radius, int color)
+  drawCircle,
+  void Function(
+    double positionX,
+    double positionY,
+    double rotationCos,
+    double rotationSin,
+    double radius,
+    int color,
+  )
+  drawSolidCircle,
+  void Function(
+    double point1X,
+    double point1Y,
+    double point2X,
+    double point2Y,
+    double radius,
+    int color,
+  )
+  drawSolidCapsule,
+  void Function(
+    double point1X,
+    double point1Y,
+    double point2X,
+    double point2Y,
+    int color,
+  )
+  drawSegment,
+  void Function(
+    double positionX,
+    double positionY,
+    double rotationCos,
+    double rotationSin,
+  )
+  drawTransform,
+  void Function(double x, double y, double size, int color) drawPoint,
+  void Function(double x, double y, String text, int color) drawString,
+});
 
 /// A contact manifold point: the contact position and the separation
 /// (negative when overlapping).

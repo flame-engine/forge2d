@@ -1,4 +1,5 @@
 import 'package:forge2d/src/api/body.dart';
+import 'package:forge2d/src/api/debug_draw.dart';
 import 'package:forge2d/src/api/defs.dart';
 import 'package:forge2d/src/api/events.dart';
 import 'package:forge2d/src/api/joints/distance_joint.dart';
@@ -591,6 +592,94 @@ class World {
         ),
       );
     }
+  }
+
+  /// Draws the world's debug data into [debugDraw].
+  void draw(DebugDraw debugDraw) {
+    List<Vector2> unflatten(List<double> vertices) => [
+      for (var i = 0; i < vertices.length; i += 2)
+        Vector2(vertices[i], vertices[i + 1]),
+    ];
+    final bounds = debugDraw.drawingBounds;
+    rawBox2D.worldDraw(id, (
+      drawingBounds: bounds == null
+          ? null
+          : (
+              bounds.lowerBound.x,
+              bounds.lowerBound.y,
+              bounds.upperBound.x,
+              bounds.upperBound.y,
+            ),
+      drawShapes: debugDraw.drawShapes,
+      drawJoints: debugDraw.drawJoints,
+      drawJointExtras: debugDraw.drawJointExtras,
+      drawBounds: debugDraw.drawBounds,
+      drawMass: debugDraw.drawMass,
+      drawBodyNames: debugDraw.drawBodyNames,
+      drawContacts: debugDraw.drawContacts,
+      drawGraphColors: debugDraw.drawGraphColors,
+      drawContactNormals: debugDraw.drawContactNormals,
+      drawContactImpulses: debugDraw.drawContactImpulses,
+      drawContactFeatures: debugDraw.drawContactFeatures,
+      drawFrictionImpulses: debugDraw.drawFrictionImpulses,
+      drawIslands: debugDraw.drawIslands,
+      drawPolygon: (vertices, color) =>
+          debugDraw.drawPolygon(unflatten(vertices), color),
+      drawSolidPolygon:
+          (
+            positionX,
+            positionY,
+            rotationCos,
+            rotationSin,
+            vertices,
+            radius,
+            color,
+          ) => debugDraw.drawSolidPolygon(
+            Transform(
+              Vector2(positionX, positionY),
+              Rot(rotationCos, rotationSin),
+            ),
+            unflatten(vertices),
+            radius,
+            color,
+          ),
+      drawCircle: (centerX, centerY, radius, color) =>
+          debugDraw.drawCircle(Vector2(centerX, centerY), radius, color),
+      drawSolidCircle:
+          (positionX, positionY, rotationCos, rotationSin, radius, color) =>
+              debugDraw.drawSolidCircle(
+                Transform(
+                  Vector2(positionX, positionY),
+                  Rot(rotationCos, rotationSin),
+                ),
+                radius,
+                color,
+              ),
+      drawSolidCapsule: (point1X, point1Y, point2X, point2Y, radius, color) =>
+          debugDraw.drawSolidCapsule(
+            Vector2(point1X, point1Y),
+            Vector2(point2X, point2Y),
+            radius,
+            color,
+          ),
+      drawSegment: (point1X, point1Y, point2X, point2Y, color) =>
+          debugDraw.drawSegment(
+            Vector2(point1X, point1Y),
+            Vector2(point2X, point2Y),
+            color,
+          ),
+      drawTransform: (positionX, positionY, rotationCos, rotationSin) =>
+          debugDraw.drawTransform(
+            Transform(
+              Vector2(positionX, positionY),
+              Rot(rotationCos, rotationSin),
+            ),
+          ),
+      drawPoint: (x, y, size, color) =>
+          debugDraw.drawPoint(Vector2(x, y), size, color),
+      drawString: (x, y, text, color) =>
+          debugDraw.drawString(Vector2(x, y), text, color),
+    ));
   }
 
   /// Destroys this world and everything in it.

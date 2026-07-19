@@ -5,6 +5,7 @@ export 'package:vector_math/vector_math.dart' show Vector2;
 
 export 'src/api/body.dart';
 export 'src/api/chain.dart';
+export 'src/api/debug_draw.dart';
 export 'src/api/defs.dart';
 export 'src/api/enums.dart';
 export 'src/api/events.dart';

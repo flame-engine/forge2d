@@ -2481,4 +2481,244 @@ final class RawBox2DFfi implements RawBox2D {
       );
     }
   }
+
+  // Debug drawing. World drawing is synchronous, so a stack of active draw
+  // targets supports nested worlds.
+
+  static final List<RawDebugDraw> _debugDraws = [];
+
+  static List<double> _flattenVertices(Pointer<b2.b2Vec2> vertices, int count) {
+    return [
+      for (var i = 0; i < count; i++) ...[vertices[i].x, vertices[i].y],
+    ];
+  }
+
+  static final _drawPolygonNative =
+      NativeCallable<
+          Void Function(
+            Pointer<b2.b2Vec2>,
+            Int,
+            UnsignedInt,
+            Pointer<Void>,
+          )
+        >.isolateLocal((
+          Pointer<b2.b2Vec2> vertices,
+          int vertexCount,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawPolygon(
+            _flattenVertices(vertices, vertexCount),
+            color,
+          );
+        })
+        ..keepIsolateAlive = false;
+
+  static final _drawSolidPolygonNative =
+      NativeCallable<
+          Void Function(
+            b2.b2Transform,
+            Pointer<b2.b2Vec2>,
+            Int,
+            Float,
+            UnsignedInt,
+            Pointer<Void>,
+          )
+        >.isolateLocal((
+          b2.b2Transform transform,
+          Pointer<b2.b2Vec2> vertices,
+          int vertexCount,
+          double radius,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawSolidPolygon(
+            transform.p.x,
+            transform.p.y,
+            transform.q.c,
+            transform.q.s,
+            _flattenVertices(vertices, vertexCount),
+            radius,
+            color,
+          );
+        })
+        ..keepIsolateAlive = false;
+
+  static final _drawCircleNative =
+      NativeCallable<
+          Void Function(b2.b2Vec2, Float, UnsignedInt, Pointer<Void>)
+        >.isolateLocal((
+          b2.b2Vec2 center,
+          double radius,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawCircle(center.x, center.y, radius, color);
+        })
+        ..keepIsolateAlive = false;
+
+  static final _drawSolidCircleNative =
+      NativeCallable<
+          Void Function(b2.b2Transform, Float, UnsignedInt, Pointer<Void>)
+        >.isolateLocal((
+          b2.b2Transform transform,
+          double radius,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawSolidCircle(
+            transform.p.x,
+            transform.p.y,
+            transform.q.c,
+            transform.q.s,
+            radius,
+            color,
+          );
+        })
+        ..keepIsolateAlive = false;
+
+  static final _drawSolidCapsuleNative =
+      NativeCallable<
+          Void Function(
+            b2.b2Vec2,
+            b2.b2Vec2,
+            Float,
+            UnsignedInt,
+            Pointer<Void>,
+          )
+        >.isolateLocal((
+          b2.b2Vec2 point1,
+          b2.b2Vec2 point2,
+          double radius,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawSolidCapsule(
+            point1.x,
+            point1.y,
+            point2.x,
+            point2.y,
+            radius,
+            color,
+          );
+        })
+        ..keepIsolateAlive = false;
+
+  static final _drawSegmentNative =
+      NativeCallable<
+          Void Function(b2.b2Vec2, b2.b2Vec2, UnsignedInt, Pointer<Void>)
+        >.isolateLocal((
+          b2.b2Vec2 point1,
+          b2.b2Vec2 point2,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawSegment(
+            point1.x,
+            point1.y,
+            point2.x,
+            point2.y,
+            color,
+          );
+        })
+        ..keepIsolateAlive = false;
+
+  static final _drawTransformNative =
+      NativeCallable<Void Function(b2.b2Transform, Pointer<Void>)>.isolateLocal(
+        (b2.b2Transform transform, Pointer<Void> context) {
+          _debugDraws.last.drawTransform(
+            transform.p.x,
+            transform.p.y,
+            transform.q.c,
+            transform.q.s,
+          );
+        },
+      )..keepIsolateAlive = false;
+
+  static final _drawPointNative =
+      NativeCallable<
+          Void Function(b2.b2Vec2, Float, UnsignedInt, Pointer<Void>)
+        >.isolateLocal((
+          b2.b2Vec2 point,
+          double size,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawPoint(point.x, point.y, size, color);
+        })
+        ..keepIsolateAlive = false;
+
+  static final _drawStringNative =
+      NativeCallable<
+          Void Function(
+            b2.b2Vec2,
+            Pointer<Char>,
+            UnsignedInt,
+            Pointer<Void>,
+          )
+        >.isolateLocal((
+          b2.b2Vec2 point,
+          Pointer<Char> text,
+          int color,
+          Pointer<Void> context,
+        ) {
+          _debugDraws.last.drawString(
+            point.x,
+            point.y,
+            text == nullptr ? '' : text.cast<Utf8>().toDartString(),
+            color,
+          );
+        })
+        ..keepIsolateAlive = false;
+
+  @override
+  void worldDraw(int worldId, RawDebugDraw draw) {
+    _debugDraws.add(draw);
+    try {
+      using((arena) {
+        final nativeDraw = arena<b2.b2DebugDraw>()
+          ..ref = b2.b2DefaultDebugDraw();
+        nativeDraw.ref
+          ..DrawPolygonFcn = _drawPolygonNative.nativeFunction
+          ..DrawSolidPolygonFcn = _drawSolidPolygonNative.nativeFunction
+          ..DrawCircleFcn = _drawCircleNative.nativeFunction
+          ..DrawSolidCircleFcn = _drawSolidCircleNative.nativeFunction
+          ..DrawSolidCapsuleFcn = _drawSolidCapsuleNative.nativeFunction
+          ..DrawSegmentFcn = _drawSegmentNative.nativeFunction
+          ..DrawTransformFcn = _drawTransformNative.nativeFunction
+          ..DrawPointFcn = _drawPointNative.nativeFunction
+          ..DrawStringFcn = _drawStringNative.nativeFunction
+          ..useDrawingBounds = draw.drawingBounds != null
+          ..drawShapes = draw.drawShapes
+          ..drawJoints = draw.drawJoints
+          ..drawJointExtras = draw.drawJointExtras
+          ..drawBounds = draw.drawBounds
+          ..drawMass = draw.drawMass
+          ..drawBodyNames = draw.drawBodyNames
+          ..drawContacts = draw.drawContacts
+          ..drawGraphColors = draw.drawGraphColors
+          ..drawContactNormals = draw.drawContactNormals
+          ..drawContactImpulses = draw.drawContactImpulses
+          ..drawContactFeatures = draw.drawContactFeatures
+          ..drawFrictionImpulses = draw.drawFrictionImpulses
+          ..drawIslands = draw.drawIslands;
+        if (draw.drawingBounds case (
+          final lowerX,
+          final lowerY,
+          final upperX,
+          final upperY,
+        )) {
+          nativeDraw.ref.drawingBounds.lowerBound
+            ..x = lowerX
+            ..y = lowerY;
+          nativeDraw.ref.drawingBounds.upperBound
+            ..x = upperX
+            ..y = upperY;
+        }
+        b2.b2World_Draw(_world(worldId), nativeDraw);
+      });
+    } finally {
+      _debugDraws.removeLast();
+    }
+  }
 }

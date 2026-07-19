@@ -286,6 +286,10 @@ class ChainDef {
 
   /// The chain vertices in local coordinates.
   ///
+  /// Chains are one-sided: the solid surface is to the right of the winding
+  /// direction. Wind loops counter-clockwise, and list open ground chains
+  /// from right to left so that the walkable side faces up.
+  ///
   /// For loops, the first and last point must not repeat; the chain is
   /// closed automatically when [isLoop] is true.
   List<Vector2> points;
