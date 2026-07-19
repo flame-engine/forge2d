@@ -407,7 +407,19 @@ class Body {
   }
 
   /// Creates a chain of one-sided segments and attaches it to the body.
+  ///
+  /// Chains need at least four points: open chains use the first and last
+  /// point as invisible ghost anchors that smooth collisions at the ends.
   Chain createChain(ChainDef definition) {
+    if (definition.points.length < 4) {
+      throw ArgumentError('A chain needs at least four points');
+    }
+    final materialCount = definition.materials.length;
+    if (materialCount != 1 && materialCount != definition.points.length) {
+      throw ArgumentError(
+        'A chain needs one material, or one material per point',
+      );
+    }
     final (chainIndex1, chainWorldAndGeneration) = rawBox2D.createChain(
       index1,
       worldAndGeneration,

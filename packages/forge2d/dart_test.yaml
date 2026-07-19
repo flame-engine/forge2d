@@ -1,0 +1,5 @@
+# The default run exercises the FFI backend on the VM. Run the same suite
+# against the WebAssembly backend with:
+#   dart test -p chrome            (dart2js)
+#   dart test -p chrome -c dart2wasm
+platforms: [vm]

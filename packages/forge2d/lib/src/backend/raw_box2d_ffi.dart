@@ -5,8 +5,8 @@ import 'package:forge2d/src/backend/raw_box2d.dart';
 import 'package:forge2d/src/ffi/box2d.g.dart' as b2;
 
 /// Prepares the FFI backend. Nothing to do: the native library is bundled by
-/// the build hook and loaded lazily.
-Future<void> initializeBackend() async {}
+/// the build hook and loaded lazily. [wasmUri] only applies on the web.
+Future<void> initializeBackend({Uri? wasmUri}) async {}
 
 /// Creates the FFI backend.
 RawBox2D createRawBox2D() => RawBox2DFfi();

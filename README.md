@@ -29,10 +29,15 @@ You can use it independently in Dart or in your
 
 - Dart 3.12+ (Flutter 3.38+), which builds the bundled C library
   automatically through build hooks.
-- A C toolchain: Xcode on macOS/iOS, Visual Studio Build Tools on Windows,
-  clang or gcc on Linux, and the NDK on Android.
-- Supported platforms: Android, iOS, macOS, Windows, and Linux. Web support
-  is planned via a WebAssembly build of Box2D behind the same API.
+- A C toolchain on native platforms: Xcode on macOS/iOS, Visual Studio
+  Build Tools on Windows, clang or gcc on Linux, and the NDK on Android.
+- Supported platforms: Android, iOS, macOS, Windows, Linux, and the web.
+
+On the web the same API runs against a bundled WebAssembly build of Box2D
+(about 300 KB). Dart web apps need no setup: `initializeForge2D()` finds
+the module at the package asset path. Flutter web apps copy it next to the
+page once with `dart run forge2d:setup_web`, or pass a custom location via
+`initializeForge2D(wasmUri: ...)`.
 
 ## Getting started
 

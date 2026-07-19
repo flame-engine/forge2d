@@ -1,7 +1,7 @@
 import 'package:forge2d/src/backend/raw_box2d.dart';
 
 /// Fails: this platform has no forge2d backend.
-Future<void> initializeBackend() async {
+Future<void> initializeBackend({Uri? wasmUri}) async {
   throw UnsupportedError(_message);
 }
 

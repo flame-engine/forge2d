@@ -1,6 +1,3 @@
-@TestOn('vm')
-library;
-
 import 'package:forge2d/forge2d.dart';
 import 'package:test/test.dart';
 
@@ -166,7 +163,12 @@ void main() {
     test('friction and restitution apply to all segments', () {
       final chain = body.createChain(
         ChainDef(
-          points: [Vector2(-5, 0), Vector2(0, 0), Vector2(5, 0)],
+          points: [
+            Vector2(-6, 0),
+            Vector2(-2, 0),
+            Vector2(2, 0),
+            Vector2(6, 0),
+          ],
           materials: [SurfaceMaterial(friction: 0.3, restitution: 0.2)],
         ),
       )..friction = 0.8;
@@ -178,7 +180,14 @@ void main() {
 
     test('destroy removes the chain and its segments', () {
       final chain = body.createChain(
-        ChainDef(points: [Vector2(-5, 0), Vector2(0, 0), Vector2(5, 0)]),
+        ChainDef(
+          points: [
+            Vector2(-6, 0),
+            Vector2(-2, 0),
+            Vector2(2, 0),
+            Vector2(6, 0),
+          ],
+        ),
       )..destroy();
       expect(chain.isValid, isFalse);
     });

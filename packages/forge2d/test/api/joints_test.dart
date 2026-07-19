@@ -1,6 +1,3 @@
-@TestOn('vm')
-library;
-
 import 'dart:math' as math;
 
 import 'package:forge2d/forge2d.dart';
