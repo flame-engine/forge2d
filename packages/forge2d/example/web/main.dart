@@ -12,11 +12,30 @@ Future<void> main() async {
   _App().start();
 }
 
+/// The DOM events the app listens to, with their event type names.
+enum DomEvent {
+  keyDown('keydown'),
+  keyUp('keyup'),
+  pointerDown('pointerdown'),
+  pointerMove('pointermove'),
+  pointerUp('pointerup'),
+  pointerCancel('pointercancel'),
+  click('click');
+
+  const DomEvent(this.type);
+
+  /// The DOM event type name.
+  final String type;
+}
+
 void _listen<T extends Event>(
+  DomEvent event,
   EventTarget target,
-  String type,
   void Function(T) handler,
-) => target.addEventListener(type, ((Event event) => handler(event as T)).toJS);
+) => target.addEventListener(
+  event.type,
+  ((Event domEvent) => handler(domEvent as T)).toJS,
+);
 
 class _App {
   _App()
@@ -51,26 +70,30 @@ class _App {
     }
 
     _listen<KeyboardEvent>(
+      DomEvent.keyDown,
       document,
-      'keydown',
       (event) => _hooks.onKey?.call(event.key, down: true),
     );
     _listen<KeyboardEvent>(
+      DomEvent.keyUp,
       document,
-      'keyup',
       (event) => _hooks.onKey?.call(event.key, down: false),
     );
     _listen<Event>(
+      DomEvent.click,
       document.getElementById('reset')!,
-      'click',
       (_) => _select(_currentScene),
     );
-    _listen<PointerEvent>(_canvas, 'pointerdown', _onPointerDown);
-    _listen<PointerEvent>(_canvas, 'pointermove', _onPointerMove);
-    _listen<PointerEvent>(_canvas, 'pointerup', (_) => _releaseMouseJoint());
+    _listen<PointerEvent>(DomEvent.pointerDown, _canvas, _onPointerDown);
+    _listen<PointerEvent>(DomEvent.pointerMove, _canvas, _onPointerMove);
     _listen<PointerEvent>(
+      DomEvent.pointerUp,
       _canvas,
-      'pointercancel',
+      (_) => _releaseMouseJoint(),
+    );
+    _listen<PointerEvent>(
+      DomEvent.pointerCancel,
+      _canvas,
       (_) => _releaseMouseJoint(),
     );
 
