@@ -6,10 +6,10 @@ workspace:
   - packages/forge2d/example
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ">=3.9.0 <4.0.0"
 
 dev_dependencies:
-  melos: ^7.0.0-dev.9
+  melos: ^8.1.0
 
 melos:
   command:
@@ -23,60 +23,54 @@ melos:
 
     bootstrap:
       environment:
-        sdk: ">=3.8.0 <4.0.0"
+        sdk: ">=3.9.0 <4.0.0"
+      dependencies:
+        meta: ^1.16.0
+        vector_math: ^2.1.4
+        web: ^1.1.1
+      dev_dependencies:
+        dartdoc: ^8.3.4
+        flame_lint: ^1.4.1
+        mocktail: ^1.0.4
+        test: ^1.26.3
 
   scripts:
     lint:all:
-      run: melos run analyze && melos run format
+      steps:
+        - melos analyze --fatal-infos
+        - format
       description: Run all static analysis checks.
-
-    analyze:
-      run: |
-        melos exec -c 1 -- \
-          dart analyze --fatal-infos
-      description: Run `dart analyze` for all packages.
-
-    format:
-      run: melos exec dart format . --fix
-      description: Run `dart format` for all packages.
 
     format-check:
       run: melos exec dart format . --set-exit-if-changed
       description: Run `dart format` checks for all packages.
 
     dartdoc:
-      run: melos exec dart pub run dartdoc
+      exec: dart pub run dartdoc
       description: Run dartdoc checks for all packages.
 
-    test:select:
-      run: melos exec -c 1 -- dart test
-      packageFilters:
-        dirExists: test
-      description: Run `dart test` for selected packages.
-
-    test:
-      run: melos run test:select --no-select
-      description: Run all tests in this project.
-
     coverage:
-      run: |
-        melos exec -- dart test --coverage &&
-        melos exec -- genhtml coverage/lcov.info --output-directory=coverage/
+      steps:
+        - melos exec -- dart test --coverage
+        - melos exec -- genhtml coverage/lcov.info --output-directory=coverage/
       packageFilters:
         dirExists: test
       description: Generate coverage for the selected package.
 
     benchmark:
-      run: melos exec -- dart web/bench2d.dart
+      exec:
+        command: dart web/bench2d.dart
       packageFilters:
         scope: forge2d_benchmark
 
     benchmark_serve:
-      run: melos exec -- dart pub global run webdev serve --release
+      exec:
+        command: dart pub global run webdev serve --release
       packageFilters:
         scope: forge2d_benchmark
 
     example:
-      run: melos exec -- dart pub global run webdev serve --release
+      exec:
+        command: dart pub global run webdev serve --release
       packageFilters:
         scope: forge2d_examples
