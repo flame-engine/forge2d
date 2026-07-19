@@ -42,7 +42,13 @@ jobs:
           dart pub get
           dart run ffigen --config ffigen.yaml
       - name: Verify committed bindings are up to date
-        run: git diff --exit-code -- packages/forge2d/lib/src/ffi/box2d.g.dart
+        run: |
+          git diff -- packages/forge2d/lib/src/ffi/box2d.g.dart > bindings.diff
+          if [ -s bindings.diff ]; then
+            echo "Committed bindings differ from freshly generated ones:"
+            head -200 bindings.diff
+            exit 1
+          fi
 
   # BEGIN TESTING STAGE
   test:
