@@ -16,8 +16,12 @@ Future<void> initializeBackend({Uri? wasmUri}) async {
     if (wasmUri != null)
       wasmUri
     else ...[
+      // Dart web tooling serves package files directly.
       Uri.parse('packages/forge2d/src/backend/wasm/box2d.wasm'),
       Uri.parse('/packages/forge2d/src/backend/wasm/box2d.wasm'),
+      // Flutter web bundles the module as a package asset automatically.
+      Uri.parse('assets/packages/forge2d/lib/src/backend/wasm/box2d.wasm'),
+      // Last resort: a manually hosted copy next to the page.
       Uri.parse('box2d.wasm'),
     ],
   ]);

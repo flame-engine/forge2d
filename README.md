@@ -34,10 +34,11 @@ You can use it independently in Dart or in your
 - Supported platforms: Android, iOS, macOS, Windows, Linux, and the web.
 
 On the web the same API runs against a bundled WebAssembly build of Box2D
-(about 300 KB). Dart web apps need no setup: `initializeForge2D()` finds
-the module at the package asset path. Flutter web apps copy it next to the
-page once with `dart run forge2d:setup_web`, or pass a custom location via
-`initializeForge2D(wasmUri: ...)`.
+(about 220 KB). No setup is needed: `initializeForge2D()` finds the module
+at the package asset path in Dart web apps, and at the bundled package
+asset in Flutter web apps. For custom hosting setups the location can be
+overridden with `initializeForge2D(wasmUri: ...)`, and
+`dart run forge2d:setup_web` copies the module into a `web/` directory.
 
 ## Getting started
 

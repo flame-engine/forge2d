@@ -14,9 +14,9 @@ RawBox2D get rawBox2D => _rawBox2D ??= createRawBox2D();
 /// creating any world is mandatory.
 ///
 /// On the web the module is looked up at the package asset path served by
-/// the Dart web tooling, then at `box2d.wasm` relative to the page (copy
-/// the file there in Flutter web apps with `dart run forge2d:setup_web`).
-/// [wasmUri] overrides the lookup.
+/// the Dart web tooling, at the package asset bundled into Flutter web
+/// apps, and finally at `box2d.wasm` relative to the page. [wasmUri]
+/// overrides the lookup for custom hosting setups.
 ///
 /// Cross-platform code should always call and await this first.
 Future<void> initializeForge2D({Uri? wasmUri}) async {
