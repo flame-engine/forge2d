@@ -67,6 +67,9 @@ void main(List<String> args) async {
       std: 'c17',
       optimizationLevel: OptimizationLevel.o2,
       defines: {
+        // Mark the public API as exported; without this MSVC builds a DLL
+        // with no visible symbols.
+        'box2d_EXPORTS': '1',
         if (!hasSimd) 'BOX2D_DISABLE_SIMD': '1',
         // Expose POSIX declarations (clock_gettime) that strict -std=c17
         // hides in glibc/bionic headers.
