@@ -211,36 +211,36 @@ final class RawBox2DWasm implements RawBox2D {
   }
 
   @override
-  void destroyBody(int index1, int wg) =>
-      _call('f2d_destroy_body', [index1, wg]);
+  void destroyBody(int index1, int worldAndGeneration) =>
+      _call('f2d_destroy_body', [index1, worldAndGeneration]);
 
   @override
-  bool bodyIsValid(int index1, int wg) =>
-      _callB('f2d_body_is_valid', [index1, wg]);
+  bool bodyIsValid(int index1, int worldAndGeneration) =>
+      _callB('f2d_body_is_valid', [index1, worldAndGeneration]);
 
   @override
-  (double, double) bodyGetPosition(int index1, int wg) {
-    _call('f2d_body_get_position', [index1, wg, _out]);
+  (double, double) bodyGetPosition(int index1, int worldAndGeneration) {
+    _call('f2d_body_get_position', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
-  (double, double) bodyGetRotation(int index1, int wg) {
-    _call('f2d_body_get_rotation', [index1, wg, _out]);
+  (double, double) bodyGetRotation(int index1, int worldAndGeneration) {
+    _call('f2d_body_get_rotation', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
   void bodySetTransform(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double positionX,
     double positionY,
     double rotationCos,
     double rotationSin,
   ) => _call('f2d_body_set_transform', [
     index1,
-    wg,
+    worldAndGeneration,
     positionX,
     positionY,
     rotationCos,
@@ -248,27 +248,39 @@ final class RawBox2DWasm implements RawBox2D {
   ]);
 
   @override
-  (double, double) bodyGetLinearVelocity(int index1, int wg) {
-    _call('f2d_body_get_linear_velocity', [index1, wg, _out]);
+  (double, double) bodyGetLinearVelocity(int index1, int worldAndGeneration) {
+    _call('f2d_body_get_linear_velocity', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
-  void bodySetLinearVelocity(int index1, int wg, double x, double y) =>
-      _call('f2d_body_set_linear_velocity', [index1, wg, x, y]);
+  void bodySetLinearVelocity(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  ) =>
+      _call('f2d_body_set_linear_velocity', [index1, worldAndGeneration, x, y]);
 
   @override
-  double bodyGetAngularVelocity(int index1, int wg) =>
-      _callF('f2d_body_get_angular_velocity', [index1, wg]);
+  double bodyGetAngularVelocity(int index1, int worldAndGeneration) =>
+      _callF('f2d_body_get_angular_velocity', [index1, worldAndGeneration]);
 
   @override
-  void bodySetAngularVelocity(int index1, int wg, double value) =>
-      _call('f2d_body_set_angular_velocity', [index1, wg, value]);
+  void bodySetAngularVelocity(
+    int index1,
+    int worldAndGeneration,
+    double value,
+  ) => _call('f2d_body_set_angular_velocity', [
+    index1,
+    worldAndGeneration,
+    value,
+  ]);
 
   @override
   void bodyApplyForce(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double forceX,
     double forceY,
     double pointX,
@@ -276,7 +288,7 @@ final class RawBox2DWasm implements RawBox2D {
     required bool wake,
   }) => _call('f2d_body_apply_force', [
     index1,
-    wg,
+    worldAndGeneration,
     forceX,
     forceY,
     pointX,
@@ -287,13 +299,13 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   void bodyApplyForceToCenter(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double forceX,
     double forceY, {
     required bool wake,
   }) => _call('f2d_body_apply_force_to_center', [
     index1,
-    wg,
+    worldAndGeneration,
     forceX,
     forceY,
     _b(wake),
@@ -302,15 +314,20 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   void bodyApplyTorque(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double torque, {
     required bool wake,
-  }) => _call('f2d_body_apply_torque', [index1, wg, torque, _b(wake)]);
+  }) => _call('f2d_body_apply_torque', [
+    index1,
+    worldAndGeneration,
+    torque,
+    _b(wake),
+  ]);
 
   @override
   void bodyApplyLinearImpulse(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double impulseX,
     double impulseY,
     double pointX,
@@ -318,7 +335,7 @@ final class RawBox2DWasm implements RawBox2D {
     required bool wake,
   }) => _call('f2d_body_apply_linear_impulse', [
     index1,
-    wg,
+    worldAndGeneration,
     impulseX,
     impulseY,
     pointX,
@@ -329,13 +346,13 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   void bodyApplyLinearImpulseToCenter(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double impulseX,
     double impulseY, {
     required bool wake,
   }) => _call('f2d_body_apply_linear_impulse_to_center', [
     index1,
-    wg,
+    worldAndGeneration,
     impulseX,
     impulseY,
     _b(wake),
@@ -344,43 +361,53 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   void bodyApplyAngularImpulse(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double impulse, {
     required bool wake,
-  }) =>
-      _call('f2d_body_apply_angular_impulse', [index1, wg, impulse, _b(wake)]);
+  }) => _call('f2d_body_apply_angular_impulse', [
+    index1,
+    worldAndGeneration,
+    impulse,
+    _b(wake),
+  ]);
 
   @override
-  double bodyGetMass(int index1, int wg) =>
-      _callF('f2d_body_get_mass', [index1, wg]);
+  double bodyGetMass(int index1, int worldAndGeneration) =>
+      _callF('f2d_body_get_mass', [index1, worldAndGeneration]);
 
   @override
-  double bodyGetRotationalInertia(int index1, int wg) =>
-      _callF('f2d_body_get_rotational_inertia', [index1, wg]);
+  double bodyGetRotationalInertia(int index1, int worldAndGeneration) =>
+      _callF('f2d_body_get_rotational_inertia', [index1, worldAndGeneration]);
 
   @override
-  (double, double) bodyGetLocalCenterOfMass(int index1, int wg) {
-    _call('f2d_body_get_local_center', [index1, wg, _out]);
+  (double, double) bodyGetLocalCenterOfMass(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    _call('f2d_body_get_local_center', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
-  (double, double) bodyGetWorldCenterOfMass(int index1, int wg) {
-    _call('f2d_body_get_world_center', [index1, wg, _out]);
+  (double, double) bodyGetWorldCenterOfMass(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    _call('f2d_body_get_world_center', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
   void bodySetMassData(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double mass,
     double rotationalInertia,
     double centerX,
     double centerY,
   ) => _call('f2d_body_set_mass_data', [
     index1,
-    wg,
+    worldAndGeneration,
     mass,
     rotationalInertia,
     centerX,
@@ -388,133 +415,198 @@ final class RawBox2DWasm implements RawBox2D {
   ]);
 
   @override
-  void bodyApplyMassFromShapes(int index1, int wg) =>
-      _call('f2d_body_apply_mass_from_shapes', [index1, wg]);
+  void bodyApplyMassFromShapes(int index1, int worldAndGeneration) =>
+      _call('f2d_body_apply_mass_from_shapes', [index1, worldAndGeneration]);
 
   @override
-  int bodyGetType(int index1, int wg) =>
-      _callI('f2d_body_get_type', [index1, wg]);
+  int bodyGetType(int index1, int worldAndGeneration) =>
+      _callI('f2d_body_get_type', [index1, worldAndGeneration]);
 
   @override
-  void bodySetType(int index1, int wg, int type) =>
-      _call('f2d_body_set_type', [index1, wg, type]);
+  void bodySetType(int index1, int worldAndGeneration, int type) =>
+      _call('f2d_body_set_type', [index1, worldAndGeneration, type]);
 
   @override
-  String bodyGetName(int index1, int wg) =>
-      _runtime.readCString(_callI('f2d_body_get_name', [index1, wg]));
+  String bodyGetName(int index1, int worldAndGeneration) => _runtime
+      .readCString(_callI('f2d_body_get_name', [index1, worldAndGeneration]));
 
   @override
-  void bodySetName(int index1, int wg, String? name) => _call(
+  void bodySetName(int index1, int worldAndGeneration, String? name) => _call(
     'f2d_body_set_name',
-    [index1, wg, _runtime.writeCString(_string, name)],
+    [index1, worldAndGeneration, _runtime.writeCString(_string, name)],
   );
 
   @override
-  bool bodyIsAwake(int index1, int wg) =>
-      _callB('f2d_body_is_awake', [index1, wg]);
+  bool bodyIsAwake(int index1, int worldAndGeneration) =>
+      _callB('f2d_body_is_awake', [index1, worldAndGeneration]);
 
   @override
-  void bodySetAwake(int index1, int wg, {required bool awake}) =>
-      _call('f2d_body_set_awake', [index1, wg, _b(awake)]);
+  void bodySetAwake(
+    int index1,
+    int worldAndGeneration, {
+    required bool awake,
+  }) => _call('f2d_body_set_awake', [index1, worldAndGeneration, _b(awake)]);
 
   @override
-  bool bodyIsSleepEnabled(int index1, int wg) =>
-      _callB('f2d_body_is_sleep_enabled', [index1, wg]);
+  bool bodyIsSleepEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_body_is_sleep_enabled', [index1, worldAndGeneration]);
 
   @override
-  void bodyEnableSleep(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_body_enable_sleep', [index1, wg, _b(enabled)]);
+  void bodyEnableSleep(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) =>
+      _call('f2d_body_enable_sleep', [index1, worldAndGeneration, _b(enabled)]);
 
   @override
-  double bodyGetSleepThreshold(int index1, int wg) =>
-      _callF('f2d_body_get_sleep_threshold', [index1, wg]);
+  double bodyGetSleepThreshold(int index1, int worldAndGeneration) =>
+      _callF('f2d_body_get_sleep_threshold', [index1, worldAndGeneration]);
 
   @override
-  void bodySetSleepThreshold(int index1, int wg, double value) =>
-      _call('f2d_body_set_sleep_threshold', [index1, wg, value]);
+  void bodySetSleepThreshold(
+    int index1,
+    int worldAndGeneration,
+    double value,
+  ) => _call('f2d_body_set_sleep_threshold', [
+    index1,
+    worldAndGeneration,
+    value,
+  ]);
 
   @override
-  bool bodyIsEnabled(int index1, int wg) =>
-      _callB('f2d_body_is_enabled', [index1, wg]);
+  bool bodyIsEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_body_is_enabled', [index1, worldAndGeneration]);
 
   @override
-  void bodyDisable(int index1, int wg) =>
-      _call('f2d_body_disable', [index1, wg]);
+  void bodyDisable(int index1, int worldAndGeneration) =>
+      _call('f2d_body_disable', [index1, worldAndGeneration]);
 
   @override
-  void bodyEnable(int index1, int wg) => _call('f2d_body_enable', [index1, wg]);
+  void bodyEnable(int index1, int worldAndGeneration) =>
+      _call('f2d_body_enable', [index1, worldAndGeneration]);
 
   @override
-  bool bodyIsFixedRotation(int index1, int wg) =>
-      _callB('f2d_body_is_fixed_rotation', [index1, wg]);
+  bool bodyIsFixedRotation(int index1, int worldAndGeneration) =>
+      _callB('f2d_body_is_fixed_rotation', [index1, worldAndGeneration]);
 
   @override
-  void bodySetFixedRotation(int index1, int wg, {required bool flag}) =>
-      _call('f2d_body_set_fixed_rotation', [index1, wg, _b(flag)]);
+  void bodySetFixedRotation(
+    int index1,
+    int worldAndGeneration, {
+    required bool flag,
+  }) => _call('f2d_body_set_fixed_rotation', [
+    index1,
+    worldAndGeneration,
+    _b(flag),
+  ]);
 
   @override
-  bool bodyIsBullet(int index1, int wg) =>
-      _callB('f2d_body_is_bullet', [index1, wg]);
+  bool bodyIsBullet(int index1, int worldAndGeneration) =>
+      _callB('f2d_body_is_bullet', [index1, worldAndGeneration]);
 
   @override
-  void bodySetBullet(int index1, int wg, {required bool flag}) =>
-      _call('f2d_body_set_bullet', [index1, wg, _b(flag)]);
+  void bodySetBullet(
+    int index1,
+    int worldAndGeneration, {
+    required bool flag,
+  }) => _call('f2d_body_set_bullet', [index1, worldAndGeneration, _b(flag)]);
 
   @override
-  double bodyGetGravityScale(int index1, int wg) =>
-      _callF('f2d_body_get_gravity_scale', [index1, wg]);
+  double bodyGetGravityScale(int index1, int worldAndGeneration) =>
+      _callF('f2d_body_get_gravity_scale', [index1, worldAndGeneration]);
 
   @override
-  void bodySetGravityScale(int index1, int wg, double scale) =>
-      _call('f2d_body_set_gravity_scale', [index1, wg, scale]);
+  void bodySetGravityScale(int index1, int worldAndGeneration, double scale) =>
+      _call('f2d_body_set_gravity_scale', [index1, worldAndGeneration, scale]);
 
   @override
-  double bodyGetLinearDamping(int index1, int wg) =>
-      _callF('f2d_body_get_linear_damping', [index1, wg]);
+  double bodyGetLinearDamping(int index1, int worldAndGeneration) =>
+      _callF('f2d_body_get_linear_damping', [index1, worldAndGeneration]);
 
   @override
-  void bodySetLinearDamping(int index1, int wg, double damping) =>
-      _call('f2d_body_set_linear_damping', [index1, wg, damping]);
+  void bodySetLinearDamping(
+    int index1,
+    int worldAndGeneration,
+    double damping,
+  ) => _call('f2d_body_set_linear_damping', [
+    index1,
+    worldAndGeneration,
+    damping,
+  ]);
 
   @override
-  double bodyGetAngularDamping(int index1, int wg) =>
-      _callF('f2d_body_get_angular_damping', [index1, wg]);
+  double bodyGetAngularDamping(int index1, int worldAndGeneration) =>
+      _callF('f2d_body_get_angular_damping', [index1, worldAndGeneration]);
 
   @override
-  void bodySetAngularDamping(int index1, int wg, double damping) =>
-      _call('f2d_body_set_angular_damping', [index1, wg, damping]);
+  void bodySetAngularDamping(
+    int index1,
+    int worldAndGeneration,
+    double damping,
+  ) => _call('f2d_body_set_angular_damping', [
+    index1,
+    worldAndGeneration,
+    damping,
+  ]);
 
   @override
-  (double, double) bodyGetWorldPoint(int index1, int wg, double x, double y) {
-    _call('f2d_body_get_world_point', [index1, wg, x, y, _out]);
+  (double, double) bodyGetWorldPoint(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  ) {
+    _call('f2d_body_get_world_point', [index1, worldAndGeneration, x, y, _out]);
     return _outVec2();
   }
 
   @override
-  (double, double) bodyGetLocalPoint(int index1, int wg, double x, double y) {
-    _call('f2d_body_get_local_point', [index1, wg, x, y, _out]);
+  (double, double) bodyGetLocalPoint(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  ) {
+    _call('f2d_body_get_local_point', [index1, worldAndGeneration, x, y, _out]);
     return _outVec2();
   }
 
   @override
-  List<int> bodyGetShapes(int index1, int wg) {
-    final count = _callI('f2d_body_get_shape_count', [index1, wg]);
+  List<int> bodyGetShapes(int index1, int worldAndGeneration) {
+    final count = _callI('f2d_body_get_shape_count', [
+      index1,
+      worldAndGeneration,
+    ]);
     if (count == 0) {
       return const [];
     }
     final buffer = _runtime.bulk(count * 8);
-    final written = _callI('f2d_body_get_shapes', [index1, wg, buffer, count]);
+    final written = _callI('f2d_body_get_shapes', [
+      index1,
+      worldAndGeneration,
+      buffer,
+      count,
+    ]);
     return _runtime.readI32List(buffer, written * 2);
   }
 
   @override
-  List<int> bodyGetJoints(int index1, int wg) {
-    final count = _callI('f2d_body_get_joint_count', [index1, wg]);
+  List<int> bodyGetJoints(int index1, int worldAndGeneration) {
+    final count = _callI('f2d_body_get_joint_count', [
+      index1,
+      worldAndGeneration,
+    ]);
     if (count == 0) {
       return const [];
     }
     final buffer = _runtime.bulk(count * 8);
-    final written = _callI('f2d_body_get_joints', [index1, wg, buffer, count]);
+    final written = _callI('f2d_body_get_joints', [
+      index1,
+      worldAndGeneration,
+      buffer,
+      count,
+    ]);
     return _runtime.readI32List(buffer, written * 2);
   }
 
@@ -549,7 +641,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   (int, int) createCircleShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double centerX,
     required double centerY,
     required double radius,
@@ -558,7 +650,7 @@ final class RawBox2DWasm implements RawBox2D {
     _writeShapeDef(definition);
     _call('f2d_create_circle_shape', [
       bodyIndex1,
-      bodyWg,
+      bodyWorldAndGeneration,
       _shapeDefPointer,
       centerX,
       centerY,
@@ -571,7 +663,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   (int, int) createCapsuleShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double center1X,
     required double center1Y,
     required double center2X,
@@ -582,7 +674,7 @@ final class RawBox2DWasm implements RawBox2D {
     _writeShapeDef(definition);
     _call('f2d_create_capsule_shape', [
       bodyIndex1,
-      bodyWg,
+      bodyWorldAndGeneration,
       _shapeDefPointer,
       center1X,
       center1Y,
@@ -597,7 +689,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   (int, int) createSegmentShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double point1X,
     required double point1Y,
     required double point2X,
@@ -607,7 +699,7 @@ final class RawBox2DWasm implements RawBox2D {
     _writeShapeDef(definition);
     _call('f2d_create_segment_shape', [
       bodyIndex1,
-      bodyWg,
+      bodyWorldAndGeneration,
       _shapeDefPointer,
       point1X,
       point1Y,
@@ -621,7 +713,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   (int, int) createBoxShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required double halfWidth,
     required double halfHeight,
     required double centerX,
@@ -634,7 +726,7 @@ final class RawBox2DWasm implements RawBox2D {
     _writeShapeDef(definition);
     _call('f2d_create_box_shape', [
       bodyIndex1,
-      bodyWg,
+      bodyWorldAndGeneration,
       _shapeDefPointer,
       halfWidth,
       halfHeight,
@@ -651,7 +743,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   (int, int) createPolygonShape(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required List<double> points,
     required double radius,
     required RawShapeDef definition,
@@ -661,7 +753,7 @@ final class RawBox2DWasm implements RawBox2D {
     _runtime.writeF32List(buffer, points);
     final ok = _callB('f2d_create_polygon_shape', [
       bodyIndex1,
-      bodyWg,
+      bodyWorldAndGeneration,
       _shapeDefPointer,
       buffer,
       points.length ~/ 2,
@@ -678,63 +770,77 @@ final class RawBox2DWasm implements RawBox2D {
   }
 
   @override
-  void destroyShape(int index1, int wg, {required bool updateBodyMass}) =>
-      _call('f2d_destroy_shape', [index1, wg, _b(updateBodyMass)]);
+  void destroyShape(
+    int index1,
+    int worldAndGeneration, {
+    required bool updateBodyMass,
+  }) => _call('f2d_destroy_shape', [
+    index1,
+    worldAndGeneration,
+    _b(updateBodyMass),
+  ]);
 
   @override
-  bool shapeIsValid(int index1, int wg) =>
-      _callB('f2d_shape_is_valid', [index1, wg]);
+  bool shapeIsValid(int index1, int worldAndGeneration) =>
+      _callB('f2d_shape_is_valid', [index1, worldAndGeneration]);
 
   @override
-  int shapeGetType(int index1, int wg) =>
-      _callI('f2d_shape_get_type', [index1, wg]);
+  int shapeGetType(int index1, int worldAndGeneration) =>
+      _callI('f2d_shape_get_type', [index1, worldAndGeneration]);
 
   @override
-  (int, int) shapeGetBody(int index1, int wg) {
-    _call('f2d_shape_get_body', [index1, wg, _out]);
+  (int, int) shapeGetBody(int index1, int worldAndGeneration) {
+    _call('f2d_shape_get_body', [index1, worldAndGeneration, _out]);
     return _outIdPair();
   }
 
   @override
-  bool shapeIsSensor(int index1, int wg) =>
-      _callB('f2d_shape_is_sensor', [index1, wg]);
+  bool shapeIsSensor(int index1, int worldAndGeneration) =>
+      _callB('f2d_shape_is_sensor', [index1, worldAndGeneration]);
 
   @override
-  double shapeGetDensity(int index1, int wg) =>
-      _callF('f2d_shape_get_density', [index1, wg]);
+  double shapeGetDensity(int index1, int worldAndGeneration) =>
+      _callF('f2d_shape_get_density', [index1, worldAndGeneration]);
 
   @override
   void shapeSetDensity(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double density, {
     required bool updateBodyMass,
   }) => _call('f2d_shape_set_density', [
     index1,
-    wg,
+    worldAndGeneration,
     density,
     _b(updateBodyMass),
   ]);
 
   @override
-  double shapeGetFriction(int index1, int wg) =>
-      _callF('f2d_shape_get_friction', [index1, wg]);
+  double shapeGetFriction(int index1, int worldAndGeneration) =>
+      _callF('f2d_shape_get_friction', [index1, worldAndGeneration]);
 
   @override
-  void shapeSetFriction(int index1, int wg, double friction) =>
-      _call('f2d_shape_set_friction', [index1, wg, friction]);
+  void shapeSetFriction(int index1, int worldAndGeneration, double friction) =>
+      _call('f2d_shape_set_friction', [index1, worldAndGeneration, friction]);
 
   @override
-  double shapeGetRestitution(int index1, int wg) =>
-      _callF('f2d_shape_get_restitution', [index1, wg]);
+  double shapeGetRestitution(int index1, int worldAndGeneration) =>
+      _callF('f2d_shape_get_restitution', [index1, worldAndGeneration]);
 
   @override
-  void shapeSetRestitution(int index1, int wg, double restitution) =>
-      _call('f2d_shape_set_restitution', [index1, wg, restitution]);
+  void shapeSetRestitution(
+    int index1,
+    int worldAndGeneration,
+    double restitution,
+  ) => _call('f2d_shape_set_restitution', [
+    index1,
+    worldAndGeneration,
+    restitution,
+  ]);
 
   @override
-  (int, int, int) shapeGetFilter(int index1, int wg) {
-    _call('f2d_shape_get_filter', [index1, wg, _out]);
+  (int, int, int) shapeGetFilter(int index1, int worldAndGeneration) {
+    _call('f2d_shape_get_filter', [index1, worldAndGeneration, _out]);
     return (
       _joinBits(_runtime.readI32(_out), _runtime.readI32(_out + 4)),
       _joinBits(_runtime.readI32(_out + 8), _runtime.readI32(_out + 12)),
@@ -745,7 +851,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   void shapeSetFilter(
     int index1,
-    int wg,
+    int worldAndGeneration,
     int categoryBits,
     int maskBits,
     int groupIndex,
@@ -754,7 +860,7 @@ final class RawBox2DWasm implements RawBox2D {
     final (maskLow, maskHigh) = _splitBits(maskBits);
     _call('f2d_shape_set_filter', [
       index1,
-      wg,
+      worldAndGeneration,
       categoryLow,
       categoryHigh,
       maskLow,
@@ -764,44 +870,153 @@ final class RawBox2DWasm implements RawBox2D {
   }
 
   @override
-  bool shapeAreSensorEventsEnabled(int index1, int wg) =>
-      _callB('f2d_shape_are_sensor_events_enabled', [index1, wg]);
+  bool shapeAreSensorEventsEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_shape_are_sensor_events_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void shapeEnableSensorEvents(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_shape_enable_sensor_events', [index1, wg, _b(enabled)]);
+  void shapeEnableSensorEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_shape_enable_sensor_events', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  bool shapeAreContactEventsEnabled(int index1, int wg) =>
-      _callB('f2d_shape_are_contact_events_enabled', [index1, wg]);
+  bool shapeAreContactEventsEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_shape_are_contact_events_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void shapeEnableContactEvents(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_shape_enable_contact_events', [index1, wg, _b(enabled)]);
+  void shapeEnableContactEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_shape_enable_contact_events', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  bool shapeAreHitEventsEnabled(int index1, int wg) =>
-      _callB('f2d_shape_are_hit_events_enabled', [index1, wg]);
+  bool shapeAreHitEventsEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_shape_are_hit_events_enabled', [index1, worldAndGeneration]);
 
   @override
-  void shapeEnableHitEvents(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_shape_enable_hit_events', [index1, wg, _b(enabled)]);
+  void shapeEnableHitEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_shape_enable_hit_events', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  bool shapeArePreSolveEventsEnabled(int index1, int wg) =>
-      _callB('f2d_shape_are_pre_solve_events_enabled', [index1, wg]);
+  bool shapeArePreSolveEventsEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_shape_are_pre_solve_events_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void shapeEnablePreSolveEvents(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_shape_enable_pre_solve_events', [index1, wg, _b(enabled)]);
+  void shapeEnablePreSolveEvents(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_shape_enable_pre_solve_events', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  bool shapeTestPoint(int index1, int wg, double x, double y) =>
-      _callB('f2d_shape_test_point', [index1, wg, x, y]);
+  bool shapeTestPoint(int index1, int worldAndGeneration, double x, double y) =>
+      _callB('f2d_shape_test_point', [index1, worldAndGeneration, x, y]);
 
   @override
-  (double, double, double, double) shapeGetAabb(int index1, int wg) {
-    _call('f2d_shape_get_aabb', [index1, wg, _out]);
+  (double, double, double) shapeGetCircle(int index1, int worldAndGeneration) {
+    _call('f2d_shape_get_circle', [index1, worldAndGeneration, _out]);
+    return (
+      _runtime.readF32(_out),
+      _runtime.readF32(_out + 4),
+      _runtime.readF32(_out + 8),
+    );
+  }
+
+  @override
+  (double, double, double, double, double) shapeGetCapsule(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    _call('f2d_shape_get_capsule', [index1, worldAndGeneration, _out]);
+    return (
+      _runtime.readF32(_out),
+      _runtime.readF32(_out + 4),
+      _runtime.readF32(_out + 8),
+      _runtime.readF32(_out + 12),
+      _runtime.readF32(_out + 16),
+    );
+  }
+
+  @override
+  (double, double, double, double) shapeGetSegment(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    _call('f2d_shape_get_segment', [index1, worldAndGeneration, _out]);
+    return (
+      _runtime.readF32(_out),
+      _runtime.readF32(_out + 4),
+      _runtime.readF32(_out + 8),
+      _runtime.readF32(_out + 12),
+    );
+  }
+
+  @override
+  (double, double, double, double) shapeGetChainSegment(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    _call('f2d_shape_get_chain_segment', [index1, worldAndGeneration, _out]);
+    return (
+      _runtime.readF32(_out),
+      _runtime.readF32(_out + 4),
+      _runtime.readF32(_out + 8),
+      _runtime.readF32(_out + 12),
+    );
+  }
+
+  @override
+  ({List<double> points, double radius}) shapeGetPolygon(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    final count = _callI('f2d_shape_get_polygon', [
+      index1,
+      worldAndGeneration,
+      _out,
+    ]);
+    return (
+      points: _runtime.readF32List(_out + 4, count * 2),
+      radius: _runtime.readF32(_out),
+    );
+  }
+
+  @override
+  (double, double, double, double) shapeGetAabb(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    _call('f2d_shape_get_aabb', [index1, worldAndGeneration, _out]);
     return (
       _runtime.readF32(_out),
       _runtime.readF32(_out + 4),
@@ -815,7 +1030,7 @@ final class RawBox2DWasm implements RawBox2D {
   @override
   (int, int) createChain(
     int bodyIndex1,
-    int bodyWg, {
+    int bodyWorldAndGeneration, {
     required List<double> points,
     required List<double> materials,
     required int categoryBits,
@@ -833,7 +1048,7 @@ final class RawBox2DWasm implements RawBox2D {
     final (maskLow, maskHigh) = _splitBits(maskBits);
     _call('f2d_create_chain', [
       bodyIndex1,
-      bodyWg,
+      bodyWorldAndGeneration,
       buffer,
       points.length ~/ 2,
       buffer + pointBytes,
@@ -851,39 +1066,49 @@ final class RawBox2DWasm implements RawBox2D {
   }
 
   @override
-  void destroyChain(int index1, int wg) =>
-      _call('f2d_destroy_chain', [index1, wg]);
+  void destroyChain(int index1, int worldAndGeneration) =>
+      _call('f2d_destroy_chain', [index1, worldAndGeneration]);
 
   @override
-  bool chainIsValid(int index1, int wg) =>
-      _callB('f2d_chain_is_valid', [index1, wg]);
+  bool chainIsValid(int index1, int worldAndGeneration) =>
+      _callB('f2d_chain_is_valid', [index1, worldAndGeneration]);
 
   @override
-  void chainSetFriction(int index1, int wg, double friction) =>
-      _call('f2d_chain_set_friction', [index1, wg, friction]);
+  void chainSetFriction(int index1, int worldAndGeneration, double friction) =>
+      _call('f2d_chain_set_friction', [index1, worldAndGeneration, friction]);
 
   @override
-  double chainGetFriction(int index1, int wg) =>
-      _callF('f2d_chain_get_friction', [index1, wg]);
+  double chainGetFriction(int index1, int worldAndGeneration) =>
+      _callF('f2d_chain_get_friction', [index1, worldAndGeneration]);
 
   @override
-  void chainSetRestitution(int index1, int wg, double restitution) =>
-      _call('f2d_chain_set_restitution', [index1, wg, restitution]);
+  void chainSetRestitution(
+    int index1,
+    int worldAndGeneration,
+    double restitution,
+  ) => _call('f2d_chain_set_restitution', [
+    index1,
+    worldAndGeneration,
+    restitution,
+  ]);
 
   @override
-  double chainGetRestitution(int index1, int wg) =>
-      _callF('f2d_chain_get_restitution', [index1, wg]);
+  double chainGetRestitution(int index1, int worldAndGeneration) =>
+      _callF('f2d_chain_get_restitution', [index1, worldAndGeneration]);
 
   @override
-  List<int> chainGetSegments(int index1, int wg) {
-    final count = _callI('f2d_chain_get_segment_count', [index1, wg]);
+  List<int> chainGetSegments(int index1, int worldAndGeneration) {
+    final count = _callI('f2d_chain_get_segment_count', [
+      index1,
+      worldAndGeneration,
+    ]);
     if (count == 0) {
       return const [];
     }
     final buffer = _runtime.bulk(count * 8);
     final written = _callI('f2d_chain_get_segments', [
       index1,
-      wg,
+      worldAndGeneration,
       buffer,
       count,
     ]);
@@ -1193,544 +1418,994 @@ final class RawBox2DWasm implements RawBox2D {
   }
 
   @override
-  void destroyJoint(int index1, int wg) =>
-      _call('f2d_destroy_joint', [index1, wg]);
+  void destroyJoint(int index1, int worldAndGeneration) =>
+      _call('f2d_destroy_joint', [index1, worldAndGeneration]);
 
   @override
-  bool jointIsValid(int index1, int wg) =>
-      _callB('f2d_joint_is_valid', [index1, wg]);
+  bool jointIsValid(int index1, int worldAndGeneration) =>
+      _callB('f2d_joint_is_valid', [index1, worldAndGeneration]);
 
   @override
-  int jointGetType(int index1, int wg) =>
-      _callI('f2d_joint_get_type', [index1, wg]);
+  int jointGetType(int index1, int worldAndGeneration) =>
+      _callI('f2d_joint_get_type', [index1, worldAndGeneration]);
 
   @override
-  (int, int) jointGetBodyA(int index1, int wg) {
-    _call('f2d_joint_get_body_a', [index1, wg, _out]);
+  (int, int) jointGetBodyA(int index1, int worldAndGeneration) {
+    _call('f2d_joint_get_body_a', [index1, worldAndGeneration, _out]);
     return _outIdPair();
   }
 
   @override
-  (int, int) jointGetBodyB(int index1, int wg) {
-    _call('f2d_joint_get_body_b', [index1, wg, _out]);
+  (int, int) jointGetBodyB(int index1, int worldAndGeneration) {
+    _call('f2d_joint_get_body_b', [index1, worldAndGeneration, _out]);
     return _outIdPair();
   }
 
   @override
-  (double, double) jointGetLocalAnchorA(int index1, int wg) {
-    _call('f2d_joint_get_local_anchor_a', [index1, wg, _out]);
+  (double, double) jointGetLocalAnchorA(int index1, int worldAndGeneration) {
+    _call('f2d_joint_get_local_anchor_a', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
-  (double, double) jointGetLocalAnchorB(int index1, int wg) {
-    _call('f2d_joint_get_local_anchor_b', [index1, wg, _out]);
+  (double, double) jointGetLocalAnchorB(int index1, int worldAndGeneration) {
+    _call('f2d_joint_get_local_anchor_b', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
-  bool jointGetCollideConnected(int index1, int wg) =>
-      _callB('f2d_joint_get_collide_connected', [index1, wg]);
+  bool jointGetCollideConnected(int index1, int worldAndGeneration) =>
+      _callB('f2d_joint_get_collide_connected', [index1, worldAndGeneration]);
 
   @override
-  void jointSetCollideConnected(int index1, int wg, {required bool value}) =>
-      _call('f2d_joint_set_collide_connected', [index1, wg, _b(value)]);
+  void jointSetCollideConnected(
+    int index1,
+    int worldAndGeneration, {
+    required bool value,
+  }) => _call('f2d_joint_set_collide_connected', [
+    index1,
+    worldAndGeneration,
+    _b(value),
+  ]);
 
   @override
-  void jointWakeBodies(int index1, int wg) =>
-      _call('f2d_joint_wake_bodies', [index1, wg]);
+  void jointWakeBodies(int index1, int worldAndGeneration) =>
+      _call('f2d_joint_wake_bodies', [index1, worldAndGeneration]);
 
   @override
-  (double, double) jointGetConstraintForce(int index1, int wg) {
-    _call('f2d_joint_get_constraint_force', [index1, wg, _out]);
+  (double, double) jointGetConstraintForce(int index1, int worldAndGeneration) {
+    _call('f2d_joint_get_constraint_force', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
-  double jointGetConstraintTorque(int index1, int wg) =>
-      _callF('f2d_joint_get_constraint_torque', [index1, wg]);
+  double jointGetConstraintTorque(int index1, int worldAndGeneration) =>
+      _callF('f2d_joint_get_constraint_torque', [index1, worldAndGeneration]);
 
   // Distance joint.
 
   @override
-  double distanceJointGetLength(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_length', [index1, wg]);
+  double distanceJointGetLength(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_length', [index1, worldAndGeneration]);
 
   @override
-  void distanceJointSetLength(int index1, int wg, double length) =>
-      _call('f2d_distance_joint_set_length', [index1, wg, length]);
+  void distanceJointSetLength(
+    int index1,
+    int worldAndGeneration,
+    double length,
+  ) => _call('f2d_distance_joint_set_length', [
+    index1,
+    worldAndGeneration,
+    length,
+  ]);
 
   @override
-  double distanceJointGetCurrentLength(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_current_length', [index1, wg]);
-
-  @override
-  bool distanceJointIsSpringEnabled(int index1, int wg) =>
-      _callB('f2d_distance_joint_is_spring_enabled', [index1, wg]);
-
-  @override
-  void distanceJointEnableSpring(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_distance_joint_enable_spring', [index1, wg, _b(enabled)]);
-
-  @override
-  double distanceJointGetSpringHertz(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_spring_hertz', [index1, wg]);
-
-  @override
-  void distanceJointSetSpringHertz(int index1, int wg, double hertz) =>
-      _call('f2d_distance_joint_set_spring_hertz', [index1, wg, hertz]);
-
-  @override
-  double distanceJointGetSpringDampingRatio(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_spring_damping_ratio', [index1, wg]);
-
-  @override
-  void distanceJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
-      _call('f2d_distance_joint_set_spring_damping_ratio', [
+  double distanceJointGetCurrentLength(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_current_length', [
         index1,
-        wg,
-        ratio,
+        worldAndGeneration,
       ]);
 
   @override
-  bool distanceJointIsLimitEnabled(int index1, int wg) =>
-      _callB('f2d_distance_joint_is_limit_enabled', [index1, wg]);
+  bool distanceJointIsSpringEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_distance_joint_is_spring_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void distanceJointEnableLimit(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_distance_joint_enable_limit', [index1, wg, _b(enabled)]);
+  void distanceJointEnableSpring(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_distance_joint_enable_spring', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double distanceJointGetMinLength(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_min_length', [index1, wg]);
+  double distanceJointGetSpringHertz(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_spring_hertz', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double distanceJointGetMaxLength(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_max_length', [index1, wg]);
+  void distanceJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  ) => _call('f2d_distance_joint_set_spring_hertz', [
+    index1,
+    worldAndGeneration,
+    hertz,
+  ]);
+
+  @override
+  double distanceJointGetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+  ) => _callF('f2d_distance_joint_get_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+  ]);
+
+  @override
+  void distanceJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  ) => _call('f2d_distance_joint_set_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+    ratio,
+  ]);
+
+  @override
+  bool distanceJointIsLimitEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_distance_joint_is_limit_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
+
+  @override
+  void distanceJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_distance_joint_enable_limit', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
+
+  @override
+  double distanceJointGetMinLength(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_min_length', [index1, worldAndGeneration]);
+
+  @override
+  double distanceJointGetMaxLength(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_max_length', [index1, worldAndGeneration]);
 
   @override
   void distanceJointSetLengthRange(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double minLength,
     double maxLength,
   ) => _call('f2d_distance_joint_set_length_range', [
     index1,
-    wg,
+    worldAndGeneration,
     minLength,
     maxLength,
   ]);
 
   @override
-  bool distanceJointIsMotorEnabled(int index1, int wg) =>
-      _callB('f2d_distance_joint_is_motor_enabled', [index1, wg]);
+  bool distanceJointIsMotorEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_distance_joint_is_motor_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void distanceJointEnableMotor(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_distance_joint_enable_motor', [index1, wg, _b(enabled)]);
+  void distanceJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_distance_joint_enable_motor', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double distanceJointGetMotorSpeed(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_motor_speed', [index1, wg]);
+  double distanceJointGetMotorSpeed(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_motor_speed', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void distanceJointSetMotorSpeed(int index1, int wg, double speed) =>
-      _call('f2d_distance_joint_set_motor_speed', [index1, wg, speed]);
+  void distanceJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  ) => _call('f2d_distance_joint_set_motor_speed', [
+    index1,
+    worldAndGeneration,
+    speed,
+  ]);
 
   @override
-  double distanceJointGetMaxMotorForce(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_max_motor_force', [index1, wg]);
+  double distanceJointGetMaxMotorForce(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_max_motor_force', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void distanceJointSetMaxMotorForce(int index1, int wg, double force) =>
-      _call('f2d_distance_joint_set_max_motor_force', [index1, wg, force]);
+  void distanceJointSetMaxMotorForce(
+    int index1,
+    int worldAndGeneration,
+    double force,
+  ) => _call('f2d_distance_joint_set_max_motor_force', [
+    index1,
+    worldAndGeneration,
+    force,
+  ]);
 
   @override
-  double distanceJointGetMotorForce(int index1, int wg) =>
-      _callF('f2d_distance_joint_get_motor_force', [index1, wg]);
+  double distanceJointGetMotorForce(int index1, int worldAndGeneration) =>
+      _callF('f2d_distance_joint_get_motor_force', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   // Motor joint.
 
   @override
-  (double, double) motorJointGetLinearOffset(int index1, int wg) {
-    _call('f2d_motor_joint_get_linear_offset', [index1, wg, _out]);
+  (double, double) motorJointGetLinearOffset(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    _call('f2d_motor_joint_get_linear_offset', [
+      index1,
+      worldAndGeneration,
+      _out,
+    ]);
     return _outVec2();
   }
 
   @override
-  void motorJointSetLinearOffset(int index1, int wg, double x, double y) =>
-      _call('f2d_motor_joint_set_linear_offset', [index1, wg, x, y]);
+  void motorJointSetLinearOffset(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  ) => _call('f2d_motor_joint_set_linear_offset', [
+    index1,
+    worldAndGeneration,
+    x,
+    y,
+  ]);
 
   @override
-  double motorJointGetAngularOffset(int index1, int wg) =>
-      _callF('f2d_motor_joint_get_angular_offset', [index1, wg]);
+  double motorJointGetAngularOffset(int index1, int worldAndGeneration) =>
+      _callF('f2d_motor_joint_get_angular_offset', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void motorJointSetAngularOffset(int index1, int wg, double offset) =>
-      _call('f2d_motor_joint_set_angular_offset', [index1, wg, offset]);
+  void motorJointSetAngularOffset(
+    int index1,
+    int worldAndGeneration,
+    double offset,
+  ) => _call('f2d_motor_joint_set_angular_offset', [
+    index1,
+    worldAndGeneration,
+    offset,
+  ]);
 
   @override
-  double motorJointGetMaxForce(int index1, int wg) =>
-      _callF('f2d_motor_joint_get_max_force', [index1, wg]);
+  double motorJointGetMaxForce(int index1, int worldAndGeneration) =>
+      _callF('f2d_motor_joint_get_max_force', [index1, worldAndGeneration]);
 
   @override
-  void motorJointSetMaxForce(int index1, int wg, double force) =>
-      _call('f2d_motor_joint_set_max_force', [index1, wg, force]);
+  void motorJointSetMaxForce(
+    int index1,
+    int worldAndGeneration,
+    double force,
+  ) => _call('f2d_motor_joint_set_max_force', [
+    index1,
+    worldAndGeneration,
+    force,
+  ]);
 
   @override
-  double motorJointGetMaxTorque(int index1, int wg) =>
-      _callF('f2d_motor_joint_get_max_torque', [index1, wg]);
+  double motorJointGetMaxTorque(int index1, int worldAndGeneration) =>
+      _callF('f2d_motor_joint_get_max_torque', [index1, worldAndGeneration]);
 
   @override
-  void motorJointSetMaxTorque(int index1, int wg, double torque) =>
-      _call('f2d_motor_joint_set_max_torque', [index1, wg, torque]);
+  void motorJointSetMaxTorque(
+    int index1,
+    int worldAndGeneration,
+    double torque,
+  ) => _call('f2d_motor_joint_set_max_torque', [
+    index1,
+    worldAndGeneration,
+    torque,
+  ]);
 
   @override
-  double motorJointGetCorrectionFactor(int index1, int wg) =>
-      _callF('f2d_motor_joint_get_correction_factor', [index1, wg]);
+  double motorJointGetCorrectionFactor(int index1, int worldAndGeneration) =>
+      _callF('f2d_motor_joint_get_correction_factor', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void motorJointSetCorrectionFactor(int index1, int wg, double factor) =>
-      _call('f2d_motor_joint_set_correction_factor', [index1, wg, factor]);
+  void motorJointSetCorrectionFactor(
+    int index1,
+    int worldAndGeneration,
+    double factor,
+  ) => _call('f2d_motor_joint_set_correction_factor', [
+    index1,
+    worldAndGeneration,
+    factor,
+  ]);
 
   // Mouse joint.
 
   @override
-  (double, double) mouseJointGetTarget(int index1, int wg) {
-    _call('f2d_mouse_joint_get_target', [index1, wg, _out]);
+  (double, double) mouseJointGetTarget(int index1, int worldAndGeneration) {
+    _call('f2d_mouse_joint_get_target', [index1, worldAndGeneration, _out]);
     return _outVec2();
   }
 
   @override
-  void mouseJointSetTarget(int index1, int wg, double x, double y) =>
-      _call('f2d_mouse_joint_set_target', [index1, wg, x, y]);
+  void mouseJointSetTarget(
+    int index1,
+    int worldAndGeneration,
+    double x,
+    double y,
+  ) => _call('f2d_mouse_joint_set_target', [index1, worldAndGeneration, x, y]);
 
   @override
-  double mouseJointGetSpringHertz(int index1, int wg) =>
-      _callF('f2d_mouse_joint_get_spring_hertz', [index1, wg]);
+  double mouseJointGetSpringHertz(int index1, int worldAndGeneration) =>
+      _callF('f2d_mouse_joint_get_spring_hertz', [index1, worldAndGeneration]);
 
   @override
-  void mouseJointSetSpringHertz(int index1, int wg, double hertz) =>
-      _call('f2d_mouse_joint_set_spring_hertz', [index1, wg, hertz]);
+  void mouseJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  ) => _call('f2d_mouse_joint_set_spring_hertz', [
+    index1,
+    worldAndGeneration,
+    hertz,
+  ]);
 
   @override
-  double mouseJointGetSpringDampingRatio(int index1, int wg) =>
-      _callF('f2d_mouse_joint_get_spring_damping_ratio', [index1, wg]);
+  double mouseJointGetSpringDampingRatio(int index1, int worldAndGeneration) =>
+      _callF('f2d_mouse_joint_get_spring_damping_ratio', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void mouseJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
-      _call('f2d_mouse_joint_set_spring_damping_ratio', [index1, wg, ratio]);
+  void mouseJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  ) => _call('f2d_mouse_joint_set_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+    ratio,
+  ]);
 
   @override
-  double mouseJointGetMaxForce(int index1, int wg) =>
-      _callF('f2d_mouse_joint_get_max_force', [index1, wg]);
+  double mouseJointGetMaxForce(int index1, int worldAndGeneration) =>
+      _callF('f2d_mouse_joint_get_max_force', [index1, worldAndGeneration]);
 
   @override
-  void mouseJointSetMaxForce(int index1, int wg, double force) =>
-      _call('f2d_mouse_joint_set_max_force', [index1, wg, force]);
+  void mouseJointSetMaxForce(
+    int index1,
+    int worldAndGeneration,
+    double force,
+  ) => _call('f2d_mouse_joint_set_max_force', [
+    index1,
+    worldAndGeneration,
+    force,
+  ]);
 
   // Prismatic joint.
 
   @override
-  bool prismaticJointIsSpringEnabled(int index1, int wg) =>
-      _callB('f2d_prismatic_joint_is_spring_enabled', [index1, wg]);
+  bool prismaticJointIsSpringEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_prismatic_joint_is_spring_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
   void prismaticJointEnableSpring(
     int index1,
-    int wg, {
+    int worldAndGeneration, {
     required bool enabled,
-  }) => _call('f2d_prismatic_joint_enable_spring', [index1, wg, _b(enabled)]);
+  }) => _call('f2d_prismatic_joint_enable_spring', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double prismaticJointGetSpringHertz(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_spring_hertz', [index1, wg]);
-
-  @override
-  void prismaticJointSetSpringHertz(int index1, int wg, double hertz) =>
-      _call('f2d_prismatic_joint_set_spring_hertz', [index1, wg, hertz]);
-
-  @override
-  double prismaticJointGetSpringDampingRatio(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_spring_damping_ratio', [index1, wg]);
-
-  @override
-  void prismaticJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
-      _call('f2d_prismatic_joint_set_spring_damping_ratio', [
+  double prismaticJointGetSpringHertz(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_spring_hertz', [
         index1,
-        wg,
-        ratio,
+        worldAndGeneration,
       ]);
 
   @override
-  double prismaticJointGetTargetTranslation(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_target_translation', [index1, wg]);
+  void prismaticJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  ) => _call('f2d_prismatic_joint_set_spring_hertz', [
+    index1,
+    worldAndGeneration,
+    hertz,
+  ]);
 
   @override
-  void prismaticJointSetTargetTranslation(int index1, int wg, double value) =>
-      _call('f2d_prismatic_joint_set_target_translation', [
+  double prismaticJointGetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+  ) => _callF('f2d_prismatic_joint_get_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+  ]);
+
+  @override
+  void prismaticJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  ) => _call('f2d_prismatic_joint_set_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+    ratio,
+  ]);
+
+  @override
+  double prismaticJointGetTargetTranslation(
+    int index1,
+    int worldAndGeneration,
+  ) => _callF('f2d_prismatic_joint_get_target_translation', [
+    index1,
+    worldAndGeneration,
+  ]);
+
+  @override
+  void prismaticJointSetTargetTranslation(
+    int index1,
+    int worldAndGeneration,
+    double value,
+  ) => _call('f2d_prismatic_joint_set_target_translation', [
+    index1,
+    worldAndGeneration,
+    value,
+  ]);
+
+  @override
+  bool prismaticJointIsLimitEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_prismatic_joint_is_limit_enabled', [
         index1,
-        wg,
-        value,
+        worldAndGeneration,
       ]);
 
   @override
-  bool prismaticJointIsLimitEnabled(int index1, int wg) =>
-      _callB('f2d_prismatic_joint_is_limit_enabled', [index1, wg]);
+  void prismaticJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_prismatic_joint_enable_limit', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  void prismaticJointEnableLimit(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_prismatic_joint_enable_limit', [index1, wg, _b(enabled)]);
+  double prismaticJointGetLowerLimit(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_lower_limit', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double prismaticJointGetLowerLimit(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_lower_limit', [index1, wg]);
-
-  @override
-  double prismaticJointGetUpperLimit(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_upper_limit', [index1, wg]);
+  double prismaticJointGetUpperLimit(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_upper_limit', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
   void prismaticJointSetLimits(
     int index1,
-    int wg,
+    int worldAndGeneration,
     double lower,
     double upper,
-  ) => _call('f2d_prismatic_joint_set_limits', [index1, wg, lower, upper]);
+  ) => _call('f2d_prismatic_joint_set_limits', [
+    index1,
+    worldAndGeneration,
+    lower,
+    upper,
+  ]);
 
   @override
-  bool prismaticJointIsMotorEnabled(int index1, int wg) =>
-      _callB('f2d_prismatic_joint_is_motor_enabled', [index1, wg]);
+  bool prismaticJointIsMotorEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_prismatic_joint_is_motor_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void prismaticJointEnableMotor(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_prismatic_joint_enable_motor', [index1, wg, _b(enabled)]);
+  void prismaticJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_prismatic_joint_enable_motor', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double prismaticJointGetMotorSpeed(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_motor_speed', [index1, wg]);
+  double prismaticJointGetMotorSpeed(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_motor_speed', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void prismaticJointSetMotorSpeed(int index1, int wg, double speed) =>
-      _call('f2d_prismatic_joint_set_motor_speed', [index1, wg, speed]);
+  void prismaticJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  ) => _call('f2d_prismatic_joint_set_motor_speed', [
+    index1,
+    worldAndGeneration,
+    speed,
+  ]);
 
   @override
-  double prismaticJointGetMaxMotorForce(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_max_motor_force', [index1, wg]);
+  double prismaticJointGetMaxMotorForce(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_max_motor_force', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void prismaticJointSetMaxMotorForce(int index1, int wg, double force) =>
-      _call('f2d_prismatic_joint_set_max_motor_force', [index1, wg, force]);
+  void prismaticJointSetMaxMotorForce(
+    int index1,
+    int worldAndGeneration,
+    double force,
+  ) => _call('f2d_prismatic_joint_set_max_motor_force', [
+    index1,
+    worldAndGeneration,
+    force,
+  ]);
 
   @override
-  double prismaticJointGetMotorForce(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_motor_force', [index1, wg]);
+  double prismaticJointGetMotorForce(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_motor_force', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double prismaticJointGetTranslation(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_translation', [index1, wg]);
+  double prismaticJointGetTranslation(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_translation', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double prismaticJointGetSpeed(int index1, int wg) =>
-      _callF('f2d_prismatic_joint_get_speed', [index1, wg]);
+  double prismaticJointGetSpeed(int index1, int worldAndGeneration) =>
+      _callF('f2d_prismatic_joint_get_speed', [index1, worldAndGeneration]);
 
   // Revolute joint.
 
   @override
-  bool revoluteJointIsSpringEnabled(int index1, int wg) =>
-      _callB('f2d_revolute_joint_is_spring_enabled', [index1, wg]);
-
-  @override
-  void revoluteJointEnableSpring(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_revolute_joint_enable_spring', [index1, wg, _b(enabled)]);
-
-  @override
-  double revoluteJointGetSpringHertz(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_spring_hertz', [index1, wg]);
-
-  @override
-  void revoluteJointSetSpringHertz(int index1, int wg, double hertz) =>
-      _call('f2d_revolute_joint_set_spring_hertz', [index1, wg, hertz]);
-
-  @override
-  double revoluteJointGetSpringDampingRatio(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_spring_damping_ratio', [index1, wg]);
-
-  @override
-  void revoluteJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
-      _call('f2d_revolute_joint_set_spring_damping_ratio', [
+  bool revoluteJointIsSpringEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_revolute_joint_is_spring_enabled', [
         index1,
-        wg,
-        ratio,
+        worldAndGeneration,
       ]);
 
   @override
-  double revoluteJointGetTargetAngle(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_target_angle', [index1, wg]);
+  void revoluteJointEnableSpring(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_revolute_joint_enable_spring', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  void revoluteJointSetTargetAngle(int index1, int wg, double angle) =>
-      _call('f2d_revolute_joint_set_target_angle', [index1, wg, angle]);
+  double revoluteJointGetSpringHertz(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_spring_hertz', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double revoluteJointGetAngle(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_angle', [index1, wg]);
+  void revoluteJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  ) => _call('f2d_revolute_joint_set_spring_hertz', [
+    index1,
+    worldAndGeneration,
+    hertz,
+  ]);
 
   @override
-  bool revoluteJointIsLimitEnabled(int index1, int wg) =>
-      _callB('f2d_revolute_joint_is_limit_enabled', [index1, wg]);
+  double revoluteJointGetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+  ) => _callF('f2d_revolute_joint_get_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+  ]);
 
   @override
-  void revoluteJointEnableLimit(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_revolute_joint_enable_limit', [index1, wg, _b(enabled)]);
+  void revoluteJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  ) => _call('f2d_revolute_joint_set_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+    ratio,
+  ]);
 
   @override
-  double revoluteJointGetLowerLimit(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_lower_limit', [index1, wg]);
+  double revoluteJointGetTargetAngle(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_target_angle', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double revoluteJointGetUpperLimit(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_upper_limit', [index1, wg]);
+  void revoluteJointSetTargetAngle(
+    int index1,
+    int worldAndGeneration,
+    double angle,
+  ) => _call('f2d_revolute_joint_set_target_angle', [
+    index1,
+    worldAndGeneration,
+    angle,
+  ]);
 
   @override
-  void revoluteJointSetLimits(int index1, int wg, double lower, double upper) =>
-      _call('f2d_revolute_joint_set_limits', [index1, wg, lower, upper]);
+  double revoluteJointGetAngle(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_angle', [index1, worldAndGeneration]);
 
   @override
-  bool revoluteJointIsMotorEnabled(int index1, int wg) =>
-      _callB('f2d_revolute_joint_is_motor_enabled', [index1, wg]);
+  bool revoluteJointIsLimitEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_revolute_joint_is_limit_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void revoluteJointEnableMotor(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_revolute_joint_enable_motor', [index1, wg, _b(enabled)]);
+  void revoluteJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_revolute_joint_enable_limit', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double revoluteJointGetMotorSpeed(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_motor_speed', [index1, wg]);
+  double revoluteJointGetLowerLimit(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_lower_limit', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void revoluteJointSetMotorSpeed(int index1, int wg, double speed) =>
-      _call('f2d_revolute_joint_set_motor_speed', [index1, wg, speed]);
+  double revoluteJointGetUpperLimit(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_upper_limit', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double revoluteJointGetMaxMotorTorque(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_max_motor_torque', [index1, wg]);
+  void revoluteJointSetLimits(
+    int index1,
+    int worldAndGeneration,
+    double lower,
+    double upper,
+  ) => _call('f2d_revolute_joint_set_limits', [
+    index1,
+    worldAndGeneration,
+    lower,
+    upper,
+  ]);
 
   @override
-  void revoluteJointSetMaxMotorTorque(int index1, int wg, double torque) =>
-      _call('f2d_revolute_joint_set_max_motor_torque', [index1, wg, torque]);
+  bool revoluteJointIsMotorEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_revolute_joint_is_motor_enabled', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  double revoluteJointGetMotorTorque(int index1, int wg) =>
-      _callF('f2d_revolute_joint_get_motor_torque', [index1, wg]);
+  void revoluteJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_revolute_joint_enable_motor', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
+
+  @override
+  double revoluteJointGetMotorSpeed(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_motor_speed', [
+        index1,
+        worldAndGeneration,
+      ]);
+
+  @override
+  void revoluteJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  ) => _call('f2d_revolute_joint_set_motor_speed', [
+    index1,
+    worldAndGeneration,
+    speed,
+  ]);
+
+  @override
+  double revoluteJointGetMaxMotorTorque(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_max_motor_torque', [
+        index1,
+        worldAndGeneration,
+      ]);
+
+  @override
+  void revoluteJointSetMaxMotorTorque(
+    int index1,
+    int worldAndGeneration,
+    double torque,
+  ) => _call('f2d_revolute_joint_set_max_motor_torque', [
+    index1,
+    worldAndGeneration,
+    torque,
+  ]);
+
+  @override
+  double revoluteJointGetMotorTorque(int index1, int worldAndGeneration) =>
+      _callF('f2d_revolute_joint_get_motor_torque', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   // Weld joint.
 
   @override
-  double weldJointGetLinearHertz(int index1, int wg) =>
-      _callF('f2d_weld_joint_get_linear_hertz', [index1, wg]);
+  double weldJointGetLinearHertz(int index1, int worldAndGeneration) =>
+      _callF('f2d_weld_joint_get_linear_hertz', [index1, worldAndGeneration]);
 
   @override
-  void weldJointSetLinearHertz(int index1, int wg, double hertz) =>
-      _call('f2d_weld_joint_set_linear_hertz', [index1, wg, hertz]);
+  void weldJointSetLinearHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  ) => _call('f2d_weld_joint_set_linear_hertz', [
+    index1,
+    worldAndGeneration,
+    hertz,
+  ]);
 
   @override
-  double weldJointGetAngularHertz(int index1, int wg) =>
-      _callF('f2d_weld_joint_get_angular_hertz', [index1, wg]);
+  double weldJointGetAngularHertz(int index1, int worldAndGeneration) =>
+      _callF('f2d_weld_joint_get_angular_hertz', [index1, worldAndGeneration]);
 
   @override
-  void weldJointSetAngularHertz(int index1, int wg, double hertz) =>
-      _call('f2d_weld_joint_set_angular_hertz', [index1, wg, hertz]);
+  void weldJointSetAngularHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  ) => _call('f2d_weld_joint_set_angular_hertz', [
+    index1,
+    worldAndGeneration,
+    hertz,
+  ]);
 
   @override
-  double weldJointGetLinearDampingRatio(int index1, int wg) =>
-      _callF('f2d_weld_joint_get_linear_damping_ratio', [index1, wg]);
+  double weldJointGetLinearDampingRatio(int index1, int worldAndGeneration) =>
+      _callF('f2d_weld_joint_get_linear_damping_ratio', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void weldJointSetLinearDampingRatio(int index1, int wg, double ratio) =>
-      _call('f2d_weld_joint_set_linear_damping_ratio', [index1, wg, ratio]);
+  void weldJointSetLinearDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  ) => _call('f2d_weld_joint_set_linear_damping_ratio', [
+    index1,
+    worldAndGeneration,
+    ratio,
+  ]);
 
   @override
-  double weldJointGetAngularDampingRatio(int index1, int wg) =>
-      _callF('f2d_weld_joint_get_angular_damping_ratio', [index1, wg]);
+  double weldJointGetAngularDampingRatio(int index1, int worldAndGeneration) =>
+      _callF('f2d_weld_joint_get_angular_damping_ratio', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void weldJointSetAngularDampingRatio(int index1, int wg, double ratio) =>
-      _call('f2d_weld_joint_set_angular_damping_ratio', [index1, wg, ratio]);
+  void weldJointSetAngularDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  ) => _call('f2d_weld_joint_set_angular_damping_ratio', [
+    index1,
+    worldAndGeneration,
+    ratio,
+  ]);
 
   // Wheel joint.
 
   @override
-  bool wheelJointIsSpringEnabled(int index1, int wg) =>
-      _callB('f2d_wheel_joint_is_spring_enabled', [index1, wg]);
+  bool wheelJointIsSpringEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_wheel_joint_is_spring_enabled', [index1, worldAndGeneration]);
 
   @override
-  void wheelJointEnableSpring(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_wheel_joint_enable_spring', [index1, wg, _b(enabled)]);
+  void wheelJointEnableSpring(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_wheel_joint_enable_spring', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double wheelJointGetSpringHertz(int index1, int wg) =>
-      _callF('f2d_wheel_joint_get_spring_hertz', [index1, wg]);
+  double wheelJointGetSpringHertz(int index1, int worldAndGeneration) =>
+      _callF('f2d_wheel_joint_get_spring_hertz', [index1, worldAndGeneration]);
 
   @override
-  void wheelJointSetSpringHertz(int index1, int wg, double hertz) =>
-      _call('f2d_wheel_joint_set_spring_hertz', [index1, wg, hertz]);
+  void wheelJointSetSpringHertz(
+    int index1,
+    int worldAndGeneration,
+    double hertz,
+  ) => _call('f2d_wheel_joint_set_spring_hertz', [
+    index1,
+    worldAndGeneration,
+    hertz,
+  ]);
 
   @override
-  double wheelJointGetSpringDampingRatio(int index1, int wg) =>
-      _callF('f2d_wheel_joint_get_spring_damping_ratio', [index1, wg]);
+  double wheelJointGetSpringDampingRatio(int index1, int worldAndGeneration) =>
+      _callF('f2d_wheel_joint_get_spring_damping_ratio', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void wheelJointSetSpringDampingRatio(int index1, int wg, double ratio) =>
-      _call('f2d_wheel_joint_set_spring_damping_ratio', [index1, wg, ratio]);
+  void wheelJointSetSpringDampingRatio(
+    int index1,
+    int worldAndGeneration,
+    double ratio,
+  ) => _call('f2d_wheel_joint_set_spring_damping_ratio', [
+    index1,
+    worldAndGeneration,
+    ratio,
+  ]);
 
   @override
-  bool wheelJointIsLimitEnabled(int index1, int wg) =>
-      _callB('f2d_wheel_joint_is_limit_enabled', [index1, wg]);
+  bool wheelJointIsLimitEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_wheel_joint_is_limit_enabled', [index1, worldAndGeneration]);
 
   @override
-  void wheelJointEnableLimit(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_wheel_joint_enable_limit', [index1, wg, _b(enabled)]);
+  void wheelJointEnableLimit(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_wheel_joint_enable_limit', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double wheelJointGetLowerLimit(int index1, int wg) =>
-      _callF('f2d_wheel_joint_get_lower_limit', [index1, wg]);
+  double wheelJointGetLowerLimit(int index1, int worldAndGeneration) =>
+      _callF('f2d_wheel_joint_get_lower_limit', [index1, worldAndGeneration]);
 
   @override
-  double wheelJointGetUpperLimit(int index1, int wg) =>
-      _callF('f2d_wheel_joint_get_upper_limit', [index1, wg]);
+  double wheelJointGetUpperLimit(int index1, int worldAndGeneration) =>
+      _callF('f2d_wheel_joint_get_upper_limit', [index1, worldAndGeneration]);
 
   @override
-  void wheelJointSetLimits(int index1, int wg, double lower, double upper) =>
-      _call('f2d_wheel_joint_set_limits', [index1, wg, lower, upper]);
+  void wheelJointSetLimits(
+    int index1,
+    int worldAndGeneration,
+    double lower,
+    double upper,
+  ) => _call('f2d_wheel_joint_set_limits', [
+    index1,
+    worldAndGeneration,
+    lower,
+    upper,
+  ]);
 
   @override
-  bool wheelJointIsMotorEnabled(int index1, int wg) =>
-      _callB('f2d_wheel_joint_is_motor_enabled', [index1, wg]);
+  bool wheelJointIsMotorEnabled(int index1, int worldAndGeneration) =>
+      _callB('f2d_wheel_joint_is_motor_enabled', [index1, worldAndGeneration]);
 
   @override
-  void wheelJointEnableMotor(int index1, int wg, {required bool enabled}) =>
-      _call('f2d_wheel_joint_enable_motor', [index1, wg, _b(enabled)]);
+  void wheelJointEnableMotor(
+    int index1,
+    int worldAndGeneration, {
+    required bool enabled,
+  }) => _call('f2d_wheel_joint_enable_motor', [
+    index1,
+    worldAndGeneration,
+    _b(enabled),
+  ]);
 
   @override
-  double wheelJointGetMotorSpeed(int index1, int wg) =>
-      _callF('f2d_wheel_joint_get_motor_speed', [index1, wg]);
+  double wheelJointGetMotorSpeed(int index1, int worldAndGeneration) =>
+      _callF('f2d_wheel_joint_get_motor_speed', [index1, worldAndGeneration]);
 
   @override
-  void wheelJointSetMotorSpeed(int index1, int wg, double speed) =>
-      _call('f2d_wheel_joint_set_motor_speed', [index1, wg, speed]);
+  void wheelJointSetMotorSpeed(
+    int index1,
+    int worldAndGeneration,
+    double speed,
+  ) => _call('f2d_wheel_joint_set_motor_speed', [
+    index1,
+    worldAndGeneration,
+    speed,
+  ]);
 
   @override
-  double wheelJointGetMaxMotorTorque(int index1, int wg) =>
-      _callF('f2d_wheel_joint_get_max_motor_torque', [index1, wg]);
+  double wheelJointGetMaxMotorTorque(int index1, int worldAndGeneration) =>
+      _callF('f2d_wheel_joint_get_max_motor_torque', [
+        index1,
+        worldAndGeneration,
+      ]);
 
   @override
-  void wheelJointSetMaxMotorTorque(int index1, int wg, double torque) =>
-      _call('f2d_wheel_joint_set_max_motor_torque', [index1, wg, torque]);
+  void wheelJointSetMaxMotorTorque(
+    int index1,
+    int worldAndGeneration,
+    double torque,
+  ) => _call('f2d_wheel_joint_set_max_motor_torque', [
+    index1,
+    worldAndGeneration,
+    torque,
+  ]);
 
   @override
-  double wheelJointGetMotorTorque(int index1, int wg) =>
-      _callF('f2d_wheel_joint_get_motor_torque', [index1, wg]);
+  double wheelJointGetMotorTorque(int index1, int worldAndGeneration) =>
+      _callF('f2d_wheel_joint_get_motor_torque', [index1, worldAndGeneration]);
 
   // Events.
 
@@ -1925,9 +2600,17 @@ final class RawBox2DWasm implements RawBox2D {
     final (maskLow, maskHigh) = _splitBits(maskBits);
     final previous = _runtime.callbacks.castRay;
     _runtime.callbacks.castRay =
-        (index1, wg, pointX, pointY, normalX, normalY, fraction) => callback((
+        (
+          index1,
+          worldAndGeneration,
+          pointX,
+          pointY,
+          normalX,
+          normalY,
+          fraction,
+        ) => callback((
           shapeIndex1: index1,
-          shapeWorldAndGeneration: wg,
+          shapeWorldAndGeneration: worldAndGeneration,
           pointX: pointX,
           pointY: pointY,
           normalX: normalX,
@@ -1965,10 +2648,10 @@ final class RawBox2DWasm implements RawBox2D {
     final (maskLow, maskHigh) = _splitBits(maskBits);
     final results = <int>[];
     final previous = _runtime.callbacks.overlap;
-    _runtime.callbacks.overlap = (index1, wg) {
+    _runtime.callbacks.overlap = (index1, worldAndGeneration) {
       results
         ..add(index1)
-        ..add(wg);
+        ..add(worldAndGeneration);
       return true;
     };
     try {
@@ -2039,8 +2722,15 @@ final class RawBox2DWasm implements RawBox2D {
       _call('f2d_world_set_custom_filter', [worldId, 0]);
     } else {
       _filterCallbacks[_world0(worldId)] = callback;
-      _runtime.callbacks.customFilter = (a1, awg, b1, bwg) =>
-          _filterCallbacks[awg & 0xFFFF]?.call(a1, awg, b1, bwg) ?? true;
+      _runtime.callbacks.customFilter =
+          (a1, aWorldAndGeneration, b1, bWorldAndGeneration) =>
+              _filterCallbacks[aWorldAndGeneration & 0xFFFF]?.call(
+                a1,
+                aWorldAndGeneration,
+                b1,
+                bWorldAndGeneration,
+              ) ??
+              true;
       _call('f2d_world_set_custom_filter', [worldId, 1]);
     }
   }
@@ -2063,16 +2753,24 @@ final class RawBox2DWasm implements RawBox2D {
       _call('f2d_world_set_pre_solve', [worldId, 0]);
     } else {
       _preSolveCallbacks[_world0(worldId)] = callback;
-      _runtime.callbacks.preSolve = (a1, awg, b1, bwg, normalX, normalY) =>
-          _preSolveCallbacks[awg & 0xFFFF]?.call(
+      _runtime.callbacks.preSolve =
+          (
             a1,
-            awg,
+            aWorldAndGeneration,
             b1,
-            bwg,
+            bWorldAndGeneration,
             normalX,
             normalY,
-          ) ??
-          true;
+          ) =>
+              _preSolveCallbacks[aWorldAndGeneration & 0xFFFF]?.call(
+                a1,
+                aWorldAndGeneration,
+                b1,
+                bWorldAndGeneration,
+                normalX,
+                normalY,
+              ) ??
+              true;
       _call('f2d_world_set_pre_solve', [worldId, 1]);
     }
   }

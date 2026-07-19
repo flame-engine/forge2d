@@ -5,8 +5,8 @@
 // function the Dart backend needs with a flat scalar/pointer signature:
 //
 // - World ids cross as one uint32: index1 | (generation << 16).
-// - Body/shape/chain/joint ids cross as (int32 index1, uint32 wg) where
-//   wg packs world0 | (generation << 16), matching the Dart seam.
+// - Body/shape/chain/joint ids cross as (int32 index1, uint32 world_and_generation) where
+//   world_and_generation packs world0 | (generation << 16), matching the Dart seam.
 // - Vectors and tuples are written into caller-provided buffers.
 // - 64-bit filter bits cross as two uint32 halves.
 // - Events are copied into caller-provided float64 buffers (float64
@@ -62,20 +62,20 @@ static uint32_t f2d_pack_world(b2WorldId id) {
   return (uint32_t)id.index1 | ((uint32_t)id.generation << 16);
 }
 
-static b2BodyId f2d_body(int32_t index1, uint32_t wg) {
-  return (b2BodyId){index1, (uint16_t)(wg & 0xFFFF), (uint16_t)(wg >> 16)};
+static b2BodyId f2d_body(int32_t index1, uint32_t world_and_generation) {
+  return (b2BodyId){index1, (uint16_t)(world_and_generation & 0xFFFF), (uint16_t)(world_and_generation >> 16)};
 }
 
-static b2ShapeId f2d_shape(int32_t index1, uint32_t wg) {
-  return (b2ShapeId){index1, (uint16_t)(wg & 0xFFFF), (uint16_t)(wg >> 16)};
+static b2ShapeId f2d_shape(int32_t index1, uint32_t world_and_generation) {
+  return (b2ShapeId){index1, (uint16_t)(world_and_generation & 0xFFFF), (uint16_t)(world_and_generation >> 16)};
 }
 
-static b2ChainId f2d_chain(int32_t index1, uint32_t wg) {
-  return (b2ChainId){index1, (uint16_t)(wg & 0xFFFF), (uint16_t)(wg >> 16)};
+static b2ChainId f2d_chain(int32_t index1, uint32_t world_and_generation) {
+  return (b2ChainId){index1, (uint16_t)(world_and_generation & 0xFFFF), (uint16_t)(world_and_generation >> 16)};
 }
 
-static b2JointId f2d_joint(int32_t index1, uint32_t wg) {
-  return (b2JointId){index1, (uint16_t)(wg & 0xFFFF), (uint16_t)(wg >> 16)};
+static b2JointId f2d_joint(int32_t index1, uint32_t world_and_generation) {
+  return (b2JointId){index1, (uint16_t)(world_and_generation & 0xFFFF), (uint16_t)(world_and_generation >> 16)};
 }
 
 static uint32_t f2d_wg_body(b2BodyId id) {
@@ -216,128 +216,128 @@ F2D_EXPORT void f2d_create_body(
   out[1] = (int32_t)f2d_wg_body(id);
 }
 
-F2D_EXPORT void f2d_destroy_body(int32_t i1, uint32_t wg) {
-  b2DestroyBody(f2d_body(i1, wg));
+F2D_EXPORT void f2d_destroy_body(int32_t index1, uint32_t world_and_generation) {
+  b2DestroyBody(f2d_body(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_body_is_valid(int32_t i1, uint32_t wg) {
-  return b2Body_IsValid(f2d_body(i1, wg));
+F2D_EXPORT int f2d_body_is_valid(int32_t index1, uint32_t world_and_generation) {
+  return b2Body_IsValid(f2d_body(index1, world_and_generation));
 }
 
-F2D_EXPORT void f2d_body_get_position(int32_t i1, uint32_t wg, float* out) {
-  b2Vec2 position = b2Body_GetPosition(f2d_body(i1, wg));
+F2D_EXPORT void f2d_body_get_position(int32_t index1, uint32_t world_and_generation, float* out) {
+  b2Vec2 position = b2Body_GetPosition(f2d_body(index1, world_and_generation));
   out[0] = position.x;
   out[1] = position.y;
 }
 
-F2D_EXPORT void f2d_body_get_rotation(int32_t i1, uint32_t wg, float* out) {
-  b2Rot rotation = b2Body_GetRotation(f2d_body(i1, wg));
+F2D_EXPORT void f2d_body_get_rotation(int32_t index1, uint32_t world_and_generation, float* out) {
+  b2Rot rotation = b2Body_GetRotation(f2d_body(index1, world_and_generation));
   out[0] = rotation.c;
   out[1] = rotation.s;
 }
 
-F2D_EXPORT void f2d_body_set_transform(int32_t i1, uint32_t wg, float px,
+F2D_EXPORT void f2d_body_set_transform(int32_t index1, uint32_t world_and_generation, float px,
                                        float py, float qc, float qs) {
-  b2Body_SetTransform(f2d_body(i1, wg), (b2Vec2){px, py}, (b2Rot){qc, qs});
+  b2Body_SetTransform(f2d_body(index1, world_and_generation), (b2Vec2){px, py}, (b2Rot){qc, qs});
 }
 
-F2D_EXPORT void f2d_body_get_linear_velocity(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_body_get_linear_velocity(int32_t index1, uint32_t world_and_generation,
                                              float* out) {
-  b2Vec2 velocity = b2Body_GetLinearVelocity(f2d_body(i1, wg));
+  b2Vec2 velocity = b2Body_GetLinearVelocity(f2d_body(index1, world_and_generation));
   out[0] = velocity.x;
   out[1] = velocity.y;
 }
 
-F2D_EXPORT void f2d_body_set_linear_velocity(int32_t i1, uint32_t wg, float x,
+F2D_EXPORT void f2d_body_set_linear_velocity(int32_t index1, uint32_t world_and_generation, float x,
                                              float y) {
-  b2Body_SetLinearVelocity(f2d_body(i1, wg), (b2Vec2){x, y});
+  b2Body_SetLinearVelocity(f2d_body(index1, world_and_generation), (b2Vec2){x, y});
 }
 
-F2D_EXPORT void f2d_body_apply_force(int32_t i1, uint32_t wg, float fx,
+F2D_EXPORT void f2d_body_apply_force(int32_t index1, uint32_t world_and_generation, float fx,
                                      float fy, float px, float py, int wake) {
-  b2Body_ApplyForce(f2d_body(i1, wg), (b2Vec2){fx, fy}, (b2Vec2){px, py},
+  b2Body_ApplyForce(f2d_body(index1, world_and_generation), (b2Vec2){fx, fy}, (b2Vec2){px, py},
                     wake);
 }
 
-F2D_EXPORT void f2d_body_apply_force_to_center(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_body_apply_force_to_center(int32_t index1, uint32_t world_and_generation,
                                                float fx, float fy, int wake) {
-  b2Body_ApplyForceToCenter(f2d_body(i1, wg), (b2Vec2){fx, fy}, wake);
+  b2Body_ApplyForceToCenter(f2d_body(index1, world_and_generation), (b2Vec2){fx, fy}, wake);
 }
 
-F2D_EXPORT void f2d_body_apply_torque(int32_t i1, uint32_t wg, float torque,
+F2D_EXPORT void f2d_body_apply_torque(int32_t index1, uint32_t world_and_generation, float torque,
                                       int wake) {
-  b2Body_ApplyTorque(f2d_body(i1, wg), torque, wake);
+  b2Body_ApplyTorque(f2d_body(index1, world_and_generation), torque, wake);
 }
 
-F2D_EXPORT void f2d_body_apply_linear_impulse(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_body_apply_linear_impulse(int32_t index1, uint32_t world_and_generation,
                                               float ix, float iy, float px,
                                               float py, int wake) {
-  b2Body_ApplyLinearImpulse(f2d_body(i1, wg), (b2Vec2){ix, iy},
+  b2Body_ApplyLinearImpulse(f2d_body(index1, world_and_generation), (b2Vec2){ix, iy},
                             (b2Vec2){px, py}, wake);
 }
 
-F2D_EXPORT void f2d_body_apply_linear_impulse_to_center(int32_t i1,
-                                                        uint32_t wg, float ix,
+F2D_EXPORT void f2d_body_apply_linear_impulse_to_center(int32_t index1,
+                                                        uint32_t world_and_generation, float ix,
                                                         float iy, int wake) {
-  b2Body_ApplyLinearImpulseToCenter(f2d_body(i1, wg), (b2Vec2){ix, iy}, wake);
+  b2Body_ApplyLinearImpulseToCenter(f2d_body(index1, world_and_generation), (b2Vec2){ix, iy}, wake);
 }
 
-F2D_EXPORT void f2d_body_apply_angular_impulse(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_body_apply_angular_impulse(int32_t index1, uint32_t world_and_generation,
                                                float impulse, int wake) {
-  b2Body_ApplyAngularImpulse(f2d_body(i1, wg), impulse, wake);
+  b2Body_ApplyAngularImpulse(f2d_body(index1, world_and_generation), impulse, wake);
 }
 
-F2D_EXPORT void f2d_body_get_local_center(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_body_get_local_center(int32_t index1, uint32_t world_and_generation,
                                           float* out) {
-  b2Vec2 center = b2Body_GetLocalCenterOfMass(f2d_body(i1, wg));
+  b2Vec2 center = b2Body_GetLocalCenterOfMass(f2d_body(index1, world_and_generation));
   out[0] = center.x;
   out[1] = center.y;
 }
 
-F2D_EXPORT void f2d_body_get_world_center(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_body_get_world_center(int32_t index1, uint32_t world_and_generation,
                                           float* out) {
-  b2Vec2 center = b2Body_GetWorldCenterOfMass(f2d_body(i1, wg));
+  b2Vec2 center = b2Body_GetWorldCenterOfMass(f2d_body(index1, world_and_generation));
   out[0] = center.x;
   out[1] = center.y;
 }
 
-F2D_EXPORT void f2d_body_set_mass_data(int32_t i1, uint32_t wg, float mass,
+F2D_EXPORT void f2d_body_set_mass_data(int32_t index1, uint32_t world_and_generation, float mass,
                                        float rotational_inertia, float cx,
                                        float cy) {
   b2MassData mass_data = {mass, {cx, cy}, rotational_inertia};
-  b2Body_SetMassData(f2d_body(i1, wg), mass_data);
+  b2Body_SetMassData(f2d_body(index1, world_and_generation), mass_data);
 }
 
-F2D_EXPORT const char* f2d_body_get_name(int32_t i1, uint32_t wg) {
-  return b2Body_GetName(f2d_body(i1, wg));
+F2D_EXPORT const char* f2d_body_get_name(int32_t index1, uint32_t world_and_generation) {
+  return b2Body_GetName(f2d_body(index1, world_and_generation));
 }
 
-F2D_EXPORT void f2d_body_set_name(int32_t i1, uint32_t wg, const char* name) {
-  b2Body_SetName(f2d_body(i1, wg), name);
+F2D_EXPORT void f2d_body_set_name(int32_t index1, uint32_t world_and_generation, const char* name) {
+  b2Body_SetName(f2d_body(index1, world_and_generation), name);
 }
 
-F2D_EXPORT void f2d_body_get_world_point(int32_t i1, uint32_t wg, float x,
+F2D_EXPORT void f2d_body_get_world_point(int32_t index1, uint32_t world_and_generation, float x,
                                          float y, float* out) {
-  b2Vec2 point = b2Body_GetWorldPoint(f2d_body(i1, wg), (b2Vec2){x, y});
+  b2Vec2 point = b2Body_GetWorldPoint(f2d_body(index1, world_and_generation), (b2Vec2){x, y});
   out[0] = point.x;
   out[1] = point.y;
 }
 
-F2D_EXPORT void f2d_body_get_local_point(int32_t i1, uint32_t wg, float x,
+F2D_EXPORT void f2d_body_get_local_point(int32_t index1, uint32_t world_and_generation, float x,
                                          float y, float* out) {
-  b2Vec2 point = b2Body_GetLocalPoint(f2d_body(i1, wg), (b2Vec2){x, y});
+  b2Vec2 point = b2Body_GetLocalPoint(f2d_body(index1, world_and_generation), (b2Vec2){x, y});
   out[0] = point.x;
   out[1] = point.y;
 }
 
-F2D_EXPORT int f2d_body_get_shape_count(int32_t i1, uint32_t wg) {
-  return b2Body_GetShapeCount(f2d_body(i1, wg));
+F2D_EXPORT int f2d_body_get_shape_count(int32_t index1, uint32_t world_and_generation) {
+  return b2Body_GetShapeCount(f2d_body(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_body_get_shapes(int32_t i1, uint32_t wg, int32_t* out,
+F2D_EXPORT int f2d_body_get_shapes(int32_t index1, uint32_t world_and_generation, int32_t* out,
                                    int capacity) {
   b2ShapeId shapes[capacity];
-  int count = b2Body_GetShapes(f2d_body(i1, wg), shapes, capacity);
+  int count = b2Body_GetShapes(f2d_body(index1, world_and_generation), shapes, capacity);
   for (int i = 0; i < count; ++i) {
     out[2 * i] = shapes[i].index1;
     out[2 * i + 1] = (int32_t)f2d_wg_shape(shapes[i]);
@@ -345,14 +345,14 @@ F2D_EXPORT int f2d_body_get_shapes(int32_t i1, uint32_t wg, int32_t* out,
   return count;
 }
 
-F2D_EXPORT int f2d_body_get_joint_count(int32_t i1, uint32_t wg) {
-  return b2Body_GetJointCount(f2d_body(i1, wg));
+F2D_EXPORT int f2d_body_get_joint_count(int32_t index1, uint32_t world_and_generation) {
+  return b2Body_GetJointCount(f2d_body(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_body_get_joints(int32_t i1, uint32_t wg, int32_t* out,
+F2D_EXPORT int f2d_body_get_joints(int32_t index1, uint32_t world_and_generation, int32_t* out,
                                    int capacity) {
   b2JointId joints[capacity];
-  int count = b2Body_GetJoints(f2d_body(i1, wg), joints, capacity);
+  int count = b2Body_GetJoints(f2d_body(index1, world_and_generation), joints, capacity);
   for (int i = 0; i < count; ++i) {
     out[2 * i] = joints[i].index1;
     out[2 * i + 1] = (int32_t)f2d_wg_joint(joints[i]);
@@ -362,15 +362,15 @@ F2D_EXPORT int f2d_body_get_joints(int32_t i1, uint32_t wg, int32_t* out,
 
 // Scalar body accessors, generated by macro.
 #define F2D_BODY_GET_FLOAT(name, fn) \
-  F2D_EXPORT float name(int32_t i1, uint32_t wg) { return fn(f2d_body(i1, wg)); }
+  F2D_EXPORT float name(int32_t index1, uint32_t world_and_generation) { return fn(f2d_body(index1, world_and_generation)); }
 #define F2D_BODY_SET_FLOAT(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg, float v) { fn(f2d_body(i1, wg), v); }
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation, float v) { fn(f2d_body(index1, world_and_generation), v); }
 #define F2D_BODY_GET_INT(name, fn) \
-  F2D_EXPORT int name(int32_t i1, uint32_t wg) { return (int)fn(f2d_body(i1, wg)); }
+  F2D_EXPORT int name(int32_t index1, uint32_t world_and_generation) { return (int)fn(f2d_body(index1, world_and_generation)); }
 #define F2D_BODY_SET_BOOL(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg, int v) { fn(f2d_body(i1, wg), v); }
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation, int v) { fn(f2d_body(index1, world_and_generation), v); }
 #define F2D_BODY_CALL(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg) { fn(f2d_body(i1, wg)); }
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation) { fn(f2d_body(index1, world_and_generation)); }
 
 F2D_BODY_GET_FLOAT(f2d_body_get_angular_velocity, b2Body_GetAngularVelocity)
 F2D_BODY_SET_FLOAT(f2d_body_set_angular_velocity, b2Body_SetAngularVelocity)
@@ -378,8 +378,8 @@ F2D_BODY_GET_FLOAT(f2d_body_get_mass, b2Body_GetMass)
 F2D_BODY_GET_FLOAT(f2d_body_get_rotational_inertia, b2Body_GetRotationalInertia)
 F2D_BODY_CALL(f2d_body_apply_mass_from_shapes, b2Body_ApplyMassFromShapes)
 F2D_BODY_GET_INT(f2d_body_get_type, b2Body_GetType)
-F2D_EXPORT void f2d_body_set_type(int32_t i1, uint32_t wg, int type) {
-  b2Body_SetType(f2d_body(i1, wg), (b2BodyType)type);
+F2D_EXPORT void f2d_body_set_type(int32_t index1, uint32_t world_and_generation, int type) {
+  b2Body_SetType(f2d_body(index1, world_and_generation), (b2BodyType)type);
 }
 F2D_BODY_GET_INT(f2d_body_is_awake, b2Body_IsAwake)
 F2D_BODY_SET_BOOL(f2d_body_set_awake, b2Body_SetAwake)
@@ -451,36 +451,36 @@ static void f2d_out_shape(b2ShapeId id, int32_t* out) {
   out[1] = (int32_t)f2d_wg_shape(id);
 }
 
-F2D_EXPORT void f2d_create_circle_shape(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_create_circle_shape(int32_t index1, uint32_t world_and_generation,
                                         const f2dShapeDef* def, float cx,
                                         float cy, float radius, int32_t* out) {
   b2ShapeDef shape_def = f2d_shape_def(def);
   b2Circle circle = {{cx, cy}, radius};
-  f2d_out_shape(b2CreateCircleShape(f2d_body(i1, wg), &shape_def, &circle),
+  f2d_out_shape(b2CreateCircleShape(f2d_body(index1, world_and_generation), &shape_def, &circle),
                 out);
 }
 
-F2D_EXPORT void f2d_create_capsule_shape(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_create_capsule_shape(int32_t index1, uint32_t world_and_generation,
                                          const f2dShapeDef* def, float c1x,
                                          float c1y, float c2x, float c2y,
                                          float radius, int32_t* out) {
   b2ShapeDef shape_def = f2d_shape_def(def);
   b2Capsule capsule = {{c1x, c1y}, {c2x, c2y}, radius};
-  f2d_out_shape(b2CreateCapsuleShape(f2d_body(i1, wg), &shape_def, &capsule),
+  f2d_out_shape(b2CreateCapsuleShape(f2d_body(index1, world_and_generation), &shape_def, &capsule),
                 out);
 }
 
-F2D_EXPORT void f2d_create_segment_shape(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_create_segment_shape(int32_t index1, uint32_t world_and_generation,
                                          const f2dShapeDef* def, float p1x,
                                          float p1y, float p2x, float p2y,
                                          int32_t* out) {
   b2ShapeDef shape_def = f2d_shape_def(def);
   b2Segment segment = {{p1x, p1y}, {p2x, p2y}};
-  f2d_out_shape(b2CreateSegmentShape(f2d_body(i1, wg), &shape_def, &segment),
+  f2d_out_shape(b2CreateSegmentShape(f2d_body(index1, world_and_generation), &shape_def, &segment),
                 out);
 }
 
-F2D_EXPORT void f2d_create_box_shape(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_create_box_shape(int32_t index1, uint32_t world_and_generation,
                                      const f2dShapeDef* def, float half_width,
                                      float half_height, float cx, float cy,
                                      float qc, float qs, float radius,
@@ -489,12 +489,12 @@ F2D_EXPORT void f2d_create_box_shape(int32_t i1, uint32_t wg,
   b2Polygon polygon = b2MakeOffsetRoundedBox(half_width, half_height,
                                              (b2Vec2){cx, cy}, (b2Rot){qc, qs},
                                              radius);
-  f2d_out_shape(b2CreatePolygonShape(f2d_body(i1, wg), &shape_def, &polygon),
+  f2d_out_shape(b2CreatePolygonShape(f2d_body(index1, world_and_generation), &shape_def, &polygon),
                 out);
 }
 
 // Returns false when the hull is degenerate.
-F2D_EXPORT int f2d_create_polygon_shape(int32_t i1, uint32_t wg,
+F2D_EXPORT int f2d_create_polygon_shape(int32_t index1, uint32_t world_and_generation,
                                         const f2dShapeDef* def,
                                         const float* points, int count,
                                         float radius, int32_t* out) {
@@ -504,29 +504,29 @@ F2D_EXPORT int f2d_create_polygon_shape(int32_t i1, uint32_t wg,
   }
   b2ShapeDef shape_def = f2d_shape_def(def);
   b2Polygon polygon = b2MakePolygon(&hull, radius);
-  f2d_out_shape(b2CreatePolygonShape(f2d_body(i1, wg), &shape_def, &polygon),
+  f2d_out_shape(b2CreatePolygonShape(f2d_body(index1, world_and_generation), &shape_def, &polygon),
                 out);
   return 1;
 }
 
-F2D_EXPORT void f2d_destroy_shape(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_destroy_shape(int32_t index1, uint32_t world_and_generation,
                                   int update_body_mass) {
-  b2DestroyShape(f2d_shape(i1, wg), update_body_mass);
+  b2DestroyShape(f2d_shape(index1, world_and_generation), update_body_mass);
 }
 
-F2D_EXPORT void f2d_shape_get_body(int32_t i1, uint32_t wg, int32_t* out) {
-  b2BodyId id = b2Shape_GetBody(f2d_shape(i1, wg));
+F2D_EXPORT void f2d_shape_get_body(int32_t index1, uint32_t world_and_generation, int32_t* out) {
+  b2BodyId id = b2Shape_GetBody(f2d_shape(index1, world_and_generation));
   out[0] = id.index1;
   out[1] = (int32_t)f2d_wg_body(id);
 }
 
-F2D_EXPORT void f2d_shape_set_density(int32_t i1, uint32_t wg, float density,
+F2D_EXPORT void f2d_shape_set_density(int32_t index1, uint32_t world_and_generation, float density,
                                       int update_body_mass) {
-  b2Shape_SetDensity(f2d_shape(i1, wg), density, update_body_mass);
+  b2Shape_SetDensity(f2d_shape(index1, world_and_generation), density, update_body_mass);
 }
 
-F2D_EXPORT void f2d_shape_get_filter(int32_t i1, uint32_t wg, int32_t* out) {
-  b2Filter filter = b2Shape_GetFilter(f2d_shape(i1, wg));
+F2D_EXPORT void f2d_shape_get_filter(int32_t index1, uint32_t world_and_generation, int32_t* out) {
+  b2Filter filter = b2Shape_GetFilter(f2d_shape(index1, world_and_generation));
   out[0] = (int32_t)(filter.categoryBits & 0xFFFFFFFF);
   out[1] = (int32_t)(filter.categoryBits >> 32);
   out[2] = (int32_t)(filter.maskBits & 0xFFFFFFFF);
@@ -534,22 +534,66 @@ F2D_EXPORT void f2d_shape_get_filter(int32_t i1, uint32_t wg, int32_t* out) {
   out[4] = filter.groupIndex;
 }
 
-F2D_EXPORT void f2d_shape_set_filter(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_shape_set_filter(int32_t index1, uint32_t world_and_generation,
                                      uint32_t category_lo, uint32_t category_hi,
                                      uint32_t mask_lo, uint32_t mask_hi,
                                      int32_t group_index) {
-  b2Shape_SetFilter(f2d_shape(i1, wg), f2d_filter(category_lo, category_hi,
+  b2Shape_SetFilter(f2d_shape(index1, world_and_generation), f2d_filter(category_lo, category_hi,
                                                   mask_lo, mask_hi,
                                                   group_index));
 }
 
-F2D_EXPORT int f2d_shape_test_point(int32_t i1, uint32_t wg, float x,
+F2D_EXPORT int f2d_shape_test_point(int32_t index1, uint32_t world_and_generation, float x,
                                     float y) {
-  return b2Shape_TestPoint(f2d_shape(i1, wg), (b2Vec2){x, y});
+  return b2Shape_TestPoint(f2d_shape(index1, world_and_generation), (b2Vec2){x, y});
 }
 
-F2D_EXPORT void f2d_shape_get_aabb(int32_t i1, uint32_t wg, float* out) {
-  b2AABB aabb = b2Shape_GetAABB(f2d_shape(i1, wg));
+F2D_EXPORT void f2d_shape_get_circle(int32_t index1, uint32_t world_and_generation, float* out) {
+  b2Circle circle = b2Shape_GetCircle(f2d_shape(index1, world_and_generation));
+  out[0] = circle.center.x;
+  out[1] = circle.center.y;
+  out[2] = circle.radius;
+}
+
+F2D_EXPORT void f2d_shape_get_capsule(int32_t index1, uint32_t world_and_generation, float* out) {
+  b2Capsule capsule = b2Shape_GetCapsule(f2d_shape(index1, world_and_generation));
+  out[0] = capsule.center1.x;
+  out[1] = capsule.center1.y;
+  out[2] = capsule.center2.x;
+  out[3] = capsule.center2.y;
+  out[4] = capsule.radius;
+}
+
+F2D_EXPORT void f2d_shape_get_segment(int32_t index1, uint32_t world_and_generation, float* out) {
+  b2Segment segment = b2Shape_GetSegment(f2d_shape(index1, world_and_generation));
+  out[0] = segment.point1.x;
+  out[1] = segment.point1.y;
+  out[2] = segment.point2.x;
+  out[3] = segment.point2.y;
+}
+
+F2D_EXPORT void f2d_shape_get_chain_segment(int32_t index1, uint32_t world_and_generation,
+                                            float* out) {
+  b2ChainSegment chain_segment = b2Shape_GetChainSegment(f2d_shape(index1, world_and_generation));
+  out[0] = chain_segment.segment.point1.x;
+  out[1] = chain_segment.segment.point1.y;
+  out[2] = chain_segment.segment.point2.x;
+  out[3] = chain_segment.segment.point2.y;
+}
+
+// Writes the radius followed by the vertex pairs; returns the vertex count.
+F2D_EXPORT int f2d_shape_get_polygon(int32_t index1, uint32_t world_and_generation, float* out) {
+  b2Polygon polygon = b2Shape_GetPolygon(f2d_shape(index1, world_and_generation));
+  out[0] = polygon.radius;
+  for (int i = 0; i < polygon.count; ++i) {
+    out[1 + 2 * i] = polygon.vertices[i].x;
+    out[2 + 2 * i] = polygon.vertices[i].y;
+  }
+  return polygon.count;
+}
+
+F2D_EXPORT void f2d_shape_get_aabb(int32_t index1, uint32_t world_and_generation, float* out) {
+  b2AABB aabb = b2Shape_GetAABB(f2d_shape(index1, world_and_generation));
   out[0] = aabb.lowerBound.x;
   out[1] = aabb.lowerBound.y;
   out[2] = aabb.upperBound.x;
@@ -557,13 +601,13 @@ F2D_EXPORT void f2d_shape_get_aabb(int32_t i1, uint32_t wg, float* out) {
 }
 
 #define F2D_SHAPE_GET_FLOAT(name, fn) \
-  F2D_EXPORT float name(int32_t i1, uint32_t wg) { return fn(f2d_shape(i1, wg)); }
+  F2D_EXPORT float name(int32_t index1, uint32_t world_and_generation) { return fn(f2d_shape(index1, world_and_generation)); }
 #define F2D_SHAPE_SET_FLOAT(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg, float v) { fn(f2d_shape(i1, wg), v); }
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation, float v) { fn(f2d_shape(index1, world_and_generation), v); }
 #define F2D_SHAPE_GET_INT(name, fn) \
-  F2D_EXPORT int name(int32_t i1, uint32_t wg) { return (int)fn(f2d_shape(i1, wg)); }
+  F2D_EXPORT int name(int32_t index1, uint32_t world_and_generation) { return (int)fn(f2d_shape(index1, world_and_generation)); }
 #define F2D_SHAPE_SET_BOOL(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg, int v) { fn(f2d_shape(i1, wg), v); }
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation, int v) { fn(f2d_shape(index1, world_and_generation), v); }
 
 F2D_SHAPE_GET_INT(f2d_shape_is_valid, b2Shape_IsValid)
 F2D_SHAPE_GET_INT(f2d_shape_get_type, b2Shape_GetType)
@@ -588,7 +632,7 @@ F2D_SHAPE_SET_BOOL(f2d_shape_enable_pre_solve_events,
 
 // Chains.
 
-F2D_EXPORT void f2d_create_chain(int32_t i1, uint32_t wg, const float* points,
+F2D_EXPORT void f2d_create_chain(int32_t index1, uint32_t world_and_generation, const float* points,
                                  int point_count, const float* materials,
                                  int material_count, uint32_t category_lo,
                                  uint32_t category_hi, uint32_t mask_lo,
@@ -610,43 +654,43 @@ F2D_EXPORT void f2d_create_chain(int32_t i1, uint32_t wg, const float* points,
                           group_index);
   def.isLoop = is_loop;
   def.enableSensorEvents = enable_sensor_events;
-  b2ChainId id = b2CreateChain(f2d_body(i1, wg), &def);
+  b2ChainId id = b2CreateChain(f2d_body(index1, world_and_generation), &def);
   out[0] = id.index1;
   out[1] = (int32_t)f2d_wg_chain(id);
 }
 
-F2D_EXPORT void f2d_destroy_chain(int32_t i1, uint32_t wg) {
-  b2DestroyChain(f2d_chain(i1, wg));
+F2D_EXPORT void f2d_destroy_chain(int32_t index1, uint32_t world_and_generation) {
+  b2DestroyChain(f2d_chain(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_chain_is_valid(int32_t i1, uint32_t wg) {
-  return b2Chain_IsValid(f2d_chain(i1, wg));
+F2D_EXPORT int f2d_chain_is_valid(int32_t index1, uint32_t world_and_generation) {
+  return b2Chain_IsValid(f2d_chain(index1, world_and_generation));
 }
 
-F2D_EXPORT void f2d_chain_set_friction(int32_t i1, uint32_t wg, float v) {
-  b2Chain_SetFriction(f2d_chain(i1, wg), v);
+F2D_EXPORT void f2d_chain_set_friction(int32_t index1, uint32_t world_and_generation, float v) {
+  b2Chain_SetFriction(f2d_chain(index1, world_and_generation), v);
 }
 
-F2D_EXPORT float f2d_chain_get_friction(int32_t i1, uint32_t wg) {
-  return b2Chain_GetFriction(f2d_chain(i1, wg));
+F2D_EXPORT float f2d_chain_get_friction(int32_t index1, uint32_t world_and_generation) {
+  return b2Chain_GetFriction(f2d_chain(index1, world_and_generation));
 }
 
-F2D_EXPORT void f2d_chain_set_restitution(int32_t i1, uint32_t wg, float v) {
-  b2Chain_SetRestitution(f2d_chain(i1, wg), v);
+F2D_EXPORT void f2d_chain_set_restitution(int32_t index1, uint32_t world_and_generation, float v) {
+  b2Chain_SetRestitution(f2d_chain(index1, world_and_generation), v);
 }
 
-F2D_EXPORT float f2d_chain_get_restitution(int32_t i1, uint32_t wg) {
-  return b2Chain_GetRestitution(f2d_chain(i1, wg));
+F2D_EXPORT float f2d_chain_get_restitution(int32_t index1, uint32_t world_and_generation) {
+  return b2Chain_GetRestitution(f2d_chain(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_chain_get_segment_count(int32_t i1, uint32_t wg) {
-  return b2Chain_GetSegmentCount(f2d_chain(i1, wg));
+F2D_EXPORT int f2d_chain_get_segment_count(int32_t index1, uint32_t world_and_generation) {
+  return b2Chain_GetSegmentCount(f2d_chain(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_chain_get_segments(int32_t i1, uint32_t wg, int32_t* out,
+F2D_EXPORT int f2d_chain_get_segments(int32_t index1, uint32_t world_and_generation, int32_t* out,
                                       int capacity) {
   b2ShapeId segments[capacity];
-  int count = b2Chain_GetSegments(f2d_chain(i1, wg), segments, capacity);
+  int count = b2Chain_GetSegments(f2d_chain(index1, world_and_generation), segments, capacity);
   for (int i = 0; i < count; ++i) {
     out[2 * i] = segments[i].index1;
     out[2 * i + 1] = (int32_t)f2d_wg_shape(segments[i]);
@@ -662,15 +706,15 @@ static void f2d_out_joint(b2JointId id, int32_t* out) {
 }
 
 F2D_EXPORT void f2d_create_distance_joint(
-    uint32_t w, int32_t ai1, uint32_t awg, int32_t bi1, uint32_t bwg,
+    uint32_t w, int32_t a_index1, uint32_t a_world_and_generation, int32_t b_index1, uint32_t b_world_and_generation,
     float anchor_ax, float anchor_ay, float anchor_bx, float anchor_by,
     float length, int enable_spring, float hertz, float damping_ratio,
     int enable_limit, float min_length, float max_length, int enable_motor,
     float max_motor_force, float motor_speed, int collide_connected,
     int32_t* out) {
   b2DistanceJointDef def = b2DefaultDistanceJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   def.localAnchorA = (b2Vec2){anchor_ax, anchor_ay};
   def.localAnchorB = (b2Vec2){anchor_bx, anchor_by};
   def.length = length;
@@ -687,25 +731,25 @@ F2D_EXPORT void f2d_create_distance_joint(
   f2d_out_joint(b2CreateDistanceJoint(f2d_world(w), &def), out);
 }
 
-F2D_EXPORT void f2d_create_filter_joint(uint32_t w, int32_t ai1, uint32_t awg,
-                                        int32_t bi1, uint32_t bwg,
+F2D_EXPORT void f2d_create_filter_joint(uint32_t w, int32_t a_index1, uint32_t a_world_and_generation,
+                                        int32_t b_index1, uint32_t b_world_and_generation,
                                         int32_t* out) {
   b2FilterJointDef def = b2DefaultFilterJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   f2d_out_joint(b2CreateFilterJoint(f2d_world(w), &def), out);
 }
 
-F2D_EXPORT void f2d_create_motor_joint(uint32_t w, int32_t ai1, uint32_t awg,
-                                       int32_t bi1, uint32_t bwg,
+F2D_EXPORT void f2d_create_motor_joint(uint32_t w, int32_t a_index1, uint32_t a_world_and_generation,
+                                       int32_t b_index1, uint32_t b_world_and_generation,
                                        float offset_x, float offset_y,
                                        float angular_offset, float max_force,
                                        float max_torque,
                                        float correction_factor,
                                        int collide_connected, int32_t* out) {
   b2MotorJointDef def = b2DefaultMotorJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   def.linearOffset = (b2Vec2){offset_x, offset_y};
   def.angularOffset = angular_offset;
   def.maxForce = max_force;
@@ -715,15 +759,15 @@ F2D_EXPORT void f2d_create_motor_joint(uint32_t w, int32_t ai1, uint32_t awg,
   f2d_out_joint(b2CreateMotorJoint(f2d_world(w), &def), out);
 }
 
-F2D_EXPORT void f2d_create_mouse_joint(uint32_t w, int32_t ai1, uint32_t awg,
-                                       int32_t bi1, uint32_t bwg,
+F2D_EXPORT void f2d_create_mouse_joint(uint32_t w, int32_t a_index1, uint32_t a_world_and_generation,
+                                       int32_t b_index1, uint32_t b_world_and_generation,
                                        float target_x, float target_y,
                                        float hertz, float damping_ratio,
                                        float max_force, int collide_connected,
                                        int32_t* out) {
   b2MouseJointDef def = b2DefaultMouseJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   def.target = (b2Vec2){target_x, target_y};
   def.hertz = hertz;
   def.dampingRatio = damping_ratio;
@@ -733,7 +777,7 @@ F2D_EXPORT void f2d_create_mouse_joint(uint32_t w, int32_t ai1, uint32_t awg,
 }
 
 F2D_EXPORT void f2d_create_prismatic_joint(
-    uint32_t w, int32_t ai1, uint32_t awg, int32_t bi1, uint32_t bwg,
+    uint32_t w, int32_t a_index1, uint32_t a_world_and_generation, int32_t b_index1, uint32_t b_world_and_generation,
     float anchor_ax, float anchor_ay, float anchor_bx, float anchor_by,
     float axis_x, float axis_y, float reference_angle,
     float target_translation, int enable_spring, float hertz,
@@ -741,8 +785,8 @@ F2D_EXPORT void f2d_create_prismatic_joint(
     float upper_translation, int enable_motor, float max_motor_force,
     float motor_speed, int collide_connected, int32_t* out) {
   b2PrismaticJointDef def = b2DefaultPrismaticJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   def.localAnchorA = (b2Vec2){anchor_ax, anchor_ay};
   def.localAnchorB = (b2Vec2){anchor_bx, anchor_by};
   def.localAxisA = (b2Vec2){axis_x, axis_y};
@@ -762,15 +806,15 @@ F2D_EXPORT void f2d_create_prismatic_joint(
 }
 
 F2D_EXPORT void f2d_create_revolute_joint(
-    uint32_t w, int32_t ai1, uint32_t awg, int32_t bi1, uint32_t bwg,
+    uint32_t w, int32_t a_index1, uint32_t a_world_and_generation, int32_t b_index1, uint32_t b_world_and_generation,
     float anchor_ax, float anchor_ay, float anchor_bx, float anchor_by,
     float reference_angle, float target_angle, int enable_spring, float hertz,
     float damping_ratio, int enable_limit, float lower_angle,
     float upper_angle, int enable_motor, float max_motor_torque,
     float motor_speed, float draw_size, int collide_connected, int32_t* out) {
   b2RevoluteJointDef def = b2DefaultRevoluteJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   def.localAnchorA = (b2Vec2){anchor_ax, anchor_ay};
   def.localAnchorB = (b2Vec2){anchor_bx, anchor_by};
   def.referenceAngle = reference_angle;
@@ -790,14 +834,14 @@ F2D_EXPORT void f2d_create_revolute_joint(
 }
 
 F2D_EXPORT void f2d_create_weld_joint(
-    uint32_t w, int32_t ai1, uint32_t awg, int32_t bi1, uint32_t bwg,
+    uint32_t w, int32_t a_index1, uint32_t a_world_and_generation, int32_t b_index1, uint32_t b_world_and_generation,
     float anchor_ax, float anchor_ay, float anchor_bx, float anchor_by,
     float reference_angle, float linear_hertz, float angular_hertz,
     float linear_damping_ratio, float angular_damping_ratio,
     int collide_connected, int32_t* out) {
   b2WeldJointDef def = b2DefaultWeldJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   def.localAnchorA = (b2Vec2){anchor_ax, anchor_ay};
   def.localAnchorB = (b2Vec2){anchor_bx, anchor_by};
   def.referenceAngle = reference_angle;
@@ -810,15 +854,15 @@ F2D_EXPORT void f2d_create_weld_joint(
 }
 
 F2D_EXPORT void f2d_create_wheel_joint(
-    uint32_t w, int32_t ai1, uint32_t awg, int32_t bi1, uint32_t bwg,
+    uint32_t w, int32_t a_index1, uint32_t a_world_and_generation, int32_t b_index1, uint32_t b_world_and_generation,
     float anchor_ax, float anchor_ay, float anchor_bx, float anchor_by,
     float axis_x, float axis_y, int enable_spring, float hertz,
     float damping_ratio, int enable_limit, float lower_translation,
     float upper_translation, int enable_motor, float max_motor_torque,
     float motor_speed, int collide_connected, int32_t* out) {
   b2WheelJointDef def = b2DefaultWheelJointDef();
-  def.bodyIdA = f2d_body(ai1, awg);
-  def.bodyIdB = f2d_body(bi1, bwg);
+  def.bodyIdA = f2d_body(a_index1, a_world_and_generation);
+  def.bodyIdB = f2d_body(b_index1, b_world_and_generation);
   def.localAnchorA = (b2Vec2){anchor_ax, anchor_ay};
   def.localAnchorB = (b2Vec2){anchor_bx, anchor_by};
   def.localAxisA = (b2Vec2){axis_x, axis_y};
@@ -835,79 +879,79 @@ F2D_EXPORT void f2d_create_wheel_joint(
   f2d_out_joint(b2CreateWheelJoint(f2d_world(w), &def), out);
 }
 
-F2D_EXPORT void f2d_destroy_joint(int32_t i1, uint32_t wg) {
-  b2DestroyJoint(f2d_joint(i1, wg));
+F2D_EXPORT void f2d_destroy_joint(int32_t index1, uint32_t world_and_generation) {
+  b2DestroyJoint(f2d_joint(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_joint_is_valid(int32_t i1, uint32_t wg) {
-  return b2Joint_IsValid(f2d_joint(i1, wg));
+F2D_EXPORT int f2d_joint_is_valid(int32_t index1, uint32_t world_and_generation) {
+  return b2Joint_IsValid(f2d_joint(index1, world_and_generation));
 }
 
-F2D_EXPORT int f2d_joint_get_type(int32_t i1, uint32_t wg) {
-  return (int)b2Joint_GetType(f2d_joint(i1, wg));
+F2D_EXPORT int f2d_joint_get_type(int32_t index1, uint32_t world_and_generation) {
+  return (int)b2Joint_GetType(f2d_joint(index1, world_and_generation));
 }
 
-F2D_EXPORT void f2d_joint_get_body_a(int32_t i1, uint32_t wg, int32_t* out) {
-  b2BodyId id = b2Joint_GetBodyA(f2d_joint(i1, wg));
+F2D_EXPORT void f2d_joint_get_body_a(int32_t index1, uint32_t world_and_generation, int32_t* out) {
+  b2BodyId id = b2Joint_GetBodyA(f2d_joint(index1, world_and_generation));
   out[0] = id.index1;
   out[1] = (int32_t)f2d_wg_body(id);
 }
 
-F2D_EXPORT void f2d_joint_get_body_b(int32_t i1, uint32_t wg, int32_t* out) {
-  b2BodyId id = b2Joint_GetBodyB(f2d_joint(i1, wg));
+F2D_EXPORT void f2d_joint_get_body_b(int32_t index1, uint32_t world_and_generation, int32_t* out) {
+  b2BodyId id = b2Joint_GetBodyB(f2d_joint(index1, world_and_generation));
   out[0] = id.index1;
   out[1] = (int32_t)f2d_wg_body(id);
 }
 
-F2D_EXPORT void f2d_joint_get_local_anchor_a(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_joint_get_local_anchor_a(int32_t index1, uint32_t world_and_generation,
                                              float* out) {
-  b2Vec2 anchor = b2Joint_GetLocalAnchorA(f2d_joint(i1, wg));
+  b2Vec2 anchor = b2Joint_GetLocalAnchorA(f2d_joint(index1, world_and_generation));
   out[0] = anchor.x;
   out[1] = anchor.y;
 }
 
-F2D_EXPORT void f2d_joint_get_local_anchor_b(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_joint_get_local_anchor_b(int32_t index1, uint32_t world_and_generation,
                                              float* out) {
-  b2Vec2 anchor = b2Joint_GetLocalAnchorB(f2d_joint(i1, wg));
+  b2Vec2 anchor = b2Joint_GetLocalAnchorB(f2d_joint(index1, world_and_generation));
   out[0] = anchor.x;
   out[1] = anchor.y;
 }
 
-F2D_EXPORT int f2d_joint_get_collide_connected(int32_t i1, uint32_t wg) {
-  return b2Joint_GetCollideConnected(f2d_joint(i1, wg));
+F2D_EXPORT int f2d_joint_get_collide_connected(int32_t index1, uint32_t world_and_generation) {
+  return b2Joint_GetCollideConnected(f2d_joint(index1, world_and_generation));
 }
 
-F2D_EXPORT void f2d_joint_set_collide_connected(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_joint_set_collide_connected(int32_t index1, uint32_t world_and_generation,
                                                 int v) {
-  b2Joint_SetCollideConnected(f2d_joint(i1, wg), v);
+  b2Joint_SetCollideConnected(f2d_joint(index1, world_and_generation), v);
 }
 
-F2D_EXPORT void f2d_joint_wake_bodies(int32_t i1, uint32_t wg) {
-  b2Joint_WakeBodies(f2d_joint(i1, wg));
+F2D_EXPORT void f2d_joint_wake_bodies(int32_t index1, uint32_t world_and_generation) {
+  b2Joint_WakeBodies(f2d_joint(index1, world_and_generation));
 }
 
-F2D_EXPORT void f2d_joint_get_constraint_force(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_joint_get_constraint_force(int32_t index1, uint32_t world_and_generation,
                                                float* out) {
-  b2Vec2 force = b2Joint_GetConstraintForce(f2d_joint(i1, wg));
+  b2Vec2 force = b2Joint_GetConstraintForce(f2d_joint(index1, world_and_generation));
   out[0] = force.x;
   out[1] = force.y;
 }
 
-F2D_EXPORT float f2d_joint_get_constraint_torque(int32_t i1, uint32_t wg) {
-  return b2Joint_GetConstraintTorque(f2d_joint(i1, wg));
+F2D_EXPORT float f2d_joint_get_constraint_torque(int32_t index1, uint32_t world_and_generation) {
+  return b2Joint_GetConstraintTorque(f2d_joint(index1, world_and_generation));
 }
 
 #define F2D_JOINT_GET_FLOAT(name, fn) \
-  F2D_EXPORT float name(int32_t i1, uint32_t wg) { return fn(f2d_joint(i1, wg)); }
+  F2D_EXPORT float name(int32_t index1, uint32_t world_and_generation) { return fn(f2d_joint(index1, world_and_generation)); }
 #define F2D_JOINT_SET_FLOAT(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg, float v) { fn(f2d_joint(i1, wg), v); }
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation, float v) { fn(f2d_joint(index1, world_and_generation), v); }
 #define F2D_JOINT_GET_INT(name, fn) \
-  F2D_EXPORT int name(int32_t i1, uint32_t wg) { return (int)fn(f2d_joint(i1, wg)); }
+  F2D_EXPORT int name(int32_t index1, uint32_t world_and_generation) { return (int)fn(f2d_joint(index1, world_and_generation)); }
 #define F2D_JOINT_SET_BOOL(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg, int v) { fn(f2d_joint(i1, wg), v); }
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation, int v) { fn(f2d_joint(index1, world_and_generation), v); }
 #define F2D_JOINT_SET_RANGE(name, fn) \
-  F2D_EXPORT void name(int32_t i1, uint32_t wg, float a, float b) { \
-    fn(f2d_joint(i1, wg), a, b); \
+  F2D_EXPORT void name(int32_t index1, uint32_t world_and_generation, float a, float b) { \
+    fn(f2d_joint(index1, world_and_generation), a, b); \
   }
 
 F2D_JOINT_GET_FLOAT(f2d_distance_joint_get_length, b2DistanceJoint_GetLength)
@@ -951,16 +995,16 @@ F2D_JOINT_SET_FLOAT(f2d_distance_joint_set_max_motor_force,
 F2D_JOINT_GET_FLOAT(f2d_distance_joint_get_motor_force,
                     b2DistanceJoint_GetMotorForce)
 
-F2D_EXPORT void f2d_motor_joint_get_linear_offset(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_motor_joint_get_linear_offset(int32_t index1, uint32_t world_and_generation,
                                                   float* out) {
-  b2Vec2 offset = b2MotorJoint_GetLinearOffset(f2d_joint(i1, wg));
+  b2Vec2 offset = b2MotorJoint_GetLinearOffset(f2d_joint(index1, world_and_generation));
   out[0] = offset.x;
   out[1] = offset.y;
 }
 
-F2D_EXPORT void f2d_motor_joint_set_linear_offset(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_motor_joint_set_linear_offset(int32_t index1, uint32_t world_and_generation,
                                                   float x, float y) {
-  b2MotorJoint_SetLinearOffset(f2d_joint(i1, wg), (b2Vec2){x, y});
+  b2MotorJoint_SetLinearOffset(f2d_joint(index1, world_and_generation), (b2Vec2){x, y});
 }
 
 F2D_JOINT_GET_FLOAT(f2d_motor_joint_get_angular_offset,
@@ -976,16 +1020,16 @@ F2D_JOINT_GET_FLOAT(f2d_motor_joint_get_correction_factor,
 F2D_JOINT_SET_FLOAT(f2d_motor_joint_set_correction_factor,
                     b2MotorJoint_SetCorrectionFactor)
 
-F2D_EXPORT void f2d_mouse_joint_get_target(int32_t i1, uint32_t wg,
+F2D_EXPORT void f2d_mouse_joint_get_target(int32_t index1, uint32_t world_and_generation,
                                            float* out) {
-  b2Vec2 target = b2MouseJoint_GetTarget(f2d_joint(i1, wg));
+  b2Vec2 target = b2MouseJoint_GetTarget(f2d_joint(index1, world_and_generation));
   out[0] = target.x;
   out[1] = target.y;
 }
 
-F2D_EXPORT void f2d_mouse_joint_set_target(int32_t i1, uint32_t wg, float x,
+F2D_EXPORT void f2d_mouse_joint_set_target(int32_t index1, uint32_t world_and_generation, float x,
                                            float y) {
-  b2MouseJoint_SetTarget(f2d_joint(i1, wg), (b2Vec2){x, y});
+  b2MouseJoint_SetTarget(f2d_joint(index1, world_and_generation), (b2Vec2){x, y});
 }
 
 F2D_JOINT_GET_FLOAT(f2d_mouse_joint_get_spring_hertz,
@@ -1140,7 +1184,7 @@ F2D_JOINT_GET_FLOAT(f2d_wheel_joint_get_motor_torque,
 // - end contact: 4 [aI1, aWg, bI1, bWg]
 // - hit contact: 9 [aI1, aWg, bI1, bWg, px, py, nx, ny, approachSpeed]
 // - sensor: 4 [sensorI1, sensorWg, visitorI1, visitorWg]
-// - body move: 7 [i1, wg, x, y, qc, qs, fellAsleep]
+// - body move: 7 [index1, world_and_generation, x, y, qc, qs, fellAsleep]
 
 F2D_EXPORT void f2d_world_get_contact_event_counts(uint32_t w, int32_t* out) {
   b2ContactEvents events = b2World_GetContactEvents(f2d_world(w));
@@ -1256,7 +1300,7 @@ F2D_EXPORT int f2d_world_get_body_events(uint32_t w, double* out) {
 // Queries.
 
 // Returns whether something was hit; the hit is written as
-// [i1, wg, px, py, nx, ny, fraction] float32s with ids stored via the
+// [index1, world_and_generation, px, py, nx, ny, fraction] float32s with ids stored via the
 // int32 view of the same buffer slots 0 and 1.
 F2D_EXPORT int f2d_world_cast_ray_closest(uint32_t w, float ox, float oy,
                                           float tx, float ty,
