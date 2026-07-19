@@ -31,7 +31,6 @@ melos:
       dev_dependencies:
         dartdoc: ^8.3.4
         flame_lint: ^1.4.1
-        mocktail: ^1.0.4
         test: ^1.26.3
 
   scripts:
