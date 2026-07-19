@@ -29,10 +29,31 @@ jobs:
           fatal-infos: true
   # END LINTING STAGE
 
+  ffigen-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - name: Install libclang for ffigen
+        run: sudo apt-get update && sudo apt-get install -y libclang-dev
+      - name: Regenerate bindings
+        working-directory: packages/forge2d/tool/ffigen
+        run: |
+          dart pub get
+          dart run ffigen --config ffigen.yaml
+      - name: Verify committed bindings are up to date
+        run: git diff --exit-code -- packages/forge2d/lib/src/ffi/box2d.g.dart
+
   # BEGIN TESTING STAGE
   test:
     needs: [format, analyze]
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # The native Box2D build must work with the system C toolchain on every
+      # platform: gcc/clang on Linux, Xcode clang on macOS, MSVC on Windows.
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
