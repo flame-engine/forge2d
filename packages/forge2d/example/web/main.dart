@@ -12,20 +12,18 @@ Future<void> main() async {
   _App().start();
 }
 
-/// The DOM events the app listens to, with their event type names.
+/// The DOM events the app listens to.
 enum DomEvent {
-  keyDown('keydown'),
-  keyUp('keyup'),
-  pointerDown('pointerdown'),
-  pointerMove('pointermove'),
-  pointerUp('pointerup'),
-  pointerCancel('pointercancel'),
-  click('click');
-
-  const DomEvent(this.type);
+  keyDown,
+  keyUp,
+  pointerDown,
+  pointerMove,
+  pointerUp,
+  pointerCancel,
+  click;
 
   /// The DOM event type name.
-  final String type;
+  String get type => name.toLowerCase();
 }
 
 void _listen<T extends Event>(
