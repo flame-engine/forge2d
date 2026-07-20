@@ -1,0 +1,1279 @@
+# Copyright (c) 2024, the Dart project authors.  Please see the AUTHORS file
+# for details. All rights reserved. Use of this source code is governed by a
+# BSD-style license that can be found in the LICENSE file.
+
+# Please add new fixes to the top of the file. For documentation about this file
+# format, see https://dart.dev/go/data-driven-fixes.
+
+version: 1
+
+transforms:
+  # AnchorElement => HTMLAnchorElement
+  - title: "Rename to 'HTMLAnchorElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'AnchorElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLAnchorElement'
+  # AreaElement => HTMLAreaElement
+  - title: "Rename to 'HTMLAreaElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'AreaElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLAreaElement'
+  # AudioElement => HTMLAudioElement
+  - title: "Rename to 'HTMLAudioElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'AudioElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLAudioElement'
+  # BaseElement => HTMLBaseElement
+  - title: "Rename to 'HTMLBaseElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'BaseElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLBaseElement'
+  # BodyElement => HTMLBodyElement
+  - title: "Rename to 'HTMLBodyElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'BodyElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLBodyElement'
+  # BRElement => HTMLBRElement
+  - title: "Rename to 'HTMLBRElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'BRElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLBRElement'
+  # ButtonElement => HTMLButtonElement
+  - title: "Rename to 'HTMLButtonElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ButtonElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLButtonElement'
+  # CanvasElement => HTMLCanvasElement
+  - title: "Rename to 'HTMLCanvasElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CanvasElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLCanvasElement'
+  # CDataSection => CDATASection
+  - title: "Rename to 'CDATASection'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CDataSection'
+    changes:
+      - kind: 'rename'
+        newName: 'CDATASection'
+  # CssConditionRule => CSSConditionRule
+  - title: "Rename to 'CSSConditionRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssConditionRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSConditionRule'
+  # CssFontFaceRule => CSSFontFaceRule
+  - title: "Rename to 'CSSFontFaceRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssFontFaceRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSFontFaceRule'
+  # CssGroupingRule => CSSGroupingRule
+  - title: "Rename to 'CSSGroupingRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssGroupingRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSGroupingRule'
+  # CssImageValue => CSSImageValue
+  - title: "Rename to 'CSSImageValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssImageValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSImageValue'
+  # CssImportRule => CSSImportRule
+  - title: "Rename to 'CSSImportRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssImportRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSImportRule'
+  # CssKeyframeRule => CSSKeyframeRule
+  - title: "Rename to 'CSSKeyframeRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssKeyframeRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSKeyframeRule'
+  # CssKeyframesRule => CSSKeyframesRule
+  - title: "Rename to 'CSSKeyframesRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssKeyframesRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSKeyframesRule'
+  # CssKeywordValue => CSSKeywordValue
+  - title: "Rename to 'CSSKeywordValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssKeywordValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSKeywordValue'
+  # CssMatrixComponent => CSSMatrixComponent
+  - title: "Rename to 'CSSMatrixComponent'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssMatrixComponent'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSMatrixComponent'
+  # CssMediaRule => CSSMediaRule
+  - title: "Rename to 'CSSMediaRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssMediaRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSMediaRule'
+  # CssNamespaceRule => CSSNamespaceRule
+  - title: "Rename to 'CSSNamespaceRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssNamespaceRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSNamespaceRule'
+  # CssNumericValue => CSSNumericValue
+  - title: "Rename to 'CSSNumericValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssNumericValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSNumericValue'
+  # CssPageRule => CSSPageRule
+  - title: "Rename to 'CSSPageRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssPageRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSPageRule'
+  # CssPerspective => CSSPerspective
+  - title: "Rename to 'CSSPerspective'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssPerspective'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSPerspective'
+  # CssRule => CSSRule
+  - title: "Rename to 'CSSRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSRule'
+  # CssScale => CSSScale
+  - title: "Rename to 'CSSScale'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssScale'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSScale'
+  # CssSkew => CSSSkew
+  - title: "Rename to 'CSSSkew'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssSkew'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSSkew'
+  # CssStyleDeclaration => CSSStyleDeclaration
+  - title: "Rename to 'CSSStyleDeclaration'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssStyleDeclaration'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSStyleDeclaration'
+  # CssStyleRule => CSSStyleRule
+  - title: "Rename to 'CSSStyleRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssStyleRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSStyleRule'
+  # CssStyleSheet => CSSStyleSheet
+  - title: "Rename to 'CSSStyleSheet'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssStyleSheet'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSStyleSheet'
+  # CssStyleValue => CSSStyleValue
+  - title: "Rename to 'CSSStyleValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssStyleValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSStyleValue'
+  # CssSupportsRule => CSSSupportsRule
+  - title: "Rename to 'CSSSupportsRule'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssSupportsRule'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSSupportsRule'
+  # CssTransformComponent => CSSTransformComponent
+  - title: "Rename to 'CSSTransformComponent'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssTransformComponent'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSTransformComponent'
+  # CssTransformValue => CSSTransformValue
+  - title: "Rename to 'CSSTransformValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssTransformValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSTransformValue'
+  # CssUnitValue => CSSUnitValue
+  - title: "Rename to 'CSSUnitValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssUnitValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSUnitValue'
+  # CssUnparsedValue => CSSUnparsedValue
+  - title: "Rename to 'CSSUnparsedValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssUnparsedValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSUnparsedValue'
+  # CssVariableReferenceValue => CSSVariableReferenceValue
+  - title: "Rename to 'CSSVariableReferenceValue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'CssVariableReferenceValue'
+    changes:
+      - kind: 'rename'
+        newName: 'CSSVariableReferenceValue'
+  # DataElement => HTMLDataElement
+  - title: "Rename to 'HTMLDataElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DataElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLDataElement'
+  # DataListElement => HTMLDataListElement
+  - title: "Rename to 'HTMLDataListElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DataListElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLDataListElement'
+  # DetailsElement => HTMLDetailsElement
+  - title: "Rename to 'HTMLDetailsElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DetailsElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLDetailsElement'
+  # DialogElement => HTMLDialogElement
+  - title: "Rename to 'HTMLDialogElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DialogElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLDialogElement'
+  # DivElement => HTMLDivElement
+  - title: "Rename to 'HTMLDivElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DivElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLDivElement'
+  # DListElement => HTMLDListElement
+  - title: "Rename to 'HTMLDListElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DListElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLDListElement'
+  # DomException => DOMException
+  - title: "Rename to 'DOMException'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomException'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMException'
+  # DomImplementation => DOMImplementation
+  - title: "Rename to 'DOMImplementation'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomImplementation'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMImplementation'
+  # DomMatrix => DOMMatrix
+  - title: "Rename to 'DOMMatrix'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomMatrix'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMMatrix'
+  # DomMatrixReadOnly => DOMMatrixReadOnly
+  - title: "Rename to 'DOMMatrixReadOnly'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomMatrixReadOnly'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMMatrixReadOnly'
+  # DomParser => DOMParser
+  - title: "Rename to 'DOMParser'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomParser'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMParser'
+  # DomPoint => DOMPoint
+  - title: "Rename to 'DOMPoint'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomPoint'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMPoint'
+  # DomPointReadOnly => DOMPointReadOnly
+  - title: "Rename to 'DOMPointReadOnly'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomPointReadOnly'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMPointReadOnly'
+  # DomQuad => DOMQuad
+  - title: "Rename to 'DOMQuad'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomQuad'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMQuad'
+  # DomRectList => DOMRectList
+  - title: "Rename to 'DOMRectList'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomRectList'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMRectList'
+  # DomRectReadOnly => DOMRectReadOnly
+  - title: "Rename to 'DOMRectReadOnly'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomRectReadOnly'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMRectReadOnly'
+  # DomStringList => DOMStringList
+  - title: "Rename to 'DOMStringList'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomStringList'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMStringList'
+  # DomStringMap => DOMStringMap
+  - title: "Rename to 'DOMStringMap'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomStringMap'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMStringMap'
+  # DomTokenList => DOMTokenList
+  - title: "Rename to 'DOMTokenList'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'DomTokenList'
+    changes:
+      - kind: 'rename'
+        newName: 'DOMTokenList'
+  # EmbedElement => HTMLEmbedElement
+  - title: "Rename to 'HTMLEmbedElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'EmbedElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLEmbedElement'
+  # Entry => FileSystemEntry
+  - title: "Rename to 'FileSystemEntry'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'Entry'
+    changes:
+      - kind: 'rename'
+        newName: 'FileSystemEntry'
+  # FieldSetElement => HTMLFieldSetElement
+  - title: "Rename to 'HTMLFieldSetElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'FieldSetElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLFieldSetElement'
+  # FileEntry => FileSystemFileEntry
+  - title: "Rename to 'FileSystemFileEntry'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'FileEntry'
+    changes:
+      - kind: 'rename'
+        newName: 'FileSystemFileEntry'
+  # FormElement => HTMLFormElement
+  - title: "Rename to 'HTMLFormElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'FormElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLFormElement'
+  # Geoposition => GeolocationPosition
+  - title: "Rename to 'GeolocationPosition'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'Geoposition'
+    changes:
+      - kind: 'rename'
+        newName: 'GeolocationPosition'
+  # HeadElement => HTMLHeadElement
+  - title: "Rename to 'HTMLHeadElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HeadElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLHeadElement'
+  # HeadingElement => HTMLHeadingElement
+  - title: "Rename to 'HTMLHeadingElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HeadingElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLHeadingElement'
+  # HRElement => HTMLHRElement
+  - title: "Rename to 'HTMLHRElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HRElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLHRElement'
+  # HtmlCollection => HTMLCollection
+  - title: "Rename to 'HTMLCollection'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HtmlCollection'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLCollection'
+  # HtmlDocument => Document
+  - title: "Rename to 'Document'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HtmlDocument'
+    changes:
+      - kind: 'rename'
+        newName: 'Document'
+  # HtmlElement => HTMLElement
+  - title: "Rename to 'HTMLElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HtmlElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLElement'
+  # HtmlFormControlsCollection => HTMLFormControlsCollection
+  - title: "Rename to 'HTMLFormControlsCollection'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HtmlFormControlsCollection'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLFormControlsCollection'
+  # HtmlHtmlElement => HTMLHtmlElement
+  - title: "Rename to 'HTMLHtmlElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HtmlHtmlElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLHtmlElement'
+  # HtmlOptionsCollection => HTMLOptionsCollection
+  - title: "Rename to 'HTMLOptionsCollection'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HtmlOptionsCollection'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLOptionsCollection'
+  # HttpRequest => XMLHttpRequest (see test_fixes/README.md)
+  # - title: "Rename to 'XMLHttpRequest'"
+  #   date: 2024-01-12
+  #   element:
+  #     uris: [ 'package:web/web.dart' ]
+  #     class: 'HttpRequest'
+  #   changes:
+  #     - kind: 'rename'
+  #       newName: 'XMLHttpRequest'
+  # HttpRequestEventTarget => XMLHttpRequestEventTarget
+  - title: "Rename to 'XMLHttpRequestEventTarget'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HttpRequestEventTarget'
+    changes:
+      - kind: 'rename'
+        newName: 'XMLHttpRequestEventTarget'
+  # HttpRequestUpload => XMLHttpRequestUpload
+  - title: "Rename to 'XMLHttpRequestUpload'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'HttpRequestUpload'
+    changes:
+      - kind: 'rename'
+        newName: 'XMLHttpRequestUpload'
+  # IFrameElement => HTMLIFrameElement
+  - title: "Rename to 'HTMLIFrameElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'IFrameElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLIFrameElement'
+  # ImageElement => HTMLImageElement
+  - title: "Rename to 'HTMLImageElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ImageElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLImageElement'
+  # InputElement => HTMLInputElement
+  - title: "Rename to 'HTMLInputElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'InputElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLInputElement'
+  # LabelElement => HTMLLabelElement
+  - title: "Rename to 'HTMLLabelElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'LabelElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLLabelElement'
+  # LegendElement => HTMLLegendElement
+  - title: "Rename to 'HTMLLegendElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'LegendElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLLegendElement'
+  # LIElement => HTMLLIElement
+  - title: "Rename to 'HTMLLIElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'LIElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLLIElement'
+  # LinkElement => HTMLLinkElement
+  - title: "Rename to 'HTMLLinkElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'LinkElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLLinkElement'
+  # MapElement => HTMLMapElement
+  - title: "Rename to 'HTMLMapElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'MapElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLMapElement'
+  # MediaElement => HTMLMediaElement
+  - title: "Rename to 'HTMLMediaElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'MediaElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLMediaElement'
+  # MenuElement => HTMLMenuElement
+  - title: "Rename to 'HTMLMenuElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'MenuElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLMenuElement'
+  # MetaElement => HTMLMetaElement
+  - title: "Rename to 'HTMLMetaElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'MetaElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLMetaElement'
+  # MeterElement => HTMLMeterElement
+  - title: "Rename to 'HTMLMeterElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'MeterElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLMeterElement'
+  # ModElement => HTMLModElement
+  - title: "Rename to 'HTMLModElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ModElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLModElement'
+  # ObjectElement => HTMLObjectElement
+  - title: "Rename to 'HTMLObjectElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ObjectElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLObjectElement'
+  # OListElement => HTMLOListElement
+  - title: "Rename to 'HTMLOListElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'OListElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLOListElement'
+  # OptGroupElement => HTMLOptGroupElement
+  - title: "Rename to 'HTMLOptGroupElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'OptGroupElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLOptGroupElement'
+  # OptionElement => HTMLOptionElement
+  - title: "Rename to 'HTMLOptionElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'OptionElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLOptionElement'
+  # OutputElement => HTMLOutputElement
+  - title: "Rename to 'HTMLOutputElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'OutputElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLOutputElement'
+  # ParagraphElement => HTMLParagraphElement
+  - title: "Rename to 'HTMLParagraphElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ParagraphElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLParagraphElement'
+  # ParamElement => HTMLParamElement
+  - title: "Rename to 'HTMLParamElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ParamElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLParamElement'
+  # PictureElement => HTMLPictureElement
+  - title: "Rename to 'HTMLPictureElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'PictureElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLPictureElement'
+  # PositionError => GeolocationPositionError
+  - title: "Rename to 'GeolocationPositionError'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'PositionError'
+    changes:
+      - kind: 'rename'
+        newName: 'GeolocationPositionError'
+  # PreElement => HTMLPreElement
+  - title: "Rename to 'HTMLPreElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'PreElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLPreElement'
+  # ProgressElement => HTMLProgressElement
+  - title: "Rename to 'HTMLProgressElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ProgressElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLProgressElement'
+  # QuoteElement => HTMLQuoteElement
+  - title: "Rename to 'HTMLQuoteElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'QuoteElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLQuoteElement'
+  # RtcCertificate => RTCCertificate
+  - title: "Rename to 'RTCCertificate'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcCertificate'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCCertificate'
+  # RtcDataChannel => RTCDataChannel
+  - title: "Rename to 'RTCDataChannel'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcDataChannel'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCDataChannel'
+  # RtcDataChannelEvent => RTCDataChannelEvent
+  - title: "Rename to 'RTCDataChannelEvent'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcDataChannelEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCDataChannelEvent'
+  # RtcDtmfSender => RTCDTMFSender
+  - title: "Rename to 'RTCDTMFSender'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcDtmfSender'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCDTMFSender'
+  # RtcDtmfToneChangeEvent => RTCDTMFToneChangeEvent
+  - title: "Rename to 'RTCDTMFToneChangeEvent'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcDtmfToneChangeEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCDTMFToneChangeEvent'
+  # RtcIceCandidate => RTCIceCandidate
+  - title: "Rename to 'RTCIceCandidate'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcIceCandidate'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCIceCandidate'
+  # RtcPeerConnection => RTCPeerConnection
+  - title: "Rename to 'RTCPeerConnection'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcPeerConnection'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCPeerConnection'
+  # RtcPeerConnectionIceEvent => RTCPeerConnectionIceEvent
+  - title: "Rename to 'RTCPeerConnectionIceEvent'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcPeerConnectionIceEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCPeerConnectionIceEvent'
+  # RtcRtpContributingSource => RTCRtpContributingSource
+  - title: "Rename to 'RTCRtpContributingSource'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcRtpContributingSource'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCRtpContributingSource'
+  # RtcRtpReceiver => RTCRtpReceiver
+  - title: "Rename to 'RTCRtpReceiver'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcRtpReceiver'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCRtpReceiver'
+  # RtcRtpSender => RTCRtpSender
+  - title: "Rename to 'RTCRtpSender'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcRtpSender'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCRtpSender'
+  # RtcSessionDescription => RTCSessionDescription
+  - title: "Rename to 'RTCSessionDescription'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcSessionDescription'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCSessionDescription'
+  # RtcStatsReport => RTCStatsReport
+  - title: "Rename to 'RTCStatsReport'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcStatsReport'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCStatsReport'
+  # RtcTrackEvent => RTCTrackEvent
+  - title: "Rename to 'RTCTrackEvent'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'RtcTrackEvent'
+    changes:
+      - kind: 'rename'
+        newName: 'RTCTrackEvent'
+  # ScriptElement => HTMLScriptElement
+  - title: "Rename to 'HTMLScriptElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'ScriptElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLScriptElement'
+  # SelectElement => HTMLSelectElement
+  - title: "Rename to 'HTMLSelectElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'SelectElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLSelectElement'
+  # SlotElement => HTMLSlotElement
+  - title: "Rename to 'HTMLSlotElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'SlotElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLSlotElement'
+  # SourceElement => HTMLSourceElement
+  - title: "Rename to 'HTMLSourceElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'SourceElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLSourceElement'
+  # SpanElement => HTMLSpanElement
+  - title: "Rename to 'HTMLSpanElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'SpanElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLSpanElement'
+  # SpeechRecognitionError => SpeechRecognitionErrorEvent
+  - title: "Rename to 'SpeechRecognitionErrorEvent'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'SpeechRecognitionError'
+    changes:
+      - kind: 'rename'
+        newName: 'SpeechRecognitionErrorEvent'
+  # StyleElement => HTMLStyleElement
+  - title: "Rename to 'HTMLStyleElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'StyleElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLStyleElement'
+  # StylePropertyMapReadonly => StylePropertyMapReadOnly
+  - title: "Rename to 'StylePropertyMapReadOnly'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'StylePropertyMapReadonly'
+    changes:
+      - kind: 'rename'
+        newName: 'StylePropertyMapReadOnly'
+  # TableCaptionElement => HTMLTableCaptionElement
+  - title: "Rename to 'HTMLTableCaptionElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TableCaptionElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTableCaptionElement'
+  # TableColElement => HTMLTableColElement
+  - title: "Rename to 'HTMLTableColElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TableColElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTableColElement'
+  # TableElement => HTMLTableElement
+  - title: "Rename to 'HTMLTableElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TableElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTableElement'
+  # TableRowElement => HTMLTableRowElement
+  - title: "Rename to 'HTMLTableRowElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TableRowElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTableRowElement'
+  # TableSectionElement => HTMLTableSectionElement
+  - title: "Rename to 'HTMLTableSectionElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TableSectionElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTableSectionElement'
+  # TemplateElement => HTMLTemplateElement
+  - title: "Rename to 'HTMLTemplateElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TemplateElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTemplateElement'
+  # TextAreaElement => HTMLTextAreaElement
+  - title: "Rename to 'HTMLTextAreaElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TextAreaElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTextAreaElement'
+  # TimeElement => HTMLTimeElement
+  - title: "Rename to 'HTMLTimeElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TimeElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTimeElement'
+  # TitleElement => HTMLTitleElement
+  - title: "Rename to 'HTMLTitleElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TitleElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTitleElement'
+  # TrackElement => HTMLTrackElement
+  - title: "Rename to 'HTMLTrackElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'TrackElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLTrackElement'
+  # UListElement => HTMLUListElement
+  - title: "Rename to 'HTMLUListElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'UListElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLUListElement'
+  # UnderlyingSourceBase => UnderlyingSource
+  - title: "Rename to 'UnderlyingSource'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'UnderlyingSourceBase'
+    changes:
+      - kind: 'rename'
+        newName: 'UnderlyingSource'
+  # UnknownElement => HTMLUnknownElement
+  - title: "Rename to 'HTMLUnknownElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'UnknownElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLUnknownElement'
+  # Url => URL
+  - title: "Rename to 'URL'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'Url'
+    changes:
+      - kind: 'rename'
+        newName: 'URL'
+  # UrlSearchParams => URLSearchParams
+  - title: "Rename to 'URLSearchParams'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'UrlSearchParams'
+    changes:
+      - kind: 'rename'
+        newName: 'URLSearchParams'
+  # VideoElement => HTMLVideoElement
+  - title: "Rename to 'HTMLVideoElement'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'VideoElement'
+    changes:
+      - kind: 'rename'
+        newName: 'HTMLVideoElement'
+  # VttCue => VTTCue
+  - title: "Rename to 'VTTCue'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'VttCue'
+    changes:
+      - kind: 'rename'
+        newName: 'VTTCue'
+  # VttRegion => VTTRegion
+  - title: "Rename to 'VTTRegion'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'VttRegion'
+    changes:
+      - kind: 'rename'
+        newName: 'VTTRegion'
+  # XmlDocument => XMLDocument
+  - title: "Rename to 'XMLDocument'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'XmlDocument'
+    changes:
+      - kind: 'rename'
+        newName: 'XMLDocument'
+  # XmlSerializer => XMLSerializer
+  - title: "Rename to 'XMLSerializer'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'XmlSerializer'
+    changes:
+      - kind: 'rename'
+        newName: 'XMLSerializer'
+  # XsltProcessor => XSLTProcessor
+  - title: "Rename to 'XSLTProcessor'"
+    date: 2024-01-12
+    element:
+      uris: [ 'package:web/web.dart' ]
+      class: 'XsltProcessor'
+    changes:
+      - kind: 'rename'
+        newName: 'XSLTProcessor'
