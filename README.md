@@ -93,24 +93,53 @@ The standard [bench2d](https://github.com/joelgwebber/bench2d) benchmark
 
 ## Migrating from forge2d 0.14
 
-Forge2D 0.15 is a ground-up rewrite on the Box2D v3 API. The high-level
-concepts map as follows:
+Forge2D 0.15 is a ground-up rewrite on the Box2D v3 API. For the full
+walkthrough, see the [Forge2D migration
+guide](https://docs.flame-engine.org/main/other_modules/forge2d/migration.html).
+The high-level concepts map as follows:
 
-- Call `await initializeForge2D()` once before creating a world.
-- `Fixture` is gone: bodies now carry `Shape`s directly, created with
+- Dart 3.12+ and a C toolchain are required, see [Requirements](#requirements).
+  This is usually the biggest practical hurdle of the upgrade.
+- On the web, `await initializeForge2D()` has to run before the first
+  `World` is created. On native it is a no-op (the backend is created
+  lazily), but cross-platform code should always await it.
+- `World`, `Body`, `Shape`, `Chain`, and joints are value-like handles over
+  native ids rather than Dart objects owning their state. Nothing is
+  garbage collected: destroy things explicitly, and check `isValid` if a
+  handle may have outlived what it points at.
+- `Fixture` is gone: bodies carry `Shape`s directly, created with
   `body.createShape(geometry, ShapeDef(...))` where the geometry is a
-  `Circle`, `Capsule`, `Segment`, `Polygon`, or a `Chain` via
-  `body.createChain`.
+  `Circle`, `Capsule`, `Segment`, or `Polygon`. Chains have their own
+  `body.createChain(ChainDef(points: ...))`.
 - `EdgeShape` is replaced by `Segment` (standalone) and one-sided chain
   shapes for level geometry.
-- `ContactListener` callbacks are replaced by polled events:
-  `world.contactEvents` after each step, opted in per shape with
-  `ShapeDef(enableContactEvents: true)`.
-- Query and ray-cast callback classes are replaced by methods on `World`
-  returning results directly.
-- The joints are now distance, filter, motor, mouse, prismatic, revolute,
-  weld, and wheel. Gear, pulley, rope, friction, and constant-volume
-  joints do not exist in Box2D v3.
+- Friction, restitution, and rolling resistance live on
+  `ShapeDef(material: SurfaceMaterial(...))` instead of being fields on the
+  old `FixtureDef`.
+- `ContactListener` callbacks are replaced by events polled after each
+  step: `world.contactEvents`, `world.sensorEvents`, and
+  `world.bodyMoveEvents`. Contact and sensor events are opted in per shape
+  with `ShapeDef(enableContactEvents: true)` and
+  `ShapeDef(isSensor: true, enableSensorEvents: true)`; hit events need
+  `enableHitEvents`. Custom filtering is a `world.customFilterCallback`.
+- Query and ray-cast callback classes are gone: `world.castRayClosest`,
+  `world.castRayAll`, and `world.overlapAabb` return their results
+  directly, and `world.castRay` takes a plain closure. `AABB` is now
+  `Aabb`.
+- Joints are created with type-specific methods such as
+  `world.createRevoluteJoint(RevoluteJointDef(...))`, and the set is now
+  distance, filter, motor, mouse, prismatic, revolute, weld, and wheel.
+  Gear, pulley, rope, friction, and constant-volume joints do not exist in
+  Box2D v3.
+- Rotations are a `Rot` rather than a raw angle: `BodyDef(rotation: ...)`
+  and `body.setTransform(position, rotation)` take one, built with
+  `Rot.fromAngle(radians)`. `body.angle` still reads back a double.
+- `body.applyForce` and `body.applyLinearImpulse` take the point of
+  application as a named argument, `applyForce(force, point: ..., wake:
+  true)`, and applying at the centre of mass is just leaving `point` out.
+  `applyForceToCenter` is gone.
+- `DebugDraw` is an abstract class you implement and pass to
+  `world.draw(debugDraw)`, with colors as `0xRRGGBB` ints.
 - The particle system (LiquidFun) is not part of Box2D v3 and has been
   removed; stay on forge2d 0.14 if you depend on it.
 - Worlds default to `subStepCount: 4` in `step` instead of velocity and
@@ -121,6 +150,7 @@ concepts map as follows:
 - Destroying bodies, shapes, chains, or joints while the world is stepping
   (from a collision callback) is deferred until the step ends; creating
   them mid-step throws a `StateError` instead of the old silent queueing.
+  `world.destroy()` itself is not deferred and throws mid-step.
 
 ## Timeline
 
