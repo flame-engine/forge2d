@@ -63,8 +63,19 @@ class Chain {
   }
 
   /// Destroys this chain and its segment shapes.
+  ///
+  /// Safe to call while the world is stepping: the destruction is deferred
+  /// until the step ends, and the chain stays valid until then.
   void destroy() {
+    if (world.locked) {
+      world.deferredActions.add(destroy);
+      return;
+    }
+    if (!isValid) {
+      return;
+    }
     world.chainUserData.remove((index1, worldAndGeneration));
+    world.chainOwners.remove((index1, worldAndGeneration));
     rawBox2D.destroyChain(index1, worldAndGeneration);
   }
 

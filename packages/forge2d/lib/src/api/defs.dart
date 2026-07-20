@@ -180,7 +180,8 @@ class BodyDef {
   /// The speed below which the body may fall asleep, in meters per second.
   double sleepThreshold;
 
-  /// An optional name for debugging.
+  /// An optional name for debugging, truncated to 31 bytes by the native
+  /// library.
   String? name;
 
   /// An arbitrary object associated with the body.

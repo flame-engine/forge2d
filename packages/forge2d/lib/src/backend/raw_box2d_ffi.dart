@@ -5,8 +5,8 @@ import 'package:forge2d/src/backend/raw_box2d.dart';
 import 'package:forge2d/src/ffi/box2d.g.dart' as b2;
 
 /// Prepares the FFI backend. Nothing to do: the native library is bundled by
-/// the build hook and loaded lazily.
-Future<void> initializeBackend() async {}
+/// the build hook and loaded lazily. [wasmUri] only applies on the web.
+Future<void> initializeBackend({Uri? wasmUri}) async {}
 
 /// Creates the FFI backend.
 RawBox2D createRawBox2D() => RawBox2DFfi();
@@ -870,6 +870,77 @@ final class RawBox2DFfi implements RawBox2D {
   @override
   bool shapeTestPoint(int index1, int worldAndGeneration, double x, double y) =>
       b2.b2Shape_TestPoint(_shape(index1, worldAndGeneration), _vec2(x, y));
+
+  @override
+  (double, double, double) shapeGetCircle(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    final circle = b2.b2Shape_GetCircle(_shape(index1, worldAndGeneration));
+    return (circle.center.x, circle.center.y, circle.radius);
+  }
+
+  @override
+  (double, double, double, double, double) shapeGetCapsule(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    final capsule = b2.b2Shape_GetCapsule(_shape(index1, worldAndGeneration));
+    return (
+      capsule.center1.x,
+      capsule.center1.y,
+      capsule.center2.x,
+      capsule.center2.y,
+      capsule.radius,
+    );
+  }
+
+  @override
+  (double, double, double, double) shapeGetSegment(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    final segment = b2.b2Shape_GetSegment(_shape(index1, worldAndGeneration));
+    return (
+      segment.point1.x,
+      segment.point1.y,
+      segment.point2.x,
+      segment.point2.y,
+    );
+  }
+
+  @override
+  (double, double, double, double) shapeGetChainSegment(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    final chainSegment = b2.b2Shape_GetChainSegment(
+      _shape(index1, worldAndGeneration),
+    );
+    return (
+      chainSegment.segment.point1.x,
+      chainSegment.segment.point1.y,
+      chainSegment.segment.point2.x,
+      chainSegment.segment.point2.y,
+    );
+  }
+
+  @override
+  ({List<double> points, double radius}) shapeGetPolygon(
+    int index1,
+    int worldAndGeneration,
+  ) {
+    final polygon = b2.b2Shape_GetPolygon(_shape(index1, worldAndGeneration));
+    return (
+      points: [
+        for (var i = 0; i < polygon.count; i++) ...[
+          polygon.vertices[i].x,
+          polygon.vertices[i].y,
+        ],
+      ],
+      radius: polygon.radius,
+    );
+  }
 
   @override
   (double, double, double, double) shapeGetAabb(

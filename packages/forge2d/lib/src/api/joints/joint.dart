@@ -164,7 +164,17 @@ abstract base class Joint {
   }
 
   /// Destroys this joint.
+  ///
+  /// Safe to call while the world is stepping: the destruction is deferred
+  /// until the step ends, and the joint stays valid until then.
   void destroy() {
+    if (world.locked) {
+      world.deferredActions.add(destroy);
+      return;
+    }
+    if (!isValid) {
+      return;
+    }
     world.jointUserData.remove((index1, worldAndGeneration));
     rawBox2D.destroyJoint(index1, worldAndGeneration);
   }

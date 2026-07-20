@@ -487,6 +487,38 @@ abstract interface class RawBox2D {
   /// Whether the given world point is inside the shape.
   bool shapeTestPoint(int index1, int worldAndGeneration, double x, double y);
 
+  /// Returns the geometry of a circle shape as (centerX, centerY, radius).
+  (double, double, double) shapeGetCircle(int index1, int worldAndGeneration);
+
+  /// Returns the geometry of a capsule shape as
+  /// (center1X, center1Y, center2X, center2Y, radius).
+  (double, double, double, double, double) shapeGetCapsule(
+    int index1,
+    int worldAndGeneration,
+  );
+
+  /// Returns the geometry of a segment shape as
+  /// (point1X, point1Y, point2X, point2Y).
+  (double, double, double, double) shapeGetSegment(
+    int index1,
+    int worldAndGeneration,
+  );
+
+  /// Returns the inner segment of a chain segment shape as
+  /// (point1X, point1Y, point2X, point2Y).
+  (double, double, double, double) shapeGetChainSegment(
+    int index1,
+    int worldAndGeneration,
+  );
+
+  /// Returns the geometry of a polygon shape: the convex hull vertices
+  /// flattened as `[x0, y0, x1, y1, ...]` in local coordinates, and the
+  /// rounding radius.
+  ({List<double> points, double radius}) shapeGetPolygon(
+    int index1,
+    int worldAndGeneration,
+  );
+
   /// Returns the current world axis-aligned bounding box of the shape as
   /// (lowerX, lowerY, upperX, upperY).
   (double, double, double, double) shapeGetAabb(

@@ -1,6 +1,3 @@
-@TestOn('vm')
-library;
-
 import 'package:forge2d/forge2d.dart';
 import 'package:test/test.dart';
 
@@ -116,6 +113,65 @@ void main() {
       expect(shape.userData, 'updated');
     });
 
+    test('geometry reads back every shape kind', () {
+      final circle = body
+          .createShape(Circle(center: Vector2(1, 2), radius: 0.75))
+          .geometry;
+      expect(circle, isA<Circle>());
+      circle as Circle;
+      expect(circle.center.x, closeTo(1, 1e-6));
+      expect(circle.center.y, closeTo(2, 1e-6));
+      expect(circle.radius, closeTo(0.75, 1e-6));
+
+      final capsule = body
+          .createShape(
+            Capsule(
+              center1: Vector2(0, -1),
+              center2: Vector2(0, 1),
+              radius: 0.5,
+            ),
+          )
+          .geometry;
+      expect(capsule, isA<Capsule>());
+      capsule as Capsule;
+      expect(capsule.center1.y, closeTo(-1, 1e-6));
+      expect(capsule.center2.y, closeTo(1, 1e-6));
+      expect(capsule.radius, closeTo(0.5, 1e-6));
+
+      final segment = body
+          .createShape(Segment(point1: Vector2(-2, 0), point2: Vector2(2, 1)))
+          .geometry;
+      expect(segment, isA<Segment>());
+      segment as Segment;
+      expect(segment.point1.x, closeTo(-2, 1e-6));
+      expect(segment.point2.y, closeTo(1, 1e-6));
+
+      final box = body.createShape(Polygon.box(1.5, 0.5)).geometry;
+      expect(box, isA<Polygon>());
+      box as Polygon;
+      expect(box.points, hasLength(4));
+      expect(box.radius, 0);
+      final xs = box.points!.map((point) => point.x.abs());
+      final ys = box.points!.map((point) => point.y.abs());
+      expect(xs.every((x) => (x - 1.5).abs() < 1e-5), isTrue);
+      expect(ys.every((y) => (y - 0.5).abs() < 1e-5), isTrue);
+
+      final chainSegments = body
+          .createChain(
+            ChainDef(
+              points: [
+                Vector2(-6, 0),
+                Vector2(-2, 0),
+                Vector2(2, 0),
+                Vector2(6, 0),
+              ],
+            ),
+          )
+          .segments;
+      final chainSegment = chainSegments.first.geometry;
+      expect(chainSegment, isA<Segment>());
+    });
+
     test('testPoint and aabb agree with the geometry', () {
       final shape = body.createShape(Polygon.square(1));
       expect(shape.testPoint(Vector2(0.5, 0.5)), isTrue);
@@ -166,7 +222,12 @@ void main() {
     test('friction and restitution apply to all segments', () {
       final chain = body.createChain(
         ChainDef(
-          points: [Vector2(-5, 0), Vector2(0, 0), Vector2(5, 0)],
+          points: [
+            Vector2(-6, 0),
+            Vector2(-2, 0),
+            Vector2(2, 0),
+            Vector2(6, 0),
+          ],
           materials: [SurfaceMaterial(friction: 0.3, restitution: 0.2)],
         ),
       )..friction = 0.8;
@@ -178,7 +239,14 @@ void main() {
 
     test('destroy removes the chain and its segments', () {
       final chain = body.createChain(
-        ChainDef(points: [Vector2(-5, 0), Vector2(0, 0), Vector2(5, 0)]),
+        ChainDef(
+          points: [
+            Vector2(-6, 0),
+            Vector2(-2, 0),
+            Vector2(2, 0),
+            Vector2(6, 0),
+          ],
+        ),
       )..destroy();
       expect(chain.isValid, isFalse);
     });

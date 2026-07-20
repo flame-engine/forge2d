@@ -68,4 +68,19 @@ jobs:
       - uses: subosito/flutter-action@v2
       - uses: bluefireteam/melos-action@v3
       - run: melos test
+
+  test-web:
+    needs: [format, analyze]
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [dart2js, dart2wasm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v3
+      - name: Test the WebAssembly backend
+        working-directory: packages/forge2d
+        run: dart test -p chrome -c ${{ matrix.compiler }}
   # END TESTING STAGE

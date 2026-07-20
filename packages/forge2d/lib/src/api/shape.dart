@@ -1,6 +1,7 @@
 import 'package:forge2d/src/api/body.dart';
 import 'package:forge2d/src/api/defs.dart';
 import 'package:forge2d/src/api/enums.dart';
+import 'package:forge2d/src/api/geometry.dart';
 import 'package:forge2d/src/api/math.dart';
 import 'package:forge2d/src/api/world.dart';
 import 'package:forge2d/src/initialize.dart';
@@ -149,6 +150,56 @@ class Shape {
   bool testPoint(Vector2 point) =>
       rawBox2D.shapeTestPoint(index1, worldAndGeneration, point.x, point.y);
 
+  /// The geometry of the shape in the body's local coordinates, read back
+  /// from the simulation.
+  ///
+  /// Polygons return their convex hull, so a [Polygon.box] comes back as a
+  /// four-vertex [Polygon]. Chain segments come back as the [Segment] they
+  /// collide with.
+  ShapeGeometry get geometry {
+    switch (type) {
+      case ShapeType.circle:
+        final (centerX, centerY, radius) = rawBox2D.shapeGetCircle(
+          index1,
+          worldAndGeneration,
+        );
+        return Circle(center: Vector2(centerX, centerY), radius: radius);
+      case ShapeType.capsule:
+        final (center1X, center1Y, center2X, center2Y, radius) = rawBox2D
+            .shapeGetCapsule(index1, worldAndGeneration);
+        return Capsule(
+          center1: Vector2(center1X, center1Y),
+          center2: Vector2(center2X, center2Y),
+          radius: radius,
+        );
+      case ShapeType.segment:
+        final (point1X, point1Y, point2X, point2Y) = rawBox2D.shapeGetSegment(
+          index1,
+          worldAndGeneration,
+        );
+        return Segment(
+          point1: Vector2(point1X, point1Y),
+          point2: Vector2(point2X, point2Y),
+        );
+      case ShapeType.chainSegment:
+        final (point1X, point1Y, point2X, point2Y) = rawBox2D
+            .shapeGetChainSegment(index1, worldAndGeneration);
+        return Segment(
+          point1: Vector2(point1X, point1Y),
+          point2: Vector2(point2X, point2Y),
+        );
+      case ShapeType.polygon:
+        final polygon = rawBox2D.shapeGetPolygon(index1, worldAndGeneration);
+        return Polygon(
+          [
+            for (var i = 0; i < polygon.points.length; i += 2)
+              Vector2(polygon.points[i], polygon.points[i + 1]),
+          ],
+          radius: polygon.radius,
+        );
+    }
+  }
+
   /// The current world axis-aligned bounding box of the shape.
   Aabb get aabb {
     final (lowerX, lowerY, upperX, upperY) = rawBox2D.shapeGetAabb(
@@ -173,7 +224,17 @@ class Shape {
   ///
   /// When [updateBodyMass] is false, call [Body.applyMassFromShapes]
   /// afterwards.
+  ///
+  /// Safe to call while the world is stepping: the destruction is deferred
+  /// until the step ends, and the shape stays valid until then.
   void destroy({bool updateBodyMass = true}) {
+    if (world.locked) {
+      world.deferredActions.add(() => destroy(updateBodyMass: updateBodyMass));
+      return;
+    }
+    if (!isValid) {
+      return;
+    }
     world.shapeUserData.remove((index1, worldAndGeneration));
     rawBox2D.destroyShape(
       index1,

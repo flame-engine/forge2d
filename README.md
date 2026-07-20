@@ -29,10 +29,16 @@ You can use it independently in Dart or in your
 
 - Dart 3.12+ (Flutter 3.38+), which builds the bundled C library
   automatically through build hooks.
-- A C toolchain: Xcode on macOS/iOS, Visual Studio Build Tools on Windows,
-  clang or gcc on Linux, and the NDK on Android.
-- Supported platforms: Android, iOS, macOS, Windows, and Linux. Web support
-  is planned via a WebAssembly build of Box2D behind the same API.
+- A C toolchain on native platforms: Xcode on macOS/iOS, Visual Studio
+  Build Tools on Windows, clang or gcc on Linux, and the NDK on Android.
+- Supported platforms: Android, iOS, macOS, Windows, Linux, and the web.
+
+On the web the same API runs against a bundled WebAssembly build of Box2D
+(about 220 KB). No setup is needed: `initializeForge2D()` finds the module
+at the package asset path in Dart web apps, and at the bundled package
+asset in Flutter web apps. For custom hosting setups the location can be
+overridden with `initializeForge2D(wasmUri: ...)`, and
+`dart run forge2d:setup_web` copies the module into a `web/` directory.
 
 ## Getting started
 
@@ -109,6 +115,12 @@ concepts map as follows:
   removed; stay on forge2d 0.14 if you depend on it.
 - Worlds default to `subStepCount: 4` in `step` instead of velocity and
   position iterations.
+- A bare `World()` now has the Box2D default gravity of `(0, -10)`; the old
+  API defaulted to zero gravity. Top-down games should pass
+  `World(gravity: Vector2.zero())`.
+- Destroying bodies, shapes, chains, or joints while the world is stepping
+  (from a collision callback) is deferred until the step ends; creating
+  them mid-step throws a `StateError` instead of the old silent queueing.
 
 ## Timeline
 
