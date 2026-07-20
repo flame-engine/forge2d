@@ -11,7 +11,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
- - [`forge2d` - `v0.15.0+2`](#forge2d---v01502)
+ - [`forge2d` - `v0.15.0`](#forge2d---v0150)
 
 Packages with other changes:
 
@@ -19,7 +19,7 @@ Packages with other changes:
 
 ---
 
-#### `forge2d` - `v0.15.0+2`
+#### `forge2d` - `v0.15.0`
 
 > Upgrading from 0.14 requires code changes throughout: see the
 > [Forge2D migration guide](https://docs.flame-engine.org/main/other_modules/forge2d/migration.html).

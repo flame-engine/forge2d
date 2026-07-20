@@ -1,4 +1,4 @@
-## 0.15.0+2
+## 0.15.0
 
 > Note: This release has breaking changes.
 >
