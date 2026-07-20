@@ -6,7 +6,7 @@ workspace:
   - packages/forge2d/example
 
 environment:
-  sdk: ">=3.9.0 <4.0.0"
+  sdk: ^3.12.0
 
 dev_dependencies:
   melos: ^8.1.0
@@ -23,7 +23,7 @@ melos:
 
     bootstrap:
       environment:
-        sdk: ">=3.9.0 <4.0.0"
+        sdk: ^3.12.0
       dependencies:
         meta: ^1.16.0
         vector_math: ^2.1.4
@@ -31,7 +31,6 @@ melos:
       dev_dependencies:
         dartdoc: ^8.3.4
         flame_lint: ^1.4.1
-        mocktail: ^1.0.4
         test: ^1.26.3
 
   scripts:
@@ -59,18 +58,14 @@ melos:
 
     benchmark:
       exec:
-        command: dart web/bench2d.dart
+        command: dart run bin/bench2d.dart
       packageFilters:
         scope: forge2d_benchmark
 
-    benchmark_serve:
-      exec:
-        command: dart pub global run webdev serve --release
-      packageFilters:
-        scope: forge2d_benchmark
-
-    example:
-      exec:
-        command: dart pub global run webdev serve --release
-      packageFilters:
-        scope: forge2d_examples
+    ffigen:
+      run: >
+        cd packages/forge2d/tool/ffigen &&
+        dart pub get &&
+        dart run ffigen --config ffigen.yaml &&
+        dart format ../../lib/src/ffi/box2d.g.dart
+      description: Regenerate the FFI bindings from the vendored Box2D headers.
