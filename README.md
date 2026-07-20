@@ -93,8 +93,10 @@ The standard [bench2d](https://github.com/joelgwebber/bench2d) benchmark
 
 ## Migrating from forge2d 0.14
 
-Forge2D 0.15 is a ground-up rewrite on the Box2D v3 API. The high-level
-concepts map as follows:
+Forge2D 0.15 is a ground-up rewrite on the Box2D v3 API. For the full
+walkthrough, see the [Forge2D migration
+guide](https://docs.flame-engine.org/main/other_modules/forge2d/migration.html).
+The high-level concepts map as follows:
 
 - Call `await initializeForge2D()` once before creating a world.
 - `Fixture` is gone: bodies now carry `Shape`s directly, created with
