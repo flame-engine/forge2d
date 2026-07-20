@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-07-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`forge2d` - `v0.15.0+2`](#forge2d---v01502)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `forge2d` - `v0.15.0+2`
+
+ - **FEAT**: Add an interactive web example gallery deployed to GitHub Pages ([#117](https://github.com/flame-engine/forge2d/issues/117)). ([664f9443](https://github.com/flame-engine/forge2d/commit/664f9443e72c3261ed8149c0a267348e05cc0d1c))
+ - **FEAT**: Run on the web via a WebAssembly build of Box2D ([#116](https://github.com/flame-engine/forge2d/issues/116)). ([409b2750](https://github.com/flame-engine/forge2d/commit/409b27507936ae1d7c0a67ff211d24687c6d06c3))
+ - **BREAKING** **FEAT**: Replace the pure-Dart engine with native Box2D v3 bindings ([#115](https://github.com/flame-engine/forge2d/issues/115)). ([3ea15287](https://github.com/flame-engine/forge2d/commit/3ea152877a3c2a71b0b0666823fffb32102bf53b))
+
+
 ## 2025-10-26
 
 ### Changes
