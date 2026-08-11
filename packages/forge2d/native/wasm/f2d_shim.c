@@ -118,6 +118,19 @@ static b2QueryFilter f2d_query_filter(uint32_t category_lo,
   return filter;
 }
 
+// Global tuning.
+//
+// b2SetLengthUnitsPerMeter and b2GetLengthUnitsPerMeter are plain B2_API
+// functions, so emcc drops them without a keepalive wrapper.
+
+F2D_EXPORT void f2d_set_length_units_per_meter(float length_units) {
+  b2SetLengthUnitsPerMeter(length_units);
+}
+
+F2D_EXPORT float f2d_get_length_units_per_meter(void) {
+  return b2GetLengthUnitsPerMeter();
+}
+
 // World.
 
 F2D_EXPORT uint32_t f2d_create_world(

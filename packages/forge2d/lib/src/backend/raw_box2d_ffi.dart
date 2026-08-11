@@ -61,6 +61,15 @@ final class RawBox2DFfi implements RawBox2D {
     ..c = cos
     ..s = sin;
 
+  // Global tuning.
+
+  @override
+  void setLengthUnitsPerMeter(double lengthUnits) =>
+      b2.b2SetLengthUnitsPerMeter(lengthUnits);
+
+  @override
+  double getLengthUnitsPerMeter() => b2.b2GetLengthUnitsPerMeter();
+
   // World.
 
   @override

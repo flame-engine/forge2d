@@ -8,6 +8,17 @@
 /// The contract is deliberately restricted so that every implementation can
 /// provide it cheaply. See README.md in this directory before changing it.
 abstract interface class RawBox2D {
+  // Global tuning.
+
+  /// Sets the process-wide length unit, mirroring `b2SetLengthUnitsPerMeter`.
+  ///
+  /// Box2D must not have been called before this, which the API layer
+  /// enforces in `initializeForge2D`.
+  void setLengthUnitsPerMeter(double lengthUnits);
+
+  /// The process-wide length unit, mirroring `b2GetLengthUnitsPerMeter`.
+  double getLengthUnitsPerMeter();
+
   // World lifecycle.
 
   /// Creates a world and returns its packed id.

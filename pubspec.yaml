@@ -48,6 +48,17 @@ melos:
       exec: dart pub run dartdoc
       description: Run dartdoc checks for all packages.
 
+    test:length-unit:
+      exec:
+        command: dart test -P length-unit
+        concurrency: 1
+      packageFilters:
+        dirExists: test
+      description: >
+        Run the suites that change the process-wide Box2D length unit. They
+        are excluded from `melos test` because `dart test` shares one process
+        between suites, so this preset runs everything serially instead.
+
     coverage:
       steps:
         - melos exec -- dart test --coverage

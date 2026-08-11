@@ -69,6 +69,16 @@ jobs:
       - uses: bluefireteam/melos-action@v3
       - run: melos test
 
+  test-length-unit:
+    needs: [format, analyze]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v3
+      - name: Test the process-wide length unit
+        run: melos test:length-unit
+
   test-web:
     needs: [format, analyze]
     strategy:

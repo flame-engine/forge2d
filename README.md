@@ -81,6 +81,51 @@ Highlights of the API:
 - `DebugDraw` can be implemented to render the physics world for
   debugging.
 
+## Units
+
+Box2D is tuned for meters, kilograms and seconds, so lay your world out in
+meters and aim to keep moving objects roughly between 0.1 and 10 of them,
+with 1 being the sweet spot. Rendering scale is a separate concern: decide
+how many pixels a meter is worth in your renderer, not in the simulation.
+
+Some of the tolerances are absolute lengths rather than fractions of the
+shapes they apply to, so a world laid out at a much smaller scale behaves
+oddly. The most visible one is the speculative distance: Box2D creates
+contact points for shapes that are approaching but not yet touching, which
+is what stops fast objects from passing through each other, and it means
+`beginContact` fires while there is still a gap of up to `0.02` meters. A
+shape that is only a couple of centimeters across is therefore permanently
+in contact with its neighbors. `Tolerances` exposes these values:
+
+```dart
+Tolerances.linearSlop;           // 0.005
+Tolerances.speculativeDistance;  // 0.02
+Tolerances.aabbMargin;           // 0.05
+```
+
+`WorldDef.restitutionThreshold` (1 m/s), `WorldDef.hitEventThreshold`
+(1 m/s), `WorldDef.maxContactPushSpeed` (3 m/s),
+`WorldDef.maximumLinearSpeed` (400 m/s) and `BodyDef.sleepThreshold`
+(0.05 m/s) are absolute in the same way, but they are per world or per body,
+so they can simply be set.
+
+When a world genuinely cannot be laid out at that scale, tell Box2D how many
+of your length units make up a meter and every tolerance above moves with it:
+
+```dart
+await initializeForge2D(lengthUnitsPerMeter: 100);
+```
+
+A good rule of thumb is to pass the height of your player character. You are
+then on the hook for gravity, densities and forces being sensible at that
+scale. For a length scale factor of `S`, velocities and accelerations scale
+by `S`, masses by `S²`, forces and impulses by `S³` and torques by `S⁴`,
+while densities, friction, restitution and damping stay as they are. Scaling
+lengths and gravity together leaves the timing of the simulation unchanged.
+
+The length unit is process-wide and cannot change once a `World` exists,
+which is why it is set through `initializeForge2D`.
+
 ## Performance
 
 The standard [bench2d](https://github.com/joelgwebber/bench2d) benchmark

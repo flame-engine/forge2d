@@ -3,3 +3,18 @@
 #   dart test -p chrome            (dart2js)
 #   dart test -p chrome -c dart2wasm
 platforms: [vm]
+
+# The length unit is a global inside Box2D, and `dart test` runs suites as
+# isolates that share one process and therefore one copy of the library. The
+# suites that change it are excluded from the normal run and get a run of
+# their own:
+#   dart test -P length-unit
+exclude_tags: length-unit
+
+tags:
+  length-unit:
+
+presets:
+  length-unit:
+    exclude_tags: nothing
+    concurrency: 1
