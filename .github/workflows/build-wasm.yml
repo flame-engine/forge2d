@@ -21,14 +21,21 @@ jobs:
           version: 4.0.15
       - name: Rebuild box2d.wasm
         run: packages/forge2d/tool/build_wasm.sh
-      - name: Verify the committed artifact is up to date
-        run: |
-          if ! git diff --exit-code --stat -- packages/forge2d/lib/src/backend/wasm/box2d.wasm; then
-            echo "The committed box2d.wasm differs from a fresh build."
-            echo "Rebuild it with tool/build_wasm.sh using emsdk 4.0.15."
-            exit 1
-          fi
+      # Uploaded before the check so that the fresh build is downloadable
+      # exactly when the check fails and you need it.
       - uses: actions/upload-artifact@v4
         with:
           name: box2d-wasm
           path: packages/forge2d/lib/src/backend/wasm/box2d.wasm
+      - name: Verify the committed artifact is up to date
+        run: |
+          if ! git diff --exit-code --stat -- packages/forge2d/lib/src/backend/wasm/box2d.wasm; then
+            echo "The committed box2d.wasm differs from a fresh build."
+            echo
+            echo "emcc output is only reproducible on the same host platform,"
+            echo "and this check builds on Linux, so a rebuild on macOS or"
+            echo "Windows will not match byte for byte even with emsdk 4.0.15."
+            echo "Download the box2d-wasm artifact from this run and commit it"
+            echo "instead of the locally built one."
+            exit 1
+          fi
