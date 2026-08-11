@@ -4,17 +4,10 @@
 #   dart test -p chrome -c dart2wasm
 platforms: [vm]
 
-# The length unit is a global inside Box2D, and `dart test` runs suites as
-# isolates that share one process and therefore one copy of the library. The
-# suites that change it are excluded from the normal run and get a run of
-# their own:
-#   dart test -P length-unit
-exclude_tags: length-unit
-
-tags:
-  length-unit:
-
-presets:
-  length-unit:
-    exclude_tags: nothing
-    concurrency: 1
+# The Box2D length unit is a process-wide global, and `dart test` runs suites
+# as isolates that share one process and therefore one copy of the library, so
+# a suite that changes it would be visible to any suite running alongside it.
+# Suites run one at a time instead, and the ones that change the length unit
+# put it back when they are done. The whole suite takes a couple of seconds
+# either way, so there is nothing to win by relaxing this.
+concurrency: 1

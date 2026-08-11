@@ -1,18 +1,14 @@
-@Tags(['length-unit'])
-library;
-
 import 'package:forge2d/forge2d.dart';
 import 'package:test/test.dart';
 
-// The length unit is a global inside Box2D, shared by every suite in the
-// process, so this file is tagged out of the normal run and gets the process
-// to itself; see dart_test.yaml. Within the file the tests run in declaration
-// order and build on each other.
+// The length unit is a global inside Box2D that every suite in the process
+// shares, so suites run one at a time; see dart_test.yaml. Within this file
+// the tests run in declaration order and build on each other.
 void main() {
   setUpAll(initializeForge2D);
 
-  // Puts the length unit back so that the `length-unit` preset, which runs
-  // every suite serially in one process, is safe whatever the order is.
+  // Puts the length unit back, so that the suites that run after this one see
+  // the default whatever order they end up in.
   tearDownAll(() async {
     debugResetLengthUnitLock();
     await initializeForge2D(lengthUnitsPerMeter: 1);

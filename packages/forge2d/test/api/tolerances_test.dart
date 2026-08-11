@@ -2,7 +2,7 @@ import 'package:forge2d/forge2d.dart';
 import 'package:test/test.dart';
 
 // The length unit is process-wide, so this file only reads it. The tests that
-// change it live in length_unit_test.dart, which gets its own isolate.
+// change it live in length_unit_test.dart, which puts it back afterwards.
 void main() {
   setUpAll(initializeForge2D);
 
