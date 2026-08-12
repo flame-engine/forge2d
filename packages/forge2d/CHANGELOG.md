@@ -1,3 +1,7 @@
+## 0.15.1
+
+ - **FEAT**: Let the length unit be set through initializeForge2D ([#120](https://github.com/flame-engine/forge2d/issues/120)). ([5696a7be](https://github.com/flame-engine/forge2d/commit/5696a7be36ada00fcf48ab66fbc09354cacb9798))
+
 ## 0.15.0
 
 > Note: This release has breaking changes.

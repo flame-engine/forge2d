@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-08-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`forge2d` - `v0.15.1`](#forge2d---v0151)
+
+---
+
+#### `forge2d` - `v0.15.1`
+
+ - **FEAT**: Let the length unit be set through initializeForge2D ([#120](https://github.com/flame-engine/forge2d/issues/120)). ([5696a7be](https://github.com/flame-engine/forge2d/commit/5696a7be36ada00fcf48ab66fbc09354cacb9798))
+
+
 ## 2026-07-20
 
 ### Changes
