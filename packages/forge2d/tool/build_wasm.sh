@@ -4,6 +4,12 @@
 # Requires an activated emsdk (https://github.com/emscripten-core/emsdk);
 # CI pins the version, see .github/workflows/build-wasm.yml.
 #
+# Use this to check your shim changes locally, but note that emcc output is
+# only reproducible on the same host platform. The build-wasm workflow
+# compares the committed artifact against a Linux build, so a rebuild on
+# macOS or Windows will not match it byte for byte even on the pinned emsdk.
+# Commit the box2d-wasm artifact from that workflow run instead.
+#
 # Usage: tool/build_wasm.sh
 set -euo pipefail
 

@@ -21,5 +21,6 @@ export 'src/api/joints/weld_joint.dart';
 export 'src/api/joints/wheel_joint.dart';
 export 'src/api/math.dart';
 export 'src/api/shape.dart';
+export 'src/api/tolerances.dart';
 export 'src/api/world.dart';
-export 'src/initialize.dart' show initializeForge2D;
+export 'src/initialize.dart' show debugResetLengthUnitLock, initializeForge2D;

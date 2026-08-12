@@ -110,6 +110,16 @@ final class RawBox2DWasm implements RawBox2D {
     _unsigned32(_runtime.readI32(_out + 4)),
   );
 
+  // Global tuning.
+
+  @override
+  void setLengthUnitsPerMeter(double lengthUnits) =>
+      _call('f2d_set_length_units_per_meter', [lengthUnits]);
+
+  @override
+  double getLengthUnitsPerMeter() =>
+      _callF('f2d_get_length_units_per_meter', const []);
+
   // World.
 
   @override

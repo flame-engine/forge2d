@@ -46,7 +46,10 @@ class World {
         maximumLinearSpeed: definition.maximumLinearSpeed,
         enableSleep: definition.enableSleep,
         enableContinuous: definition.enableContinuous,
-      );
+      ) {
+    // Freezes the length unit: it is baked into this world's tolerances.
+    markWorldCreated();
+  }
 
   /// The packed native world id.
   @internal

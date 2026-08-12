@@ -3,3 +3,11 @@
 #   dart test -p chrome            (dart2js)
 #   dart test -p chrome -c dart2wasm
 platforms: [vm]
+
+# The Box2D length unit is a process-wide global, and `dart test` runs suites
+# as isolates that share one process and therefore one copy of the library, so
+# a suite that changes it would be visible to any suite running alongside it.
+# Suites run one at a time instead, and the ones that change the length unit
+# put it back when they are done. The whole suite takes a couple of seconds
+# either way, so there is nothing to win by relaxing this.
+concurrency: 1
