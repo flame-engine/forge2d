@@ -1,3 +1,7 @@
+## 0.15.2
+
+ - **FIX**: Update code_assets to ^2.0.0 ([#123](https://github.com/flame-engine/forge2d/issues/123)). ([fcc10367](https://github.com/flame-engine/forge2d/commit/fcc1036735caa63bf8e669a66301b0b4c93b2f85))
+
 ## 0.15.1
 
  - **FEAT**: Let the length unit be set through initializeForge2D ([#120](https://github.com/flame-engine/forge2d/issues/120)). ([5696a7be](https://github.com/flame-engine/forge2d/commit/5696a7be36ada00fcf48ab66fbc09354cacb9798))
