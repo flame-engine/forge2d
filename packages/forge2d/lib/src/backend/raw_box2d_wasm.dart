@@ -102,7 +102,8 @@ final class RawBox2DWasm implements RawBox2D {
 
   /// Normalizes the worldAndGeneration halves of a flat id pair list.
   static List<int> _idPairs(List<int> raw) => [
-    for (var i = 0; i < raw.length; i++) i.isOdd ? _unsigned32(raw[i]) : raw[i],
+    for (var i = 0; i < raw.length; i++)
+      if (i.isOdd) _unsigned32(raw[i]) else raw[i],
   ];
 
   (int, int) _outIdPair() => (
