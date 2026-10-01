@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-10-01
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`forge2d` - `v0.15.2`](#forge2d---v0152)
+
+---
+
+#### `forge2d` - `v0.15.2`
+
+ - **FIX**: Update code_assets to ^2.0.0 ([#123](https://github.com/flame-engine/forge2d/issues/123)). ([fcc10367](https://github.com/flame-engine/forge2d/commit/fcc1036735caa63bf8e669a66301b0b4c93b2f85))
+
+
 ## 2026-08-12
 
 ### Changes
