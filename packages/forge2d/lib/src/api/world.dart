@@ -24,7 +24,11 @@ import 'package:vector_math/vector_math.dart';
 /// explicitly with [destroy]; destroying a world frees every body, shape,
 /// and joint in it.
 ///
-/// A world must only be used from the isolate that created it.
+/// A world must only be used from the isolate that created it. Different
+/// isolates can each create, step, and destroy worlds of their own at the
+/// same time: creating and destroying a world is synchronized across the
+/// process. Settings that are process-wide in Box2D, such as the length unit
+/// set through `initializeForge2D`, are shared by every isolate.
 class World {
   /// Creates a world.
   ///

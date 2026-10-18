@@ -45,6 +45,13 @@ const _sources = [
   'third_party/box2d/src/world.c',
 ];
 
+/// forge2d's own C sources for the native build, relative to the package root.
+const _shimSources = [
+  // Creates and destroys worlds under a process-wide lock, as isolates are
+  // threads over one copy of the library.
+  'native/ffi/f2d_world_lock.c',
+];
+
 void main(List<String> args) async {
   await build(args, (input, output) async {
     if (!input.config.buildCodeAssets) {
@@ -62,7 +69,7 @@ void main(List<String> args) async {
     final builder = CBuilder.library(
       name: 'box2d',
       assetName: 'src/ffi/box2d.g.dart',
-      sources: _sources,
+      sources: [..._sources, ..._shimSources],
       includes: ['third_party/box2d/include', 'third_party/box2d/src'],
       std: 'c17',
       optimizationLevel: OptimizationLevel.o2,
@@ -77,6 +84,9 @@ void main(List<String> args) async {
       },
       libraries: [
         if (os == OS.linux || os == OS.android) 'm',
+        // pthread_mutex_* live in libpthread before glibc 2.34; bionic has
+        // them in libc.
+        if (os == OS.linux) 'pthread',
       ],
     );
 

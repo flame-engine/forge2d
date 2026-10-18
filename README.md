@@ -126,6 +126,15 @@ lengths and gravity together leaves the timing of the simulation unchanged.
 The length unit is process-wide and cannot change once a `World` exists,
 which is why it is set through `initializeForge2D`.
 
+## Isolates
+
+Each isolate can run worlds of its own, for example to simulate ahead in a
+background isolate while the main one renders. A world must only be used
+from the isolate that created it; creating and destroying worlds from
+several isolates at once is safe. Isolates share one copy of the native
+library, so the process-wide settings above (the length unit) apply to every
+isolate.
+
 ## Performance
 
 The standard [bench2d](https://github.com/joelgwebber/bench2d) benchmark
