@@ -15,19 +15,17 @@
 // Only the native (FFI) build compiles this file. The WebAssembly module runs
 // on a single thread, and each instance has its own memory and world table.
 
+#include "atomic.h"
 #include "box2d/box2d.h"
 
-#if defined(_WIN32)
-#include <windows.h>
-static SRWLOCK f2d_world_lock = SRWLOCK_INIT;
-static void f2d_lock(void) { AcquireSRWLockExclusive(&f2d_world_lock); }
-static void f2d_unlock(void) { ReleaseSRWLockExclusive(&f2d_world_lock); }
-#else
-#include <pthread.h>
-static pthread_mutex_t f2d_world_lock = PTHREAD_MUTEX_INITIALIZER;
-static void f2d_lock(void) { pthread_mutex_lock(&f2d_world_lock); }
-static void f2d_unlock(void) { pthread_mutex_unlock(&f2d_world_lock); }
-#endif
+static b2AtomicInt f2d_world_lock;
+
+static void f2d_lock(void) {
+  while (!b2AtomicCompareExchangeInt(&f2d_world_lock, 0, 1)) {
+  }
+}
+
+static void f2d_unlock(void) { b2AtomicStoreInt(&f2d_world_lock, 0); }
 
 BOX2D_EXPORT b2WorldId f2d_create_world_locked(const b2WorldDef* def) {
   f2d_lock();

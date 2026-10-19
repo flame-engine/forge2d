@@ -8,10 +8,6 @@ import 'dart:ffi' as ffi;
 import 'package:forge2d/src/ffi/box2d.g.dart';
 
 /// [b2CreateWorld] under a process-wide lock.
-///
-/// Box2D claims a slot of its process-wide world table without
-/// synchronization, and every isolate shares the one copy of the library, so
-/// isolates creating worlds at the same time could otherwise share a slot.
 @ffi.Native<b2WorldId Function(ffi.Pointer<b2WorldDef>)>(
   symbol: 'f2d_create_world_locked',
 )

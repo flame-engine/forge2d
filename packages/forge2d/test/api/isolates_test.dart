@@ -6,10 +6,6 @@ import 'dart:isolate';
 import 'package:forge2d/forge2d.dart';
 import 'package:test/test.dart';
 
-/// Box2D keeps every world in one process-wide table, and every isolate in
-/// the process shares the one copy of the native library. Creating and
-/// destroying worlds therefore has to be safe from several isolates at once,
-/// as long as each world is only used by the isolate that created it.
 void main() {
   setUpAll(initializeForge2D);
 
@@ -24,17 +20,11 @@ void main() {
         for (var i = 0; i < isolates; i++)
           Isolate.run(() async {
             await initializeForge2D();
-            for (var j = 0; j < worldsPerIsolate; j++) {
-              final result = _simulate();
-              if (!_sameResult(result, expected)) {
-                return 'world $j gave $result';
-              }
-            }
-            return null;
+            return [for (var j = 0; j < worldsPerIsolate; j++) _simulate()];
           }),
       ]);
 
-      expect(results, everyElement(isNull));
+      expect(results, everyElement(everyElement(expected)));
     },
   );
 }
@@ -63,16 +53,4 @@ List<double> _simulate() {
   ];
   world.destroy();
   return result;
-}
-
-bool _sameResult(List<double> a, List<double> b) {
-  if (a.length != b.length) {
-    return false;
-  }
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) {
-      return false;
-    }
-  }
-  return true;
 }

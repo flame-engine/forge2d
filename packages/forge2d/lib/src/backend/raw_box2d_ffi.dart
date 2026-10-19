@@ -99,8 +99,6 @@ final class RawBox2DFfi implements RawBox2D {
         ..maximumLinearSpeed = maximumLinearSpeed
         ..enableSleep = enableSleep
         ..enableContinuous = enableContinuous;
-      // Isolates are threads over one copy of the library, and Box2D's world
-      // table is process-wide: create and destroy worlds under a lock.
       return _packWorld(f2d.f2dCreateWorldLocked(definition));
     });
   }
