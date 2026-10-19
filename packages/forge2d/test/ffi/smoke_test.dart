@@ -5,6 +5,7 @@ import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
 import 'package:forge2d/src/ffi/box2d.g.dart' as b2;
+import 'package:forge2d/src/ffi/f2d_world_lock.dart' as f2d;
 import 'package:test/test.dart';
 
 /// Exercises the native build hook and the raw generated bindings end-to-end:
@@ -13,7 +14,7 @@ void main() {
   test('a falling box lands on the ground', () {
     using((arena) {
       final worldDef = arena<b2.b2WorldDef>()..ref = b2.b2DefaultWorldDef();
-      final worldId = b2.b2CreateWorld(worldDef);
+      final worldId = f2d.f2dCreateWorldLocked(worldDef);
       expect(b2.b2World_IsValid(worldId), isTrue);
 
       final groundDef = arena<b2.b2BodyDef>()..ref = b2.b2DefaultBodyDef();
@@ -45,7 +46,7 @@ void main() {
       expect(position.y, closeTo(0.5, 0.01));
       expect(b2.b2Body_IsAwake(bodyId), isFalse);
 
-      b2.b2DestroyWorld(worldId);
+      f2d.f2dDestroyWorldLocked(worldId);
       expect(b2.b2World_IsValid(worldId), isFalse);
     });
   });

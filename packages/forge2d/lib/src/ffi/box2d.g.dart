@@ -936,16 +936,6 @@ external b2ExplosionDef b2DefaultExplosionDef();
 @ffi.Native<b2DebugDraw Function()>()
 external b2DebugDraw b2DefaultDebugDraw();
 
-/// Create a world for rigid body simulation. A world contains bodies, shapes, and constraints. You make create
-/// up to 128 worlds. Each world is completely independent and may be simulated in parallel.
-/// @return the world id.
-@ffi.Native<b2WorldId Function(ffi.Pointer<b2WorldDef>)>()
-external b2WorldId b2CreateWorld(ffi.Pointer<b2WorldDef> def);
-
-/// Destroy a world
-@ffi.Native<ffi.Void Function(b2WorldId)>()
-external void b2DestroyWorld(b2WorldId worldId);
-
 /// World id validation. Provides validation for up to 64K allocations.
 @ffi.Native<ffi.Bool Function(b2WorldId)>()
 external bool b2World_IsValid(b2WorldId id);

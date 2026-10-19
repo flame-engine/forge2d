@@ -48,6 +48,11 @@ class World {
         enableSleep: definition.enableSleep,
         enableContinuous: definition.enableContinuous,
       ) {
+    if (id == 0) {
+      throw StateError(
+        'Box2D supports at most 128 worlds at a time; destroy one first.',
+      );
+    }
     // Freezes the length unit: it is baked into this world's tolerances.
     markWorldCreated();
   }
