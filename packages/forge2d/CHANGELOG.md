@@ -1,3 +1,8 @@
+## 0.15.3
+
+ - **FIX**: Freeze the length unit across isolates ([#128](https://github.com/flame-engine/forge2d/issues/128)). ([b853bae8](https://github.com/flame-engine/forge2d/commit/b853bae8f55dc6181438c4ff663f68f54e54bbe8))
+ - **FIX**: Create and destroy worlds under a process-wide lock ([#127](https://github.com/flame-engine/forge2d/issues/127)). ([94653b20](https://github.com/flame-engine/forge2d/commit/94653b208c28aa29b6c409ce2fd440995bbd0fe8))
+
 ## 0.15.2
 
  - **FIX**: Update code_assets to ^2.0.0 ([#123](https://github.com/flame-engine/forge2d/issues/123)). ([fcc10367](https://github.com/flame-engine/forge2d/commit/fcc1036735caa63bf8e669a66301b0b4c93b2f85))
