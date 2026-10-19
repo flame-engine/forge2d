@@ -5,6 +5,23 @@ void main() {
   setUpAll(initializeForge2D);
 
   group('World', () {
+    test('throws a StateError when Box2D runs out of worlds', () {
+      final worlds = <World>[];
+      addTearDown(() {
+        for (final world in worlds) {
+          world.destroy();
+        }
+      });
+      expect(
+        () {
+          while (worlds.length <= 128) {
+            worlds.add(World());
+          }
+        },
+        throwsStateError,
+      );
+    });
+
     test('starts valid and becomes invalid on destroy', () {
       final world = World();
       expect(world.isValid, isTrue);

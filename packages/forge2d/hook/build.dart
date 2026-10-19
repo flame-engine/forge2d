@@ -7,7 +7,7 @@ import 'package:native_toolchain_c/native_toolchain_c.dart';
 ///
 /// Listed explicitly so that publishing and hook dependency tracking stay
 /// deterministic. Regenerate with tool/vendor_box2d.sh when upgrading.
-const _sources = [
+const _box2dSources = [
   'third_party/box2d/src/aabb.c',
   'third_party/box2d/src/arena_allocator.c',
   'third_party/box2d/src/array.c',
@@ -45,6 +45,9 @@ const _sources = [
   'third_party/box2d/src/world.c',
 ];
 
+/// forge2d's own C sources, compiled into the same library as Box2D.
+const _forge2dSources = ['native/ffi/f2d_world_lock.c'];
+
 void main(List<String> args) async {
   await build(args, (input, output) async {
     if (!input.config.buildCodeAssets) {
@@ -62,7 +65,7 @@ void main(List<String> args) async {
     final builder = CBuilder.library(
       name: 'box2d',
       assetName: 'src/ffi/box2d.g.dart',
-      sources: _sources,
+      sources: [..._box2dSources, ..._forge2dSources],
       includes: ['third_party/box2d/include', 'third_party/box2d/src'],
       std: 'c17',
       optimizationLevel: OptimizationLevel.o2,

@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:forge2d/src/backend/raw_box2d.dart';
 import 'package:forge2d/src/ffi/box2d.g.dart' as b2;
+import 'package:forge2d/src/ffi/f2d_world_lock.dart' as f2d;
 
 /// Prepares the FFI backend. Nothing to do: the native library is bundled by
 /// the build hook and loaded lazily. [wasmUri] only applies on the web.
@@ -98,12 +99,12 @@ final class RawBox2DFfi implements RawBox2D {
         ..maximumLinearSpeed = maximumLinearSpeed
         ..enableSleep = enableSleep
         ..enableContinuous = enableContinuous;
-      return _packWorld(b2.b2CreateWorld(definition));
+      return _packWorld(f2d.f2dCreateWorldLocked(definition));
     });
   }
 
   @override
-  void destroyWorld(int worldId) => b2.b2DestroyWorld(_world(worldId));
+  void destroyWorld(int worldId) => f2d.f2dDestroyWorldLocked(_world(worldId));
 
   @override
   bool worldIsValid(int worldId) => b2.b2World_IsValid(_world(worldId));

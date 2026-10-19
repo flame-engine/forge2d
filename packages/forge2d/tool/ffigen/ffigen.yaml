@@ -17,6 +17,9 @@ functions:
   exclude:
     - 'b2SetAllocator'
     - 'b2SetAssertFcn'
+    # Bound through lib/src/ffi/f2d_world_lock.dart, under a lock.
+    - 'b2CreateWorld'
+    - 'b2DestroyWorld'
 structs:
   include:
     - 'b2.*'
