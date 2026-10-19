@@ -1,0 +1,766 @@
+version: 1
+transforms:
+  # Migrate legacy static members of `Platform`.
+
+  ## Platform static members -> NativePlatform static members
+  - title: "Platform.android"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "android"
+      inClass: "Platform"
+      static: true
+    changes:
+      - kind: "replacedBy"
+        replaceTarget: true
+        newElement:
+          uris: ["package:platform/platform.dart"]
+          getter: "android"
+          inClass: "NativePlatform"
+          static: true
+
+  - title: "Platform.fuchsia"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "fuchsia"
+      inClass: "Platform"
+      static: true
+    changes:
+      - kind: "replacedBy"
+        replaceTarget: true
+        newElement:
+          uris: ["package:platform/platform.dart"]
+          getter: "fuchsia"
+          inClass: "NativePlatform"
+          static: true
+
+  - title: "Platform.iOS"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "iOS"
+      inClass: "Platform"
+      static: true
+    changes:
+      - kind: "replacedBy"
+        replaceTarget: true
+        newElement:
+          uris: ["package:platform/platform.dart"]
+          getter: "iOS"
+          inClass: "NativePlatform"
+          static: true
+
+  - title: "Platform.linux"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "linux"
+      inClass: "Platform"
+      static: true
+    changes:
+      - kind: "replacedBy"
+        replaceTarget: true
+        newElement:
+          uris: ["package:platform/platform.dart"]
+          getter: "linux"
+          inClass: "NativePlatform"
+          static: true
+
+  - title: "Platform.macOS"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "macOS"
+      inClass: "Platform"
+      static: true
+    changes:
+      - kind: "replacedBy"
+        replaceTarget: true
+        newElement:
+          uris: ["package:platform/platform.dart"]
+          getter: "macOS"
+          inClass: "NativePlatform"
+          static: true
+
+  - title: "Platform.windows"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "windows"
+      inClass: "Platform"
+      static: true
+    changes:
+      - kind: "replacedBy"
+        replaceTarget: true
+        newElement:
+          uris: ["package:platform/platform.dart"]
+          getter: "windows"
+          inClass: "NativePlatform"
+          static: true
+
+  - title: "Platform.operatingSystemValues"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "operatingSystemValues"
+      inClass: "Platform"
+      static: true
+    changes:
+      - kind: "replacedBy"
+        replaceTarget: true
+        newElement:
+          uris: ["package:platform/platform.dart"]
+          getter: "operatingSystemValues"
+          inClass: "NativePlatform"
+          static: true
+
+  ## Migrate legacy instance members of `Platform`.
+  ## Instance members on `Platform` -> members on `Platform.nativePlatform!`
+
+  - title: "Platform.environment"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "environment"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.environment"
+
+  - title: "Platform.executable"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "executable"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.executable"
+
+  - title: "Platform.executableArguments"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "executableArguments"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.executableArguments"
+
+  - title: "Platform.lineTerminator"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "lineTerminator"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.lineTerminator"
+
+  - title: "Platform.localeName"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "localeName"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.localeName"
+
+  - title: "Platform.localHostname"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "localHostname"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.localHostname"
+
+  - title: "Platform.numberOfProcessors"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "numberOfProcessors"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.numberOfProcessors"
+
+  - title: "Platform.operatingSystem"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "operatingSystem"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.operatingSystem"
+
+  - title: "Platform.operatingSystemVersion"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "operatingSystemVersion"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.operatingSystemVersion"
+
+  - title: "Platform.packageConfig"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "packageConfig"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.packageConfig"
+
+  - title: "Platform.pathSeparator"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "pathSeparator"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.pathSeparator"
+
+  - title: "Platform.resolvedExecutable"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "resolvedExecutable"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.resolvedExecutable"
+
+  - title: "Platform.script"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "script"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.script"
+
+  - title: "Platform.stdinSupportsAnsi"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "stdinSupportsAnsi"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.stdinSupportsAnsi"
+
+  - title: "Platform.stdoutSupportsAnsi"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "stdoutSupportsAnsi"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.stdoutSupportsAnsi"
+
+  - title: "Platform.version"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "version"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.version"
+
+  - title: "Platform.toJson"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      method: "toJson"
+      inClass: "LocalPlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.toJson"
+
+  ## Instance members on `FakePlatform` -> members on `Platform.nativePlatform!`
+  - title: "Platform.environment"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "environment"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.environment"
+
+  - title: "Platform.executable"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "executable"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.executable"
+
+  - title: "Platform.executableArguments"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "executableArguments"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.executableArguments"
+
+  - title: "Platform.lineTerminator"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "lineTerminator"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.lineTerminator"
+
+  - title: "Platform.localeName"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "localeName"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.localeName"
+
+  - title: "Platform.localHostname"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "localHostname"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.localHostname"
+
+  - title: "Platform.numberOfProcessors"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "numberOfProcessors"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.numberOfProcessors"
+
+  - title: "Platform.operatingSystem"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "operatingSystem"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.operatingSystem"
+
+  - title: "Platform.operatingSystemVersion"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "operatingSystemVersion"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.operatingSystemVersion"
+
+  - title: "Platform.packageConfig"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "packageConfig"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.packageConfig"
+
+  - title: "Platform.pathSeparator"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "pathSeparator"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.pathSeparator"
+
+  - title: "Platform.resolvedExecutable"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "resolvedExecutable"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.resolvedExecutable"
+
+  - title: "Platform.script"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "script"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.script"
+
+  - title: "Platform.stdinSupportsAnsi"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "stdinSupportsAnsi"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.stdinSupportsAnsi"
+
+  - title: "Platform.stdoutSupportsAnsi"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "stdoutSupportsAnsi"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.stdoutSupportsAnsi"
+
+  - title: "Platform.version"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "version"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.version"
+
+  - title: "Platform.toJson"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      method: "toJson"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.toJson"
+
+  ## Migrate constructors to constructors creating a `TestPlatform`-backed
+  ## `FakePlatform`.
+  - title: "FakePlatform2TestPlatform"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      class: "FakePlatform"
+    changes:
+      - kind: "replacedBy"
+        newElement:
+          uris: ["package:platform/testing.dart"]
+          class: "TestPlatform"
+
+  - title: "FakePlatform.new"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      constructor: ''
+      inClass: "FakePlatform"
+    changes:
+      - kind: "replacedBy"
+        newElement:
+          uris: ["package:platform/testing.dart"]
+          constructor: 'native'
+          inClass: "TestPlatform"
+
+  - title: "FakePlatform.fromJson"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      constructor: 'fromJson'
+      inClass: "FakePlatform"
+    changes:
+      - kind: "replacedBy"
+        newElement:
+          uris: ["package:platform/testing.dart"]
+          constructor: 'nativeFromJson'
+          inClass: "TestPlatform"
+
+  - title: "FakePlatform.fromPlatform"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      constructor: 'fromPlatform'
+      inClass: "FakePlatform"
+    changes:
+      - kind: "replacedBy"
+        newElement:
+          uris: ["package:platform/testing.dart"]
+          constructor: 'fromPlatform'
+          inClass: "TestPlatform"
+
+  ## Instance members on `Platform` -> members on `Platform.nativePlatform!`
+  - title: "Platform.environment"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "environment"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.environment"
+
+  - title: "Platform.executable"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "executable"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.executable"
+
+  - title: "Platform.executableArguments"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "executableArguments"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.executableArguments"
+
+  - title: "Platform.lineTerminator"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "lineTerminator"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.lineTerminator"
+
+  - title: "Platform.localeName"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "localeName"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.localeName"
+
+  - title: "Platform.localHostname"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "localHostname"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.localHostname"
+
+  - title: "Platform.numberOfProcessors"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "numberOfProcessors"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.numberOfProcessors"
+
+  - title: "Platform.operatingSystem"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "operatingSystem"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.operatingSystem"
+
+  - title: "Platform.operatingSystemVersion"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "operatingSystemVersion"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.operatingSystemVersion"
+
+  - title: "Platform.packageConfig"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "packageConfig"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.packageConfig"
+
+  - title: "Platform.pathSeparator"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "pathSeparator"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.pathSeparator"
+
+  - title: "Platform.resolvedExecutable"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "resolvedExecutable"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.resolvedExecutable"
+
+  - title: "Platform.script"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "script"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.script"
+
+  - title: "Platform.stdinSupportsAnsi"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "stdinSupportsAnsi"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.stdinSupportsAnsi"
+
+  - title: "Platform.stdoutSupportsAnsi"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "stdoutSupportsAnsi"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.stdoutSupportsAnsi"
+
+  - title: "Platform.version"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      getter: "version"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.version"
+
+  - title: "Platform.toJson"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      method: "toJson"
+      inClass: "Platform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.toJson"
+
+  ## `FakePlatform.copyWith` ->
+  ## `TestPlatform.nativePlatform!.copyPlatformWith`.
+  - title: "FakePlatform.copyWith"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      method: "copyWith"
+      inClass: "FakePlatform"
+      static: false
+    changes:
+      - kind: "rename"
+        newName: "nativePlatform!.copyPlatformWith"
+
+  ## Legacy LocalPlatform class -> new Platform class
+  ##
+  ## Would prefer to redirect to `NativePlatform` class,
+  ## but existing code uses the `Platform` type as supertype,
+  ## and we still have that type.
+  ## Workaround: -> new Platform() constructor + migration of members.
+  ## May want to deprecate the constructor later when we find a way to migrate
+  ## people off a `const` constructor invocation into a non-const getter.
+  - title: "LocalPlatform"
+    date: 2024-06-14
+    element:
+      uris: ["package:platform/platform.dart"]
+      class: LocalPlatform
+    changes:
+      - kind: "replacedBy"
+        newElement:
+          uris: ["package:platform/testing.dart"]
+          class: Platform
