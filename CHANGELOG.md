@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-10-19
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`forge2d` - `v0.15.3`](#forge2d---v0153)
+
+---
+
+#### `forge2d` - `v0.15.3`
+
+ - **FIX**: Freeze the length unit across isolates ([#128](https://github.com/flame-engine/forge2d/issues/128)). ([b853bae8](https://github.com/flame-engine/forge2d/commit/b853bae8f55dc6181438c4ff663f68f54e54bbe8))
+ - **FIX**: Create and destroy worlds under a process-wide lock ([#127](https://github.com/flame-engine/forge2d/issues/127)). ([94653b20](https://github.com/flame-engine/forge2d/commit/94653b208c28aa29b6c409ce2fd440995bbd0fe8))
+
+
 ## 2026-10-01
 
 ### Changes
