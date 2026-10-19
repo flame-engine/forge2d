@@ -47,6 +47,8 @@ final class RawBox2DWasm implements RawBox2D {
 
   final WasmRuntime _runtime;
 
+  bool _worldHasBeenCreated = false;
+
   // Scratch arena layout (see WasmRuntime.scratch, 4096 bytes):
   // - byte 0: small out-parameters (up to 128 bytes)
   // - byte 128: the f2dShapeDef struct (19 * 4 bytes)
@@ -114,8 +116,16 @@ final class RawBox2DWasm implements RawBox2D {
   // Global tuning.
 
   @override
-  void setLengthUnitsPerMeter(double lengthUnits) =>
-      _call('f2d_set_length_units_per_meter', [lengthUnits]);
+  bool trySetLengthUnitsPerMeter(double lengthUnits) {
+    if (_worldHasBeenCreated) {
+      return false;
+    }
+    _call('f2d_set_length_units_per_meter', [lengthUnits]);
+    return true;
+  }
+
+  @override
+  void resetLengthUnitLock() => _worldHasBeenCreated = false;
 
   @override
   double getLengthUnitsPerMeter() =>
@@ -135,18 +145,24 @@ final class RawBox2DWasm implements RawBox2D {
     required double maximumLinearSpeed,
     required bool enableSleep,
     required bool enableContinuous,
-  }) => _callI('f2d_create_world', [
-    gravityX,
-    gravityY,
-    restitutionThreshold,
-    hitEventThreshold,
-    contactHertz,
-    contactDampingRatio,
-    maxContactPushSpeed,
-    maximumLinearSpeed,
-    _b(enableSleep),
-    _b(enableContinuous),
-  ]);
+  }) {
+    final id = _callI('f2d_create_world', [
+      gravityX,
+      gravityY,
+      restitutionThreshold,
+      hitEventThreshold,
+      contactHertz,
+      contactDampingRatio,
+      maxContactPushSpeed,
+      maximumLinearSpeed,
+      _b(enableSleep),
+      _b(enableContinuous),
+    ]);
+    if (id != 0) {
+      _worldHasBeenCreated = true;
+    }
+    return id;
+  }
 
   @override
   void destroyWorld(int worldId) => _call('f2d_destroy_world', [worldId]);

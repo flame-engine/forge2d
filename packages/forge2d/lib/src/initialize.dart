@@ -10,13 +10,6 @@ RawBox2D? _rawBox2D;
 /// Internal to forge2d; not exported by the package.
 RawBox2D get rawBox2D => _rawBox2D ??= createRawBox2D();
 
-bool _worldHasBeenCreated = false;
-
-/// Records that a world exists, which freezes the length unit.
-///
-/// Internal to forge2d; not exported by the package.
-void markWorldCreated() => _worldHasBeenCreated = true;
-
 /// Rounds [value] the way Box2D stores it, so that a length unit that was
 /// handed to the native side compares equal when it is read back.
 double _toFloat32(double value) => (Float32List(1)..[0] = value)[0];
@@ -69,10 +62,11 @@ Future<void> initializeForge2D({
   if (current == _toFloat32(lengthUnitsPerMeter)) {
     return;
   }
-  if (_worldHasBeenCreated) {
+  if (!backend.trySetLengthUnitsPerMeter(lengthUnitsPerMeter)) {
     throw StateError(
       'The length unit cannot be changed from $current to '
-      '$lengthUnitsPerMeter because a World has already been created. Box2D '
+      '$lengthUnitsPerMeter because a World has already been created in this '
+      'process. Box2D '
       'bakes the length unit into the defaults of the definitions it hands '
       'out and into the tolerances of live simulations, so it has to be set '
       'before the first world exists. Await '
@@ -80,7 +74,6 @@ Future<void> initializeForge2D({
       'world is created.',
     );
   }
-  backend.setLengthUnitsPerMeter(lengthUnitsPerMeter);
 }
 
 /// Forgets that a world has been created, so that a test can set a different
@@ -90,4 +83,4 @@ Future<void> initializeForge2D({
 /// world that is still alive are left alone, so destroy the worlds of the
 /// previous test first.
 @visibleForTesting
-void debugResetLengthUnitLock() => _worldHasBeenCreated = false;
+void debugResetLengthUnitLock() => rawBox2D.resetLengthUnitLock();

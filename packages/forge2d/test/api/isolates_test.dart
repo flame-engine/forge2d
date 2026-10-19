@@ -27,6 +27,26 @@ void main() {
       expect(results, everyElement(everyElement(expected)));
     },
   );
+
+  test(
+    'a world in one isolate freezes the length unit in the others',
+    () async {
+      final world = World();
+      addTearDown(world.destroy);
+
+      final error = await Isolate.run(() async {
+        try {
+          await initializeForge2D(lengthUnitsPerMeter: 2);
+          return null;
+        } on StateError catch (error) {
+          return error.message;
+        }
+      });
+
+      expect(error, contains('a World has already been created'));
+      expect(Tolerances.lengthUnitsPerMeter, 1);
+    },
+  );
 }
 
 /// Drops a short stack of boxes onto the ground and returns where they end
