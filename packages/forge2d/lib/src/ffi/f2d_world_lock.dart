@@ -11,7 +11,9 @@ import 'package:forge2d/src/ffi/box2d.g.dart';
 @ffi.Native<b2WorldId Function(ffi.Pointer<b2WorldDef>)>(
   symbol: 'f2d_create_world_locked',
 )
-external b2WorldId f2dCreateWorldLocked(ffi.Pointer<b2WorldDef> def);
+external b2WorldId f2dCreateWorldLocked(
+  ffi.Pointer<b2WorldDef> definition,
+);
 
 /// [b2DestroyWorld] under the same lock as [f2dCreateWorldLocked].
 @ffi.Native<ffi.Void Function(b2WorldId)>(symbol: 'f2d_destroy_world_locked')

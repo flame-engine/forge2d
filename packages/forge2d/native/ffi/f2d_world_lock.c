@@ -1,19 +1,6 @@
-// Creating and destroying worlds under a process-wide lock.
-//
-// Box2D keeps every world in one process-wide table, and b2CreateWorld and
-// b2DestroyWorld claim and free its slots without synchronization. Box2D
-// leaves the guard to the caller: "You will get a race condition if you
-// create or destroy Box2D worlds from multiple threads. You should use a mutex
-// to guard this." (manual, Multithreading Multiple Worlds; see also
-// https://github.com/erincatto/box2d/issues/904).
-//
-// Dart isolates run on threads of their own over one copy of this library, so
-// the native backend creates and destroys worlds through these two functions
-// instead. Everything else a world does only touches that world, which must be
-// used from one isolate at a time.
-//
-// Only the native (FFI) build compiles this file. The WebAssembly module runs
-// on a single thread, and each instance has its own memory and world table.
+// Box2D's world table is process-wide and b2CreateWorld and b2DestroyWorld
+// are not thread safe (https://github.com/erincatto/box2d/issues/904), but
+// Dart isolates are threads over one copy of this library.
 
 #include "atomic.h"
 #include "box2d/box2d.h"
@@ -21,15 +8,16 @@
 static b2AtomicInt f2d_world_lock;
 
 static void f2d_lock(void) {
-  while (!b2AtomicCompareExchangeInt(&f2d_world_lock, 0, 1)) {
+  while (b2AtomicLoadInt(&f2d_world_lock) != 0 ||
+         !b2AtomicCompareExchangeInt(&f2d_world_lock, 0, 1)) {
   }
 }
 
 static void f2d_unlock(void) { b2AtomicStoreInt(&f2d_world_lock, 0); }
 
-BOX2D_EXPORT b2WorldId f2d_create_world_locked(const b2WorldDef* def) {
+BOX2D_EXPORT b2WorldId f2d_create_world_locked(const b2WorldDef* definition) {
   f2d_lock();
-  b2WorldId id = b2CreateWorld(def);
+  b2WorldId id = b2CreateWorld(definition);
   f2d_unlock();
   return id;
 }
