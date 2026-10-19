@@ -5,7 +5,11 @@ import 'package:test/test.dart';
 // shares, so suites run one at a time; see dart_test.yaml. Within this file
 // the tests run in declaration order and build on each other.
 void main() {
-  setUpAll(initializeForge2D);
+  // Earlier suites in the same process have created worlds.
+  setUpAll(() async {
+    await initializeForge2D();
+    debugResetLengthUnitLock();
+  });
 
   // Puts the length unit back, so that the suites that run after this one see
   // the default whatever order they end up in.

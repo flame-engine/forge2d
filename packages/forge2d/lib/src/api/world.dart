@@ -53,8 +53,6 @@ class World {
         'Box2D supports at most 128 worlds at a time; destroy one first.',
       );
     }
-    // Freezes the length unit: it is baked into this world's tolerances.
-    markWorldCreated();
   }
 
   /// The packed native world id.

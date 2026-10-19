@@ -10,11 +10,15 @@
 abstract interface class RawBox2D {
   // Global tuning.
 
-  /// Sets the process-wide length unit, mirroring `b2SetLengthUnitsPerMeter`.
+  /// Sets the process-wide length unit, mirroring `b2SetLengthUnitsPerMeter`,
+  /// unless a world has been created in this process.
   ///
-  /// Box2D must not have been called before this, which the API layer
-  /// enforces in `initializeForge2D`.
-  void setLengthUnitsPerMeter(double lengthUnits);
+  /// Returns whether the length unit was set.
+  bool trySetLengthUnitsPerMeter(double lengthUnits);
+
+  /// Forgets that a world has been created, so that
+  /// [trySetLengthUnitsPerMeter] can succeed again.
+  void resetLengthUnitLock();
 
   /// The process-wide length unit, mirroring `b2GetLengthUnitsPerMeter`.
   double getLengthUnitsPerMeter();

@@ -65,8 +65,11 @@ final class RawBox2DFfi implements RawBox2D {
   // Global tuning.
 
   @override
-  void setLengthUnitsPerMeter(double lengthUnits) =>
-      b2.b2SetLengthUnitsPerMeter(lengthUnits);
+  bool trySetLengthUnitsPerMeter(double lengthUnits) =>
+      f2d.f2dSetLengthUnitsPerMeterLocked(lengthUnits);
+
+  @override
+  void resetLengthUnitLock() => f2d.f2dResetLengthUnitLock();
 
   @override
   double getLengthUnitsPerMeter() => b2.b2GetLengthUnitsPerMeter();
